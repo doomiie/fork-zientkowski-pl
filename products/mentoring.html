@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentoring</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: #F9F9F9;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .hero-pattern {
+            background-image: radial-gradient(rgb(4,3,39) 0.5px, transparent 0.5px);
+            background-size: 24px 24px;
+            opacity: 0.05;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(4, 3, 39, 0.1);
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            z-index: -1;
+          }
+
+        .feature-card {
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+    </style>
+</head>
+<body class="bg-light">
+    <!-- Navbar -->
+    <nav class="fixed w-full bg-light/95 backdrop-blur-xl z-50 py-4 transition-all duration-500 border-b border-gray-200/50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-between items-center">
+                <a href="/" class="group flex items-center space-x-2 text-dark hover:text-accent transition-colors duration-300">
+                    <i data-lucide="chevron-left" class="h-5 w-5 group-hover:-translate-x-1 transition-transform duration-300"></i>
+                    <span class="font-medium">Powrót</span>
+                </a>
+                <div>
+                    <img class="brightness-0 max-w-[150px] md:max-w-[180px]" src="../assets/img/logo-jzplus-name-POZIOM-białe-210x58-1.png" alt="Logo">
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-24 min-h-screen relative overflow-hidden">
+        <!-- Background Elements -->
+        <div class="absolute inset-0 hero-pattern"></div>
+        <div class="blob bg-blue-100 w-96 h-96 top-0 left-0"></div>
+        <div class="blob bg-purple-100 w-96 h-96 bottom-0 right-0"></div>
+
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto px-6 relative">
+
+            <div class="flex flex-col justify-center space-y-12 py-12">
+                <div class="space-y-6">
+                    <h1 class="hero text-5xl lg:text-7xl font-bold text-dark leading-tight">
+                        Twoja droga do <span class="text-accent">sukcesu</span>
+                    </h1>
+                    <p class="hero text-xl text-dark/80 leading-relaxed max-w-xl">
+                        Odkryj swój pełny potencjał poprzez spersonalizowany mentoring, który przekształca wyzwania w możliwości.
+                    </p>
+                </div>
+
+                <div class="grid gap-6">
+                    <div class="feature-card glass-card p-6 rounded-2xl">
+                        <div class="flex items-start space-x-4">
+                            <div class="p-3 bg-accent/5 rounded-xl">
+                                <i data-lucide="target" class="h-6 w-6 text-accent"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold mb-2">Precyzyjne Cele</h3>
+                                <p class="text-dark/70">Wspólnie ustalimy jasną ścieżkę rozwoju, dopasowaną do Twoich ambicji i możliwości.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="feature-card glass-card p-6 rounded-2xl">
+                        <div class="flex items-start space-x-4">
+                            <div class="p-3 bg-accent/5 rounded-xl">
+                                <i data-lucide="lightbulb" class="h-6 w-6 text-accent"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold mb-2">Strategiczne Myślenie</h3>
+                                <p class="text-dark/70">Rozwiniesz umiejętność podejmowania trafnych decyzji i strategicznego planowania.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="feature-card glass-card p-6 rounded-2xl">
+                        <div class="flex items-start space-x-4">
+                            <div class="p-3 bg-accent/5 rounded-xl">
+                                <i data-lucide="trophy" class="h-6 w-6 text-accent"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold mb-2">Mierzalne Rezultaty</h3>
+                                <p class="text-dark/70">Konkretne efekty i stały monitoring postępów zapewnią Ci pewność rozwoju.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:pl-12">
+                <div class="glass-card rounded-3xl overflow-hidden h-[600px] shadow-2xl">
+                    <iframe 
+                        src="https://calendly.com/jerzy-zientkowski/mentoring?embed_domain=zientkowski.pl&embed_type=Inline" 
+                        width="100%" 
+                        height="100%" 
+                        frameborder="0" 
+                        title="Select a Date & Time - Calendly"
+                        class="w-full h-full">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        lucide.createIcons();
+    
+
+        gsap.from(".hero", {
+            duration: 1,
+            y: 30,
+            opacity: 0,
+            delay: 0.3,
+            ease: "power3.out"
+        });
+        
+        gsap.from(".glass-card iframe", {
+            duration: 1.2,
+            scale: 0.9,
+            opacity: 0,
+            delay: 0.8,
+            ease: "power3.out"
+        });
+    </script>
+</body>
+</html>

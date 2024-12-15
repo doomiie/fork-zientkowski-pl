@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bio - Jerzy Zientkowski</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        * {
+            font-family: 'Space Grotesk', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        .desktop-bio {
+            display: none;
+        }
+
+        .mobile-bio {
+            position: relative;
+            min-height: 100vh;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding-bottom: 4rem;
+        }
+
+        .mobile-background {
+            position: absolute;
+            inset: 0;
+            z-index: -2;
+        }
+
+        .mobile-background img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .mobile-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                to bottom,
+                rgba(0,0,0,0.2) 0%,
+                rgba(0,0,0,0.6) 50%,
+                rgba(0,0,0,0.8) 100%
+            );
+            z-index: -1;
+        }
+
+        .mobile-content {
+            padding: 0 1.5rem;
+            max-width: 640px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .mobile-experience {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            padding: 1rem 1.5rem;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+            display: inline-block;
+        }
+
+        .pt-28 {
+                padding-top: 0 !important;
+        }
+
+
+        @media (min-width: 768px) {
+            .desktop-bio {
+                display: block;
+            }
+
+            .pt-28 {
+                padding-top: 7rem !important;
+            }
+
+            .mobile-bio {
+                display: none;
+            }
+
+        }
+
+        .grain-overlay {
+            background-image: url('data:image/svg+xml,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)"/></svg>');
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-auto-rows: 300px;
+            gap: 1.5rem;
+            padding: 1.5rem;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 1rem;
+            cursor: pointer;
+            background: #f8f8f8;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .gallery-item.tall {
+            grid-row: span 2;
+        }
+
+        .gallery-item.wide {
+            grid-column: span 2;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, transparent 100%);
+            opacity: 0;
+            transition: all 0.4s ease;
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+
+        .gallery-content {
+            padding: 2rem;
+            transform: translateY(20px);
+            transition: transform 0.4s ease;
+            color: white;
+            width: 100%;
+        }
+
+        .gallery-item:hover .gallery-content {
+            transform: translateY(0);
+        }
+
+        .gallery-zoom {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            font-size: 0.875rem;
+            opacity: 0.8;
+        }
+
+        /* Enhanced Modal Styles */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            max-width: 90vw;
+            max-height: 90vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .modal-body {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .modal-image-container {
+            height: 70vh;
+            overflow: hidden;
+            border-radius: 0.5rem;
+        }
+
+        .modal-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .modal-nav {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 50%;
+            width: 3rem;
+            height: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-nav:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.1);
+        }
+
+        .modal-footer {
+            color: white;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .gallery-item.wide {
+                grid-column: span 1;
+            }
+        }
+            .testimonials-container {
+                position: relative;
+                overflow: hidden;
+                padding: 2rem 0;
+            }
+
+            .testimonials-track {
+                display: flex;
+                transition: transform 0.5s ease;
+            }
+
+            .testimonial-card {
+                flex: 0 0 100%;
+                opacity: 1;
+                transform: scale(0.9);
+                transition: all 0.5s ease;
+                padding: 2rem;
+            }
+
+            .testimonial-card.active {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            .testimonial-navigation {
+                display: flex;
+                justify-content: center;
+                gap: 1rem;
+                margin-top: 2rem;
+            }
+
+            .nav-dot {
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+                background: rgba(255,255,255,0.3);
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            .nav-dot.active {
+                background: white;
+                transform: scale(1.2);
+            }
+
+            @media (max-width: 768px) {
+                .gallery-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            }
+
+            @media (max-width: 640px) {
+                .gallery-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        accent: 'rgb(4, 3, 39)',
+                        dark: 'rgb(4, 3, 39)',
+                        light: '#F9F9F9'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-light">
+
+    <nav class="fixed w-full bg-light/95 backdrop-blur-xl z-50 py-4 transition-all duration-500 border-b border-gray-200/50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-between items-center">
+                <a href="/" class="group flex items-center space-x-2 text-dark hover:text-accent transition-colors duration-300">
+                    <i data-lucide="chevron-left" class="h-5 w-5 group-hover:-translate-x-1 transition-transform duration-300"></i>
+                    <span class="font-medium">Powrót</span>
+                </a>
+                <div class="">
+                    <img class="brightness-0 max-w-[150px] md:max-w-[180px]" src="./assets/img/logo-jzplus-name-POZIOM-białe-210x58-1.png" alt="Logo">
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-28">
+
+        <section class="mobile-bio">
+            <div class="mobile-background">
+                <img src="./assets/img/Invest-cuffs-5-scaled.jpg" alt="Jerzy Zientkowski"/>
+            </div>
+            <div class="mobile-overlay"></div>
+    
+            <div class="mobile-content">
+    
+                <h1 class="text-4xl font-bold mb-6 highlight-bar">
+                    O mnie<span class="accent-dot"></span>
+                </h1>
+                
+                <p class="text-lg leading-relaxed text-gray-200">
+                    Autor, mentor, mówca profesjonalny. Z 20-letnim doświadczeniem biznesowym i zaskakująco precyzyjnym podejściem do wystąpień publicznych, pracowałem nad komunikacją i prezentacjami dla największych firm na światowym rynku i dla klientów indywidualnych.
+                </p>
+    
+            </div>
+        </section>
+
+        <section class="desktop-bio py-20 md:py-32 relative overflow-hidden">
+            <div class="absolute inset-0 grain-overlay"></div>
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+                    <div class="relative order-2 lg:order-none">
+                        <div class="aspect-square rounded-full bg-accent/10 floating relative">
+                            <img src="./assets/img/Invest-cuffs-5-scaled.jpg" alt="Jerzy Zientkowski" class="rounded-full object-cover w-full h-full p-6 transition-transform duration-500 hover:scale-105"/>
+                            <div class="absolute inset-0 rounded-full border-2 border-accent/10 scale-110 animate-pulse"></div>
+                        </div>
+                        <div class="absolute -bottom-8 -left-8 bg-dark text-white p-8 rounded-3xl max-w-xs transform hover:-translate-y-2 transition-transform duration-300 shadow-xl">
+                            <div class="text-5xl font-bold mb-2">20+</div>
+                            <div class="text-gray-300 text-lg">lat doświadczenia w biznesie</div>
+                        </div>
+                    </div>
+
+                    <div class="order-1 lg:order-none">
+                        <h1 class="text-6xl md:text-7xl font-bold mb-10 relative">
+                            O mnie<span class="text-accent">.</span>
+                            <div class="absolute -bottom-4 left-0 w-24 h-2 bg-accent/20 rounded-full"></div>
+                        </h1>
+                        <div class="space-y-8 text-gray-600">
+                            <p class="text-2xl leading-relaxed">
+                                Autor, mentor, mówca profesjonalny. Z 20-letnim doświadczeniem biznesowym i zaskakująco precyzyjnym podejściem do wystąpień publicznych, pracowałem nad komunikacją i prezentacjami dla największych firm na światowym rynku i dla klientów indywidualnych.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-20 bg-white relative overflow-hidden">
+            <div class="absolute inset-0 grain-overlay"></div>
+            <div class="max-w-7xl mx-auto px-6">
+                <h2 class="text-5xl font-bold mb-16 relative inline-block">
+                    Od zera
+                    <div class="absolute -bottom-4 left-0 w-full h-2 bg-accent/20 rounded-full"></div>
+                </h2>
+                <div class="space-y-12">
+                    <div class="timeline-item">
+                        <h3 class="text-2xl font-bold mb-4">Początki Kariery</h3>
+                        <p class="text-lg text-gray-600">
+                            Z doświadczeniem w IT, na styku biznesu, sprzedaży i obsługi klienta wypracowałem unikatowy zestaw narzędzi komunikacyjnych, pozwalający na współpracę z różnymi branżami, różnymi potrzebami klientów, w wielonarodowych środowiskach.
+                        </p>
+                    </div>
+                    <div class="timeline-item">
+                        <h3 class="text-2xl font-bold mb-4">Rozwój i Osiągnięcia</h3>
+                        <p class="text-lg text-gray-600">
+                            W 2012 dotarłem do finałów mistrzostw Europy w przemówieniach humorystycznych, w 2013 zostałem Mistrzem Polski w mowach improwizowanych Toastmasters w języku polskim i Wicemistrzem Polski w języku angielskim.
+                        </p>
+                    </div>
+                    <div class="timeline-item">
+                        <h3 class="text-2xl font-bold mb-4">Działalność Szkoleniowa</h3>
+                        <p class="text-lg text-gray-600">
+                            Od 2015 mówiłem do ponad 40 000 osób rocznie i przemawiałem podczas tak różnych eventów jak TEDx, Spectacular Speaking, Nowoczesne Techniki Sprzedaży, Pełna Moc Możliwości i wielu innych.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="referencje" class="py-20 bg-accent text-white relative">
+            <div class="absolute inset-0 grain-overlay opacity-10"></div>
+            <div class="max-w-7xl mx-auto px-6">
+                <h2 class="text-5xl font-bold mb-16 text-center">Co mówią klienci</h2>
+                <div class="testimonials-container">
+                    <div class="testimonials-track">
+                        <div class="testimonial-card">
+                            <div class="bg-white/10 p-8 rounded-2xl backdrop-blur-xl">
+                                <div class="mb-6">
+                                    <i data-lucide="quote" class="h-8 w-8 text-white/60"></i>
+                                </div>
+                                <p class="text-lg mb-8">"Pracowałem z Jerzym nad kilkoma wewnętrznymi prezentacjami w Allegro. Współpraca z nim oznacza uporządkowanie struktur przemówienia i dotarcie do jasności przekazu, jasności tego, co chcemy powiedzieć. Mimo, że jest informatykiem, potrafi pomóc stworzyć mowę, która osiągnie założony cel. "</p>
+                                <div class="flex items-center">
+                                    <div class="w-16 h-16 rounded-full bg-white/20 mr-4 overflow-hidden">
+                                        <img src="./assets/img/default-avatar.jpg" alt="Piotr Szybiak" class="w-full h-full object-cover">
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-xl">Piotr Szybiak
+                                        </div>
+                                        <div class="text-white/60"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-card">
+                            <div class="bg-white/10 p-8 rounded-2xl backdrop-blur-xl">
+                                <div class="mb-6">
+                                    <i data-lucide="quote" class="h-8 w-8 text-white/60"></i>
+                                </div>
+                                <p class="text-lg mb-8">"Współpracuję z Jurkiem już od wielu lat. Wspiera mnie przy okazji wystąpień i konferencji szczególnie dla bardzo wymagających uczestników. Jerzy jest ekspertem w budowaniu treści, tworzeniu modeli, układaniu części merytorycznej bazując na naturalnych talentach i wiedzy wykładowcy. Moje wykłady, po konsultacjach z Jurkiem wyglądają zupełnie inaczej niż w wersji stworzonej przeze mnie na początku."</p>
+                                <div class="flex items-center">
+                                    <div class="w-16 h-16 rounded-full bg-white/20 mr-4 overflow-hidden">
+                                        <img src="./assets/img/default-avatar.jpg" alt="Sebastian Kotów" class="w-full h-full object-cover">
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-xl">Sebastian Kotów</div>
+                                        <div class="text-white/60"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-card">
+                            <div class="bg-white/10 p-8 rounded-2xl backdrop-blur-xl">
+                                <div class="mb-6">
+                                    <i data-lucide="quote" class="h-8 w-8 text-white/60"></i>
+                                </div>
+                                <p class="text-lg mb-8">"Jerzy Zientkowski jest niesamowitą osobowością, doskonałym
+                                    mówcą, coachem i mentorem w dziedzinie przemawiania. Osobiście wielokrotnie
+                                    korzystałem ze wsparcia Jerzego i dzięki Jego cennym wskazówkom moje
+                                    wystąpienia miały solidną strukturę, nabierały dzięki nim lekkości i blasku."</p>
+                                <div class="flex items-center">
+                                    <div class="w-16 h-16 rounded-full bg-white/20 mr-4 overflow-hidden">
+                                        <img src="./assets/img/default-avatar.jpg" alt="Grzegorz Turniak" class="w-full h-full object-cover">
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-xl">Grzegorz Turniak</div>
+                                        <div class="text-white/60"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-card">
+                            <div class="bg-white/10 p-8 rounded-2xl backdrop-blur-xl">
+                                <div class="mb-6">
+                                    <i data-lucide="quote" class="h-8 w-8 text-white/60"></i>
+                                </div>
+                                <p class="text-lg mb-8">"Pan Jerzy jest ogromnym wsparciem. Pracując z nim, można przygotować się do każdego wystąpienia, analizując zarówno jakość i formę przekazu. Pan Jerzy pomaga wydobywać z chaosu informacji najistotniejsze treści. Jest mistrzem SYNTEZY. Rekomenduję Pana Jerzego Zientkowskiego."</p>
+                                <div class="flex items-center">
+                                    <div class="w-16 h-16 rounded-full bg-white/20 mr-4 overflow-hidden">
+                                        <img src="./assets/img/default-avatar.jpg" alt="Marcin Tadeusiak" class="w-full h-full object-cover">
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-xl">Marcin Tadeusiak</div>
+                                        <div class="text-white/60">Prezes Zarządu w JT S.A.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-navigation"></div>
+                </div>
+            </div>
+        </section>
+
+
+        <section class="py-20 bg-light">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="gallery-grid">
+                    <div class="gallery-item tall" data-aos="fade-up">
+                        <img src="./assets/img/mentoring.jpg" alt="Wystąpienie na konferencji TEDx">
+                        <div class="gallery-overlay">
+                            <div class="gallery-content">
+                                <h3 class="text-xl font-bold mb-2">Przemówienie</h3>
+                                <p class="text-sm opacity-90">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+                                <div class="gallery-zoom">
+                                    <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                    <span>Kliknij aby zobaczyć</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="gallery-item wide" data-aos="fade-up" data-aos-delay="100">
+                        <img src="./assets/img/JERZY-NA-lp-KURSU-1.jpg" alt="Szkolenie korporacyjne">
+                        <div class="gallery-overlay">
+                            <div class="gallery-content">
+                                <h3 class="text-xl font-bold mb-2">Kurs</h3>
+                                <p class="text-sm opacity-90">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+                                <div class="gallery-zoom">
+                                    <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                    <span>Kliknij aby zobaczyć</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="gallery-item" data-aos="fade-up" data-aos-delay="200">
+                        <img src="./assets/img/Invest-cuffs-5-scaled.jpg" alt="Workshop session">
+                        <div class="gallery-overlay">
+                            <div class="gallery-content">
+                                <h3 class="text-xl font-bold mb-2">Invest cuffs</h3>
+                                <p class="text-sm opacity-90">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+                                <div class="gallery-zoom">
+                                    <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                    <span>Kliknij aby zobaczyć</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="gallery-item tall" data-aos="fade-up" data-aos-delay="300">
+                        <img src="./assets/img/szkolenia.jpg" alt="Mentoring session">
+                        <div class="gallery-overlay">
+                            <div class="gallery-content">
+                                <h3 class="text-xl font-bold mb-2">Szkolenie</h3>
+                                <p class="text-sm opacity-90">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+                                <div class="gallery-zoom">
+                                    <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                    <span>Kliknij aby zobaczyć</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="gallery-item wide" data-aos="fade-up" data-aos-delay="400">
+                        <img src="./assets/img/wystapenia.jpg" alt="International conference">
+                        <div class="gallery-overlay">
+                            <div class="gallery-content">
+                                <h3 class="text-xl font-bold mb-2">TEDx</h3>
+                                <p class="text-sm opacity-90">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+                                <div class="gallery-zoom">
+                                    <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                    <span>Kliknij aby zobaczyć</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="modal" id="imageModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title"></h3>
+                    <button class="modal-close">
+                        <i data-lucide="x" class="h-8 w-8"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <button class="modal-nav modal-prev">
+                        <i data-lucide="chevron-left" class="h-12 w-12"></i>
+                    </button>
+                    <div class="modal-image-container">
+                        <img src="" alt="Modal Image">
+                    </div>
+                    <button class="modal-nav modal-next">
+                        <i data-lucide="chevron-right" class="h-12 w-12"></i>
+                    </button>
+                </div>
+                <div class="modal-footer">
+                    <p class="modal-description"></p>
+                </div>
+            </div>
+        </div>
+
+
+        <section class="py-20 bg-light relative overflow-hidden">
+            <div class="absolute inset-0 grain-overlay"></div>
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="bg-white rounded-2xl p-12 shadow-xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-1/2 h-full bg-accent opacity-5 transform rotate-45 translate-x-1/2 -translate-y-1/2"></div>
+                    <h2 class="text-4xl font-bold mb-8">Skontaktuj się ze mną</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                        <div>
+                            <p class="text-xl text-gray-600 mb-8">
+                                Jeśli chcesz rozwinąć swoje umiejętności prezentacyjne lub potrzebujesz wsparcia w rozwoju zespołu, jestem do Twojej dyspozycji.
+                            </p>
+                            <div class="space-y-4">
+                                <div class="flex items-center space-x-4">
+                                    <i data-lucide="mail" class="h-6 w-6 text-accent"></i>
+                                    <span class="text-lg">jerzy@zientkowski.pl</span>
+                                </div>
+                                <div class="flex items-center space-x-4">
+                                    <i data-lucide="phone" class="h-6 w-6 text-accent"></i>
+                                    <span class="text-lg">615 (0) 38 123 4567</span>
+                                </div>
+                                <div class="flex items-center space-x-4">
+                                    <i data-lucide="map-pin" class="h-6 w-6 text-accent"></i>
+                                    <span class="text-lg">Poznań, Polska</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-light py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-center space-x-4 mb-6">
+                <a href="https://www.linkedin.com/in/jerzyzientkowski/" class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+                    <i data-lucide="linkedin" class="w-5 h-5 text-gray-600 hover:text-accent"></i>
+                </a>
+                <a href="https://www.instagram.com/jerzyzientkowskiofficial/" class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+                    <i data-lucide="instagram" class="w-5 h-5 text-gray-600 hover:text-accent"></i>
+                </a>
+                <a href="https://www.facebook.com/jerzy.zientkowski" class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+                    <i data-lucide="facebook" class="w-5 h-5 text-gray-600 hover:text-accent"></i>
+                </a>
+            </div>
+
+            <div class="text-center text-gray-600 pt-6 border-t border-gray-200">
+                <p class="mb-4">&copy; 2024 Jerzy Zientkowski. Wszelkie prawa zastrzeżone.</p>
+                <div class="flex justify-center items-center text-sm">
+                    <a href="#" class="hover:text-accent transition-colors">Polityka prywatności</a>
+                    <span class="mx-2 text-gray-300">|</span>
+                    <a href="#" class="hover:text-accent transition-colors">Regulamin</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="./assets/js/bio.js"></script>
+
+</body>
+
+</html>
