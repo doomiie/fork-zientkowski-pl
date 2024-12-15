@@ -1,0 +1,58 @@
+<div data-cart-menu class="fixed inset-y-0 right-0 w-96 bg-white z-[60] transform translate-x-full transition-transform duration-200 ease-in-out shadow-2xl hidden md:flex">
+    <div class="p-6 h-full flex flex-col w-full">
+        <div class="flex justify-between items-center mb-8">
+            <div class="text-xl font-bold">Koszyk</div>
+            <button class="shopping-cart-trigger focus:outline-none">
+                <i data-lucide="x" class="h-6 w-6 text-dark"></i>
+            </button>
+        </div>
+        <div class="cart-items flex-1 overflow-auto">
+
+        </div>
+        <div class="mt-auto pt-6 border-t border-gray-200">
+            <div class="flex justify-between items-center">
+                <span class="font-bold text-lg">Razem:</span>
+                <span class="shopping-cart-amount font-bold text-lg">0 PLN</span>
+            </div>
+            <button class="w-full mt-4 bg-accent text-white py-3 px-6 rounded-lg hover:bg-accent/90 transition-colors duration-300">
+                Zamów teraz
+            </button>
+        </div>
+    </div>
+</div>
+
+<div data-cart-menu-mobile class="fixed inset-0 bg-white z-[60] transform translate-y-full transition-transform duration-200 ease-in-out md:hidden">
+    <div class="p-6 h-full flex flex-col w-full">
+        <div class="flex justify-between items-center mb-8">
+            <div class="text-xl font-bold">Koszyk</div>
+            <button class="shopping-cart-trigger focus:outline-none">
+                <i data-lucide="x" class="h-6 w-6 text-dark"></i>
+            </button>
+        </div>
+        <div class="cart-items flex-1 overflow-auto">
+
+        </div>
+        <div class="mt-auto pt-6 border-t border-gray-200">
+            <div class="flex justify-between items-center">
+                <span class="font-bold text-lg">Razem:</span>
+                <span class="shopping-cart-amount font-bold text-lg">0 PLN</span>
+            </div>
+            <button class="w-full mt-4 bg-accent text-white py-3 px-6 rounded-lg hover:bg-accent/90 transition-colors duration-300">
+                Zamów teraz
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<div class="flex items-center space-x-2 text-dark hover:text-accent transition-colors duration-300 cursor-pointer shopping-cart-trigger">
+    <i data-lucide="shopping-cart" class="h-6 w-6"></i>
+    <span class="font-medium shopping-cart-amount hidden md:inline">0 PLN</span>
+</div>
+
+<div class="pt-6 border-t border-gray-200">
+    <div class="flex items-center space-x-2 text-dark hover:text-accent transition-colors duration-300 cursor-pointer shopping-cart-trigger">
+        <i data-lucide="shopping-cart" class="h-6 w-6"></i>
+        <span class="font-medium shopping-cart-amount">0 PLN</span>
+    </div>
+</div>
