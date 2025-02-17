@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jerzy Zientkowski</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+
+
+    <style>
+
+        ::-webkit-scrollbar {
+        display: none;
+        }
+
+        * {
+            font-family: 'Space Grotesk', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        .no-top {
+            padding-top: 2.2rem !important;
+        }
+
+        .diagonal-slice {
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+        }
+
+        .diagonal-slice-reverse {
+            clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 100%);
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .marquee {
+            animation: marquee 20s linear infinite;
+        }
+
+        .service-card {
+            position: relative;
+            overflow: hidden;
+            height: 500px;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(4, 3, 39, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .service-card:hover::before {
+            background: rgba(4, 3, 39, 0.7);
+        }
+
+        .service-card-content {
+            position: relative;
+            z-index: 1;
+            transform: translateY(60%);
+            transition: transform 0.5s ease;
+        }
+
+        .service-card:hover .service-card-content {
+            transform: translateY(0);
+        }
+
+        .service-card-description {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .service-card:hover .service-card-description {
+            opacity: 1;
+        }
+
+        .process-card {
+            position: relative;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .process-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .testimonial-card {
+            transition: all 0.3s ease;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .nav-link {
+            position: relative;
+            padding-bottom: 4px;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: rgb(4, 3, 39);
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .text-stroke {
+            -webkit-text-stroke: 1px rgb(4, 3, 39);
+            color: transparent;
+        }
+
+        .grain-overlay {
+            background-image: url('data:image/svg+xml,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)"/></svg>');
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        .feature-list li {
+            transition: all 0.3s ease;
+        }
+
+        .feature-list li:hover {
+            transform: translateX(8px);
+            color: rgb(4, 3, 39);
+        }
+
+        .feature-text {
+            margin-left: 15px;
+        }
+
+
+        @media (max-width: 968px) {
+            .hero-image {
+                display: none;
+            }
+
+            .style-wing {
+                display: none;
+            }
+
+        }
+
+        @media (min-width: 1168px) {
+            #o-mnie {
+                padding-bottom: 12rem;
+            }
+
+            #kontakt {
+                padding-top: 14rem;
+                padding-bottom: 14rem;
+            }
+        }
+
+
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        accent: 'rgb(4, 3, 39)',
+                        dark: 'rgb(4, 3, 39)',
+                        light: '#F9F9F9'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+
+<body>
+
+    <nav class="fixed main-nav w-full bg-light/90 backdrop-blur-lg z-50 py-4 transition-all duration-300 border-b border-gray-200/50">
+        <div class="max-w-[1400px] mx-auto px-6">
+            <div class="flex justify-between items-center">
+                <div class="text-2xl font-bold tracking-tight">
+                    <img class="brightness-0 max-w-[150px]" src="./assets/img/logo-jzplus-name-POZIOM-białe-210x58-1.png" alt="Logo">
+                </div>
+                <div class="hidden md:flex items-center space-x-12">
+                    <a href="#o-mnie" class="nav-link relative text-dark hover:text-accent transition-colors duration-300">O mnie</a>
+                    <a href="#uslugi" class="nav-link relative text-dark hover:text-accent transition-colors duration-300">Usługi</a>
+                    <a href="#kontakt" class="nav-link relative text-dark hover:text-accent transition-colors duration-300">Kontakt</a>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <button data-mobile-menu-btn class="md:hidden focus:outline-none">
+                        <i data-lucide="menu" class="h-6 w-6 text-dark"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div data-mobile-menu class="fixed inset-y-0 right-0 w-4/5 max-w-sm bg-white z-50 transform translate-x-full transition-transform duration-200 ease-in-out shadow-2xl md:hidden">
+        <div class="p-6 h-full flex flex-col">
+            <div class="flex justify-between items-center mb-8">
+                <div class="text-xl font-bold">Menu</div>
+                <button data-mobile-menu-close class="focus:outline-none">
+                    <i data-lucide="x" class="h-6 w-6 text-dark"></i>
+                </button>
+            </div>
+            <div class="flex-1">
+                <div class="flex flex-col space-y-6">
+                    <a href="#o-mnie-mobile" class="text-lg font-medium text-dark hover:text-accent transition-colors duration-300">O mnie</a>
+                    <a href="#uslugi" class="text-lg font-medium text-dark hover:text-accent transition-colors duration-300">Usługi</a>
+                    <a href="#kontakt" class="text-lg font-medium text-dark hover:text-accent transition-colors duration-300">Kontakt</a>
+                </div>
+            </div>
+            <div class="mt-auto">
+                <div class="flex space-x-4 pt-6 border-t border-gray-200 mt-6">
+                    <a href="https://www.facebook.com/jerzy.zientkowski" target="_blank" aria-label="Facebook" class="text-dark hover:text-accent transition-colors duration-300">
+                        <i data-lucide="facebook" class="h-5 w-5"></i>
+                    </a>
+                    <a href="https://www.instagram.com/jerzyzientkowskiofficial/" target="_blank" aria-label="Instagram" class="text-dark hover:text-accent transition-colors duration-300">
+                        <i data-lucide="instagram" class="h-5 w-5"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/jerzyzientkowski/" target="_blank" aria-label="LinkedIn" class="text-dark hover:text-accent transition-colors duration-300">
+                        <i data-lucide="linkedin" class="h-5 w-5"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="smooth-scroll" id="smooth-scroll">
+
+    <div class="min-h-screen pt-20 relative overflow-hidden">
+
+        <div class="no-top max-w-[1400px] mx-auto px-6 pt-32">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="relative z-10 bottom-rem-2">
+                    <div class="text-sm font-medium text-accent mb-6">
+                        Professional Speaker & Business Mentor
+                    </div>
+                    <h1 class="text-6xl md:text-7xl lg:text-8xl font-bold leading-tight mb-8">
+                        Rozwijam<br/>
+                        <span class="text-stroke">liderów</span><br/>
+                        jutra<span class="text-accent">.</span>
+                    </h1>
+                    <p class="text-xl text-gray-600 mb-12 max-w-lg">
+                        Pomagam ambitnym profesjonalistom przekraczać granice i osiągać niezwykłe rezultaty poprzez efektywną komunikację i świadome przywództwo.
+                    </p>
+                    <div class="flex flex-wrap gap-6">
+                        <a href="#kontakt" class="px-8 py-4 bg-accent text-white rounded-full hover:bg-dark transition-all duration-300 transform hover:scale-105">
+                            Zacznijmy współpracę
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="relative hero-image">
+                    <div class="aspect-square rounded-full bg-accent/10 floating">
+                        <img src="./assets/img/Invest-cuffs-5-scaled.jpg" alt="Jerzy Zientkowski" class="rounded-full object-cover w-full h-full p-6"/>
+                    </div>
+                    <div class="absolute -bottom-8 -left-8 bg-dark text-white p-6 rounded-3xl max-w-xs">
+                        <div class="text-4xl font-bold mb-2">18+</div>
+                        <div class="text-gray-400">lat doświadczenia w rozwoju liderów</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-dark text-white py-8 overflow-hidden relative">
+        <div id="marquee" class="whitespace-nowrap absolute inset-0 flex">
+            <div class="inline-block text-6xl font-bold tracking-tight px-4">
+                WYSTĄPIENIA PUBLICZNE 1 • LEADERSHIP • KOMUNIKACJA • MENTORING • 
+            </div>
+            <div class="inline-block text-6xl font-bold tracking-tight px-4">
+                WYSTĄPIENIA PUBLICZNE 2 • LEADERSHIP • KOMUNIKACJA • MENTORING • 
+            </div>
+        </div>
+    </div>
+
+    <section id="o-mnie" class="py-16 md:py-32 bg-white relative overflow-hidden hidden md:block">
+        <div class="absolute inset-0 grain-overlay"></div>
+    
+        <div class="max-w-[1400px] mx-auto px-4 md:px-6 relative">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-red-500/5 rounded-full blur-2xl lg:hidden"></div>
+            <div class="absolute bottom-0 left-0 w-40 h-40 bg-red-500/10 rounded-full blur-3xl lg:hidden"></div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+                <div class="relative order-1 lg:order-none">
+                    <div class="relative transform lg:hover:scale-105 transition-transform duration-500">
+                        <div class="absolute -top-6 -left-6 w-48 md:w-64 h-48 md:h-64 bg-accent/10 rounded-full animate-pulse"></div>
+                        <div class="absolute -bottom-4 -right-4 w-32 h-32 bg-accent/20 rounded-full hidden sm:block"></div>
+                        
+                        <div class="relative transform rotate-2 hover:-rotate-2 transition-transform duration-500">
+                            <img
+                                src="./assets/img/JERZY-NA-lp-KURSU-1.jpg"
+                                alt="Jerzy Zientkowski"
+                                class="relative z-10 rounded-2xl md:rounded-3xl object-cover w-full max-w-sm md:max-w-md mx-auto shadow-xl md:shadow-2xl"
+                            />
+                            <div class="absolute -bottom-3 -right-3 w-full h-full bg-accent/5 rounded-2xl md:rounded-3xl -z-10 lg:hidden"></div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="order-2 lg:order-none relative">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-accent/5 rounded-full blur-xl -z-10 lg:hidden"></div>
+    
+                    <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 md:mb-8 text-center lg:text-left relative">
+                        Poznaj moją <span class="highlight-text relative inline-block">
+                            historię
+                            <div class="absolute -bottom-2 left-0 w-full h-2 bg-accent/20 -z-10 transform -rotate-1"></div>
+                        </span>
+                    </h2>
+    
+                    <div class="space-y-4 md:space-y-6 text-gray-600 relative">
+                        <p class="text-lg md:text-xl">
+                            Autor, mentor, mówca profesjonalny. Z 20-letnim doświadczeniem biznesowym i zaskakująco precyzyjnym podejściem do wystąpień publicznych, pracował nad komunikacją i prezentacjami dla największych firm na światowym rynku i dla klientów indywidualnych.
+                        </p>
+                        <p class="text-base md:text-lg">
+                            Jerzy stał na scenie obok takich mówców, jak Jacek Walkiewicz, Marek Skała, Robert Krool, Szymon Kudła, Robert Cialdini i Brian Tracy. W 2012 dotarł do finałów mistrzostw Europy w przemówieniach humorystycznych.
+                        </p>
+                        <p class="text-base md:text-lg">
+                            Szkolił i przemawiał m.in. dla Al Fianco Partners, Allegro, Allianz, Aviva, Aon Hewitt, BGK, Benefit, Bre Bank, Bricoman, BZ WBK…
+                        </p>
+                    </div>
+    
+                    <div class="mt-8 md:mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-8">
+                        <a href="bio.html" class="text-center p-4 bg-gray-50 rounded-lg transform hover:-translate-y-1 transition-transform duration-300 relative group">
+                            <div class="absolute inset-0 bg-accent/5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            <div class="text-lg font-semibold text-accent relative z-10">Zobacz pełne bio</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="o-mnie-mobile" class="relative min-h-screen block md:hidden">
+        <div class="absolute inset-0 z-0">
+            <img
+                src="./assets/img/JERZY-NA-lp-KURSU-1.jpg"
+                alt="Jerzy Zientkowski"
+                class="w-full h-full object-cover"
+            />
+            <div class="absolute inset-0 bg-black/50"></div>
+        </div>
+    
+        <div class="relative z-10 px-4 py-16 min-h-screen flex flex-col justify-end">
+            <div class="space-y-6 text-white">
+                <h2 class="text-3xl font-bold relative mb-8">
+                    Poznaj moją <span class="highlight-text relative inline-block">
+                        historię
+                        <div class="absolute -bottom-2 left-0 w-full h-2 bg-white/20 -z-10 transform -rotate-1"></div>
+                    </span>
+                </h2>
+    
+                <div class="space-y-4">
+                    <p class="text-lg">
+                        Autor, mentor, mówca profesjonalny. Z 20-letnim doświadczeniem biznesowym i zaskakująco precyzyjnym podejściem do wystąpień publicznych, pracował nad komunikacją i prezentacjami dla największych firm na światowym rynku i dla klientów indywidualnych.
+                    </p>
+                    <p class="text-base">
+                        Jerzy stał na scenie obok takich mówców, jak Jacek Walkiewicz, Marek Skała, Robert Krool, Szymon Kudła, Robert Cialdini i Brian Tracy. W 2012 dotarł do finałów mistrzostw Europy w przemówieniach humorystycznych.
+                    </p>
+                    <p class="text-base">
+                        Szkolił i przemawiał m.in. dla Al Fianco Partners, Allegro, Allianz, Aviva, Aon Hewitt, BGK, Benefit, Bre Bank, Bricoman, BZ WBK…
+                    </p>
+                </div>
+    
+                <div class="mt-8">
+                    <a href="bio.html" class="block text-center p-4 bg-white/10 rounded-lg backdrop-blur-sm text-white hover:bg-white/20 transition-colors duration-300">
+                        <div class="text-lg font-semibold">Zobacz pełne bio</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="uslugi" class="py-32 relative overflow-hidden bg-dark">
+        <div class="absolute inset-0 flex">
+            <div class="w-1/3 h-full bg-dark"></div>
+            <div class="w-1/3 h-full bg-accent"></div>
+            <div class="w-1/3 h-full bg-dark"></div>
+        </div>
+    
+        <div class="max-w-[1400px] mx-auto px-6 relative">
+            <div class="mb-24 text-center text-white relative z-10">
+                <span class="text-sm font-medium text-white/80 mb-4 block">Co mogę dla Ciebie zrobić</span>
+                <h2 class="text-5xl font-bold">Obszary współpracy<span class="text-accent">.</span></h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-0 relative">
+                <div class="relative h-[600px] group">
+                    <div class="absolute inset-0 z-10">
+                        <div class="absolute inset-0 bg-gradient-to-b from-dark/0 via-dark/50 to-dark"></div>
+                        <img src="./assets/img/mentoring.jpg" alt="Mentoring" class="w-full h-full object-cover"/>
+                    </div>
+                    
+                    <div class="style-wing absolute top-0 left-0 h-full w-[80px] bg-accent transform -skew-x-6 -translate-x-1/2 z-20"></div>
+
+                    <div class="feature-text absolute bottom-0 left-0 right-0 p-8 text-white z-30">
+                        <div class="transform transition-transform duration-500 group-hover:translate-y-[-10px]">
+                            <div class="w-16 h-16 bg-accent rounded-2xl flex items-center justify-center mb-6">
+                                <i data-lucide="handshake" class="w-8 h-8"></i>
+                            </div>
+                            <h3 class="text-3xl font-bold mb-4">Mentoring</h3>
+                            <div class="space-y-4 mb-8">
+                                <p class="text-white/80">Indywidualne wsparcie w rozwoju kariery i kompetencji przywódczych.</p>
+                                <ul class="space-y-2">
+                                    <li class="flex items-center text-white/80">
+                                        <i data-lucide="check" class="w-5 h-5 mr-2"></i>
+                                        Spersonalizowany plan rozwoju
+                                    </li>
+                                    <li class="flex items-center text-white/80">
+                                        <i data-lucide="check" class="w-5 h-5 mr-2"></i>
+                                        Regularne sesje 1:1
+                                    </li>
+                                </ul>
+                            </div>
+                            <a href="/products/mentoring.html" class="inline-flex items-center text-white ">
+                                Dowiedz się więcej
+                                <i data-lucide="arrow-right" class="w-5 h-5 ml-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="relative h-[600px] group">
+                    <div class="absolute inset-0 z-10">
+                        <div class="absolute inset-0 bg-gradient-to-b from-dark/0 via-dark/50 to-dark"></div>
+                        <img src="./assets/img/wystapenia.jpg" alt="Wystąpienia" class="w-full h-full object-cover"/>
+                    </div>
+                    <div class="style-wing absolute top-0 left-0 h-full w-[80px] bg-accent transform -skew-x-6 -translate-x-1/2 z-20"></div>
+                    
+                    <div class="feature-text absolute bottom-0 left-0 right-0 p-8 text-white z-30">
+                        <div class="transform transition-transform duration-500 group-hover:translate-y-[-10px]">
+                            <div class="w-16 h-16 bg-accent rounded-2xl flex items-center justify-center mb-6">
+                                <i data-lucide="mic" class="w-8 h-8"></i>
+                            </div>
+                            <h3 class="text-3xl font-bold mb-4">Wystąpienia</h3>
+                            <div class="space-y-4 mb-8">
+                                <p class="text-white/80">Profesjonalne przemówienia motywacyjne i merytoryczne.</p>
+                                <ul class="space-y-2">
+                                    <li class="flex items-center text-white/80">
+                                        <i data-lucide="check" class="w-5 h-5 mr-2"></i>
+                                        Eventy firmowe
+                                    </li>
+                                    <li class="flex items-center text-white/80">
+                                        <i data-lucide="check" class="w-5 h-5 mr-2"></i>
+                                        Konferencje branżowe
+                                    </li>
+                                </ul>
+                            </div>
+                            <a href="products/wystapienia.html" class="inline-flex items-center text-white">
+                                Dowiedz się więcej
+                                <i data-lucide="arrow-right" class="w-5 h-5 ml-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="relative h-[600px] group">
+                    <div class="absolute inset-0 z-10">
+                        <div class="absolute inset-0 bg-gradient-to-b from-dark/0 via-dark/50 to-dark"></div>
+                        <img src="./assets/img/szkolenia.jpg" alt="Szkolenia" class="w-full h-full object-cover"/>
+                    </div>
+
+                    <div class="style-wing absolute top-0 left-0 h-full w-[80px] bg-accent transform -skew-x-6 -translate-x-1/2 z-20"></div>
+                    <div class="style-wing absolute top-0 -right-16 h-full w-[80px] bg-accent transform -skew-x-6 -translate-x-1/2 z-20"></div>
+
+
+                    
+                    <div class="feature-text absolute bottom-0 left-0 right-0 p-8 text-white z-30">
+                        <div class="transform transition-transform duration-500 group-hover:translate-y-[-10px]">
+                            <div class="w-16 h-16 bg-accent rounded-2xl flex items-center justify-center mb-6">
+                                <i data-lucide="users" class="w-8 h-8"></i>
+                            </div>
+                            <h3 class="text-3xl font-bold mb-4">Szkolenia</h3>
+                            <div class="space-y-4 mb-8">
+                                <p class="text-white/80">Intensywne sesje szkoleniowe dla zespołów.</p>
+                                <ul class="space-y-2">
+                                    <li class="flex items-center text-white/80">
+                                        <i data-lucide="check" class="w-5 h-5 mr-2"></i>
+                                        Komunikacja zespołowa
+                                    </li>
+                                    <li class="flex items-center text-white/80">
+                                        <i data-lucide="check" class="w-5 h-5 mr-2"></i>
+                                        Leadership skills
+                                    </li>
+                                </ul>
+                            </div>
+                            <a href="products/szkolenia.html" class="inline-flex items-center text-white">
+                                Dowiedz się więcej
+                                <i data-lucide="arrow-right" class="w-5 h-5 ml-2"></i>
+                            </a>
+                        </div>
+                        
+                    </div>
+
+                </div>
+            </div>
+    
+        </div>
+    </section>
+
+    <section id="kontakt" class="py-32 bg-dark text-white">
+        <div class="max-w-[1400px] mx-auto px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                <div>
+                    <h2 class="text-5xl font-bold mb-8">Rozpocznijmy<br/>współpracę<span class="text-accent text-white">.</span></h2>
+                    <p class="text-xl text-gray-400 mb-12">Skontaktuj się ze mną, aby omówić możliwości współpracy i zaplanować pierwsze spotkanie.</p>
+                    <div class="space-y-6">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center mr-4">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                </svg>
+                            </div>
+                            <a href="mailto:jerzy@zientkowski.pl" class="text-lg hover:text-white/70 transition-colors">jerzy@zientkowski.pl</a>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center mr-4">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                                </svg>
+                            </div>
+                            <a href="tel:615 (0) 38 123 4567" class="text-lg hover:text-white/70 transition-colors">615 (0) 38 123 4567</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white/10 text-white p-8 rounded-3xl">
+                    <div class="glass-card rounded-3xl overflow-hidden h-[600px] shadow-2xl">
+                        <iframe 
+                            src="https://calendly.com/jerzy-zientkowski/mentoring?embed_domain=zientkowski.pl&embed_type=Inline" 
+                            width="100%" 
+                            height="100%" 
+                            frameborder="0" 
+                            title="Select a Date & Time - Calendly"
+                            class="w-full h-full">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-light py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-center space-x-4 mb-6">
+                <a href="https://www.linkedin.com/in/jerzyzientkowski/" class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+                    <i data-lucide="linkedin" class="w-5 h-5 text-gray-600 hover:text-accent"></i>
+                </a>
+                <a href="https://www.instagram.com/jerzyzientkowskiofficial/" class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+                    <i data-lucide="instagram" class="w-5 h-5 text-gray-600 hover:text-accent"></i>
+                </a>
+                <a href="https://www.facebook.com/jerzy.zientkowski" class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+                    <i data-lucide="facebook" class="w-5 h-5 text-gray-600 hover:text-accent"></i>
+                </a>
+            </div>
+    
+            <div class="text-center text-gray-600 pt-6 border-t border-gray-200">
+                <p class="mb-4">&copy; 2024 Jerzy Zientkowski. Wszelkie prawa zastrzeżone.</p>
+                <div class="flex justify-center items-center text-sm">
+                    <a href="#" class="hover:text-accent transition-colors">Polityka prywatności</a>
+                    <span class="mx-2 text-gray-300">|</span>
+                    <a href="#" class="hover:text-accent transition-colors">Regulamin</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    </div>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script defer src=" https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollToPlugin.min.js"></script>
+    <script defer src="./assets/js/animations.js"></script>
+
+</body>
+</html>
