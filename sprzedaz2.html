@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="pl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Program Szkoleniowy | Jerzy Zientkowski</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
 
     <style>
         ::-webkit-scrollbar {
@@ -30,14 +32,27 @@
         }
 
         @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-            100% { transform: translateY(0px); }
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
         }
 
         @keyframes marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
         }
 
         .floating {
@@ -56,7 +71,7 @@
             color: white;
             padding: 15px 30px;
             border-radius: 50px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             transition: all 0.3s ease;
             z-index: 1000;
             text-align: center;
@@ -194,14 +209,17 @@
         }
     </script>
 </head>
+
 <body class="bg-light">
     <!-- Mobile Menu -->
     <div class="mobile-menu flex flex-col">
         <div class="p-6 flex justify-between items-center">
-            <img class="brightness-0 invert max-w-[150px]" src="./assets/img/logo-jzplus-name-POZIOM-białe-210x58-1.png" alt="Logo">
+            <img class="brightness-0 invert max-w-[150px]" src="./assets/img/logo-jzplus-name-POZIOM-białe-210x58-1.png"
+                alt="Logo">
             <button id="closeMenu" class="text-white">
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
                 </svg>
             </button>
         </div>
@@ -209,26 +227,33 @@
             <a href="#o-programie" class="text-white text-3xl font-bold mobile-link">O programie</a>
             <a href="#agenda" class="text-white text-3xl font-bold mobile-link">Agenda</a>
             <a href="#o-jerzym" class="text-white text-3xl font-bold mobile-link">O Jerzym</a>
-            <a href="#zapis" class="text-white text-3xl font-bold mobile-link">Zapis</a>
+            <a href="#zapis" class="text-white text-3xl font-bold mobile-link">Lista oczekujących</a>
         </div>
     </div>
 
     <!-- Navigation -->
-    <nav class="fixed w-full bg-light/90 backdrop-blur-lg z-50 py-4 transition-all duration-300 border-b border-gray-200/50">
+    <nav
+        class="fixed w-full bg-light/90 backdrop-blur-lg z-50 py-4 transition-all duration-300 border-b border-gray-200/50">
         <div class="max-w-[1400px] mx-auto px-6">
             <div class="flex justify-between items-center">
                 <div class="text-2xl font-bold tracking-tight">
-                    <img class="brightness-0 max-w-[150px]" src="./assets/img/logo-jzplus-name-POZIOM-białe-210x58-1.png" alt="Logo">
+                    <img class="brightness-0 max-w-[150px]"
+                        src="./assets/img/logo-jzplus-name-POZIOM-białe-210x58-1.png" alt="Logo">
                 </div>
                 <div class="hidden md:flex items-center space-x-12">
-                    <a href="#o-programie" class="nav-link text-dark hover:text-accent transition-colors duration-300">O programie</a>
-                    <a href="#agenda" class="nav-link text-dark hover:text-accent transition-colors duration-300">Agenda</a>
-                    <a href="#o-jerzym" class="nav-link text-dark hover:text-accent transition-colors duration-300">O Jerzym</a>
-                    <a href="#zapis" class="nav-link text-dark hover:text-accent transition-colors duration-300">Zapis</a>
+                    <a href="#o-programie" class="nav-link text-dark hover:text-accent transition-colors duration-300">O
+                        programie</a>
+                    <a href="#agenda"
+                        class="nav-link text-dark hover:text-accent transition-colors duration-300">Agenda</a>
+                    <a href="#o-jerzym" class="nav-link text-dark hover:text-accent transition-colors duration-300">O
+                        Jerzym</a>
+                    <a href="#zapis" class="nav-link text-dark hover:text-accent transition-colors duration-300">Lista
+                        oczekujących</a>
                 </div>
                 <button id="menuButton" class="md:hidden">
                     <svg class="w-8 h-8 text-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
                 </button>
             </div>
@@ -242,39 +267,45 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                 <div class="animate-fade-up">
                     <h1 class="text-5xl lg:text-7xl font-bold mb-8">
-                        Program 
+                        Sprzedaż dla
                         <span class="relative">
-                            Rozwojowy
-                            <div class="absolute bottom-2 left-0 w-full h-3 bg-accent/10 -z-10 transform -rotate-1"></div>
+                            Hardkorów
+                            <div class="absolute bottom-2 left-0 w-full h-3 bg-accent/10 -z-10 transform -rotate-1">
+                            </div>
                         </span>
                     </h1>
                     <p class="text-xl text-gray-600 mb-8">
-                        Intensywny program szkoleniowy dla profesjonalistów chcących rozwinąć swoje umiejętności komunikacyjne i przywódcze.
+                        Intensywny program warsztatowo-mentoringowy, zmieniający spojrzenie na skuteczność narzędzi w
+                        sprzedaży.
                     </p>
                     <div class="space-y-6">
                         <div class="flex items-center space-x-4 animate-fade-up" style="animation-delay: 0.2s">
                             <div class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
                                 <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7"></path>
                                 </svg>
                             </div>
-                            <span class="text-lg">12 intensywnych modułów</span>
+                            <span class="text-lg">7 intensywnych modułów</span>
                         </div>
                         <div class="flex items-center space-x-4 animate-fade-up" style="animation-delay: 0.4s">
                             <div class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
                                 <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
                             </div>
-                            <span class="text-lg">6 miesięcy praktycznej nauki</span>
+                            <span class="text-lg">2 miesięcy praktycznej pracy</span>
                         </div>
                         <div class="flex items-center space-x-4 animate-fade-up" style="animation-delay: 0.6s">
                             <div class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
                                 <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                                    </path>
                                 </svg>
                             </div>
-                            <span class="text-lg">Indywidualne konsultacje</span>
+                            <span class="text-lg">Kurs online + mentoring indywidualny + masterclass</span>
                         </div>
                     </div>
                 </div>
@@ -282,13 +313,15 @@
                     <div class="absolute top-0 right-0 w-80 h-80 bg-accent/5 rounded-full blur-3xl"></div>
                     <div class="absolute bottom-0 left-0 w-60 h-60 bg-accent/10 rounded-full blur-2xl"></div>
                     <div class="relative z-10">
-                        <img src="./assets/img/Invest-cuffs-5-scaled.jpg" alt="Program Szkoleniowy" class="rounded-3xl shadow-2xl transform hover:scale-105 transition-transform duration-500"/>
+                        <img src="./assets/img/Invest-cuffs-5-scaled.jpg" alt="Program Szkoleniowy"
+                            class="rounded-3xl shadow-2xl transform hover:scale-105 transition-transform duration-500" />
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- Agenda Section -->
     <!-- Agenda Section -->
     <section id="agenda" class="py-32 bg-dark text-white relative overflow-hidden">
         <div class="grain-overlay opacity-20"></div>
@@ -303,22 +336,123 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <div class="agenda-card p-8 rounded-xl animate-fade-up" style="animation-delay: 0.2s">
                     <div class="text-4xl font-bold text-white/30 mb-4">01</div>
-                    <h3 class="text-xl font-bold mb-4">Fundamenty Komunikacji</h3>
-                    <p class="text-gray-400">Podstawy skutecznej komunikacji w biznesie i życiu osobistym.</p>
+                    <h3 class="text-xl font-bold mb-4">Prospecting & Hunting</h3>
+                    <p class="text-white mb-1">Jak budować lejki sprzedażowe</p>
+                    <ul class="text-gray-400 list-disc pl-6 mb-1">
+                        <li>Lejek oparty na idei</li>
+                        <li>Lejek oparty na procesie</li>
+                        <li>Lejek typu AIDA</li>
+                        <li>Lejek typu EIES</li>
+                    </ul>
+                    <p class="text-white mb-1">Gdzie szukać klientów</p>
+                    <ul class="text-gray-400 list-disc pl-6">
+                        <li>Social media awareness</li>
+                        <li>Konferencje, wydarzenia, gale</li>
+                        <li>Networking</li>
+                        <li>Edukacja + eksperckość</li>
+                    </ul>
                 </div>
                 <div class="agenda-card p-8 rounded-xl animate-fade-up" style="animation-delay: 0.4s">
                     <div class="text-4xl font-bold text-white/30 mb-4">02</div>
-                    <h3 class="text-xl font-bold mb-4">Wystąpienia Publiczne</h3>
-                    <p class="text-gray-400">Techniki prezentacji i przemówień przed publicznością.</p>
+                    <h3 class="text-xl font-bold mb-4">Farming</h3>
+                    <p class="text-white mb-1">Jak budować ofertę</p>
+                    <ul class="text-gray-400 list-disc pl-6">
+                        <li>Definicje produktu, usługi, linii produktowej</li>
+                        <li>Pricing: model ABC</li>
+                        <li>Pricing: model 1-2-5-10</li>
+                        <li>Opakowanie produktu w linii produktowej</li>
+                    </ul>
                 </div>
                 <div class="agenda-card p-8 rounded-xl animate-fade-up" style="animation-delay: 0.6s">
                     <div class="text-4xl font-bold text-white/30 mb-4">03</div>
-                    <h3 class="text-xl font-bold mb-4">Leadership</h3>
-                    <p class="text-gray-400">Rozwijanie umiejętności przywódczych i zarządzania zespołem.</p>
+                    <h3 class="text-xl font-bold mb-4">Leading i ofertowanie</h3>
+                    <p class="text-white mb-1">Przed pierwszym kontaktem z klientem</p>
+                    <ul class="text-gray-400 list-disc pl-6 mb-1">
+                        <li>Model CZKP (inaczej niż zawsze)</li>
+                        <li>Poczucie pewności siebie (vs pewność kompetencji)</li>
+                        <li>4 poziomy kompetencji</li>
+                        <li>Testy korytarzowe</li>
+                    </ul>
+                    <p class="text-white mb-1">Praca z lejkiem sprzedażowym</p>
+                    <ul class="text-gray-400 list-disc pl-6">
+                        <li>Czego nie mierzysz, tego nie kontrolujesz</li>
+                        <li>Jasność przekazu przede wszystkim</li>
+                    </ul>
                 </div>
+                <div class="agenda-card p-8 rounded-xl animate-fade-up" style="animation-delay: 0.8s">
+                    <div class="text-4xl font-bold text-white/30 mb-4">04</div>
+                    <h3 class="text-xl font-bold mb-4">Rozmowy sprzedażowe</h3>
+                    <p class="text-white mb-1">Zrozum swój cel.</p>
+                    <ul class="text-gray-400 list-disc pl-6 mb-1">
+                        <li>Model Sukcesu WBK (nie banku, nieeee)</li>
+                        <li>Mode $BExp (czyli czym płaci klient)</li>
+                        <li>Najważniejsze narzędzie sprzedawcy</li>
+                        <li>Lista pytań, proces Q&A</li>
+
+                    </ul>
+                    <p class="text-white">Pierwszy kontakt z klientem</p>
+                    <ul class="text-gray-400 list-disc pl-6">
+                        <li>Co to jest pierwsze wrażenie</li>
+                        <li>Dobry 'skrypt' sprzedażowy (schemat, ale nie taki, jak myślisz...)</li>
+                        <li>Kontraktowanie i poczucie bezpieczeństwa klienta</li>
+                        <li>Jak być dobrym w small talk. I po co.</li>
+
+                    </ul>
+                </div>
+
+
+                <div class="agenda-card p-8 rounded-xl animate-fade-up" style="animation-delay: 0.6s">
+                    <div class="text-4xl font-bold text-white/30 mb-4">05</div>
+                    <h3 class="text-xl font-bold mb-4">Budowanie marki</h3>
+                    <p class="text-white mb-1">Budowanie marki i reputacji</p>
+                    <ul class="text-gray-400 list-disc pl-6 mb-1">
+                        <li>Garść definicji. Marka, reputacja, rozpoznawalność, likeability</li>
+                        <li>sklep -> serwis -> rozwiązania -> konsultacje -> programy</li>
+                        <li>Sprzedawać godziny? Sesje? Programy? Pakiety?</li>
+                    </ul>
+                    <p class="text-white mb-1">Pierwszy kontakt z klientem</p>
+                    <ul class="text-gray-400 list-disc pl-6">
+                        <li>Jak szybko budować zaufanie</li>
+                        <li>Najważniejsze poczucie dla klienta</li>
+                        <li>Model POND w rozumieniu potrzeb klienta</li>
+                        <li>Zbadaj potrzeby, mówili. Tak, ale Pareto!</li>
+                    </ul>
+                </div>
+
+                <div class="agenda-card p-8 rounded-xl animate-fade-up" style="animation-delay: 0.6s">
+                    <div class="text-4xl font-bold text-white/30 mb-4">06</div>
+                    <h3 class="text-xl font-bold mb-4">Zamykanie sprzedaży</h3>
+                    <p class="text-white mb-1">Zwiększ skuteczność, mówili</p>
+                    <ul class="text-gray-400 list-disc pl-6 mb-1">
+                        <li>Czym się różni skuteczność od efektywności</li>
+                        <li>Znajdź swoje koszty (lista)</li>
+                        <li>Modele SLP i PSC w zamykaniu sprzedaży</li>
+                    </ul>
+                    <p class="text-white mb-1">Zmniejsz koszty, mówili</p>
+                    <ul class="text-gray-400 list-disc pl-6">
+                        <li>Rodzaje kosztów w sprzedaży</li>
+                        <li>Model STO, czyli kiedy sprzedawcy i firmie jest po drodze</li>
+                        <li>Jak bronić ceny - dwie proste strategie</li>
+                        <li>Follow-up, czyli co dalej</li>
+                    </ul>
+                </div>
+                <div class="agenda-card p-8 rounded-xl animate-fade-up" style="animation-delay: 0.6s">
+                    <div class="text-4xl font-bold text-white/30 mb-4">07</div>
+                    <h3 class="text-xl font-bold mb-4">Dosprzedaż</h3>
+                    <p class="text-white mb-1">Co jeszcze mogę dla Ciebie zrobić?</p>
+                    <ul class="text-gray-400 list-disc pl-6 mb-1">
+                        <li>Upsell, czyli jak sprzedaż większe</li>
+                        <li>Downsell, czyli jak sprzedać mniejsze</li>
+                        <li>Re-sell, czyli stara sprzedaż</li>
+                        <li>Cross-sell, czyli bądź hubem dla klienta</li>
+                    </ul>
+                    
+                </div>
+
             </div>
         </div>
     </section>
+
 
     <!-- O Jerzym Section -->
     <section id="o-jerzym" class="py-32 bg-light relative overflow-hidden">
@@ -327,27 +461,34 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                 <div class="order-2 lg:order-1 animate-fade-up">
                     <h2 class="text-5xl lg:text-6xl font-bold mb-8">
-                        O 
+                        O
                         <span class="relative">
                             Jerzym
-                            <div class="absolute bottom-2 left-0 w-full h-3 bg-accent/10 -z-10 transform -rotate-1"></div>
+                            <div class="absolute bottom-2 left-0 w-full h-3 bg-accent/10 -z-10 transform -rotate-1">
+                            </div>
                         </span>
                     </h2>
                     <p class="text-xl text-gray-600 mb-6">
-                        Autor, mentor, mówca profesjonalny. Z 20-letnim doświadczeniem biznesowym i zaskakująco precyzyjnym podejściem do wystąpień publicznych.
+                        Autor, mentor, mówca profesjonalny. Z 20-letnim doświadczeniem biznesowym i zaskakująco
+                        precyzyjnym podejściem do wystąpień publicznych.
                     </p>
                     <p class="text-lg text-gray-600 mb-8">
-                        Pracował nad komunikacją i prezentacjami dla największych firm na światowym rynku i dla klientów indywidualnych.
+                        Pracował nad komunikacją i prezentacjami dla największych firm na światowym rynku i dla klientów
+                        indywidualnych.
                     </p>
                     <div class="flex space-x-4">
-                        <a href="https://www.linkedin.com/in/jerzyzientkowski/" target="_blank" class="p-3 bg-accent/10 rounded-full hover:bg-accent/20 transition-colors">
+                        <a href="https://www.linkedin.com/in/jerzyzientkowski/" target="_blank"
+                            class="p-3 bg-accent/10 rounded-full hover:bg-accent/20 transition-colors">
                             <svg class="w-6 h-6 text-accent" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                                <path
+                                    d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
                             </svg>
                         </a>
-                        <a href="https://www.facebook.com/jerzy.zientkowski" target="_blank" class="p-3 bg-accent/10 rounded-full hover:bg-accent/20 transition-colors">
+                        <a href="https://www.facebook.com/jerzy.zientkowski" target="_blank"
+                            class="p-3 bg-accent/10 rounded-full hover:bg-accent/20 transition-colors">
                             <svg class="w-6 h-6 text-accent" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/>
+                                <path
+                                    d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z" />
                             </svg>
                         </a>
                     </div>
@@ -355,7 +496,8 @@
                 <div class="order-1 lg:order-2 animate-fade-up">
                     <div class="relative">
                         <div class="absolute inset-0 bg-accent/10 rounded-3xl transform rotate-6"></div>
-                        <img src="./assets/img/JERZY-NA-lp-KURSU-1.jpg" alt="Jerzy Zientkowski" class="relative z-10 rounded-3xl shadow-xl">
+                        <img src="./assets/img/JERZY-NA-lp-KURSU-1.jpg" alt="Jerzy Zientkowski"
+                            class="relative z-10 rounded-3xl shadow-xl">
                     </div>
                 </div>
             </div>
@@ -367,30 +509,35 @@
         <div class="grain-overlay opacity-20"></div>
         <div class="max-w-[1400px] mx-auto px-6 relative z-10">
             <div class="text-center mb-16 animate-fade-up">
-                <h2 class="text-5xl lg:text-6xl font-bold mb-4">Zapisz się<span class="text-white">.</span></h2>
-                <p class="text-xl opacity-80">Dołącz do programu i rozwiń swoje umiejętności</p>
+                <h2 class="text-5xl lg:text-6xl font-bold mb-4">Lista oczekujących<span class="text-white">.</span></h2>
+                <p class="text-xl opacity-80">Kiedy program ruszy - chcę być pierwszy!</p>
             </div>
             <div class="max-w-2xl mx-auto">
-                <form id="registrationForm" class="custom-form p-8 rounded-3xl space-y-6 animate-fade-up">
+
+                <form id="registrationForm" onsubmit="sendData(event)"
+                    class="custom-form p-8 rounded-3xl space-y-6 animate-fade-up">
                     <div class="space-y-2">
-                        <label class="block text-sm font-medium">Imię i Nazwisko</label>
-                        <input type="text" name="name" required class="custom-input w-full px-4 py-3 rounded-lg text-white" placeholder="Wprowadź imię i nazwisko">
+                        <label class="block text-sm font-medium">Imię *</label>
+                        <input type="text" name="name" required
+                            class="custom-input w-full px-4 py-3 rounded-lg text-white" placeholder="Wprowadź imię">
                     </div>
                     <div class="space-y-2">
-                        <label class="block text-sm font-medium">Email</label>
-                        <input type="email" name="email" required class="custom-input w-full px-4 py-3 rounded-lg text-white" placeholder="Wprowadź adres email">
+                        <label class="block text-sm font-medium">Email *</label>
+                        <input type="email" name="email" required
+                            class="custom-input w-full px-4 py-3 rounded-lg text-white"
+                            placeholder="Wprowadź adres email">
                     </div>
                     <div class="space-y-2">
                         <label class="block text-sm font-medium">Telefon</label>
-                        <input type="tel" name="phone" required class="custom-input w-full px-4 py-3 rounded-lg text-white" placeholder="Wprowadź numer telefonu">
+                        <input type="tel" name="phone" class="custom-input w-full px-4 py-3 rounded-lg text-white"
+                            placeholder="Wprowadź numer telefonu, opcjonalnie - ułatwi to nam kontakt">
                     </div>
-                    <div class="space-y-2">
-                        <label class="block text-sm font-medium">Wiadomość (opcjonalnie)</label>
-                        <textarea name="message" class="custom-input w-full px-4 py-3 rounded-lg text-white h-32" placeholder="Twoja wiadomość..."></textarea>
-                    </div>
-                    <button type="submit" class="w-full bg-white text-accent font-bold py-4 rounded-lg hover:bg-opacity-90 transition-all transform hover:-translate-y-1">
-                        Wyślij zgłoszenie
+
+                    <button type="submit"
+                        class="w-full bg-white text-accent font-bold py-4 rounded-lg hover:bg-opacity-90 transition-all transform hover:-translate-y-1">
+                        Zapisuję się na listę oczekujących
                     </button>
+                    <p id="statusMessage" class="block text-sm font-medium"></p>
                 </form>
             </div>
         </div>
@@ -434,40 +581,70 @@
             });
         });
 
-        // Form Submission
-        document.getElementById('registrationForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const formData = new FormData(e.target);
-            const data = Object.fromEntries(formData.entries());
-            
-            try {
-                // Here you would typically send the data to your server
-                // which would then forward it to Google Forms
-                // For now, we'll just log the data
-                console.log('Form Data:', data);
-                
-                // Example of how to submit to Google Forms
-                // Replace FORM_ID with your actual Google Form ID
-                const googleFormUrl = 'https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse';
-                
-                // You'll need to map your form fields to Google Form field names
-                const googleFormData = new FormData();
-                googleFormData.append('entry.xxxxx', data.name); // Replace xxxxx with actual entry IDs
-                googleFormData.append('entry.xxxxx', data.email);
-                googleFormData.append('entry.xxxxx', data.phone);
-                googleFormData.append('entry.xxxxx', data.message);
-                
-                // Note: Direct submission to Google Forms might not work due to CORS
-                // You'll need a server-side solution
-                
-                alert('Dziękujemy za zgłoszenie! Skontaktujemy się wkrótce.');
-                e.target.reset();
-            } catch (error) {
-                console.error('Error submitting form:', error);
-                alert('Wystąpił błąd podczas wysyłania formularza. Spróbuj ponownie później.');
-            }
-        });
+
+        function sendData(event) {
+            event.preventDefault();
+
+            const form = document.getElementById("registrationForm");
+            const formData = new FormData(form);
+            console.log(formData);
+            const statusMessage = document.getElementById("statusMessage");
+
+            // Reset status message
+            statusMessage.textContent = "Wysyłanie...";
+            statusMessage.classList.remove("error");
+            statusMessage.style.color = "white";
+
+            fetch("https://script.google.com/macros/s/AKfycbzWW8Vls0dGV46QgXo0K_xlYxTwDhHWrA_pluxvIgiDCCLTemcDoyHOjV081b3TmyYJ/exec", {
+                method: "POST",
+                body: formData,
+                mode: "no-cors"  // Avoids CORS issues, but prevents response handling
+            })
+                .then(() => {
+                    statusMessage.textContent = "Dane zostały wysłane!";
+                    statusMessage.style.color = "green";
+                    form.reset();
+                })
+                .catch(error => {
+                    statusMessage.textContent = "Błąd podczas wysyłania danych. Spróbuj ponownie.";
+                    statusMessage.classList.add("error");
+                    console.error("Błąd:", error);
+                });
+        }
+        // // Form Submission
+        // document.getElementById('registrationForm1').addEventListener('submit', async (e) => {
+        //     e.preventDefault();
+
+        //     const formData = new FormData(e.target);
+        //     const data = Object.fromEntries(formData.entries());
+
+        //     try {
+        //         // Here you would typically send the data to your server
+        //         // which would then forward it to Google Forms
+        //         // For now, we'll just log the data
+        //         console.log('Form Data:', data);
+
+        //         // Example of how to submit to Google Forms
+        //         // Replace FORM_ID with your actual Google Form ID
+        //         const googleFormUrl = 'https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse';
+
+        //         // You'll need to map your form fields to Google Form field names
+        //         const googleFormData = new FormData();
+        //         googleFormData.append('entry.xxxxx', data.name); // Replace xxxxx with actual entry IDs
+        //         googleFormData.append('entry.xxxxx', data.email);
+        //         googleFormData.append('entry.xxxxx', data.phone);
+        //         googleFormData.append('entry.xxxxx', data.message);
+
+        //         // Note: Direct submission to Google Forms might not work due to CORS
+        //         // You'll need a server-side solution
+
+        //         alert('Dziękujemy za zgłoszenie! Skontaktujemy się wkrótce.');
+        //         e.target.reset();
+        //     } catch (error) {
+        //         console.error('Error submitting form:', error);
+        //         alert('Wystąpił błąd podczas wysyłania formularza. Spróbuj ponownie później.');
+        //     }
+        // });
 
         // Scroll Animations
         const observerOptions = {
@@ -489,4 +666,5 @@
         });
     </script>
 </body>
+
 </html>
