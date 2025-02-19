@@ -201,6 +201,10 @@
             opacity: 1;
             transform: translateY(0);
         }
+
+        .marquee {
+            height: 140rem;
+        }
     </style>
 
     <script>
@@ -306,7 +310,7 @@
                                             d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                     </svg>
                                 </div>
-                                <span class="text-lg">2 miesięcy praktycznej pracy</span>
+                                <span class="text-lg">2 miesiące praktycznej pracy</span>
                             </div>
                             <div class="flex items-center space-x-4 animate-fade-up" style="animation-delay: 0.6s">
                                 <div class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
@@ -553,7 +557,7 @@
 
         <div class="bg-dark text-white py-8 overflow-hidden relative">
             <div id="marquee" class="whitespace-nowrap absolute inset-0 flex">
-                <div class=" inline-block text-5xl  tracking-tight px-4">
+                <div style="margin-top: 6px;" class="inline-block text-5xl  tracking-tight px-4">
                     Święto Kapitalizmu • Sales Angels • Toastmasters • BNI • JUMO • PKO • PZU • Allianz • Eteria •
                     Westhill • Recamp • AlFianco • SWPS • Dagma • IMPEL • GS1 • INGRAM • NESC •
                 </div>
@@ -644,6 +648,52 @@
         </div>
 
         <script>
+
+            document.addEventListener('DOMContentLoaded', () => {
+            const marquee = document.getElementById('marquee');
+            let speed = 2; // Default speed in pixels per frame
+            let isPaused = false;
+
+            const firstChild = marquee.children[0].cloneNode(true);
+            marquee.appendChild(firstChild);
+
+            const totalWidth = Array.from(marquee.children).reduce((sum, child) => {
+                return sum + child.offsetWidth;
+            }, 0);
+
+            marquee.style.width = `${totalWidth}px`;
+
+            let offset = 0;
+
+            const animate = () => {
+                if (!isPaused) {
+                    offset -= speed;
+                    if (Math.abs(offset) >= firstChild.offsetWidth) {
+                        offset = 0;
+                    }
+                    marquee.style.transform = `translateX(${offset}px)`;
+                }
+                requestAnimationFrame(animate);
+            };
+
+            animate();
+
+
+            const updateSpeed = () => {
+                if (window.innerWidth < 768) {
+                    speed = 2.2;
+                } else {
+                    speed = 1.4;
+                }
+            };
+
+            window.addEventListener('resize', updateSpeed);
+            updateSpeed();
+
+            // marquee.addEventListener('mouseover', () => (isPaused = true));
+            // marquee.addEventListener('mouseout', () => (isPaused = false));
+            });
+
             // Mobile Menu
             const menuButton = document.getElementById('menuButton');
             const closeMenu = document.getElementById('closeMenu');
