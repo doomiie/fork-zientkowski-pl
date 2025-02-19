@@ -5,7 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Program Szkoleniowy | Jerzy Zientkowski</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+     <!-- Tailwind -->
+     <script src="/assets/js/lib.min.js"></script>
+     <link rel="stylesheet" href="/assets/css/index.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
 
@@ -67,7 +70,8 @@
             position: fixed;
             right: 20px;
             bottom: 20px;
-            background-color: rgb(4, 3, 39);
+            background-color: #FF8C42;
+            /* Pomarańczowy */
             color: white;
             padding: 15px 30px;
             border-radius: 50px;
@@ -80,8 +84,10 @@
 
         .floating-button:hover {
             transform: translateY(-5px);
-            background-color: rgb(14, 13, 49);
+            background-color: #E67E30;
+            /* Ciemniejszy pomarańczowy na hover */
         }
+
 
         .mobile-menu {
             position: fixed;
@@ -261,7 +267,7 @@
     </nav>
 
     <!-- O Programie Section -->
-    <section id="o-programie" class="min-h-screen pt-32 bg-light relative overflow-hidden">
+    <section id="o-programie" class="mb-20 pt-32 bg-light relative overflow-hidden">
         <div class="grain-overlay"></div>
         <div class="max-w-[1400px] mx-auto px-6 relative z-10">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -313,7 +319,7 @@
                     <div class="absolute top-0 right-0 w-80 h-80 bg-accent/5 rounded-full blur-3xl"></div>
                     <div class="absolute bottom-0 left-0 w-60 h-60 bg-accent/10 rounded-full blur-2xl"></div>
                     <div class="relative z-10">
-                        <img src="./assets/img/Invest-cuffs-5-scaled.jpg" alt="Program Szkoleniowy"
+                        <img src="./assets/img/Invest-cuffs-5-scaled.webp" alt="Program Szkoleniowy"
                             class="rounded-3xl shadow-2xl transform hover:scale-105 transition-transform duration-500" />
                     </div>
                 </div>
@@ -446,7 +452,7 @@
                         <li>Re-sell, czyli stara sprzedaż</li>
                         <li>Cross-sell, czyli bądź hubem dla klienta</li>
                     </ul>
-                    
+
                 </div>
 
             </div>
@@ -496,7 +502,7 @@
                 <div class="order-1 lg:order-2 animate-fade-up">
                     <div class="relative">
                         <div class="absolute inset-0 bg-accent/10 rounded-3xl transform rotate-6"></div>
-                        <img src="./assets/img/JERZY-NA-lp-KURSU-1.jpg" alt="Jerzy Zientkowski"
+                        <img src="./assets/img/JERZY-NA-lp-KURSU-1.webp" alt="Jerzy Zientkowski"
                             class="relative z-10 rounded-3xl shadow-xl">
                     </div>
                 </div>
@@ -505,7 +511,7 @@
     </section>
 
     <!-- Zapis Section -->
-    <section id="zapis" class="py-32 bg-accent text-white relative overflow-hidden">
+    <!-- <section id="zapis" class="py-32 bg-accent text-white relative overflow-hidden">
         <div class="grain-overlay opacity-20"></div>
         <div class="max-w-[1400px] mx-auto px-6 relative z-10">
             <div class="text-center mb-16 animate-fade-up">
@@ -541,21 +547,62 @@
                 </form>
             </div>
         </div>
-    </section>
+    </section> -->
 
     <!-- Floating Button -->
-    <a href="#zapis" class="floating-button">
+    <a href="#" class="floating-button bg-[#FF8C42]" id="openPopup">
         Zapisz się teraz
     </a>
+    <!-- Floating Button -->
+    <!-- <a href="#" id="openPopup"
+        class="floating-button fixed bottom-8 right-8 bg-accent text-white px-6 py-3 rounded-full shadow-lg font-bold hover:bg-opacity-90 transition-all transform hover:-translate-y-1">
+        Zapisz się teraz
+    </a> -->
 
     <!-- Footer -->
     <footer class="bg-light py-8">
         <div class="container mx-auto px-4">
             <div class="text-center text-gray-600">
-                <p>&copy; 2024 Jerzy Zientkowski. Wszelkie prawa zastrzeżone.</p>
+                <p>&copy; 2012-2025 Jerzy Zientkowski. Wszelkie prawa zastrzeżone.</p>
             </div>
         </div>
     </footer>
+
+    <!-- Fullscreen Popup -->
+    <div id="popup" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden z-[99999]">
+        <div class="bg-accent text-white max-w-lg w-full p-8 rounded-3xl relative z-[999999]">
+            <!-- Close Button -->
+            <button id="closePopup" class="absolute top-4 right-4 text-white text-2xl">&times;</button>
+
+            <div class="text-center mb-6">
+                <h2 class="text-5xl font-bold mb-4">Lista oczekujących<span class="text-white">.</span></h2>
+                <p class="text-xl opacity-80">Kiedy program ruszy - chcę być pierwszy!</p>
+            </div>
+
+            <form id="registrationForm" onsubmit="sendData(event)" class="space-y-6">
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium">Imię *</label>
+                    <input type="text" name="name" required class="w-full px-4 py-3 rounded-lg text-black"
+                        placeholder="Wprowadź imię">
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium">Email *</label>
+                    <input type="email" name="email" required class="w-full px-4 py-3 rounded-lg text-black"
+                        placeholder="Wprowadź adres email">
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium">Telefon</label>
+                    <input type="tel" name="phone" class="w-full px-4 py-3 rounded-lg text-black"
+                        placeholder="Wprowadź numer telefonu, opcjonalnie - ułatwi to nam kontakt">
+                </div>
+                <button type="submit"
+                    class="w-full bg-white text-accent font-bold py-4 rounded-lg hover:bg-opacity-90 transition-all transform hover:-translate-y-1">
+                    Zapisuję się na listę oczekujących
+                </button>
+                <p id="statusMessage" class="block text-sm font-medium"></p>
+            </form>
+        </div>
+    </div>
 
     <script>
         // Mobile Menu
@@ -581,6 +628,24 @@
             });
         });
 
+        document.getElementById('openPopup').addEventListener('click', function (event) {
+            event.preventDefault();
+            document.getElementById('popup').classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+        });
+
+        document.getElementById('closePopup').addEventListener('click', function () {
+            document.getElementById('popup').classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+        });
+
+        window.addEventListener('click', function (event) {
+            if (event.target === document.getElementById('popup')) {
+                document.getElementById('popup').classList.add('hidden');
+                document.body.classList.remove('overflow-hidden');
+            }
+        });
+
 
         function sendData(event) {
             event.preventDefault();
@@ -595,7 +660,7 @@
             statusMessage.classList.remove("error");
             statusMessage.style.color = "white";
 
-            fetch("https://script.google.com/macros/s/AKfycbzWW8Vls0dGV46QgXo0K_xlYxTwDhHWrA_pluxvIgiDCCLTemcDoyHOjV081b3TmyYJ/exec", {
+            fetch("https://script.google.com/macros/s/AKfycbzxpkGLPy8YcnE-5i5ygROgxLa69AO38z7ixUctXB59U_R5WCIgwqKA35SpqH7IYzI/exec", {
                 method: "POST",
                 body: formData,
                 mode: "no-cors"  // Avoids CORS issues, but prevents response handling
