@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:image" content="assets/img/mentoring.webp" />
     <title>Program Szkoleniowy | Jerzy Zientkowski</title>
     <!-- Tailwind
     <script src="/assets/js/lib.min.js"></script>
@@ -751,7 +752,7 @@
 
                 fileDivs.forEach(div => {
                     const fileName = div.id; // Get the file name from ID
-                    
+
                     getFileIntoSection(fileName);
 
                 });
@@ -764,10 +765,10 @@
                     .then(response => response.text())
                     .then(data => {
                         console.log(data);
-                        
+
                         const container = document.getElementById(fileName); // Target div to insert content
 
-                        console.log("container",container);
+                        console.log("container", container);
                         const lines = data.split("\n"); // Split into lines
 
                         lines.forEach(line => {
@@ -805,6 +806,18 @@
      <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
      <script defer src=" https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollToPlugin.min.js"></script>
      <script defer src="./assets/js/animations.js"></script> -->
+        <!-- Hotjar Tracking Code for http://zientkowski.pl -->
+        <!-- Hotjar Tracking Code for hardcore -->
+        <script>
+            (function (h, o, t, j, a, r) {
+                h.hj = h.hj || function () { (h.hj.q = h.hj.q || []).push(arguments) };
+                h._hjSettings = { hjid: 5311130, hjsv: 6 };
+                a = o.getElementsByTagName('head')[0];
+                r = o.createElement('script'); r.async = 1;
+                r.src = t + h._hjSettings.hjid + j + h._hjSettings.hjsv;
+                a.appendChild(r);
+            })(window, document, 'https://static.hotjar.com/c/hotjar-', '.js?sv=');
+        </script>
 </body>
 
 </html>
