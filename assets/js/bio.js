@@ -94,7 +94,7 @@ const initBioAnimations = () => {
 
         // Text animations
         const textContent = document.querySelector('.space-y-8');
-        
+
         gsap.from('h1.text-6xl', {
             x: -100,
             opacity: 0,
@@ -169,7 +169,7 @@ const initGallery = () => {
 
     const updateModal = (index) => {
         const item = galleryData[index];
-        
+
         gsap.to(modalImg, {
             opacity: 0,
             duration: 0.2,
@@ -179,7 +179,7 @@ const initGallery = () => {
                 modalImg.alt = item.alt;
                 modalTitle.textContent = item.title;
                 modalDescription.textContent = item.description;
-                
+
                 gsap.to(modalImg, {
                     opacity: 1,
                     duration: 0.2,
@@ -206,14 +206,14 @@ const initGallery = () => {
         currentIndex = index;
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
-        
+
         const item = galleryData[index];
         modalImg.style.opacity = '0';
         modalImg.src = item.src;
         modalImg.alt = item.alt;
         modalTitle.textContent = item.title;
         modalDescription.textContent = item.description;
-        
+
         gsap.to(modalImg, {
             opacity: 1,
             scale: 1,
@@ -238,13 +238,13 @@ const initGallery = () => {
     const initKeyboardNav = () => {
         document.addEventListener('keydown', (e) => {
             if (!modal.classList.contains('active')) return;
-            
+
             const keyActions = {
                 'ArrowLeft': () => modalPrev.click(),
                 'ArrowRight': () => modalNext.click(),
                 'Escape': () => modalClose.click()
             };
-            
+
             keyActions[e.key]?.();
         });
     };
@@ -315,6 +315,16 @@ const initGallery = () => {
             window.location.reload();
         }
     });
+
+    // Zatrzymuje uruchomienie zoomu przy kliknięciu na linki w galerii
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.gallery-zoom a').forEach(link => {
+            link.addEventListener('click', event => {
+                event.stopPropagation(); // zatrzymuje uruchomienie zoomu
+            });
+        });
+    });
+
 
     initModalControls();
     initKeyboardNav();
