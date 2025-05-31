@@ -317,6 +317,164 @@
             border-top: 1px solid rgba(4, 3, 39, 0.1);
         }
 
+        /* Gallery Styles */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 768px) {
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 1.5rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .gallery-grid {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 1.5rem;
+            }
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: #fff;
+            aspect-ratio: 1;
+        }
+
+        .gallery-item.tall {
+            grid-row: span 2;
+            aspect-ratio: 1/2;
+        }
+
+        .gallery-item.wide {
+            grid-column: span 2;
+            aspect-ratio: 2/1;
+        }
+
+        @media (max-width: 1023px) {
+            .gallery-item.wide {
+                grid-column: span 1;
+                aspect-ratio: 1;
+            }
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(4, 3, 39, 0.15);
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(4, 3, 39, 0.9) 0%, rgba(4, 3, 39, 0.7) 100%);
+            opacity: 0;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+
+        .gallery-content {
+            text-align: center;
+            color: white;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover .gallery-content {
+            transform: translateY(0);
+        }
+
+        .gallery-zoom {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .gallery-zoom i {
+            margin-bottom: 0.5rem;
+        }
+
+        .gallery-zoom a {
+            font-size: 0.75rem;
+            opacity: 0.9;
+            text-decoration: underline;
+            transition: opacity 0.3s ease;
+        }
+
+        .gallery-zoom a:hover {
+            opacity: 1;
+        }
+
+        /* Gallery Modal */
+        .gallery-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .gallery-modal.active {
+            display: flex;
+        }
+
+        .gallery-modal img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .gallery-modal-close {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0.5rem;
+        }
+
         .gradient-border {
             background: linear-gradient(145deg, #ffffff, #f8fafc);
             position: relative;
@@ -383,6 +541,14 @@
 </head>
 
 <body class="bg-white">
+    <!-- Gallery Modal -->
+    <div class="gallery-modal" id="galleryModal">
+        <button class="gallery-modal-close" onclick="closeGalleryModal()">
+            <i data-lucide="x" class="w-8 h-8"></i>
+        </button>
+        <img id="galleryModalImage" src="" alt="">
+    </div>
+
     <!-- Navigation -->
     <nav
         class="fixed main-nav w-full bg-white/95 backdrop-blur-lg z-50 py-4 transition-all duration-300 border-b border-gray-200/50">
@@ -394,12 +560,13 @@
                             src="./assets/img/logo-jzplus-name-POZIOM-białe-210x58-1.png" alt="Logo">
                     </a>
                 </div>
-                <div class="hidden md:flex items-right space-x-12">
-                    <a href="#bio" class="nav-link relative text-dark hover:text-accent transition-colors duration-300">BIO</a>
-                    <a href="#zdjecia" class="nav-link relative text-dark hover:text-accent transition-colors duration-300">Zdjęcia</a>
-                    <a href="#kontakt" class="nav-link relative text-dark hover:text-accent transition-colors duration-300">Kontakt</a>
-                    <a href="index.html" class="nav-link relative text-dark hover:text-accent transition-colors duration-300">Strona główna</a>
-                    
+                <div class="flex items-center space-x-8">
+                    <a href="#galeria" class="nav-link relative transition-colors duration-300 font-medium">
+                        Galeria
+                    </a>
+                    <a href="/" class="nav-link relative transition-colors duration-300 font-medium">
+                        Strona głowna
+                    </a>
                 </div>
                 <div class="flex items-right space-x-6">
                     <button data-mobile-menu-btn class="md:hidden focus:outline-none">
@@ -662,6 +829,502 @@
                                     Kontynuacja pasji pomagania ambitnym profesjonalistom w przekraczaniu
                                     granic i osiąganiu niezwykłych rezultatów.
                                 </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="galeria" class="py-24 bg-white">
+        <div class="max-w-[1400px] mx-auto px-6">
+            <div class="text-center mb-20">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 text-accent">
+                    Galeria zdjęć
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Przegląd najważniejszych momentów z wystąpień, konferencji i wydarzeń z ostatnich lat
+                </p>
+            </div>
+
+            <div class="gallery-grid">
+                <div class="gallery-item" data-aos="fade-up" data-aos-delay="0" onclick="openGalleryModal('./assets/img/2015-08-30 Jerzy Zientkowski BTI - Gdańsk - 1.jpg')">
+                    <img src="./assets/img/2015-08-30 Jerzy Zientkowski BTI - Gdańsk - 1.webp" alt="2015-08-30 Jerzy Zientkowski BTI - Gdańsk - 1">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3 class="text-xl font-bold mb-2">2015</h3>
+                            <p class="text-sm opacity-90">BTI - Gdańsk</p>
+                            <div class="gallery-zoom">
+                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                <span>Kliknij aby zobaczyć</span>
+                                <a target="_blank" href="./assets/img/2015-08-30 Jerzy Zientkowski BTI - Gdańsk - 1.jpg" download class="ml-4 text-sm underline" onclick="event.stopPropagation()">Pobierz (5472x3648, 2,2MB)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item" data-aos="fade-up" data-aos-delay="100" onclick="openGalleryModal('./assets/img/2015-08-30 Jerzy Zientkowski BTI - Gdańsk - 2.jpg')">
+                    <img src="./assets/img/2015-08-30 Jerzy Zientkowski BTI - Gdańsk - 2.webp" alt="2015-08-30 Jerzy Zientkowski BTI - Gdańsk - 2">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3 class="text-xl font-bold mb-2">2015</h3>
+                            <p class="text-sm opacity-90">BTI - Gdańsk</p>
+                            <div class="gallery-zoom">
+                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                <span>Kliknij aby zobaczyć</span>
+                                <a target="_blank" href="./assets/img/2015-08-30 Jerzy Zientkowski BTI - Gdańsk - 2.jpg" download class="ml-4 text-sm underline" onclick="event.stopPropagation()">Pobierz (5472x3648, 2,5MB)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item" data-aos="fade-up" data-aos-delay="200" onclick="openGalleryModal('./assets/img/2016-10-20 Jerzy Zientkowski BTI - Warszawa - 1.jpg')">
+                    <img src="./assets/img/2016-10-20 Jerzy Zientkowski BTI - Warszawa - 1.webp" alt="2016-10-20 Jerzy Zientkowski BTI - Warszawa - 1">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3 class="text-xl font-bold mb-2">2016</h3>
+                            <p class="text-sm opacity-90">BTI - Warszawa</p>
+                            <div class="gallery-zoom">
+                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                <span>Kliknij aby zobaczyć</span>
+                                <a target="_blank" href="./assets/img/2016-10-20 Jerzy Zientkowski BTI - Warszawa - 1.jpg" download class="ml-4 text-sm underline" onclick="event.stopPropagation()">Pobierz (1805x1205, 0,1MB)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item" data-aos="fade-up" data-aos-delay="300" onclick="openGalleryModal('./assets/img/2016-10-20 Jerzy Zientkowski BTI - Warszawa - 2.jpg')">
+                    <img src="./assets/img/2016-10-20 Jerzy Zientkowski BTI - Warszawa - 2.webp" alt="2016-10-20 Jerzy Zientkowski BTI - Warszawa - 2">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3 class="text-xl font-bold mb-2">2016</h3>
+                            <p class="text-sm opacity-90">BTI - Warszawa</p>
+                            <div class="gallery-zoom">
+                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                <span>Kliknij aby zobaczyć</span>
+                                <a target="_blank" href="./assets/img/2016-10-20 Jerzy Zientkowski BTI - Warszawa - 2.jpg" download class="ml-4 text-sm underline" onclick="event.stopPropagation()">Pobierz (5472x3648, 10,5MB)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item" data-aos="fade-up" data-aos-delay="400" onclick="openGalleryModal('./assets/img/2016-10-20 Jerzy Zientkowski BTI - Warszawa - 3.jpg')">
+                    <img src="./assets/img/2016-10-20 Jerzy Zientkowski BTI - Warszawa - 3.webp" alt="2016-10-20 Jerzy Zientkowski BTI - Warszawa - 3">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3 class="text-xl font-bold mb-2">2016</h3>
+                            <p class="text-sm opacity-90">BTI - Warszawa</p>
+                            <div class="gallery-zoom">
+                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                <span>Kliknij aby zobaczyć</span>
+                                <a target="_blank" href="./assets/img/2016-10-20 Jerzy Zientkowski BTI - Warszawa - 3.jpg" download class="ml-4 text-sm underline" onclick="event.stopPropagation()">Pobierz (5472x3648, 12,0MB)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item tall" data-aos="fade-up" data-aos-delay="500" onclick="openGalleryModal('./assets/img/2017-10-25 Jerzy Zientkowski Męski Czwartek - Poznań - 1.jpg')">
+                    <img src="./assets/img/2017-10-25 Jerzy Zientkowski Męski Czwartek - Poznań - 1.webp" alt="2017-10-25 Jerzy Zientkowski Męski Czwartek - Poznań - 1">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3 class="text-xl font-bold mb-2">2017</h3>
+                            <p class="text-sm opacity-90">Męski Czwartek - Poznań</p>
+                            <div class="gallery-zoom">
+                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                <span>Kliknij aby zobaczyć</span>
+                                <a target="_blank" href="./assets/img/2017-10-25 Jerzy Zientkowski Męski Czwartek - Poznań - 1.jpg" download class="ml-4 text-sm underline" onclick="event.stopPropagation()">Pobierz (3648x5472, 8,0MB)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item tall" data-aos="fade-up" data-aos-delay="600" onclick="openGalleryModal('./assets/img/2017-10-25 Jerzy Zientkowski Męski Czwartek - Poznań - 2.jpg')">
+                    <img src="./assets/img/2017-10-25 Jerzy Zientkowski Męski Czwartek - Poznań - 2.webp" alt="2017-10-25 Jerzy Zientkowski Męski Czwartek - Poznań - 2">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3 class="text-xl font-bold mb-2">2017</h3>
+                            <p class="text-sm opacity-90">Męski Czwartek - Poznań</p>
+                            <div class="gallery-zoom">
+                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                <span>Kliknij aby zobaczyć</span>
+                                <a target="_blank" href="./assets/img/2017-10-25 Jerzy Zientkowski Męski Czwartek - Poznań - 2.jpg" download class="ml-4 text-sm underline" onclick="event.stopPropagation()">Pobierz (3648x5472, 7,2MB)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item" data-aos="fade-up" data-aos-delay="700" onclick="openGalleryModal('./assets/img/2017-10-30 Jerzy Zientkowski BTI - Warszawa - 1.jpg')">
+                    <img src="./assets/img/2017-10-30 Jerzy Zientkowski BTI - Warszawa - 1.webp" alt="2017-10-30 Jerzy Zientkowski BTI - Warszawa - 1">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3 class="text-xl font-bold mb-2">2017</h3>
+                            <p class="text-sm opacity-90">BTI - Warszawa</p>
+                            <div class="gallery-zoom">
+                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                <span>Kliknij aby zobaczyć</span>
+                                <a target="_blank" href="./assets/img/2017-10-30 Jerzy Zientkowski BTI - Warszawa - 1.jpg" download class="ml-4 text-sm underline" onclick="event.stopPropagation()">Pobierz (4096x2730, 0,8MB)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item" data-aos="fade-up" data-aos-delay="800" onclick="openGalleryModal('./assets/img/2017-10-30 Jerzy Zientkowski BTI - Warszawa - 2.jpg')">
+                    <img src="./assets/img/2017-10-30 Jerzy Zientkowski BTI - Warszawa - 2.webp" alt="2017-10-30 Jerzy Zientkowski BTI - Warszawa - 2">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3 class="text-xl font-bold mb-2">2017</h3>
+                            <p class="text-sm opacity-90">BTI - Warszawa</p>
+                            <div class="gallery-zoom">
+                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                <span>Kliknij aby zobaczyć</span>
+                                <a target="_blank" href="./assets/img/2017-10-30 Jerzy Zientkowski BTI - Warszawa - 2.jpg" download class="ml-4 text-sm underline" onclick="event.stopPropagation()">Pobierz (6720x4480, 7,1MB)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item" data-aos="fade-up" data-aos-delay="900" onclick="openGalleryModal('./assets/img/2018-02-28 Jerzy Zientkowski Konferencja Sprzedaż - Poznań.jpg')">
+                    <img src="./assets/img/2018-02-28 Jerzy Zientkowski Konferencja Sprzedaż - Poznań.webp" alt="2018-02-28 Jerzy Zientkowski Konferencja Sprzedaż - Poznań">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3 class="text-xl font-bold mb-2">2018</h3>
+                            <p class="text-sm opacity-90">Konferencja Sprzedaż - Poznań</p>
+                            <div class="gallery-zoom">
+                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                <span>Kliknij aby zobaczyć</span>
+                                <a target="_blank" href="./assets/img/2018-02-28 Jerzy Zientkowski Konferencja Sprzedaż - Poznań.jpg" download class="ml-4 text-sm underline" onclick="event.stopPropagation()">Pobierz (5184x3456, 4,2MB)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item" data-aos="fade-up" data-aos-delay="1000" onclick="openGalleryModal('./assets/img/2020-01-22 Jerzy Zientkowski Sales Angels - Warszawa.jpg')">
+                    <img src="./assets/img/2020-01-22 Jerzy Zientkowski Sales Angels - Warszawa.webp" alt="2020-01-22 Jerzy Zientkowski Sales Angels - Warszawa">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3 class="text-xl font-bold mb-2">2020</h3>
+                            <p class="text-sm opacity-90">Sales Angels - Warszawa</p>
+                            <div class="gallery-zoom">
+                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                <span>Kliknij aby zobaczyć</span>
+                                <a target="_blank" href="./assets/img/2020-01-22 Jerzy Zientkowski Sales Angels - Warszawa.jpg" download class="ml-4 text-sm underline" onclick="event.stopPropagation()">Pobierz (600x600, 0,2MB)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item wide" data-aos="fade-up" data-aos-delay="1100" onclick="openGalleryModal('./assets/img/2023-10-05 Jerzy Zientkowski u Klienta DNA - Warszawa - 1.jpg')">
+                    <img src="./assets/img/2023-10-05 Jerzy Zientkowski u Klienta DNA - Warszawa - 1.webp" alt="2023-10-05 Jerzy Zientkowski u Klienta DNA - Warszawa - 1">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3 class="text-xl font-bold mb-2">2023</h3>
+                            <p class="text-sm opacity-90">u Klienta DNA - Warszawa</p>
+                            <div class="gallery-zoom">
+                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                <span>Kliknij aby zobaczyć</span>
+                                <a target="_blank" href="./assets/img/2023-10-05 Jerzy Zientkowski u Klienta DNA - Warszawa - 1.jpg" download class="ml-4 text-sm underline" onclick="event.stopPropagation()">Pobierz (4000x1868, 2,0MB)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item tall" data-aos="fade-up" data-aos-delay="1200" onclick="openGalleryModal('./assets/img/2023-10-17 Jerzy Zientkowski u Klienta DNA - Warszawa - 1.jpg')">
+                    <img src="./assets/img/2023-10-17 Jerzy Zientkowski u Klienta DNA - Warszawa - 1.webp" alt="2023-10-17 Jerzy Zientkowski u Klienta DNA - Warszawa - 1">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3 class="text-xl font-bold mb-2">2023</h3>
+                            <p class="text-sm opacity-90">u Klienta DNA - Warszawa</p>
+                            <div class="gallery-zoom">
+                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                <span>Kliknij aby zobaczyć</span>
+                                <a target="_blank" href="./assets/img/2023-10-17 Jerzy Zientkowski u Klienta DNA - Warszawa - 1.jpg" download class="ml-4 text-sm underline" onclick="event.stopPropagation()">Pobierz (1868x4000, 1,7MB)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item tall" data-aos="fade-up" data-aos-delay="1300" onclick="openGalleryModal('./assets/img/2024-02-18 Jerzy Zientkowski po warsztatach - Warszawa - 1.jpg')">
+                    <img src="./assets/img/2024-02-18 Jerzy Zientkowski po warsztatach - Warszawa - 1.webp" alt="2024-02-18 Jerzy Zientkowski po warsztatach - Warszawa - 1">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3 class="text-xl font-bold mb-2">2024</h3>
+                            <p class="text-sm opacity-90">po warsztatach - Warszawa</p>
+                            <div class="gallery-zoom">
+                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                <span>Kliknij aby zobaczyć</span>
+                                <a target="_blank" href="./assets/img/2024-02-18 Jerzy Zientkowski po warsztatach - Warszawa - 1.jpg" download class="ml-4 text-sm underline" onclick="event.stopPropagation()">Pobierz (2544x3392, 3,8MB)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item" data-aos="fade-up" data-aos-delay="1400" onclick="openGalleryModal('./assets/img/2024-04-26 Jerzy Zientkowski u Klienta DNA - Warszawa - 1.jpg')">
+                    <img src="./assets/img/2024-04-26 Jerzy Zientkowski u Klienta DNA - Warszawa - 1.webp" alt="2024-04-26 Jerzy Zientkowski u Klienta DNA - Warszawa - 1">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3 class="text-xl font-bold mb-2">2024</h3>
+                            <p class="text-sm opacity-90">u Klienta DNA - Warszawa</p>
+                            <div class="gallery-zoom">
+                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                <span>Kliknij aby zobaczyć</span>
+                                <a target="_blank" href="./assets/img/2024-04-26 Jerzy Zientkowski u Klienta DNA - Warszawa - 1.jpg" download class="ml-4 text-sm underline" onclick="event.stopPropagation()">Pobierz (3392x2544, 3,0MB)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item tall" data-aos="fade-up" data-aos-delay="1500" onclick="openGalleryModal('./assets/img/2024-05-10 Jerzy Zientkowski u Klienta DNA - Gdańsk - 1.jpg')">
+                    <img src="./assets/img/2024-05-10 Jerzy Zientkowski u Klienta DNA - Gdańsk - 1.webp" alt="2024-05-10 Jerzy Zientkowski u Klienta DNA - Gdańsk - 1">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3 class="text-xl font-bold mb-2">2024</h3>
+                            <p class="text-sm opacity-90">u Klienta DNA - Gdańsk</p>
+                            <div class="gallery-zoom">
+                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                <span>Kliknij aby zobaczyć</span>
+                                <a target="_blank" href="./assets/img/2024-05-10 Jerzy Zientkowski u Klienta DNA - Gdańsk - 1.jpg" download class="ml-4 text-sm underline" onclick="event.stopPropagation()">Pobierz (1868x4000, 3,3MB)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item" data-aos="fade-up" data-aos-delay="1600" onclick="openGalleryModal('./assets/img/2024-06-14 Jerzy Zientkowski Urodziny Sales Angels - Warszawa - 1.jpg')">
+                    <img src="./assets/img/2024-06-14 Jerzy Zientkowski Urodziny Sales Angels - Warszawa - 1.webp" alt="2024-06-14 Jerzy Zientkowski Urodziny Sales Angels - Warszawa - 1">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3 class="text-xl font-bold mb-2">2024</h3>
+                            <p class="text-sm opacity-90">Urodziny Sales Angels - Warszawa</p>
+                            <div class="gallery-zoom">
+                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                <span>Kliknij aby zobaczyć</span>
+                                <a target="_blank" href="./assets/img/2024-06-14 Jerzy Zientkowski Urodziny Sales Angels - Warszawa - 1.jpg" download class="ml-4 text-sm underline" onclick="event.stopPropagation()">Pobierz (3840x2560, 5,2MB)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item tall" data-aos="fade-up" data-aos-delay="1700" onclick="openGalleryModal('./assets/img/2025-03-27 Jerzy Zientkowski Święto Kapitalizmu - Warszawa - 1.jpg')">
+                    <img src="./assets/img/2025-03-27 Jerzy Zientkowski Święto Kapitalizmu - Warszawa - 1.webp" alt="2025-03-27 Jerzy Zientkowski Święto Kapitalizmu - Warszawa - 1">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3 class="text-xl font-bold mb-2">2025</h3>
+                            <p class="text-sm opacity-90">Święto Kapitalizmu - Warszawa</p>
+                            <div class="gallery-zoom">
+                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                <span>Kliknij aby zobaczyć</span>
+                                <a target="_blank" href="./assets/img/2025-03-27 Jerzy Zientkowski Święto Kapitalizmu - Warszawa - 1.jpg" download class="ml-4 text-sm underline" onclick="event.stopPropagation()">Pobierz (1848x2775, 1,4MB)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item" data-aos="fade-up" data-aos-delay="1800" onclick="openGalleryModal('./assets/img/2025-04-16 Jerzy Zientkowski Power Day - Warszawa - 1.jpg')">
+                    <img src="./assets/img/2025-04-16 Jerzy Zientkowski Power Day - Warszawa - 1.webp" alt="2025-04-16 Jerzy Zientkowski Power Day - Warszawa - 1">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3 class="text-xl font-bold mb-2">2025</h3>
+                            <p class="text-sm opacity-90">Power Day - Warszawa</p>
+                            <div class="gallery-zoom">
+                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                <span>Kliknij aby zobaczyć</span>
+                                <a target="_blank" href="./assets/img/2025-04-16 Jerzy Zientkowski Power Day - Warszawa - 1.jpg" download class="ml-4 text-sm underline" onclick="event.stopPropagation()">Pobierz (2400x1600, 1,7MB)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item" data-aos="fade-up" data-aos-delay="1900" onclick="openGalleryModal('./assets/img/2025-04-16 Jerzy Zientkowski Power Day - Warszawa - 2.jpg')">
+                    <img src="./assets/img/2025-04-16 Jerzy Zientkowski Power Day - Warszawa - 2.webp" alt="2025-04-16 Jerzy Zientkowski Power Day - Warszawa - 2">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3 class="text-xl font-bold mb-2">2025</h3>
+                            <p class="text-sm opacity-90">Power Day - Warszawa</p>
+                            <div class="gallery-zoom">
+                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                <span>Kliknij aby zobaczyć</span>
+                                <a target="_blank" href="./assets/img/2025-04-16 Jerzy Zientkowski Power Day - Warszawa - 2.jpg" download class="ml-4 text-sm underline" onclick="event.stopPropagation()">Pobierz (2400x1600, 1,5MB)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item" data-aos="fade-up" data-aos-delay="2000" onclick="openGalleryModal('./assets/img/2025-04-26 Jerzy Zientkowski u Klienta NDA - Okocim - 1.jpg')">
+                    <img src="./assets/img/2025-04-26 Jerzy Zientkowski u Klienta NDA - Okocim - 1.webp" alt="2025-04-26 Jerzy Zientkowski u Klienta NDA - Okocim - 1">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3 class="text-xl font-bold mb-2">2025</h3>
+                            <p class="text-sm opacity-90">u Klienta NDA - Okocim</p>
+                            <div class="gallery-zoom">
+                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                <span>Kliknij aby zobaczyć</span>
+                                <a target="_blank" href="./assets/img/2025-04-26 Jerzy Zientkowski u Klienta NDA - Okocim - 1.jpg" download class="ml-4 text-sm underline" onclick="event.stopPropagation()">Pobierz (6000x4000, 2,3MB)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item" data-aos="fade-up" data-aos-delay="2100" onclick="openGalleryModal('./assets/img/2025-04-26 Jerzy Zientkowski u Klienta NDA - Okocim - 2.jpg')">
+                    <img src="./assets/img/2025-04-26 Jerzy Zientkowski u Klienta NDA - Okocim - 2.webp" alt="2025-04-26 Jerzy Zientkowski u Klienta NDA - Okocim - 2">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3 class="text-xl font-bold mb-2">2025</h3>
+                            <p class="text-sm opacity-90">u Klienta NDA - Okocim</p>
+                            <div class="gallery-zoom">
+                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                <span>Kliknij aby zobaczyć</span>
+                                <a target="_blank" href="./assets/img/2025-04-26 Jerzy Zientkowski u Klienta NDA - Okocim - 2.jpg" download class="ml-4 text-sm underline" onclick="event.stopPropagation()">Pobierz (6000x4000, 2,4MB)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item" data-aos="fade-up" data-aos-delay="2200" onclick="openGalleryModal('./assets/img/2025-05-25 Jerzy Zientkowski TEDxPabianice - Pabianice - 1.jpg')">
+                    <img src="./assets/img/2025-05-25 Jerzy Zientkowski TEDxPabianice - Pabianice - 1.webp" alt="2025-05-25 Jerzy Zientkowski TEDxPabianice - Pabianice - 1">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3 class="text-xl font-bold mb-2">2025</h3>
+                            <p class="text-sm opacity-90">TEDxPabianice - Pabianice</p>
+                            <div class="gallery-zoom">
+                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                <span>Kliknij aby zobaczyć</span>
+                                <a target="_blank" href="./assets/img/2025-05-25 Jerzy Zientkowski TEDxPabianice - Pabianice - 1.jpg" download class="ml-4 text-sm underline" onclick="event.stopPropagation()">Pobierz (2048x1365, 1,5MB)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item" data-aos="fade-up" data-aos-delay="2300" onclick="openGalleryModal('./assets/img/2025-05-25 Jerzy Zientkowski TEDxPabianice - Pabianice - 2.jpg')">
+                    <img src="./assets/img/2025-05-25 Jerzy Zientkowski TEDxPabianice - Pabianice - 2.webp" alt="2025-05-25 Jerzy Zientkowski TEDxPabianice - Pabianice - 2">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3 class="text-xl font-bold mb-2">2025</h3>
+                            <p class="text-sm opacity-90">TEDxPabianice - Pabianice</p>
+                            <div class="gallery-zoom">
+                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                <span>Kliknij aby zobaczyć</span>
+                                <a target="_blank" href="./assets/img/2025-05-25 Jerzy Zientkowski TEDxPabianice - Pabianice - 2.jpg" download class="ml-4 text-sm underline" onclick="event.stopPropagation()">Pobierz (2048x1365, 1,1MB)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item" data-aos="fade-up" data-aos-delay="2400" onclick="openGalleryModal('./assets/img/2025-05-25 Jerzy Zientkowski TEDxPabianice - Pabianice - 3.jpg')">
+                    <img src="./assets/img/2025-05-25 Jerzy Zientkowski TEDxPabianice - Pabianice - 3.webp" alt="2025-05-25 Jerzy Zientkowski TEDxPabianice - Pabianice - 3">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3 class="text-xl font-bold mb-2">2025</h3>
+                            <p class="text-sm opacity-90">TEDxPabianice - Pabianice</p>
+                            <div class="gallery-zoom">
+                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                <span>Kliknij aby zobaczyć</span>
+                                <a target="_blank" href="./assets/img/2025-05-25 Jerzy Zientkowski TEDxPabianice - Pabianice - 3.jpg" download class="ml-4 text-sm underline" onclick="event.stopPropagation()">Pobierz (2048x1365, 1,4MB)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item tall" data-aos="fade-up" data-aos-delay="2500" onclick="openGalleryModal('./assets/img/21-20140927_KONFERENCJA_Jerzy-21.jpg')">
+                    <img src="./assets/img/21-20140927_KONFERENCJA_Jerzy-21.webp" alt="21-20140927_KONFERENCJA_Jerzy-21">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3 class="text-xl font-bold mb-2">2014</h3>
+                            <p class="text-sm opacity-90">Konferencja</p>
+                            <div class="gallery-zoom">
+                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                <span>Kliknij aby zobaczyć</span>
+                                <a target="_blank" href="./assets/img/21-20140927_KONFERENCJA_Jerzy-21.jpg" download class="ml-4 text-sm underline" onclick="event.stopPropagation()">Pobierz (534x800, 0,0MB)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item tall" data-aos="fade-up" data-aos-delay="2600" onclick="openGalleryModal('./assets/img/IMG_0582.jpg')">
+                    <img src="./assets/img/IMG_0582.webp" alt="IMG_0582">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3 class="text-xl font-bold mb-2">Archiwum</h3>
+                            <p class="text-sm opacity-90">Sesja zdjęciowa</p>
+                            <div class="gallery-zoom">
+                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                <span>Kliknij aby zobaczyć</span>
+                                <a target="_blank" href="./assets/img/IMG_0582.jpg" download class="ml-4 text-sm underline" onclick="event.stopPropagation()">Pobierz (2560x3840, 1,7MB)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item" data-aos="fade-up" data-aos-delay="2700" onclick="openGalleryModal('./assets/img/Invest-cuffs-5-scaled.jpg')">
+                    <img src="./assets/img/Invest-cuffs-5-scaled.webp" alt="Invest-cuffs-5-scaled">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3 class="text-xl font-bold mb-2">Portret</h3>
+                            <p class="text-sm opacity-90">Sesja biznesowa</p>
+                            <div class="gallery-zoom">
+                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                <span>Kliknij aby zobaczyć</span>
+                                <a target="_blank" href="./assets/img/Invest-cuffs-5-scaled.jpg" download class="ml-4 text-sm underline" onclick="event.stopPropagation()">Pobierz (2560x1707, 0,1MB)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item tall" data-aos="fade-up" data-aos-delay="2800" onclick="openGalleryModal('./assets/img/JERZY-NA-lp-KURSU-1.jpg')">
+                    <img src="./assets/img/JERZY-NA-lp-KURSU-1.webp" alt="JERZY-NA-lp-KURSU-1">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3 class="text-xl font-bold mb-2">Szkolenia</h3>
+                            <p class="text-sm opacity-90">Materiały kursowe</p>
+                            <div class="gallery-zoom">
+                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                <span>Kliknij aby zobaczyć</span>
+                                <a target="_blank" href="./assets/img/JERZY-NA-lp-KURSU-1.jpg" download class="ml-4 text-sm underline" onclick="event.stopPropagation()">Pobierz (426x600, 0,0MB)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item" data-aos="fade-up" data-aos-delay="2900" onclick="openGalleryModal('./assets/img/mentoring.jpg')">
+                    <img src="./assets/img/mentoring.webp" alt="mentoring">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3 class="text-xl font-bold mb-2">Mentoring</h3>
+                            <p class="text-sm opacity-90">Sesje indywidualne</p>
+                            <div class="gallery-zoom">
+                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                <span>Kliknij aby zobaczyć</span>
+                                <a target="_blank" href="./assets/img/mentoring.jpg" download class="ml-4 text-sm underline" onclick="event.stopPropagation()">Pobierz (1200x800, 0,1MB)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item" data-aos="fade-up" data-aos-delay="3000" onclick="openGalleryModal('./assets/img/szkolenia.jpg')">
+                    <img src="./assets/img/szkolenia.webp" alt="szkolenia">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3 class="text-xl font-bold mb-2">Szkolenia</h3>
+                            <p class="text-sm opacity-90">Warsztaty grupowe</p>
+                            <div class="gallery-zoom">
+                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                <span>Kliknij aby zobaczyć</span>
+                                <a target="_blank" href="./assets/img/szkolenia.jpg" download class="ml-4 text-sm underline" onclick="event.stopPropagation()">Pobierz (850x567, 0,2MB)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item" data-aos="fade-up" data-aos-delay="3100" onclick="openGalleryModal('./assets/img/wystapenia.jpg')">
+                    <img src="./assets/img/wystapenia.webp" alt="wystapenia">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3 class="text-xl font-bold mb-2">Wystąpienia</h3>
+                            <p class="text-sm opacity-90">Prezentacje publiczne</p>
+                            <div class="gallery-zoom">
+                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
+                                <span>Kliknij aby zobaczyć</span>
+                                <a target="_blank" href="./assets/img/wystapenia.jpg" download class="ml-4 text-sm underline" onclick="event.stopPropagation()">Pobierz (1200x800, 0,1MB)</a>
                             </div>
                         </div>
                     </div>
@@ -1141,6 +1804,36 @@
     <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollToPlugin.min.js"></script>
 
     <script>
+        // Gallery Modal Functions
+        function openGalleryModal(imageSrc) {
+            const modal = document.getElementById('galleryModal');
+            const modalImage = document.getElementById('galleryModalImage');
+            
+            modalImage.src = imageSrc;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeGalleryModal() {
+            const modal = document.getElementById('galleryModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal on click outside image
+        document.getElementById('galleryModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeGalleryModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeGalleryModal();
+            }
+        });
+
         // Enhanced Testimonial Carousel Class
         class TestimonialCarousel {
             constructor() {
