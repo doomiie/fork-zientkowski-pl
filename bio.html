@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="pl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jerzy Zientkowski - Biografia</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
 
     <style>
         ::-webkit-scrollbar {
@@ -85,6 +87,7 @@
                 transform: translate(-50%, -50%) scale(0.8);
                 opacity: 1;
             }
+
             100% {
                 transform: translate(-50%, -50%) scale(1.5);
                 opacity: 0;
@@ -133,8 +136,15 @@
         }
 
         @keyframes float-slow {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-15px) rotate(2deg); }
+
+            0%,
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-15px) rotate(2deg);
+            }
         }
 
         .reveal-text {
@@ -165,7 +175,8 @@
             position: relative;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 80px; /* Space for buttons */
+            padding: 0 80px;
+            /* Space for buttons */
         }
 
         .testimonial-viewport {
@@ -181,13 +192,15 @@
 
         .testimonial-slide {
             flex: 0 0 calc(33.333% - 1.333rem);
-            min-height: 420px; /* Fixed height for consistency */
+            min-height: 420px;
+            /* Fixed height for consistency */
         }
 
         @media (max-width: 1024px) {
             .testimonial-slide {
                 flex: 0 0 calc(50% - 1rem);
             }
+
             .testimonial-carousel {
                 padding: 0 60px;
             }
@@ -197,6 +210,7 @@
             .testimonial-slide {
                 flex: 0 0 100%;
             }
+
             .testimonial-carousel {
                 padding: 0 50px;
             }
@@ -332,6 +346,7 @@
             .hero-grid {
                 grid-template-columns: 1fr;
             }
+
             .timeline-mobile {
                 padding-left: 2rem;
             }
@@ -369,19 +384,29 @@
 
 <body class="bg-white">
     <!-- Navigation -->
-    <nav class="fixed main-nav w-full bg-white/95 backdrop-blur-lg z-50 py-4 transition-all duration-300 border-b border-gray-200/50">
+    <nav
+        class="fixed main-nav w-full bg-white/95 backdrop-blur-lg z-50 py-4 transition-all duration-300 border-b border-gray-200/50">
         <div class="max-w-[1400px] mx-auto px-6">
             <div class="flex justify-between items-center">
                 <div class="text-2xl font-bold tracking-tight">
                     <a href="/">
-                        <img class="brightness-0 max-w-[150px]" src="./assets/img/logo-jzplus-name-POZIOM-białe-210x58-1.png" alt="Logo">
+                        <img class="brightness-0 max-w-[150px]"
+                            src="./assets/img/logo-jzplus-name-POZIOM-białe-210x58-1.png" alt="Logo">
                     </a>
                 </div>
-                <div class="flex items-center">
-                    <a href="/" class="nav-link relative transition-colors duration-300 font-medium">
-                        Strona głowna
-                    </a>
+                <div class="hidden md:flex items-right space-x-12">
+                    <a href="#bio" class="nav-link relative text-dark hover:text-accent transition-colors duration-300">BIO</a>
+                    <a href="#zdjecia" class="nav-link relative text-dark hover:text-accent transition-colors duration-300">Zdjęcia</a>
+                    <a href="#kontakt" class="nav-link relative text-dark hover:text-accent transition-colors duration-300">Kontakt</a>
+                    <a href="index.html" class="nav-link relative text-dark hover:text-accent transition-colors duration-300">Strona główna</a>
+                    
                 </div>
+                <div class="flex items-right space-x-6">
+                    <button data-mobile-menu-btn class="md:hidden focus:outline-none">
+                        <i data-lucide="menu" class="h-6 w-6 text-dark"></i>
+                    </button>
+                </div>
+                
             </div>
         </div>
     </nav>
@@ -390,49 +415,52 @@
     <section class="min-h-screen pt-24 relative overflow-hidden bg-gradient-to-br from-white via-gray-50 to-white">
         <div class="absolute top-20 right-10 w-72 h-72 bg-accent/5 rounded-full blur-3xl"></div>
         <div class="absolute bottom-20 left-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl"></div>
-        
+
         <div class="max-w-[1400px] mx-auto px-6 py-16">
             <div class="hero-grid grid grid-cols-1 lg:grid-cols-12 gap-16 items-center min-h-[80vh]">
                 <!-- Text Content -->
                 <div class="lg:col-span-7 space-y-8">
                     <div class="space-y-6">
-                        <div class="inline-block px-4 py-2 bg-accent/10 text-accent rounded-full text-sm font-medium fast-fade-in">
+                        <div
+                            class="inline-block px-4 py-2 bg-accent/10 text-accent rounded-full text-sm font-medium fast-fade-in">
                             O mnie
                         </div>
-                        
+
                         <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
                             <span class="block gradient-text fast-fade-in" style="animation-delay: 0.1s">Jerzy</span>
-                            <span class="block gradient-text fast-fade-in" style="animation-delay: 0.2s">Zientkowski</span>
+                            <span class="block gradient-text fast-fade-in"
+                                style="animation-delay: 0.2s">Zientkowski</span>
                         </h1>
-                        
-                        <div class="text-2xl md:text-3xl text-gray-600 font-light fast-fade-in" style="animation-delay: 0.3s">
+
+                        <div class="text-2xl md:text-3xl text-gray-600 font-light fast-fade-in"
+                            style="animation-delay: 0.3s">
                             Mentor • Speaker • Coach
                         </div>
                     </div>
-                    
-                    <p class="text-xl text-gray-700 leading-relaxed max-w-2xl fast-fade-in" style="animation-delay: 0.4s">
-                        Z 20-letnim doświadczeniem biznesowym i precyzyjnym podejściem do wystąpień publicznych, 
+
+                    <p class="text-xl text-gray-700 leading-relaxed max-w-2xl fast-fade-in"
+                        style="animation-delay: 0.4s">
+                        Z 20-letnim doświadczeniem biznesowym i precyzyjnym podejściem do wystąpień publicznych,
                         pomagam liderom osiągać niezwykłe rezultaty poprzez skuteczną komunikację.
                     </p>
-                    
+
                 </div>
-                
+
                 <!-- Image Content -->
                 <div class="lg:col-span-5 relative">
                     <div class="relative floating-slow fast-fade-in" style="animation-delay: 0.6s">
                         <!-- Main Image -->
                         <div class="relative z-10">
-                            <img
-                                src="./assets/img/Invest-cuffs-5-scaled.jpg"
-                                alt="Jerzy Zientkowski"
-                                class="w-full max-w-md mx-auto rounded-3xl object-cover shadow-2xl"
-                            />
+                            <img src="./assets/img/Invest-cuffs-5-scaled.jpg" alt="Jerzy Zientkowski"
+                                class="w-full max-w-md mx-auto rounded-3xl object-cover shadow-2xl" />
                         </div>
-                        
+
                         <!-- Floating Elements -->
                         <div class="absolute -top-8 -right-8 w-24 h-24 bg-accent/20 rounded-2xl rotating-slow"></div>
-                        <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-gradient-to-br from-accent/10 to-accent/5 rounded-full"></div>
-                        
+                        <div
+                            class="absolute -bottom-6 -left-6 w-32 h-32 bg-gradient-to-br from-accent/10 to-accent/5 rounded-full">
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -445,20 +473,21 @@
         <div class="max-w-[1400px] mx-auto px-6 relative z-10">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
                 <div class="text-center">
-                    <div class="counter-number text-4xl md:text-5xl font-bold mb-2" data-target="20">0</div>
+                    <div class="counter-number text-4xl md:text-5xl font-bold mb-2" data-target="27">0</div>
                     <div class="text-white/80 text-sm md:text-base">Lat doświadczenia</div>
-                </div>
-                <div class="text-center">
-                    <div class="counter-number text-4xl md:text-5xl font-bold mb-2" data-target="40000">0</div>
-                    <div class="text-white/80 text-sm md:text-base">Uczestników rocznie</div>
                 </div>
                 <div class="text-center">
                     <div class="counter-number text-4xl md:text-5xl font-bold mb-2" data-target="100">0</div>
                     <div class="text-white/80 text-sm md:text-base">Eventów rocznie</div>
                 </div>
+               
                 <div class="text-center">
-                    <div class="counter-number text-4xl md:text-5xl font-bold mb-2" data-target="50">0</div>
-                    <div class="text-white/80 text-sm md:text-base">Firm partnerskich</div>
+                    <div class="counter-number text-4xl md:text-5xl font-bold mb-2" data-target="570">0</div>
+                    <div class="text-white/80 text-sm md:text-base">Klientów B2B i B2C</div>
+                </div>
+                 <div class="text-center">
+                    <div class="counter-number text-4xl md:text-5xl font-bold mb-2" data-target="40000">0</div>
+                    <div class="text-white/80 text-sm md:text-base">Uczestników rocznie</div>
                 </div>
             </div>
         </div>
@@ -470,7 +499,7 @@
             <!-- Section Header -->
             <div class="text-center mb-20">
                 <h2 class="text-4xl md:text-5xl font-bold mb-6">
-                    <span class="reveal-text">Moja droga do sukcesu</span>
+                    <span class="reveal-text">Od intormatyka-programisty do mówcy profesjonalnego</span>
                 </h2>
                 <p class="text-xl text-gray-600 max-w-3xl mx-auto">
                     Historia, doświadczenie i pasja, które ukształtowały moje podejście do rozwoju liderów
@@ -482,14 +511,15 @@
                 <div class="space-y-8">
                     <div class="morphing-card p-8">
                         <div class="flex items-start space-x-4">
-                            <div class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <div
+                                class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center flex-shrink-0">
                                 <i data-lucide="briefcase" class="w-6 h-6 text-accent"></i>
                             </div>
                             <div>
                                 <h3 class="text-xl font-semibold text-accent mb-3">Początki w IT i biznesie</h3>
                                 <p class="text-gray-700 leading-relaxed">
-                                    Z doświadczeniem w IT, na styku biznesu, sprzedaży i obsługi klienta wypracował 
-                                    unikatowy zestaw narzędzi komunikacyjnych, pozwalający na współpracę z różnymi 
+                                    Z doświadczeniem w IT, na styku biznesu, sprzedaży i obsługi klienta wypracował
+                                    unikatowy zestaw narzędzi komunikacyjnych, pozwalający na współpracę z różnymi
                                     branżami w wielonarodowych środowiskach.
                                 </p>
                             </div>
@@ -498,15 +528,15 @@
 
                     <div class="morphing-card p-8">
                         <div class="flex items-start space-x-4">
-                            <div class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <div
+                                class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center flex-shrink-0">
                                 <i data-lucide="mic" class="w-6 h-6 text-accent"></i>
                             </div>
                             <div>
                                 <h3 class="text-xl font-semibold text-accent mb-3">Mistrzostwa i konkursy</h3>
                                 <p class="text-gray-700 leading-relaxed">
-                                    W 2012 dotarł do finałów mistrzostw Europy w przemówieniach humorystycznych, 
-                                    w 2013 został Mistrzem Polski w mowach improwizowanych Toastmasters oraz 
-                                    Wicemistrzem Polski w języku angielskim.
+                                    W 2012 dotarł do finałów mistrzostw Europy w przemówieniach humorystycznych,
+                                    w latach 2010-205 został 5-krotnym Mistrzem Polski w konkursach Toastmasters.
                                 </p>
                             </div>
                         </div>
@@ -514,14 +544,16 @@
 
                     <div class="morphing-card p-8">
                         <div class="flex items-start space-x-4">
-                            <div class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <div
+                                class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center flex-shrink-0">
                                 <i data-lucide="users" class="w-6 h-6 text-accent"></i>
                             </div>
                             <div>
-                                <h3 class="text-xl font-semibold text-accent mb-3">Stowarzyszenie Profesjonalnych Mówców</h3>
+                                <h3 class="text-xl font-semibold text-accent mb-3">Stowarzyszenie Profesjonalnych Mówców
+                                </h3>
                                 <p class="text-gray-700 leading-relaxed">
-                                    Członek SPM w latach 2011-2021, Wiceprezes w latach 2012-2016, odpowiedzialny 
-                                    za członkostwo, strategię działań i partnerów, organizację konferencji 
+                                    Członek SPM w latach 2011-2021, Wiceprezes w latach 2012-2016, odpowiedzialny
+                                    za członkostwo, strategię działań i partnerów, organizację konferencji
                                     Festiwal Inspiracji i Spectacular Speaking.
                                 </p>
                             </div>
@@ -531,13 +563,10 @@
 
                 <div class="relative">
                     <div class="gradient-border rounded-3xl p-1">
-                        <img
-                            src="./assets/img/JERZY-NA-lp-KURSU-1.jpg"
-                            alt="Jerzy Zientkowski podczas szkolenia"
-                            class="w-full rounded-3xl object-cover"
-                        />
+                        <img src="./assets/img/JERZY-NA-lp-KURSU-1.jpg" alt="Jerzy Zientkowski podczas szkolenia"
+                            class="w-full rounded-3xl object-cover" />
                     </div>
-                    
+
                     <!-- Quote Overlay -->
                     <div class="absolute -bottom-8 -right-8 glass-effect p-6 rounded-2xl max-w-xs">
                         <div class="text-sm text-gray-700 font-medium">
@@ -563,7 +592,9 @@
 
             <div class="relative">
                 <!-- Timeline Line -->
-                <div class="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-accent/30 transform md:-translate-x-0.5"></div>
+                <div
+                    class="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-accent/30 transform md:-translate-x-0.5">
+                </div>
 
                 <!-- Timeline Items -->
                 <div class="space-y-12 timeline-mobile md:space-y-16">
@@ -577,7 +608,7 @@
                                 <div class="text-accent font-bold text-lg mb-2">2012</div>
                                 <h3 class="text-xl font-semibold mb-3">Finalista Mistrzostw Europy</h3>
                                 <p class="text-gray-700">
-                                    Dotarcie do finałów mistrzostw Europy w przemówieniach humorystycznych - 
+                                    Dotarcie do finałów mistrzostw Europy w przemówieniach humorystycznych -
                                     przełomowy moment w karierze mówcy.
                                 </p>
                             </div>
@@ -594,7 +625,7 @@
                                 <div class="text-accent font-bold text-lg mb-2">2013</div>
                                 <h3 class="text-xl font-semibold mb-3">Mistrz Polski Toastmasters</h3>
                                 <p class="text-gray-700">
-                                    Zdobycie tytułu Mistrza Polski w mowach improwizowanych oraz 
+                                    Zdobycie tytułu Mistrza Polski w mowach improwizowanych oraz
                                     Wicemistrza Polski w języku angielskim.
                                 </p>
                             </div>
@@ -611,7 +642,7 @@
                                 <div class="text-accent font-bold text-lg mb-2">2015</div>
                                 <h3 class="text-xl font-semibold mb-3">40,000 osób rocznie</h3>
                                 <p class="text-gray-700">
-                                    Początek intensywnej działalności speaking'owej - od tego roku 
+                                    Początek intensywnej działalności speaking'owej - od tego roku
                                     przemawiam do ponad 40,000 osób rocznie.
                                 </p>
                             </div>
@@ -628,7 +659,7 @@
                                 <div class="text-accent font-bold text-lg mb-2">Dziś</div>
                                 <h3 class="text-xl font-semibold mb-3">Mentor i inspirator liderów</h3>
                                 <p class="text-gray-700">
-                                    Kontynuacja pasji pomagania ambitnym profesjonalistom w przekraczaniu 
+                                    Kontynuacja pasji pomagania ambitnym profesjonalistom w przekraczaniu
                                     granic i osiąganiu niezwykłych rezultatów.
                                 </p>
                             </div>
@@ -651,10 +682,11 @@
                 </p>
             </div>
 
-            <div class="bg-gradient-to-br from-accent to-accent/90 rounded-3xl p-12 text-white relative overflow-hidden">
+            <div
+                class="bg-gradient-to-br from-accent to-accent/90 rounded-3xl p-12 text-white relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32"></div>
                 <div class="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full -ml-24 -mb-24"></div>
-                
+
                 <div class="relative z-10">
                     <div class="text-center mb-12">
                         <h3 class="text-2xl md:text-3xl font-bold mb-4">
@@ -667,37 +699,43 @@
 
                     <div class="grid grid-cols-2 md:grid-cols-3 gap-8">
                         <div class="text-center">
-                            <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <div
+                                class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
                                 <i data-lucide="star" class="w-8 h-8"></i>
                             </div>
                             <div class="font-semibold text-lg">Jacek Walkiewicz</div>
                         </div>
                         <div class="text-center">
-                            <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <div
+                                class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
                                 <i data-lucide="star" class="w-8 h-8"></i>
                             </div>
                             <div class="font-semibold text-lg">Robert Cialdini</div>
                         </div>
                         <div class="text-center">
-                            <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <div
+                                class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
                                 <i data-lucide="star" class="w-8 h-8"></i>
                             </div>
                             <div class="font-semibold text-lg">Brian Tracy</div>
                         </div>
                         <div class="text-center">
-                            <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <div
+                                class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
                                 <i data-lucide="star" class="w-8 h-8"></i>
                             </div>
                             <div class="font-semibold text-lg">Marek Skała</div>
                         </div>
                         <div class="text-center">
-                            <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <div
+                                class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
                                 <i data-lucide="star" class="w-8 h-8"></i>
                             </div>
                             <div class="font-semibold text-lg">Robert Krool</div>
                         </div>
                         <div class="text-center">
-                            <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <div
+                                class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
                                 <i data-lucide="star" class="w-8 h-8"></i>
                             </div>
                             <div class="font-semibold text-lg">Szymon Kudła</div>
@@ -724,7 +762,7 @@
                 <button class="carousel-button prev" id="prevBtn">
                     <i data-lucide="chevron-left" class="w-6 h-6"></i>
                 </button>
-                
+
                 <div class="testimonial-viewport">
                     <div class="testimonial-track" id="testimonialTrack">
                         <!-- Testimonial 1 -->
@@ -732,7 +770,8 @@
                             <div class="testimonial-card">
                                 <div class="testimonial-content">
                                     <div class="flex items-start space-x-4 mb-6">
-                                        <div class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <div
+                                            class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
                                             <i data-lucide="quote" class="w-6 h-6 text-accent"></i>
                                         </div>
                                         <div>
@@ -740,8 +779,8 @@
                                         </div>
                                     </div>
                                     <div class="testimonial-text">
-                                        "Dzięki jego doświadczeniu, pozytywnej i cierpliwej postawie oraz elastyczności 
-                                        dałem doskonałe przemówienie. Zaskoczył mnie pomagając w przygotowaniu się, 
+                                        "Dzięki jego doświadczeniu, pozytywnej i cierpliwej postawie oraz elastyczności
+                                        dałem doskonałe przemówienie. Zaskoczył mnie pomagając w przygotowaniu się,
                                         poświęcając znacznie więcej uwagi i czasu niż zostało uzgodnione."
                                     </div>
                                 </div>
@@ -753,7 +792,8 @@
                             <div class="testimonial-card">
                                 <div class="testimonial-content">
                                     <div class="flex items-start space-x-4 mb-6">
-                                        <div class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <div
+                                            class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
                                             <i data-lucide="quote" class="w-6 h-6 text-accent"></i>
                                         </div>
                                         <div>
@@ -762,8 +802,8 @@
                                         </div>
                                     </div>
                                     <div class="testimonial-text">
-                                        "Współpraca z nim oznacza uporządkowanie struktur przemówienia i dotarcie do 
-                                        jasności przekazu. Jego doświadczenie biznesowe sprawia, że jest praktykiem, 
+                                        "Współpraca z nim oznacza uporządkowanie struktur przemówienia i dotarcie do
+                                        jasności przekazu. Jego doświadczenie biznesowe sprawia, że jest praktykiem,
                                         który wie, co działa w komunikacji."
                                     </div>
                                 </div>
@@ -775,7 +815,8 @@
                             <div class="testimonial-card">
                                 <div class="testimonial-content">
                                     <div class="flex items-start space-x-4 mb-6">
-                                        <div class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <div
+                                            class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
                                             <i data-lucide="quote" class="w-6 h-6 text-accent"></i>
                                         </div>
                                         <div>
@@ -783,9 +824,10 @@
                                         </div>
                                     </div>
                                     <div class="testimonial-text">
-                                        "Kilka pytań, które ci zada spowoduje, że zaczniesz inaczej myśleć o tym, 
-                                        jak komunikować się z publicznością. Jurek jest niezwykle precyzyjny i skupiony 
-                                        na procesie i efekcie. Jeśli chcesz dobrze mówić do ludzi, Jurek to dobry adres!"
+                                        "Kilka pytań, które ci zada spowoduje, że zaczniesz inaczej myśleć o tym,
+                                        jak komunikować się z publicznością. Jurek jest niezwykle precyzyjny i skupiony
+                                        na procesie i efekcie. Jeśli chcesz dobrze mówić do ludzi, Jurek to dobry
+                                        adres!"
                                     </div>
                                 </div>
                             </div>
@@ -796,7 +838,8 @@
                             <div class="testimonial-card">
                                 <div class="testimonial-content">
                                     <div class="flex items-start space-x-4 mb-6">
-                                        <div class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <div
+                                            class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
                                             <i data-lucide="quote" class="w-6 h-6 text-accent"></i>
                                         </div>
                                         <div>
@@ -804,8 +847,10 @@
                                         </div>
                                     </div>
                                     <div class="testimonial-text">
-                                        "Wspiera mnie przy okazji wystąpień i konferencji szczególnie dla bardzo wymagających 
-                                        uczestników. Moje wykłady, po konsultacjach z Jurkiem wyglądają zupełnie inaczej. 
+                                        "Wspiera mnie przy okazji wystąpień i konferencji szczególnie dla bardzo
+                                        wymagających
+                                        uczestników. Moje wykłady, po konsultacjach z Jurkiem wyglądają zupełnie
+                                        inaczej.
                                         Entuzjastyczny odbiór widowni jest miernikiem skuteczności jego wsparcia."
                                     </div>
                                 </div>
@@ -817,7 +862,8 @@
                             <div class="testimonial-card">
                                 <div class="testimonial-content">
                                     <div class="flex items-start space-x-4 mb-6">
-                                        <div class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <div
+                                            class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
                                             <i data-lucide="quote" class="w-6 h-6 text-accent"></i>
                                         </div>
                                         <div>
@@ -825,8 +871,8 @@
                                         </div>
                                     </div>
                                     <div class="testimonial-text">
-                                        "Od Jerzy się nauczyłem więcej niż z jakiejkolwiek książki o wystąpieniach czy 
-                                        storytellingu. Jego wystąpienia, video na YT i książki to skarb wiedzy. 
+                                        "Od Jerzy się nauczyłem więcej niż z jakiejkolwiek książki o wystąpieniach czy
+                                        storytellingu. Jego wystąpienia, video na YT i książki to skarb wiedzy.
                                         Jak chcesz się uczyć od najlepszych, to Jerzy jest tym człowiekiem!"
                                     </div>
                                 </div>
@@ -838,7 +884,8 @@
                             <div class="testimonial-card">
                                 <div class="testimonial-content">
                                     <div class="flex items-start space-x-4 mb-6">
-                                        <div class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <div
+                                            class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
                                             <i data-lucide="quote" class="w-6 h-6 text-accent"></i>
                                         </div>
                                         <div>
@@ -847,8 +894,8 @@
                                         </div>
                                     </div>
                                     <div class="testimonial-text">
-                                        "W bardzo skomasowanej formie dostajesz gigantyczną dawkę wiedzy na temat 
-                                        wystąpień publicznych, obecnych trendów prezentacji i wszystkiego co robisz źle. 
+                                        "W bardzo skomasowanej formie dostajesz gigantyczną dawkę wiedzy na temat
+                                        wystąpień publicznych, obecnych trendów prezentacji i wszystkiego co robisz źle.
                                         Wiedza taka nie leży na ulicy i od razu widać profesjonalistę."
                                     </div>
                                 </div>
@@ -860,7 +907,8 @@
                             <div class="testimonial-card">
                                 <div class="testimonial-content">
                                     <div class="flex items-start space-x-4 mb-6">
-                                        <div class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <div
+                                            class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
                                             <i data-lucide="quote" class="w-6 h-6 text-accent"></i>
                                         </div>
                                         <div>
@@ -869,8 +917,9 @@
                                         </div>
                                     </div>
                                     <div class="testimonial-text">
-                                        "Jurek Zientkowski to wspaniały mentor umiejący przygotować w sferze wewnętrznej 
-                                        studenta oraz pomagający wykorzystać naturalne walory. Potrafi zachęcić do odważnych 
+                                        "Jurek Zientkowski to wspaniały mentor umiejący przygotować w sferze wewnętrznej
+                                        studenta oraz pomagający wykorzystać naturalne walory. Potrafi zachęcić do
+                                        odważnych
                                         wystąpień na różnych poziomach przemawiania."
                                     </div>
                                 </div>
@@ -882,7 +931,8 @@
                             <div class="testimonial-card">
                                 <div class="testimonial-content">
                                     <div class="flex items-start space-x-4 mb-6">
-                                        <div class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <div
+                                            class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
                                             <i data-lucide="quote" class="w-6 h-6 text-accent"></i>
                                         </div>
                                         <div>
@@ -891,8 +941,10 @@
                                         </div>
                                     </div>
                                     <div class="testimonial-text">
-                                        "Jerzy jest niesamowitą osobowością, doskonałym mówcą, coachem i mentorem w dziedzinie 
-                                        przemawiania. Dzięki jego cennym wskazówkom moje wystąpienia nabierały solidnej struktury, 
+                                        "Jerzy jest niesamowitą osobowością, doskonałym mówcą, coachem i mentorem w
+                                        dziedzinie
+                                        przemawiania. Dzięki jego cennym wskazówkom moje wystąpienia nabierały solidnej
+                                        struktury,
                                         lekkości i blasku."
                                     </div>
                                 </div>
@@ -904,7 +956,8 @@
                             <div class="testimonial-card">
                                 <div class="testimonial-content">
                                     <div class="flex items-start space-x-4 mb-6">
-                                        <div class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <div
+                                            class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
                                             <i data-lucide="quote" class="w-6 h-6 text-accent"></i>
                                         </div>
                                         <div>
@@ -913,8 +966,10 @@
                                         </div>
                                     </div>
                                     <div class="testimonial-text">
-                                        "Pan Jerzy jest ogromnym wsparciem. Pracując z nim, można przygotować się do każdego 
-                                        wystąpienia, analizując zarówno jakość i formę przekazu. Pan Jerzy pomaga wydobywać 
+                                        "Pan Jerzy jest ogromnym wsparciem. Pracując z nim, można przygotować się do
+                                        każdego
+                                        wystąpienia, analizując zarówno jakość i formę przekazu. Pan Jerzy pomaga
+                                        wydobywać
                                         z chaosu informacji najistotniejsze treści. Jest mistrzem SYNTEZY."
                                     </div>
                                 </div>
@@ -926,7 +981,8 @@
                             <div class="testimonial-card">
                                 <div class="testimonial-content">
                                     <div class="flex items-start space-x-4 mb-6">
-                                        <div class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <div
+                                            class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
                                             <i data-lucide="quote" class="w-6 h-6 text-accent"></i>
                                         </div>
                                         <div>
@@ -935,8 +991,8 @@
                                         </div>
                                     </div>
                                     <div class="testimonial-text">
-                                        "Dzięki Jerzemu zacząłem swoją przygodę z przemawianiem. To było w roku 2014 
-                                        a obecnie ma zapewne jeszcze lepsze materiały warsztatowe z przemawiania. 
+                                        "Dzięki Jerzemu zacząłem swoją przygodę z przemawianiem. To było w roku 2014
+                                        a obecnie ma zapewne jeszcze lepsze materiały warsztatowe z przemawiania.
                                         Bardzo polecam współpracę z Jerzym!"
                                     </div>
                                 </div>
@@ -948,7 +1004,8 @@
                             <div class="testimonial-card">
                                 <div class="testimonial-content">
                                     <div class="flex items-start space-x-4 mb-6">
-                                        <div class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <div
+                                            class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
                                             <i data-lucide="quote" class="w-6 h-6 text-accent"></i>
                                         </div>
                                         <div>
@@ -957,8 +1014,8 @@
                                         </div>
                                     </div>
                                     <div class="testimonial-text">
-                                        "Jerzy przekształcił moje podejście do prezentacji korporacyjnych. Jego metody 
-                                        pomagają nie tylko w lepszym przekazie, ale także w budowaniu pewności siebie 
+                                        "Jerzy przekształcił moje podejście do prezentacji korporacyjnych. Jego metody
+                                        pomagają nie tylko w lepszym przekazie, ale także w budowaniu pewności siebie
                                         na scenie. Niezastąpiony mentor dla każdego lidera."
                                     </div>
                                 </div>
@@ -970,7 +1027,8 @@
                             <div class="testimonial-card">
                                 <div class="testimonial-content">
                                     <div class="flex items-start space-x-4 mb-6">
-                                        <div class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <div
+                                            class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
                                             <i data-lucide="quote" class="w-6 h-6 text-accent"></i>
                                         </div>
                                         <div>
@@ -979,8 +1037,8 @@
                                         </div>
                                     </div>
                                     <div class="testimonial-text">
-                                        "Dzięki wskazówkom Jerzego moje prezentacje sprzedażowe osiągają znacznie lepsze 
-                                        rezultaty. Jego umiejętność dostosowania przekazu do różnych grup odbiorców 
+                                        "Dzięki wskazówkom Jerzego moje prezentacje sprzedażowe osiągają znacznie lepsze
+                                        rezultaty. Jego umiejętność dostosowania przekazu do różnych grup odbiorców
                                         jest fenomenalna. Polecam każdemu profesjonaliście."
                                     </div>
                                 </div>
@@ -988,11 +1046,11 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <button class="carousel-button next" id="nextBtn">
                     <i data-lucide="chevron-right" class="w-6 h-6"></i>
                 </button>
-                
+
                 <!-- Carousel Indicators -->
                 <div class="carousel-indicators" id="carouselIndicators">
                     <!-- Dots will be generated by JavaScript -->
@@ -1006,21 +1064,23 @@
         <div class="absolute inset-0 bg-gradient-to-br from-accent to-accent/80"></div>
         <div class="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -mr-48 -mt-48"></div>
         <div class="absolute bottom-0 left-0 w-64 h-64 bg-white/10 rounded-full -ml-32 -mb-32"></div>
-        
+
         <div class="max-w-[1400px] mx-auto px-6 text-center relative z-10">
             <h2 class="text-4xl md:text-5xl font-bold mb-8">
                 Rozpocznijmy współpracę
             </h2>
             <p class="text-xl text-white/80 mb-12 max-w-3xl mx-auto">
-                Jeśli jesteś gotowy na transformację swojego przywództwa i komunikacji, 
+                Jeśli jesteś gotowy na transformację swojego przywództwa i komunikacji,
                 skontaktuj się ze mną już dziś.
             </p>
-            
+
             <div class="flex flex-col sm:flex-row gap-6 justify-center">
-                <a href="index.html#kontakt" class="px-8 py-4 bg-white text-accent rounded-full hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 font-semibold">
+                <a href="index.html#kontakt"
+                    class="px-8 py-4 bg-white text-accent rounded-full hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 font-semibold">
                     Umów spotkanie
                 </a>
-                <a href="#" class="px-8 py-4 border-2 border-white text-white rounded-full hover:bg-white hover:text-accent transition-all duration-300 font-semibold">
+                <a href="#"
+                    class="px-8 py-4 border-2 border-white text-white rounded-full hover:bg-white hover:text-accent transition-all duration-300 font-semibold">
                     Pobierz pełne CV
                 </a>
             </div>
@@ -1048,17 +1108,20 @@
         <div class="max-w-[1400px] mx-auto px-6">
             <div class="text-center">
                 <div class="flex justify-center space-x-6 mb-8">
-                    <a href="https://www.linkedin.com/in/jerzyzientkowski/" class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
+                    <a href="https://www.linkedin.com/in/jerzyzientkowski/"
+                        class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
                         <i data-lucide="linkedin" class="w-6 h-6"></i>
                     </a>
-                    <a href="https://www.instagram.com/jerzyzientkowskiofficial/" class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
+                    <a href="https://www.instagram.com/jerzyzientkowskiofficial/"
+                        class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
                         <i data-lucide="instagram" class="w-6 h-6"></i>
                     </a>
-                    <a href="https://www.facebook.com/jerzy.zientkowski" class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
+                    <a href="https://www.facebook.com/jerzy.zientkowski"
+                        class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
                         <i data-lucide="facebook" class="w-6 h-6"></i>
                     </a>
                 </div>
-                
+
                 <div class="border-t border-white/20 pt-8">
                     <p class="text-white/60 mb-4">&copy; 2025 Jerzy Zientkowski. Wszelkie prawa zastrzeżone.</p>
                     <div class="flex justify-center items-center space-x-6 text-sm text-white/60">
@@ -1076,7 +1139,7 @@
     <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollToPlugin.min.js"></script>
-    
+
     <script>
         // Enhanced Testimonial Carousel Class
         class TestimonialCarousel {
@@ -1086,32 +1149,32 @@
                 this.prevBtn = document.getElementById('prevBtn');
                 this.nextBtn = document.getElementById('nextBtn');
                 this.indicators = document.getElementById('carouselIndicators');
-                
+
                 this.currentIndex = 0;
                 this.slidesToShow = this.getSlidesToShow();
                 this.totalSlides = this.slides.length;
                 this.maxIndex = Math.max(0, this.totalSlides - this.slidesToShow);
-                
+
                 this.init();
                 this.setupEventListeners();
                 this.setupAutoplay();
             }
-            
+
             getSlidesToShow() {
                 if (window.innerWidth >= 1024) return 3;
                 if (window.innerWidth >= 768) return 2;
                 return 1;
             }
-            
+
             init() {
                 this.createIndicators();
                 this.updateCarousel();
             }
-            
+
             createIndicators() {
                 this.indicators.innerHTML = '';
                 const totalDots = this.maxIndex + 1;
-                
+
                 for (let i = 0; i < totalDots; i++) {
                     const dot = document.createElement('div');
                     dot.className = `carousel-dot ${i === 0 ? 'active' : ''}`;
@@ -1119,26 +1182,26 @@
                     this.indicators.appendChild(dot);
                 }
             }
-            
+
             updateCarousel() {
                 const slideWidth = 100 / this.slidesToShow;
                 const translateX = -this.currentIndex * slideWidth;
-                
+
                 this.track.style.transform = `translateX(${translateX}%)`;
-                
+
                 // Update indicators
                 this.indicators.querySelectorAll('.carousel-dot').forEach((dot, index) => {
                     dot.classList.toggle('active', index === this.currentIndex);
                 });
-                
+
                 // Update button states
                 this.prevBtn.disabled = this.currentIndex === 0;
                 this.nextBtn.disabled = this.currentIndex === this.maxIndex;
-                
+
                 this.prevBtn.style.opacity = this.currentIndex === 0 ? '0.5' : '1';
                 this.nextBtn.style.opacity = this.currentIndex === this.maxIndex ? '0.5' : '1';
             }
-            
+
             nextSlide() {
                 if (this.currentIndex < this.maxIndex) {
                     this.currentIndex++;
@@ -1147,7 +1210,7 @@
                 }
                 this.updateCarousel();
             }
-            
+
             prevSlide() {
                 if (this.currentIndex > 0) {
                     this.currentIndex--;
@@ -1156,31 +1219,31 @@
                 }
                 this.updateCarousel();
             }
-            
+
             goToSlide(index) {
                 this.currentIndex = Math.max(0, Math.min(index, this.maxIndex));
                 this.updateCarousel();
             }
-            
+
             setupEventListeners() {
                 this.nextBtn.addEventListener('click', () => this.nextSlide());
                 this.prevBtn.addEventListener('click', () => this.prevSlide());
-                
+
                 // Touch/swipe support
                 let startX = 0;
                 let isDragging = false;
-                
+
                 this.track.addEventListener('touchstart', (e) => {
                     startX = e.touches[0].clientX;
                     isDragging = true;
                 });
-                
+
                 this.track.addEventListener('touchend', (e) => {
                     if (!isDragging) return;
-                    
+
                     const endX = e.changedTouches[0].clientX;
                     const diff = startX - endX;
-                    
+
                     if (Math.abs(diff) > 50) {
                         if (diff > 0) {
                             this.nextSlide();
@@ -1188,16 +1251,16 @@
                             this.prevSlide();
                         }
                     }
-                    
+
                     isDragging = false;
                 });
-                
+
                 // Keyboard navigation
                 document.addEventListener('keydown', (e) => {
                     if (e.key === 'ArrowLeft') this.prevSlide();
                     if (e.key === 'ArrowRight') this.nextSlide();
                 });
-                
+
                 // Resize handler
                 window.addEventListener('resize', () => {
                     this.slidesToShow = this.getSlidesToShow();
@@ -1207,33 +1270,33 @@
                     this.updateCarousel();
                 });
             }
-            
+
             setupAutoplay() {
                 let autoplayInterval;
-                
+
                 const startAutoplay = () => {
                     autoplayInterval = setInterval(() => {
                         this.nextSlide();
                     }, 5000);
                 };
-                
+
                 const stopAutoplay = () => {
                     clearInterval(autoplayInterval);
                 };
-                
+
                 // Start autoplay
                 startAutoplay();
-                
+
                 // Pause on hover
                 this.track.parentElement.parentElement.addEventListener('mouseenter', stopAutoplay);
                 this.track.parentElement.parentElement.addEventListener('mouseleave', startAutoplay);
-                
+
                 // Pause when not visible
                 document.addEventListener('visibilitychange', () => {
                     if (document.hidden) {
                         stopAutoplay();
                     } else {
-                                                startAutoplay();
+                        startAutoplay();
                     }
                 });
             }
@@ -1242,21 +1305,21 @@
         // Counter Animation
         function animateCounters() {
             const counters = document.querySelectorAll('.counter-number');
-            
+
             counters.forEach(counter => {
                 const target = parseInt(counter.getAttribute('data-target'));
                 const duration = 1.5;
-                
-                gsap.fromTo(counter, 
+
+                gsap.fromTo(counter,
                     { textContent: 0 },
                     {
                         textContent: target,
                         duration: duration,
                         ease: "power2.out",
                         snap: { textContent: 1 },
-                        onUpdate: function() {
+                        onUpdate: function () {
                             const value = Math.ceil(this.targets()[0].textContent);
-                            counter.textContent = target > 1000 ? 
+                            counter.textContent = target > 1000 ?
                                 value.toLocaleString() : value;
                         },
                         scrollTrigger: {
@@ -1272,7 +1335,7 @@
         // Reveal Text Animation
         function animateRevealText() {
             const revealTexts = document.querySelectorAll('.reveal-text');
-            
+
             revealTexts.forEach(text => {
                 ScrollTrigger.create({
                     trigger: text,
@@ -1285,7 +1348,7 @@
         // Stagger Animation
         function animateStaggerElements() {
             const staggerElements = document.querySelectorAll('.morphing-card, .timeline-item');
-            
+
             staggerElements.forEach((element, index) => {
                 gsap.fromTo(element,
                     {
@@ -1312,10 +1375,10 @@
         document.addEventListener('DOMContentLoaded', () => {
             gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
             lucide.createIcons();
-            
+
             // Initialize carousel
             new TestimonialCarousel();
-            
+
             // Fast entrance animation for CSS animations
             setTimeout(() => {
                 document.querySelectorAll('.fast-fade-in').forEach(el => {
@@ -1341,11 +1404,11 @@
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
                     const targetId = link.getAttribute('href');
-                    
+
                     if (targetId === '#' || !targetId) return;
 
                     const targetSection = document.querySelector(targetId);
-                    
+
                     if (targetSection) {
                         gsap.to(window, {
                             duration: 0.6,
@@ -1361,13 +1424,13 @@
 
             // Add subtle magnetic effect to morphing cards
             const magneticElements = document.querySelectorAll('.morphing-card');
-            
+
             magneticElements.forEach(element => {
                 element.addEventListener('mousemove', (e) => {
                     const rect = element.getBoundingClientRect();
                     const x = e.clientX - rect.left - rect.width / 2;
                     const y = e.clientY - rect.top - rect.height / 2;
-                    
+
                     gsap.to(element, {
                         x: x * 0.05,
                         y: y * 0.05,
@@ -1375,7 +1438,7 @@
                         ease: "power2.out"
                     });
                 });
-                
+
                 element.addEventListener('mouseleave', () => {
                     gsap.to(element, {
                         x: 0,
@@ -1411,4 +1474,5 @@
         });
     </script>
 </body>
+
 </html>
