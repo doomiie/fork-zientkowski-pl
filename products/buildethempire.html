@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta tag="description" content="Materiały z Torunia, 2025, Build The Empire - Pobierz prezentacje, pliki i więcej od Jerzego Zientkowskiego.">
+    <title>Materiały z BuildTheEmpire 2025 | Jerzy Zientkowski</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        * {
+            font-family: 'Space Grotesk', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 30px rgba(4, 3, 39, 0.4); }
+            50% { box-shadow: 0 0 50px rgba(4, 3, 39, 0.7); }
+        }
+
+        @keyframes slide-up {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .floating {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .pulse-glow {
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+
+        .slide-up {
+            animation: slide-up 0.6s ease-out forwards;
+        }
+
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+
+        .floating-button {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            background: linear-gradient(135deg, rgb(4, 3, 39), rgb(20, 18, 60));
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            box-shadow: 0 8px 32px rgba(4, 3, 39, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            font-weight: 600;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+        }
+
+        .floating-button:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 12px 40px rgba(4, 3, 39, 0.4);
+        }
+
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: rgb(4, 3, 39);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #ffffff, #f8f9fa);
+            color: rgb(4, 3, 39);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(4, 3, 39, 0.2);
+            background: linear-gradient(135deg, #f8f9fa, #ffffff);
+        }
+
+        .download-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            transform: translateY(-20px) scale(0.95);
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0) scale(1);
+            animation: slideIn 0.3s ease;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, rgb(4, 3, 39), rgb(20, 18, 60));
+            border-radius: 4px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .grain-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: url('data:image/svg+xml,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)"/></svg>');
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .hero-gradient {
+            background: linear-gradient(135deg, #fafafa 0%, #f1f5f9 100%);
+        }
+
+        .section-dark {
+            background: linear-gradient(135deg, rgb(4, 3, 39) 0%, rgb(15, 12, 50) 100%);
+        }
+
+        @media (max-width: 768px) {
+            .floating-button {
+                right: 16px;
+                bottom: 16px;
+                padding: 10px 20px;
+                font-size: 13px;
+            }
+            
+            .modal-content {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+        }
+
+        .animate-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .animate-in.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .emoji { font-size: 1.1em; }
+        
+        .compact-section { padding: 4rem 0; }
+        .hero-compact { padding: 6rem 0 4rem; }
+
+        .download-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .download-btn:hover .download-icon {
+            transform: translateY(2px);
+        }
+
+        .success-icon {
+            color: #10b981;
+        }
+
+        .error-icon {
+            color: #ef4444;
+        }
+    </style>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        accent: 'rgb(4, 3, 39)',
+                        dark: 'rgb(4, 3, 39)',
+                        light: '#fafafa'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-light">
+    <!-- Download Modal -->
+    <div id="downloadModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="flex justify-between items-start mb-4">
+                <h3 id="modalTitle" class="text-xl font-bold text-dark">Pobieranie pliku...</h3>
+                <button id="closeModal" class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div id="modalContent" class="text-center">
+                <!-- Loading State -->
+                <div id="loadingState" class="py-8">
+                    <div class="spinner w-12 h-12 border-4 border-accent/20 border-t-accent rounded-full mx-auto mb-4"></div>
+                    <p class="text-gray-600" id="loadingText">Przygotowywanie pliku...</p>
+                    <div class="progress-bar">
+                        <div id="progressFill" class="progress-fill"></div>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-2" id="progressText">0%</p>
+                </div>
+                
+                <!-- Success State -->
+                <div id="successState" class="py-8 hidden">
+                    <div class="success-icon text-5xl mb-4">✅</div>
+                    <h4 class="text-lg font-semibold text-dark mb-2">Plik gotowy do pobrania!</h4>
+                    <p class="text-gray-600 mb-4">Kliknij poniżej aby pobrać plik</p>
+                    <a id="downloadLink" href="#" class="inline-block bg-accent text-white font-semibold py-3 px-6 rounded-lg hover:bg-opacity-90 transition-all transform hover:-translate-y-1">
+                        📥 Pobierz teraz
+                    </a>
+                </div>
+                
+                <!-- Error State -->
+                <div id="errorState" class="py-8 hidden">
+                    <div class="error-icon text-5xl mb-4">❌</div>
+                    <h4 class="text-lg font-semibold text-dark mb-2">Wystąpił błąd</h4>
+                    <p class="text-gray-600 mb-4">Nie udało się przygotować pliku do pobrania</p>
+                    <button id="retryBtn" class="bg-accent text-white font-semibold py-2 px-4 rounded-lg hover:bg-opacity-90 transition-all">
+                        🔄 Spróbuj ponownie
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rest of your existing HTML structure -->
+    <!-- Compact Navigation -->
+    <nav class="fixed w-full bg-light/95 backdrop-blur-xl z-50 py-3 border-b border-gray-200/50">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="flex justify-between items-center">
+                <div class="text-xl font-bold text-dark">Jerzy Zientkowski</div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#materialy" class="nav-link text-sm font-medium text-dark hover:text-accent">Materiały</a>
+                    <a href="#kurs" class="nav-link text-sm font-medium text-dark hover:text-accent">Kurs 7 kroków</a>
+                    <a href="#kontakt" class="nav-link text-sm font-medium text-dark hover:text-accent">Kontakt</a>
+                </div>
+                <div class="md:hidden">
+                    <button class="text-dark">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Compact Hero -->
+    <section class="hero-compact hero-gradient relative overflow-hidden pt-20">
+        <div class="grain-overlay"></div>
+        <div class="max-w-6xl mx-auto px-6 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-12 items-center">
+                <div class="lg:col-span-3 animate-in">
+                    <h1 class="text-4xl lg:text-6xl font-bold mb-6 leading-tight">
+                        Dziękuję <span class="emoji">🙂</span>
+                    </h1>
+                    <p class="text-lg text-gray-600 mb-6 leading-relaxed">
+                        Strasznie miło było być razem w Toruniu. Spotkania z Toastmasters to zawsze świetna okazja do wymiany doświadczeń i inspiracji.
+                    </p>
+                    <div class="bg-accent/8 p-4 rounded-2xl">
+                        <p class="text-accent font-semibold">Oto pliki, które Ci obiecałem:</p>
+                    </div>
+                </div>
+                <div class="lg:col-span-2 relative">
+                    <div class="relative z-10 floating">
+                        <img src="https://zientkowski.pl/wp-content/uploads/2025/04/20250415_182744-2048x946.jpg" 
+                             alt="Wrocław Event" 
+                             class="rounded-2xl shadow-2xl w-full object-cover aspect-[4/3]"/>
+                    </div>
+                    <div class="absolute top-4 right-4 w-32 h-32 bg-accent/5 rounded-full blur-2xl"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Compact Materials Grid -->
+    <section id="materialy" class="compact-section section-dark text-white relative overflow-hidden">
+        <div class="grain-overlay opacity-10"></div>
+        <div class="max-w-6xl mx-auto px-6 relative z-10">
+            <div class="text-center mb-12 animate-in">
+                <h2 class="text-3xl lg:text-5xl font-bold mb-3">Materiały do Pobrania</h2>
+                <p class="text-white/80">Wszystkie obiecane pliki z prezentacji</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+                <div class="glass-card p-6 rounded-2xl animate-in" style="animation-delay: 0.1s">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="text-2xl">📊</div>
+                        <div class="text-xs text-white/60 bg-white/10 px-2 py-1 rounded-full">20 MB</div>
+                    </div>
+                    <h3 class="font-bold mb-2 text-sm">Prezentacja Power Poincie</h3>
+                    <p class="text-white/70 text-xs mb-4 leading-relaxed">Show Me the Money - kompletna prezentacja</p>
+                    <button class="download-btn w-full font-semibold py-2 px-4 rounded-lg text-xs" 
+                            data-file="https://zientkowski.pl/wp-content/uploads/2025/06/Toastmasters-Torun-Show-me-the-money.pptx"
+                            data-name="Toastmasters-Torun-Show-me-the-money.pptx">
+                        <span class="download-icon">📥</span> Pobierz
+                    </button>
+                </div>
+                
+                <div class="glass-card p-6 rounded-2xl animate-in" style="animation-delay: 0.2s">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="text-2xl">🎯</div>
+                        <div class="text-xs text-white/60 bg-white/10 px-2 py-1 rounded-full">6 MB</div>
+                    </div>
+                    <h3 class="font-bold mb-2 text-sm">PDF</h3>
+                    <p class="text-white/70 text-xs mb-4 leading-relaxed">Show Me the Money - prezentacja wersja PDF</p>
+                    <button class="download-btn w-full font-semibold py-2 px-4 rounded-lg text-xs"
+                            data-file="https://zientkowski.pl/wp-content/uploads/2025/06/Toastmasters-Torun-Show-me-the-money.pdf"
+                            data-name="Toastmasters-Torun-Show-me-the-money.pdf">
+                        <span class="download-icon">📥</span> Pobierz
+                    </button>
+                </div>
+                
+                
+            </div>
+        </div>
+    </section>
+
+    <!-- Rest of your existing sections (Course CTA, Next Steps, Contact) -->
+    <!-- Compact Course CTA -->
+    <section id="kurs" class="compact-section bg-light relative overflow-hidden">
+        <div class="grain-overlay"></div>
+        <div class="max-w-4xl mx-auto px-6 relative z-10 text-center">
+            <div class="bg-accent text-white p-8 lg:p-12 rounded-3xl relative overflow-hidden animate-in">
+                <div class="grain-overlay opacity-5"></div>
+                <div class="relative z-10">
+                    <div class="text-4xl mb-4">🎯</div>
+                    <h2 class="text-2xl lg:text-4xl font-bold mb-4">7 kroków do mistrzowskiej prezentacji</h2>
+                    <p class="text-lg lg:text-xl text-white/90 mb-6 max-w-2xl mx-auto leading-relaxed">
+                        Podstawy do tego, żeby ze sceny, podczas sprzedaży czy w firmie „gadać" tak, jak ja <span class="emoji">😉</span>
+                    </p>
+                    <div class="bg-white/10 p-4 rounded-xl mb-8 backdrop-blur-sm">
+                        <p class="text-sm lg:text-base">A na serio – to świetny materiał, żeby nie robić słabych prezentacji.</p>
+                    </div>
+                    <a href="#" class="inline-block bg-white text-accent font-bold py-3 px-8 rounded-full hover:bg-opacity-95 transition-all transform hover:-translate-y-1 pulse-glow">
+                        Zobacz kurs "7 kroków"
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Compact Next Steps -->
+    <section class="compact-section section-dark text-white relative overflow-hidden">
+        <div class="grain-overlay opacity-10"></div>
+        <div class="max-w-4xl mx-auto px-6 relative z-10">
+            <div class="text-center mb-8 animate-in">
+                <h2 class="text-2xl lg:text-4xl font-bold mb-4">Co dalej?</h2>
+                <p class="text-white/80">Jeśli potrzebujesz czegoś innego – odezwij się od ręki <span class="emoji">🙂</span></p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="glass-card p-6 rounded-2xl animate-in" style="animation-delay: 0.1s">
+                    <div class="text-2xl mb-3">📞</div>
+                    <h3 class="font-bold mb-2">Kontakt bezpośredni</h3>
+                    <p class="text-white/70 text-sm">Mamy swoje numery albo LinkedIn</p>
+                </div>
+                <div class="glass-card p-6 rounded-2xl animate-in" style="animation-delay: 0.2s">
+                    <div class="text-2xl mb-3">🚀</div>
+                    <h3 class="font-bold mb-2">Follow-up za 3 tygodnie</h3>
+                    <p class="text-white/70 text-sm">Zapytam o Twoje potrzeby</p>
+                </div>
+            </div>
+            
+            <div class="bg-white/5 p-6 rounded-2xl backdrop-blur-sm text-center animate-in" style="animation-delay: 0.3s">
+                <p class="text-sm lg:text-base text-white/90 mb-4">
+                    Wtedy powiesz, że nie chcesz być mówcą profesjonalnym, bo to nie dla Ciebie <span class="emoji">😉</span><br>
+                    <strong>A może nie – i będzie to początek fascynującej przygody!</strong>
+                </p>
+                <div class="text-lg font-bold text-white bg-white/10 inline-block px-4 py-2 rounded-full">
+                    #DoZobaczeniaNaScenie
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Compact Contact -->
+    <section id="kontakt" class="compact-section bg-light relative overflow-hidden">
+        <div class="grain-overlay"></div>
+        <div class="max-w-4xl mx-auto px-6 relative z-10 text-center animate-in">
+            <h2 class="text-2xl lg:text-4xl font-bold mb-8 text-dark">
+                Zostańmy w <span class="relative">kontakcie<span class="absolute bottom-1 left-0 w-full h-2 bg-accent/10 -z-10"></span></span>
+            </h2>
+            <div class="flex justify-center space-x-6">
+                <a href="https://www.linkedin.com/in/jerzyzientkowski/" target="_blank" class="group">
+                    <div class="w-12 h-12 bg-accent/10 rounded-2xl flex items-center justify-center group-hover:bg-accent/20 transition-all duration-300 group-hover:scale-110">
+                        <svg class="w-6 h-6 text-accent" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                        </svg>
+                    </div>
+                    <p class="mt-2 text-xs font-medium">LinkedIn</p>
+                </a>
+                <a href="mailto:jerzy@zientkowski.pl" class="group">
+                    <div class="w-12 h-12 bg-accent/10 rounded-2xl flex items-center justify-center group-hover:bg-accent/20 transition-all duration-300 group-hover:scale-110">
+                        <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <p class="mt-2 text-xs font-medium">Email</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Floating CTA -->
+    <a href="#kurs" class="floating-button">
+        🎯 Kurs "7 kroków"
+    </a>
+
+    <!-- Compact Footer -->
+    <footer class="bg-accent text-white py-6">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <p class="text-sm opacity-80">&copy; 2012-2025 Jerzy Zientkowski. Wszelkie prawa zastrzeżone</p>
+        </div>
+    </footer>
+
+    <script>
+        // Download Manager Class
+        class DownloadManager {
+            constructor() {
+                this.modal = document.getElementById('downloadModal');
+                this.modalTitle = document.getElementById('modalTitle');
+                this.loadingState = document.getElementById('loadingState');
+                this.successState = document.getElementById('successState');
+                this.errorState = document.getElementById('errorState');
+                this.loadingText = document.getElementById('loadingText');
+                this.progressFill = document.getElementById('progressFill');
+                this.progressText = document.getElementById('progressText');
+                this.downloadLink = document.getElementById('downloadLink');
+                this.retryBtn = document.getElementById('retryBtn');
+                this.closeBtn = document.getElementById('closeModal');
+                
+                this.currentFile = null;
+                this.currentFileName = null;
+                
+                this.initializeEventListeners();
+            }
+            
+            initializeEventListeners() {
+                this.closeBtn.addEventListener('click', () => this.closeModal());
+                this.modal.addEventListener('click', (e) => {
+                    if (e.target === this.modal) this.closeModal();
+                });
+                
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && this.modal.classList.contains('active')) {
+                        this.closeModal();
+                    }
+                });
+                
+                this.retryBtn.addEventListener('click', () => {
+                    if (this.currentFile && this.currentFileName) {
+                        this.downloadFile(this.currentFile, this.currentFileName);
+                    }
+                });
+                
+                document.querySelectorAll('.download-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const fileUrl = btn.getAttribute('data-file');
+                        const fileName = btn.getAttribute('data-name');
+                        
+                        if (fileUrl && fileName) {
+                            this.downloadFile(fileUrl, fileName);
+                        }
+                    });
+                });
+            }
+            
+            openModal() {
+                this.modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+            
+            closeModal() {
+                this.modal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+                
+                setTimeout(() => {
+                    this.resetModal();
+                }, 300);
+            }
+            
+            resetModal() {
+                this.loadingState.classList.remove('hidden');
+                this.successState.classList.add('hidden');
+                this.errorState.classList.add('hidden');
+                this.progressFill.style.width = '0%';
+                this.progressText.textContent = '0%';
+            }
+            
+            async downloadFile(fileUrl, fileName) {
+                this.currentFile = fileUrl;
+                this.currentFileName = fileName;
+                
+                this.modalTitle.textContent = `Pobieranie: ${fileName}`;
+                this.openModal();
+                this.resetModal();
+                
+                try {
+                    await this.simulateDownloadPreparation();
+                    
+                    const response = await fetch(fileUrl, { method: 'HEAD' });
+                    if (!response.ok) {
+                        throw new Error('File not found');
+                    }
+                    
+                    this.showSuccessState(fileUrl, fileName);
+                    
+                } catch (error) {
+                    console.error('Download error:', error);
+                    this.showErrorState();
+                }
+            }
+            
+            async simulateDownloadPreparation() {
+                const steps = [
+                    { text: 'Łączenie z serwerem...', progress: 20 },
+                    { text: 'Weryfikowanie pliku...', progress: 40 },
+                    { text: 'Przygotowywanie pobierania...', progress: 70 },
+                    { text: 'Prawie gotowe...', progress: 90 },
+                    { text: 'Plik gotowy!', progress: 100 }
+                ];
+                
+                for (const step of steps) {
+                    this.loadingText.textContent = step.text;
+                    this.progressFill.style.width = `${step.progress}%`;
+                    this.progressText.textContent = `${step.progress}%`;
+                    
+                    await new Promise(resolve => setTimeout(resolve, 300 + Math.random() * 200));
+                }
+            }
+            
+            showSuccessState(fileUrl, fileName) {
+                this.loadingState.classList.add('hidden');
+                this.successState.classList.remove('hidden');
+                
+                this.downloadLink.href = fileUrl;
+                this.downloadLink.download = fileName;
+                this.downloadLink.target = '_blank';
+                
+                setTimeout(() => {
+                    this.downloadLink.click();
+                }, 500);
+            }
+            
+            showErrorState() {
+                this.loadingState.classList.add('hidden');
+                this.errorState.classList.remove('hidden');
+            }
+        }
+        
+        function trackDownload(fileName) {
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'file_download', {
+                    'file_name': fileName,
+                });
+            }
+            
+            console.log(`Download tracked: ${fileName} by pingwiniu at ${new Date().toISOString()}`);
+        }
+        
+
+        const downloadManager = new DownloadManager();
+        
+
+        const observerOptions = {
+            root: null,
+            rootMargin: '-10%',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-in').forEach((element) => {
+            observer.observe(element);
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        window.addEventListener('load', () => {
+            document.querySelectorAll('.animate-in').forEach((el, index) => {
+                setTimeout(() => {
+                    el.classList.add('active');
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>
