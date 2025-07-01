@@ -268,10 +268,10 @@
                     calendarGrid.appendChild(placeholder);
                 }
 
-                const todayStr = new Date().toISOString().split("T")[0];
+                const todayStr = new Date().toLocaleDateString("sv-SE");
 
                 workingDays.forEach(day => {
-                    const dateStr = day.toISOString().split("T")[0];
+                    const dateStr = day.toLocaleDateString("sv-SE");
                     const label = day.toLocaleDateString("pl-PL", { weekday: "short", day: "numeric" });
                     const isPast = day < new Date().setHours(0, 0, 0, 0);
                     const isToday = dateStr === todayStr;
