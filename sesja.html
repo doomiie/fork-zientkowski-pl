@@ -324,7 +324,7 @@
             async function fetchGoogleBusySlotsForDate(date, duration) {
                 const start = new Date(`${date}T00:00:00Z`).toISOString();
                 const end = new Date(`${date}T23:59:59Z`).toISOString();
-                logDebug(`Zapytanie freeBusy dla ${date}`);
+                logDebug(`Zapytanie freeBusy dla ${date}, od ${start} do ${end}`);
 
                 try {
                     const response = await fetch(
@@ -339,7 +339,9 @@
                             })
                         }
                     );
+                    //https://calendar.google.com/calendar/ical/jerzy.zientkowski%40speakerslair.pl/private-cc0eae0e8eb47877d8c9799a918bfdbb/basic.ics
                     const data = await response.json();
+                    logDebug(`Response freeBusy is ${JSON.stringify(data)}`);
                     const busy = data.calendars?.["primary"].busy || [];
                     const result = [];
                     busy.forEach(slot => {
