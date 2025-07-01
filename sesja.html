@@ -215,6 +215,19 @@
             const timeButtons = document.getElementById("time-buttons");
             const form = document.getElementById("meetingForm");
             const prevMonthBtn = document.getElementById("prev-month");
+
+            const debugBox = document.createElement("div");
+            debugBox.id = "debug-log";
+            debugBox.className =
+                "fixed bottom-0 right-0 w-72 max-h-48 overflow-y-auto bg-white border p-2 text-xs z-50";
+            document.body.appendChild(debugBox);
+
+            function logDebug(msg) {
+                const line = document.createElement("div");
+                line.textContent = msg;
+                debugBox.appendChild(line);
+                debugBox.scrollTop = debugBox.scrollHeight;
+            }
             let meetingType = "kup sesję"; // np. "onboarding", "sesja", "kup"
 
 
@@ -293,6 +306,7 @@
                     if (!isPast) {
                         btn.addEventListener("click", () => {
                             selectedDate = dateStr;
+                            logDebug(`Wybrano dzień ${selectedDate}`);
                             [...calendarGrid.children].forEach(b => b.classList?.remove("bg-accent", "text-white"));
                             btn.classList.add("bg-accent", "text-white");
                             showTimes();
@@ -310,6 +324,7 @@
             async function fetchGoogleBusySlotsForDate(date, duration) {
                 const start = new Date(`${date}T00:00:00Z`).toISOString();
                 const end = new Date(`${date}T23:59:59Z`).toISOString();
+                logDebug(`Zapytanie freeBusy dla ${date}`);
 
                 try {
                     const response = await fetch(
@@ -336,9 +351,11 @@
                             cursor.setMinutes(cursor.getMinutes() + duration);
                         }
                     });
+                    logDebug(`Otrzymane zajęte sloty: ${result.join(", ") || "brak"}`);
                     return result;
                 } catch (err) {
                     console.error("Błąd zapytania do Google Calendar", err);
+                    logDebug("Błąd zapytania do Google Calendar");
                     return [];
                 }
             }
@@ -346,6 +363,7 @@
             async function showTimes() {
                 timeButtons.innerHTML = "";
                 timePicker.classList.remove("hidden");
+                logDebug(`Sprawdzam sloty dla ${selectedDate}`);
 
                 const timeLabel = document.getElementById("time-label");
                 const parsed = new Date(selectedDate + 'T00:00:00');
@@ -367,6 +385,7 @@
                 }
 
                 const busySlots = await fetchGoogleBusySlotsForDate(selectedDate, duration);
+                logDebug(`Zajęte sloty: ${busySlots.join(', ') || 'brak'}`);
 
                 slots.forEach(time => {
                     const btn = document.createElement("button");
@@ -387,6 +406,7 @@
 
                         btn.addEventListener("click", () => {
                             selectedTime = time;
+                            logDebug(`Wybrano godzinę ${selectedTime}`);
                             [...timeButtons.children].forEach(b => b.classList.remove("bg-accent", "text-white"));
                             btn.classList.add("bg-accent", "text-white");
                         });
