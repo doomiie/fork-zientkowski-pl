@@ -268,10 +268,13 @@
                     calendarGrid.appendChild(placeholder);
                 }
 
+                const todayStr = new Date().toISOString().split("T")[0];
+
                 workingDays.forEach(day => {
                     const dateStr = day.toISOString().split("T")[0];
                     const label = day.toLocaleDateString("pl-PL", { weekday: "short", day: "numeric" });
                     const isPast = day < new Date().setHours(0, 0, 0, 0);
+                    const isToday = dateStr === todayStr;
 
                     const btn = document.createElement("button");
                     btn.type = "button";
@@ -283,6 +286,9 @@
                         (isPast
                             ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                             : "hover:bg-accent hover:text-white");
+                    if (isToday && !isPast) {
+                        btn.classList.add("border-green-500", "text-green-600");
+                    }
 
                     if (!isPast) {
                         btn.addEventListener("click", () => {
@@ -332,6 +338,10 @@
                     btn.className =
                         "border rounded px-3 py-2 text-sm hover:bg-accent hover:text-white transition";
 
+                    if (time === selectedTime) {
+                        btn.classList.add("bg-accent", "text-white");
+                    }
+
                     btn.addEventListener("click", () => {
                         selectedTime = time;
                         [...timeButtons.children].forEach(b => b.classList.remove("bg-accent", "text-white"));
@@ -340,6 +350,10 @@
 
                     timeButtons.appendChild(btn);
                 });
+
+                if (selectedTime && !slots.includes(selectedTime)) {
+                    selectedTime = null;
+                }
 
                 // Opcjonalnie: fetchGoogleBusySlotsForDate(selectedDate, duration);
             }
