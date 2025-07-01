@@ -371,8 +371,10 @@
 
 
             async function fetchGoogleBusySlotsForDate(date, duration) {
-                const start = new Date(`${date}T00:00:00Z`).toISOString();
-                const end = new Date(`${date}T23:59:59Z`).toISOString();
+                // Use local timezone for the selected day so Google receives the
+                // correct UTC interval
+                const start = new Date(`${date}T00:00:00`).toISOString();
+                const end = new Date(`${date}T23:59:59`).toISOString();
                 logDebug(`Zapytanie freeBusy dla ${date}, od ${start} do ${end}`);
 
                 try {
@@ -401,7 +403,8 @@
                         const e = new Date(slot.end);
                         const cursor = new Date(s);
                         while (cursor < e) {
-                            result.push(cursor.toISOString().substring(11, 16));
+                            result.push(cursor
+                                .toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit', hour12: false }));
                             cursor.setMinutes(cursor.getMinutes() + duration);
                         }
                     });
