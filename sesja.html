@@ -387,14 +387,14 @@
                             body: JSON.stringify({
                                 timeMin: start,
                                 timeMax: end,
-                                items: [{ id: "primary" }]
+                                items: [{ id: "jerzy.zientkowski@speakerslair.pl" }]
                             })
                         }
                     );
                     //https://calendar.google.com/calendar/ical/jerzy.zientkowski%40speakerslair.pl/private-cc0eae0e8eb47877d8c9799a918bfdbb/basic.ics
                     const data = await response.json();
                     logDebug(`Response freeBusy is ${JSON.stringify(data)}`);
-                    const busy = data.calendars?.["primary"].busy || [];
+                    const busy = data.calendars?.["jerzy.zientkowski@speakerslair.pl"].busy || [];
                     const result = [];
                     busy.forEach(slot => {
                         const s = new Date(slot.start);
