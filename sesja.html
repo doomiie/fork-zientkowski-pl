@@ -307,7 +307,43 @@
             }
 
 
-            function showTimes() {
+            async function fetchGoogleBusySlotsForDate(date, duration) {
+                const start = new Date(`${date}T00:00:00Z`).toISOString();
+                const end = new Date(`${date}T23:59:59Z`).toISOString();
+
+                try {
+                    const response = await fetch(
+                        `https://www.googleapis.com/calendar/v3/freeBusy?key=YOUR_API_KEY`,
+                        {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                timeMin: start,
+                                timeMax: end,
+                                items: [{ id: "YOUR_CALENDAR_ID" }]
+                            })
+                        }
+                    );
+                    const data = await response.json();
+                    const busy = data.calendars?.["YOUR_CALENDAR_ID"].busy || [];
+                    const result = [];
+                    busy.forEach(slot => {
+                        const s = new Date(slot.start);
+                        const e = new Date(slot.end);
+                        const cursor = new Date(s);
+                        while (cursor < e) {
+                            result.push(cursor.toISOString().substring(11, 16));
+                            cursor.setMinutes(cursor.getMinutes() + duration);
+                        }
+                    });
+                    return result;
+                } catch (err) {
+                    console.error("Błąd zapytania do Google Calendar", err);
+                    return [];
+                }
+            }
+
+            async function showTimes() {
                 timeButtons.innerHTML = "";
                 timePicker.classList.remove("hidden");
 
@@ -330,23 +366,33 @@
                     }
                 }
 
+                const busySlots = await fetchGoogleBusySlotsForDate(selectedDate, duration);
+
                 slots.forEach(time => {
                     const btn = document.createElement("button");
                     btn.type = "button";
                     btn.textContent = time;
                     btn.dataset.time = time;
+
+                    const isBusy = busySlots.includes(time);
+
                     btn.className =
-                        "border rounded px-3 py-2 text-sm hover:bg-accent hover:text-white transition";
+                        "border rounded px-3 py-2 text-sm transition " +
+                        (isBusy ? "bg-red-500 text-white cursor-not-allowed" : "hover:bg-accent hover:text-white");
 
-                    if (time === selectedTime) {
-                        btn.classList.add("bg-accent", "text-white");
+                    if (!isBusy) {
+                        if (time === selectedTime) {
+                            btn.classList.add("bg-accent", "text-white");
+                        }
+
+                        btn.addEventListener("click", () => {
+                            selectedTime = time;
+                            [...timeButtons.children].forEach(b => b.classList.remove("bg-accent", "text-white"));
+                            btn.classList.add("bg-accent", "text-white");
+                        });
+                    } else {
+                        btn.disabled = true;
                     }
-
-                    btn.addEventListener("click", () => {
-                        selectedTime = time;
-                        [...timeButtons.children].forEach(b => b.classList.remove("bg-accent", "text-white"));
-                        btn.classList.add("bg-accent", "text-white");
-                    });
 
                     timeButtons.appendChild(btn);
                 });
@@ -354,8 +400,6 @@
                 if (selectedTime && !slots.includes(selectedTime)) {
                     selectedTime = null;
                 }
-
-                // Opcjonalnie: fetchGoogleBusySlotsForDate(selectedDate, duration);
             }
 
             prevMonthBtn.addEventListener("click", () => {
