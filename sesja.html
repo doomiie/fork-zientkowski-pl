@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jerzy Zientkowski</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <style>
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        * {
+            font-family: 'Space Grotesk', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        .nav-link {
+            position: relative;
+            padding-bottom: 4px;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: rgb(4, 3, 39);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        accent: 'rgb(4, 3, 39)',
+                        dark: 'rgb(4, 3, 39)',
+                        light: '#F9F9F9'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <!-- Top Bar (Menu) -->
+    <nav
+        class="fixed main-nav w-full bg-light/90 backdrop-blur-lg z-50 py-4 transition-all duration-300 border-b border-gray-200/50">
+        <div class="max-w-[1400px] mx-auto px-6">
+            <div class="flex justify-between items-center">
+                <div class="text-2xl font-bold tracking-tight">
+                    <img class="brightness-0 max-w-[150px]"
+                        src="./assets/img/logo-jzplus-name-POZIOM-białe-210x58-1.png" alt="Logo">
+                </div>
+                <div class="hidden md:flex items-center space-x-12">
+                    <a href="#o-mnie"
+                        class="nav-link relative text-dark hover:text-accent transition-colors duration-300">O mnie</a>
+                    <a href="#uslugi"
+                        class="nav-link relative text-dark hover:text-accent transition-colors duration-300">Usługi</a>
+                    <a href="#kontakt"
+                        class="nav-link relative text-dark hover:text-accent transition-colors duration-300">Kontakt</a>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <button data-mobile-menu-btn class="md:hidden focus:outline-none">
+                        <i data-lucide="menu" class="h-6 w-6 text-dark"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div data-mobile-menu
+        class="fixed inset-y-0 right-0 w-4/5 max-w-sm bg-white z-50 transform translate-x-full transition-transform duration-200 ease-in-out shadow-2xl md:hidden">
+        <div class="p-6 h-full flex flex-col">
+            <div class="flex justify-between items-center mb-8">
+                <div class="text-xl font-bold">Menu</div>
+                <button data-mobile-menu-close class="focus:outline-none">
+                    <i data-lucide="x" class="h-6 w-6 text-dark"></i>
+                </button>
+            </div>
+            <div class="flex-1">
+                <div class="flex flex-col space-y-6">
+                    <a href="#o-mnie-mobile"
+                        class="text-lg font-medium text-dark hover:text-accent transition-colors duration-300">O
+                        mnie</a>
+                    <a href="#uslugi"
+                        class="text-lg font-medium text-dark hover:text-accent transition-colors duration-300">Usługi</a>
+                    <a href="#kontakt"
+                        class="text-lg font-medium text-dark hover:text-accent transition-colors duration-300">Kontakt</a>
+                </div>
+            </div>
+            <div class="mt-auto">
+                <div class="flex space-x-4 pt-6 border-t border-gray-200 mt-6">
+                    <a href="https://www.facebook.com/jerzy.zientkowski" target="_blank" aria-label="Facebook"
+                        class="text-dark hover:text-accent transition-colors duration-300">
+                        <i data-lucide="facebook" class="h-5 w-5"></i>
+                    </a>
+                    <a href="https://www.instagram.com/jerzyzientkowskiofficial/" target="_blank" aria-label="Instagram"
+                        class="text-dark hover:text-accent transition-colors duration-300">
+                        <i data-lucide="instagram" class="h-5 w-5"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/jerzyzientkowski/" target="_blank" aria-label="LinkedIn"
+                        class="text-dark hover:text-accent transition-colors duration-300">
+                        <i data-lucide="linkedin" class="h-5 w-5"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <section class="py-20 bg-white text-dark">
+        <div class="max-w-xl mx-auto px-4">
+            <h2 class="text-3xl font-bold mb-6 text-center">Umów spotkanie</h2>
+
+            <form id="meetingForm" class="space-y-6">
+                <div>
+                    <label class="block mb-2 font-medium">Typ spotkania</label>
+                    <select class="w-full border border-gray-300 rounded-lg p-3" required>
+                        <option value="onboarding">Onboarding</option>
+                        <option value="sesja umówiona">Sesja umówiona</option>
+                        <option value="kup sesję" selected>Kup sesję</option>
+                    </select>
+
+                </div>
+
+                <div>
+                    <label class="block mb-4 font-medium">Adres e-mail</label>
+                    <input type="email" placeholder="twoj@email.pl" class="w-full border border-gray-300 rounded-lg p-3"
+                        required />
+                </div>
+
+                <div>
+                    <label class="block mb-4 font-medium">Wybierz dzień</label>
+                    <div class="flex justify-between items-center mb-2">
+                        <button id="prev-month" type="button"
+                            class="text-sm text-accent hover:underline disabled:opacity-30" disabled>⬅️ Wstecz</button>
+                        <div id="calendar-month" class="font-semibold text-lg"></div>
+                        <button id="next-month" type="button" class="text-sm text-accent hover:underline">➡️
+                            Dalej</button>
+                    </div>
+                    <div id="calendar-grid" class="grid grid-cols-5 gap-2">
+                        <!-- dni robocze -->
+                    </div>
+                </div>
+
+                <div id="time-picker" class="hidden">
+                    <label id="time-label" class="block mt-6 mb-4 font-medium">Wybierz godzinę</label>
+
+                    <div class="grid grid-cols-3 gap-2" id="time-buttons">
+                        <!-- godziny -->
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-accent text-white py-3 px-6 rounded-lg hover:bg-dark transition">
+                    Zarezerwuj spotkanie
+                </button>
+            </form>
+        </div>
+    </section>
+
+
+
+
+    <!-- Footer -->
+    <footer class="bg-light py-8 mt-40">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-center space-x-4 mb-6">
+                <a href="https://www.linkedin.com/in/jerzyzientkowski/"
+                    class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+                    <i data-lucide="linkedin" class="w-5 h-5 text-gray-600 hover:text-accent"></i>
+                </a>
+                <a href="https://www.instagram.com/jerzyzientkowskiofficial/"
+                    class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+                    <i data-lucide="instagram" class="w-5 h-5 text-gray-600 hover:text-accent"></i>
+                </a>
+                <a href="https://www.facebook.com/jerzy.zientkowski"
+                    class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+                    <i data-lucide="facebook" class="w-5 h-5 text-gray-600 hover:text-accent"></i>
+                </a>
+            </div>
+            <div class="text-center text-gray-600 pt-6 border-t border-gray-200">
+                <p class="mb-4">&copy; 2011-2012-2025 Jerzy Zientkowski. Wszelkie prawa zastrzeżone</p>
+                <div class="flex justify-center items-center text-sm">
+                    <a href="#" class="d-none hover:text-accent transition-colors">Polityka prywatności</a>
+                    <span class="mx-2 text-gray-300">|</span>
+                    <a href="#" class="d-none hover:text-accent transition-colors">Regulamin</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollToPlugin.min.js"></script>
+    <script defer src="./assets/js/animations.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const calendarGrid = document.getElementById("calendar-grid");
+            const calendarMonth = document.getElementById("calendar-month");
+            const nextMonthBtn = document.getElementById("next-month");
+            const timePicker = document.getElementById("time-picker");
+            const timeButtons = document.getElementById("time-buttons");
+            const form = document.getElementById("meetingForm");
+            const prevMonthBtn = document.getElementById("prev-month");
+            let meetingType = "kup sesję"; // np. "onboarding", "sesja", "kup"
+
+
+            let selectedDate = null;
+            let selectedTime = null;
+            let monthOffset = 0;
+
+            function getWorkingDaysFromMonth(monthOffset) {
+                const result = [];
+
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                // Przesuń się o miesiąc względem dziś
+                const refDate = new Date(today.getFullYear(), today.getMonth() + monthOffset, today.getDate());
+                const currentMonth = refDate.getMonth();
+
+                // Zacznij od 1. dnia tego miesiąca
+                const cursor = new Date(refDate.getFullYear(), refDate.getMonth(), 1);
+
+                while (cursor.getMonth() === currentMonth) {
+                    const isWeekend = cursor.getDay() === 0 || cursor.getDay() === 6;
+                    if (!isWeekend) {
+                        result.push(new Date(cursor));
+                    }
+                    cursor.setDate(cursor.getDate() + 1);
+                }
+
+                return result;
+            }
+
+
+
+
+
+            function updateCalendar() {
+                const now = new Date();
+                const workingDays = getWorkingDaysFromMonth(monthOffset, 30);
+                const firstDay = workingDays[0];
+                const monthName = firstDay.toLocaleDateString("pl-PL", { month: "long", year: "numeric" });
+
+                calendarMonth.textContent = monthName;
+                calendarGrid.innerHTML = "";
+
+                // Oblicz ile pustych komórek przed pierwszym dniem miesiąca
+                const startDayOfWeek = firstDay.getDay(); // 1 (pon) – 5 (pt), 0 (nd)
+                const emptySlots = (startDayOfWeek === 0 ? 6 : startDayOfWeek - 1); // przesunięcie kolumny
+
+                for (let i = 0; i < emptySlots; i++) {
+                    const placeholder = document.createElement("div");
+                    calendarGrid.appendChild(placeholder);
+                }
+
+                workingDays.forEach(day => {
+                    const dateStr = day.toISOString().split("T")[0];
+                    const label = day.toLocaleDateString("pl-PL", { weekday: "short", day: "numeric" });
+                    const isPast = day < new Date().setHours(0, 0, 0, 0);
+
+                    const btn = document.createElement("button");
+                    btn.type = "button";
+                    btn.textContent = label;
+                    btn.dataset.date = dateStr;
+
+                    btn.className =
+                        "rounded-lg px-3 py-2 border text-sm font-medium transition " +
+                        (isPast
+                            ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                            : "hover:bg-accent hover:text-white");
+
+                    if (!isPast) {
+                        btn.addEventListener("click", () => {
+                            selectedDate = dateStr;
+                            [...calendarGrid.children].forEach(b => b.classList?.remove("bg-accent", "text-white"));
+                            btn.classList.add("bg-accent", "text-white");
+                            showTimes();
+                        });
+                    }
+
+                    calendarGrid.appendChild(btn);
+                });
+
+                prevMonthBtn.disabled = monthOffset <= -1;
+                nextMonthBtn.disabled = monthOffset >= 2;
+            }
+
+
+            function showTimes() {
+                timeButtons.innerHTML = "";
+                timePicker.classList.remove("hidden");
+
+                const timeLabel = document.getElementById("time-label");
+                const parsed = new Date(selectedDate + 'T00:00:00');
+                const dateLabel = parsed.toLocaleDateString("pl-PL", {
+                    weekday: "long", year: "numeric", month: "long", day: "numeric"
+                });
+                timeLabel.textContent = `Wybierz godzinę (${dateLabel})`;
+
+                const duration = meetingType === "onboarding" ? 30 : 60;
+                const slots = [];
+
+                for (let h = 9; h <= 16; h++) {
+                    for (let m = 0; m < 60; m += duration) {
+                        const time = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+                        const end = new Date(`${selectedDate}T${time}:00`);
+                        end.setMinutes(end.getMinutes() + duration);
+                        if (end.getHours() < 17) slots.push(time);
+                    }
+                }
+
+                slots.forEach(time => {
+                    const btn = document.createElement("button");
+                    btn.type = "button";
+                    btn.textContent = time;
+                    btn.dataset.time = time;
+                    btn.className =
+                        "border rounded px-3 py-2 text-sm hover:bg-accent hover:text-white transition";
+
+                    btn.addEventListener("click", () => {
+                        selectedTime = time;
+                        [...timeButtons.children].forEach(b => b.classList.remove("bg-accent", "text-white"));
+                        btn.classList.add("bg-accent", "text-white");
+                    });
+
+                    timeButtons.appendChild(btn);
+                });
+
+                // Opcjonalnie: fetchGoogleBusySlotsForDate(selectedDate, duration);
+            }
+
+            prevMonthBtn.addEventListener("click", () => {
+                if (monthOffset > -1) {
+                    monthOffset--;
+                    updateCalendar();
+                }
+            });
+
+            nextMonthBtn.addEventListener("click", () => {
+                if (monthOffset < 2) {
+                    monthOffset++;
+                    updateCalendar();
+                } else {
+                    alert("Nie można wybrać więcej niż 2 miesiące do przodu.");
+                }
+            });
+
+            form.addEventListener("submit", e => {
+                e.preventDefault();
+                if (!selectedDate || !selectedTime) {
+                    alert("Proszę wybrać dzień i godzinę.");
+                    return;
+                }
+
+                const email = form.querySelector("input[type='email']").value;
+                const meetingType = form.querySelector("select").value;
+
+                alert(`Rezerwacja przyjęta:
+🗓️ Data: ${selectedDate}
+🕒 Godzina: ${selectedTime}
+📧 Email: ${email}
+📌 Typ: ${meetingType}
+
+(wersja demo – brak integracji z kalendarzem)`);
+
+                // Tu można dodać POST/fetch do Google Calendar lub backendu
+            });
+
+            document.querySelector("select").addEventListener("change", e => {
+                meetingType = e.target.value.toLowerCase();
+                if (selectedDate) showTimes(); // odśwież sloty jeśli dzień już wybrany
+            });
+
+            updateCalendar();
+        });
+    </script>
+
+
+
+</body>
+
+</html>
