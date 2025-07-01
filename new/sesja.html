@@ -397,19 +397,21 @@
                     const data = await response.json();
                     logDebug(`Response freeBusy is ${JSON.stringify(data)}`);
                     const busy = data.calendars?.["primary"].busy || [];
-                    const result = [];
+                    const result = new Set();
                     busy.forEach(slot => {
                         const s = new Date(slot.start);
                         const e = new Date(slot.end);
                         const cursor = new Date(s);
+                        cursor.setMinutes(Math.floor(cursor.getMinutes() / duration) * duration, 0, 0);
                         while (cursor < e) {
-                            result.push(cursor
+                            result.add(cursor
                                 .toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit', hour12: false }));
                             cursor.setMinutes(cursor.getMinutes() + duration);
                         }
                     });
-                    logDebug(`Otrzymane zajęte sloty: ${result.join(", ") || "brak"}`);
-                    return result;
+                    const arrayResult = Array.from(result);
+                    logDebug(`Otrzymane zajęte sloty: ${arrayResult.join(", ") || "brak"}`);
+                    return arrayResult;
                 } catch (err) {
                     console.error("Błąd zapytania do Google Calendar", err);
                     logDebug("Błąd zapytania do Google Calendar");
