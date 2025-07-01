@@ -313,19 +313,19 @@
 
                 try {
                     const response = await fetch(
-                        `https://www.googleapis.com/calendar/v3/freeBusy?key=YOUR_API_KEY`,
+                        `https://www.googleapis.com/calendar/v3/freeBusy?key=AIzaSyASMM7My0KPTTcPqWKCqENdMaGRjFWEIY4`,
                         {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
                             body: JSON.stringify({
                                 timeMin: start,
                                 timeMax: end,
-                                items: [{ id: "YOUR_CALENDAR_ID" }]
+                                items: [{ id: "primary" }]
                             })
                         }
                     );
                     const data = await response.json();
-                    const busy = data.calendars?.["YOUR_CALENDAR_ID"].busy || [];
+                    const busy = data.calendars?.["primary"].busy || [];
                     const result = [];
                     busy.forEach(slot => {
                         const s = new Date(slot.start);
