@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+$tokenPath = dirname(__DIR__) . '/token.json';
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Google\Client;
@@ -18,21 +20,24 @@ $client->setAccessType('offline');
 // Handle OAuth callback
 if (isset($_GET['code'])) {
     $token = $client->fetchAccessTokenWithAuthCode($_GET['code']);
-    $_SESSION['access_token'] = $token;
+    if (!isset($token['error'])) {
+        file_put_contents($tokenPath, json_encode($token));
+        $client->setAccessToken($token);
+    }
     $return = $_SESSION['return'] ?? '/sesja.html';
     header('Location: ' . $return);
     exit();
 }
 
 // Ensure we have a token
-if (isset($_SESSION['access_token'])) {
-    $client->setAccessToken($_SESSION['access_token']);
+if (file_exists($tokenPath)) {
+    $client->setAccessToken(json_decode(file_get_contents($tokenPath), true));
     if ($client->isAccessTokenExpired()) {
         if ($client->getRefreshToken()) {
             $client->fetchAccessTokenWithRefreshToken($client->getRefreshToken());
-            $_SESSION['access_token'] = $client->getAccessToken();
+            file_put_contents($tokenPath, json_encode($client->getAccessToken()));
         } else {
-            unset($_SESSION['access_token']);
+            unlink($tokenPath);
         }
     }
 }
