@@ -325,6 +325,7 @@
 
 
             async function apiRequest(url, options = {}) {
+                options.credentials = options.credentials || 'include';
                 const resp = await fetch(url, options);
                 if (resp.status === 401) {
                     const data = await resp.json();
@@ -333,7 +334,12 @@
                     }
                     return null;
                 }
-                return resp.json();
+                try {
+                    return await resp.json();
+                } catch (err) {
+                    console.error('Non-JSON response', err);
+                    return null;
+                }
             }
 
             async function fetchBusySlots(date, duration) {
