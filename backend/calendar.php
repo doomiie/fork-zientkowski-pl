@@ -11,7 +11,7 @@ use Google\Service\Calendar\FreeBusyRequest;
 // Configure Google Client
 $client = new Client();
 $client->setAuthConfig(__DIR__ . '/credentials.json');
-$client->setRedirectUri((isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
+$client->setRedirectUri('https://zientkowski.pl/backend/calendar.php');
 $client->addScope(Calendar::CALENDAR);
 $client->setAccessType('offline');
 
