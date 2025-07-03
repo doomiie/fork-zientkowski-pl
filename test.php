@@ -3,7 +3,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 // Ustawienia stałe
 $calendarId = 'primary';
-$date = '2025-07-05'; // na sztywno
+$date = '2025-07-07'; // na sztywno
 $startHour = 9;
 $endHour = 16;
 $intervalMinutes = 30;
@@ -12,11 +12,11 @@ $intervalMinutes = 30;
 $client = new Google_Client();
 $client->setApplicationName('Google Calendar API PHP');
 $client->setScopes(Google_Service_Calendar::CALENDAR_READONLY);
-$client->setAuthConfig(__DIR__ . '/../credentials.json');
+$client->setAuthConfig(__DIR__ . '/backend/credentials.json');
 $client->setAccessType('offline');
 
 // Załaduj zapisany token
-$tokenPath = __DIR__ . '/../token.json';
+$tokenPath = __DIR__ . '/token.json';
 if (!file_exists($tokenPath)) {
     exit("Brakuje pliku token.json. Zaloguj się najpierw.\n");
 }
@@ -79,3 +79,4 @@ while ($dt < $end) {
 
 header('Content-Type: application/json');
 echo json_encode($availableSlots);
+echo json_encode($busySlots);

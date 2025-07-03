@@ -63,7 +63,7 @@ if ($action === 'busy') {
         exit();
     }
     $timeMin = $date . 'T00:00:00Z';
-    $timeMax = $date . 'T23:59:59Z';
+    $timeMax = $date . 'T15:30:59Z';
     $req = new FreeBusyRequest([
         'timeMin' => $timeMin,
         'timeMax' => $timeMax,
@@ -73,8 +73,12 @@ if ($action === 'busy') {
     $busy = $res->getCalendars()['primary']['busy'] ?? [];
     $slots = [];
     foreach ($busy as $b) {
-        $start = new DateTime($b['start']);
-        $end = new DateTime($b['end']);
+        $start = new DateTime($b['start'], new DateTimeZone('UTC'));
+        $start->setTimezone(new DateTimeZone('Europe/Warsaw'));
+
+        $end = new DateTime($b['end'], new DateTimeZone('UTC'));
+        $end->setTimezone(new DateTimeZone('Europe/Warsaw'));
+
         $cursor = clone $start;
         while ($cursor < $end) {
             $slots[] = $cursor->format('H:i');
@@ -82,7 +86,8 @@ if ($action === 'busy') {
         }
     }
     header('Content-Type: application/json');
-    echo json_encode(['busy' => $slots]);
+    //echo json_encode(['busy' => $slots]);
+    echo json_encode(['busy' => $slots, 'res' => $res]);
     exit();
 }
 
@@ -97,7 +102,9 @@ if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         'end' => ['dateTime' => $end->format(DateTime::RFC3339)],
     ]);
     if (!empty($data['attendees'])) {
-        $event->setAttendees(array_map(function ($e) { return ['email' => $e]; }, $data['attendees']));
+        $event->setAttendees(array_map(function ($e) {
+            return ['email' => $e];
+        }, $data['attendees']));
     }
     $created = $service->events->insert('primary', $event);
     header('Content-Type: application/json');

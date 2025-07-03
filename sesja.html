@@ -67,7 +67,7 @@
                 </div>
                 <div class="hidden md:flex items-center space-x-12">
                     <a href="#o-mnie"
-                        class="nav-link relative text-dark hover:text-accent transition-colors duration-300">O mnie 1</a>
+                        class="nav-link relative text-dark hover:text-accent transition-colors duration-300">O mnie</a>
                     <a href="#uslugi"
                         class="nav-link relative text-dark hover:text-accent transition-colors duration-300">Usługi</a>
                     <a href="#kontakt"
@@ -339,6 +339,7 @@
             async function fetchBusySlots(date, duration) {
                 const data = await apiRequest(`backend/calendar.php?action=busy&date=${date}&duration=${duration}&return=/sesja.html`);
                 const busy = data ? data.busy : [];
+                console.log(data);
                 const result = new Set();
                 busy.forEach(time => {
                     const dt = new Date(`${date}T${time}:00`);
@@ -362,6 +363,7 @@
                 const duration = meetingType === "onboarding" ? 30 : 60;
                 const busySlots = await fetchBusySlots(selectedDate, duration);
                 logDebug(`Zajęte sloty: ${busySlots.join(', ') || 'brak'}`);
+                
 
                 if (meetingType === "full day") {
                     timeLabel.textContent = `Sprawdź dostępność (${dateLabel})`;
@@ -388,7 +390,7 @@
                 timeLabel.textContent = `Wybierz godzinę (${dateLabel})`;
 
                 const slots = [];
-                for (let h = 9; h <= 16; h++) {
+                for (let h = 9; h <= 15; h++) {
                     for (let m = 0; m < 60; m += duration) {
                         const time = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
                         const end = new Date(`${selectedDate}T${time}:00`);
