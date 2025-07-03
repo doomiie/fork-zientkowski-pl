@@ -210,7 +210,7 @@
     <script defer src="./assets/js/animations.js"></script>
 
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
+        document.addEventListener("DOMContentLoaded", async () => {
             const calendarGrid = document.getElementById("calendar-grid");
             const calendarMonth = document.getElementById("calendar-month");
             const nextMonthBtn = document.getElementById("next-month");
@@ -219,13 +219,20 @@
             const form = document.getElementById("meetingForm");
             const prevMonthBtn = document.getElementById("prev-month");
 
-            const debugBox = document.createElement("div");
-            debugBox.id = "debug-log";
-            debugBox.className =
-                "fixed bottom-0 right-0 w-72 max-h-48 overflow-y-auto bg-white border p-2 text-xs z-50";
-            document.body.appendChild(debugBox);
+            const config = await fetch('config.json').then(r => r.json()).catch(() => ({}));
+            const debugVisible = config.debugBoxVisible !== false;
+
+            let debugBox = null;
+            if (debugVisible) {
+                debugBox = document.createElement("div");
+                debugBox.id = "debug-log";
+                debugBox.className =
+                    "fixed bottom-0 right-0 w-72 max-h-48 overflow-y-auto bg-white border p-2 text-xs z-50";
+                document.body.appendChild(debugBox);
+            }
 
             function logDebug(msg) {
+                if (!debugVisible) return;
                 const line = document.createElement("div");
                 line.textContent = msg;
                 debugBox.appendChild(line);
