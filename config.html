@@ -82,6 +82,17 @@
 
         <div id="meetings" class="space-y-4"></div>
 
+        <div id="p24-config" class="border p-4 rounded-md bg-white space-y-2">
+            <h2 class="font-semibold">Przelewy24</h2>
+            <input type="text" id="p24_merchant" class="border rounded px-2 py-1 w-full" placeholder="Merchant ID">
+            <input type="text" id="p24_pos" class="border rounded px-2 py-1 w-full" placeholder="Pos ID">
+            <input type="text" id="p24_crc" class="border rounded px-2 py-1 w-full" placeholder="CRC">
+            <label class="flex items-center space-x-2">
+                <input type="checkbox" id="p24_sandbox" checked>
+                <span>Sandbox</span>
+            </label>
+        </div>
+
         <div class="flex space-x-2">
             <button id="addMeeting" type="button" class="px-4 py-2 bg-blue-500 text-white rounded">Dodaj typ spotkania</button>
             <button id="saveConfig" type="button" class="px-4 py-2 bg-green-600 text-white rounded">Zapisz</button>
@@ -114,6 +125,11 @@
         document.getElementById('debugVisible').checked = cfg.debugBoxVisible !== false;
         const mt = cfg.meetingTypes || {};
         Object.entries(mt).forEach(([k, v]) => addMeeting(k, v));
+        const p24 = cfg.przelewy24 || {};
+        document.getElementById('p24_merchant').value = p24.merchantId || '';
+        document.getElementById('p24_pos').value = p24.posId || '';
+        document.getElementById('p24_crc').value = p24.crc || '';
+        document.getElementById('p24_sandbox').checked = p24.sandbox !== false;
     }
 
     function addMeeting(key = '', data = {}) {
@@ -148,7 +164,13 @@
         });
         const cfg = {
             debugBoxVisible: document.getElementById('debugVisible').checked,
-            meetingTypes: mt
+            meetingTypes: mt,
+            przelewy24: {
+                merchantId: document.getElementById('p24_merchant').value.trim(),
+                posId: document.getElementById('p24_pos').value.trim(),
+                crc: document.getElementById('p24_crc').value.trim(),
+                sandbox: document.getElementById('p24_sandbox').checked
+            }
         };
         const res = await fetch('backend/save_config.php', {
             method: 'POST',
