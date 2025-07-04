@@ -564,7 +564,10 @@
                         if (resp && resp.url) {
                             window.location.href = resp.url;
                         } else {
-                            alert('Błąd inicjowania płatności');
+                            const msg = resp && resp.error ?
+                                `Błąd inicjowania płatności: ${resp.error}` :
+                                'Błąd inicjowania płatności';
+                            alert(msg);
                         }
                     } else {
                         await createCalendarEvent(email, meetingType);
