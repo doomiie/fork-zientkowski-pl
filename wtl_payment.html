@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>WTL Payment Test</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="p-6">
+  <h1 class="text-2xl font-bold mb-4">Test płatności WTL</h1>
+  <p class="mb-4">Poniższa ramka ładuje formularz płatności z WTL. Webhooki
+  <code>wtl_before.php</code> i <code>wtl_after.php</code> zapisują
+  odebrane dane do plików <code>wtl_before.log</code> oraz <code>wtl_after.log</code>.</p>
+  <style>
+  .wtl-responsive-iframe {
+    width: 1px;
+    min-width: 100%;
+  }
+  </style>
+  <script src="https://kotryszientkowski.elms.pl/assets/js/iframe-resizer-embed.js"></script>
+  <iframe class="wtl-responsive-iframe" src="https://kotryszientkowski.elms.pl/assets/js/s.php?id=1f0e3dad99908345f7439f8ffabdffc4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  <script>
+    iFrameResize({ log: false }, ".wtl-responsive-iframe");
+  </script>
+</body>
+</html>
