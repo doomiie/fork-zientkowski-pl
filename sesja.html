@@ -518,6 +518,27 @@
 
                 const email = form.querySelector("input[type='email']").value;
                 const meetingType = document.getElementById('meeting-type').value;
+                const mtConf = meetingTypesCfg[meetingType] || {};
+                if (mtConf.paid) {
+                    const order = await apiRequest('backend/paypal.php?action=create', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ amount: mtConf.price || '100.00' })
+                    });
+                    if (!order || !order.id) {
+                        alert('Błąd płatności.');
+                        return;
+                    }
+                    const capture = await apiRequest('backend/paypal.php?action=capture', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ orderID: order.id })
+                    });
+                    if (!capture || capture.status !== 'COMPLETED') {
+                        alert('Płatność nie powiodła się.');
+                        return;
+                    }
+                }
                 await createCalendarEvent(email, meetingType);
                 alert(`Rezerwacja przyjęta:
 🗓️ Data: ${selectedDate}
