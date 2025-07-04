@@ -54,6 +54,11 @@ if (!$client->getAccessToken()) {
 $service = new Calendar($client);
 $action = $_GET['action'] ?? '';
 
+// Load configuration
+$configPath = dirname(__DIR__) . '/config.json';
+$cfg = file_exists($configPath) ? json_decode(file_get_contents($configPath), true) : [];
+$meetingTypes = $cfg['meetingTypes'] ?? [];
+
 if ($action === 'busy') {
     $date = $_GET['date'] ?? '';
     $duration = (int)($_GET['duration'] ?? 60);
@@ -98,16 +103,11 @@ if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $attendees = $data['attendees'] ?? [];
     $email = $attendees[0] ?? '';
 
-    $emojiMap = [
-        'onboarding' => '🎉',
-        'sesja umówiona' => '🤝',
-        'kup sesję' => '💸',
-        'full day' => '📅'
-    ];
     $key = strtolower($meetingType);
-    $emoji = $emojiMap[$key] ?? '🗓️';
+    $emoji = isset($meetingTypes[$key]['emoji']) ? $meetingTypes[$key]['emoji'] : '🗓️';
+    $displayName = isset($meetingTypes[$key]['name']) ? $meetingTypes[$key]['name'] : ucfirst($meetingType);
 
-    $summary = trim(sprintf('%s %s%s', $emoji, ucfirst($meetingType), $email ? ' - ' . $email : ''));
+    $summary = trim(sprintf('%s %s%s', $emoji, $displayName, $email ? ' - ' . $email : ''));
 
     $start = new DateTime($data['start']);
     $end = new DateTime($data['end']);

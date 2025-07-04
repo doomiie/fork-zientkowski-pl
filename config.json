@@ -1,3 +1,29 @@
 {
-  "debugBoxVisible": true
+  "debugBoxVisible": true,
+  "meetingTypes": {
+    "onboarding": {
+      "name": "Onboarding",
+      "emoji": "🎉",
+      "duration": 30,
+      "paid": false
+    },
+    "sesja umówiona": {
+      "name": "Sesja umówiona",
+      "emoji": "🤝",
+      "duration": 60,
+      "paid": false
+    },
+    "kup sesję": {
+      "name": "Kup sesję",
+      "emoji": "💸",
+      "duration": 60,
+      "paid": true
+    },
+    "full day": {
+      "name": "Full day",
+      "emoji": "📅",
+      "duration": "full",
+      "paid": true
+    }
+  }
 }
