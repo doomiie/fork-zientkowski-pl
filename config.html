@@ -78,6 +78,17 @@
             <span>Pokaż debug box</span>
         </label>
 
+        <div class="space-y-2">
+            <label class="block">
+                <span class="block mb-1">PayPal Client ID</span>
+                <input type="text" id="paypalClientId" class="border rounded px-2 py-1 w-full">
+            </label>
+            <label class="block">
+                <span class="block mb-1">Waluta PayPal</span>
+                <input type="text" id="paypalCurrency" class="border rounded px-2 py-1 w-full">
+            </label>
+        </div>
+
         <div id="meetings" class="space-y-4"></div>
 
         <div class="flex space-x-2">
@@ -109,6 +120,8 @@
     async function loadConfig() {
         const cfg = await fetch('config.json').then(r => r.json()).catch(() => ({}));
         document.getElementById('debugVisible').checked = cfg.debugBoxVisible !== false;
+        document.getElementById('paypalClientId').value = cfg.paypal?.clientId || '';
+        document.getElementById('paypalCurrency').value = cfg.paypal?.currency || '';
         const mt = cfg.meetingTypes || {};
         Object.entries(mt).forEach(([k, v]) => addMeeting(k, v));
     }
@@ -143,6 +156,10 @@
         });
         const cfg = {
             debugBoxVisible: document.getElementById('debugVisible').checked,
+            paypal: {
+                clientId: document.getElementById('paypalClientId').value.trim(),
+                currency: document.getElementById('paypalCurrency').value.trim()
+            },
             meetingTypes: mt
         };
         const res = await fetch('backend/save_config.php', {

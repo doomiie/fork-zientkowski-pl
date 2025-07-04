@@ -207,7 +207,7 @@
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollToPlugin.min.js"></script>
     <script defer src="./assets/js/animations.js"></script>
-    <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=PLN"></script>
+
 
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
@@ -222,6 +222,11 @@
             const config = await fetch('config.json').then(r => r.json()).catch(() => ({}));
             const debugVisible = config.debugBoxVisible !== false;
             const meetingTypesCfg = config.meetingTypes || {};
+
+            const paypalCfg = config.paypal || {};
+            const paypalScript = document.createElement('script');
+            paypalScript.src = `https://www.paypal.com/sdk/js?client-id=${paypalCfg.clientId || 'sb'}&currency=${paypalCfg.currency || 'PLN'}`;
+            document.head.appendChild(paypalScript);
 
             const select = document.querySelector('select');
             const desc = document.getElementById('meeting-desc');
