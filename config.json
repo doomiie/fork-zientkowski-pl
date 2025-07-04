@@ -1,50 +1,56 @@
 {
-    "debugBoxVisible": false,
-    "meetingTypes": {
-        "onboarding": {
-            "name": "Onboarding",
-            "calendar_title": "Onboarding",
-            "emoji": "🎉",
-            "duration": "15",
-            "amount": "",
-            "description": "Krótka, 15minutowa sesja, podczas której omówimy zasady współpracy lub przedyskutujemy ustalony temat.",
-            "paid": false
-        },
-        "sesja umówiona": {
-            "name": "Sesja umówiona",
-            "calendar_title": "Sesja umówiona",
-            "emoji": "🤝",
-            "duration": "60",
-            "amount": "",
-            "description": "Jeśli jesteś w procesie współpracy ze mną, wybierz tę opcję - i pracujemy! :)",
-            "paid": false
-        },
-        "kup sesję": {
-            "name": "Kup sesję",
-            "calendar_title": "Sesja płatna",
-            "emoji": "💸",
-            "duration": "60",
-            "amount": "1375",
-            "description": "Jeśli chcesz od razu rozpocząć współpracę, wybierz tą opcję. System poprosi Cię o opłatę przed rezerwacją terminu.",
-            "paid": true
-        },
-        "full day": {
-            "name": "Full day",
-            "calendar_title": "Full day",
-            "emoji": "📅",
-            "duration": "full",
-            "amount": "",
-            "description": "Jeśli chcesz zarezerwować termin całodniowy (warsztaty, przemówienie...), wybierz tę opcję, zarezerwuj termin i skontaktuj się ze mną.",
-            "paid": false
-        },
-        "Warsztaty online": {
-            "name": "Warsztaty online",
-            "calendar_title": "Warsztaty online",
-            "emoji": "",
-            "duration": "90",
-            "amount": "1",
-            "description": "Warsztaty online trwają 4h. Jeśli je u mnie kupiłeś, rezerwuj termin!",
-            "paid": true
-        }
+  "debugBoxVisible": false,
+  "meetingTypes": {
+    "onboarding": {
+      "name": "Onboarding",
+      "calendar_title": "Onboarding",
+      "emoji": "🎉",
+      "duration": "15",
+      "amount": "",
+      "description": "Krótka, 15minutowa sesja, podczas której omówimy zasady współpracy lub przedyskutujemy ustalony temat.",
+      "paid": false
+    },
+    "sesja umówiona": {
+      "name": "Sesja umówiona",
+      "calendar_title": "Sesja umówiona",
+      "emoji": "🤝",
+      "duration": "60",
+      "amount": "",
+      "description": "Jeśli jesteś w procesie współpracy ze mną, wybierz tę opcję - i pracujemy! :)",
+      "paid": false
+    },
+    "kup sesję": {
+      "name": "Kup sesję",
+      "calendar_title": "Sesja płatna",
+      "emoji": "💸",
+      "duration": "60",
+      "amount": "1375",
+      "description": "Jeśli chcesz od razu rozpocząć współpracę, wybierz tą opcję. System poprosi Cię o opłatę przed rezerwacją terminu.",
+      "paid": true
+    },
+    "full day": {
+      "name": "Full day",
+      "calendar_title": "Full day",
+      "emoji": "📅",
+      "duration": "full",
+      "amount": "",
+      "description": "Jeśli chcesz zarezerwować termin całodniowy (warsztaty, przemówienie...), wybierz tę opcję, zarezerwuj termin i skontaktuj się ze mną.",
+      "paid": false
+    },
+    "Warsztaty online": {
+      "name": "Warsztaty online",
+      "calendar_title": "Warsztaty online",
+      "emoji": "",
+      "duration": "90",
+      "amount": "1",
+      "description": "Warsztaty online trwają 4h. Jeśli je u mnie kupiłeś, rezerwuj termin!",
+      "paid": true
     }
+  },
+  "przelewy24": {
+    "merchantId": "",
+    "posId": "",
+    "crc": "",
+    "sandbox": true
+  }
 }

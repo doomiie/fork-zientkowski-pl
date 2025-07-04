@@ -223,6 +223,7 @@
             const config = await fetch('config.json').then(r => r.json()).catch(() => ({}));
             const debugVisible = config.debugBoxVisible !== false;
             const meetingTypesCfg = config.meetingTypes || {};
+            const p24cfg = config.przelewy24 || {};
 
 
             const select = document.querySelector('select');
@@ -547,8 +548,28 @@
                 const successMsg = `Rezerwacja przyjęta:\n🗓️ Data: ${selectedDate}\n🕒 Godzina: ${selectedTime}\n📧 Email: ${email}\n📌 Typ: ${meetingType}`;
 
                 async function finalize() {
-                    await createCalendarEvent(email, meetingType);
-                    alert(successMsg);
+                    if (mtConf.paid) {
+                        const payload = {
+                            email,
+                            meetingType,
+                            date: selectedDate,
+                            time: selectedTime,
+                            amount: mtConf.amount
+                        };
+                        const resp = await apiRequest('backend/p24_init.php', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                        if (resp && resp.url) {
+                            window.location.href = resp.url;
+                        } else {
+                            alert('Błąd inicjowania płatności');
+                        }
+                    } else {
+                        await createCalendarEvent(email, meetingType);
+                        alert(successMsg);
+                    }
                 }
 
                 await finalize();
