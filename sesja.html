@@ -429,17 +429,25 @@
                     }
                 }
 
+                const toMinutes = t => {
+                    const [hh, mm] = t.split(':').map(Number);
+                    return hh * 60 + mm;
+                };
+                const busyMinutes = busySlots.map(toMinutes).sort((a, b) => a - b);
+
                 slots.forEach(time => {
                     const btn = document.createElement("button");
                     btn.type = "button";
                     btn.textContent = time;
                     btn.dataset.time = time;
 
-                    const isBusy = busySlots.includes(time);
+                    const startMin = toMinutes(time);
+                    const endMin = startMin + duration;
+                    const isBusy = busyMinutes.some(bm => bm >= startMin && bm < endMin);
 
                     btn.className =
                         "border rounded px-3 py-2 text-sm transition " +
-                        (isBusy ? "bg-red-500 text-white cursor-not-allowed" : "hover:bg-accent hover:text-white");
+                        (isBusy ? "bg-orange-400 text-white cursor-not-allowed" : "hover:bg-accent hover:text-white");
 
                     if (!isBusy) {
                         if (time === selectedTime) {
