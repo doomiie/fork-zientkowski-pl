@@ -2,9 +2,11 @@
 header('Content-Type: application/json');
 $action = $_GET['action'] ?? '';
 
-$clientId = getenv('PAYPAL_CLIENT_ID');
-$secret = getenv('PAYPAL_SECRET');
-$baseUrl = getenv('PAYPAL_BASE_URL') ?: 'https://api-m.sandbox.paypal.com';
+$cfgPath = dirname(__DIR__) . '/config.json';
+$cfg = is_file($cfgPath) ? json_decode(file_get_contents($cfgPath), true) : [];
+$clientId = $cfg['paypal']['clientId'] ?? '';
+$secret   = $cfg['paypal']['secret'] ?? '';
+$baseUrl  = $cfg['paypal']['baseUrl'] ?? 'https://api-m.sandbox.paypal.com';
 
 if (!$clientId || !$secret) {
     http_response_code(500);
@@ -90,7 +92,7 @@ function captureOrder($token, $baseUrl, $orderId)
 if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
     $amount = $data['amount'] ?? '100.00';
-    $currency = $data['currency'] ?? 'USD';
+    $currency = $data['currency'] ?? ($cfg['paypal']['currency'] ?? 'USD');
     $token = getAccessToken($clientId, $secret, $baseUrl);
     if (!$token) {
         http_response_code(500);

@@ -2,6 +2,8 @@
     "debugBoxVisible": false,
     "paypal": {
         "clientId": "sb",
+        "secret": "",
+        "baseUrl": "https://api-m.sandbox.paypal.com",
         "currency": "PLN"
     },
     "meetingTypes": {
