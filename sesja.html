@@ -462,7 +462,7 @@
                 }
 
                 const payload = {
-                    summary: `Spotkanie - ${meetingType}`,
+                    meetingType,
                     start: startDateTime.toISOString(),
                     end: endDateTime.toISOString(),
                     attendees: email ? [email] : []
