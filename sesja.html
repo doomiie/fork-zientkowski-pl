@@ -510,12 +510,13 @@
                     attendees: email ? [email] : []
                 };
 
-                await apiRequest('backend/calendar.php?action=create&return=/sesja.html', {
+                const res = await apiRequest('backend/calendar.php?action=create&return=/sesja.html', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
                 logDebug('Wysłano prośbę utworzenia wydarzenia');
+                return res;
             }
 
             prevMonthBtn.addEventListener("click", () => {
@@ -547,8 +548,14 @@
                 const successMsg = `Rezerwacja przyjęta:\n🗓️ Data: ${selectedDate}\n🕒 Godzina: ${selectedTime}\n📧 Email: ${email}\n📌 Typ: ${meetingType}`;
 
                 async function finalize() {
-                    await createCalendarEvent(email, meetingType);
-                    alert(successMsg);
+                    const res = await createCalendarEvent(email, meetingType);
+                    if (res && res.id) {
+                        alert(successMsg);
+                        // Refresh available times so the booked slot becomes unavailable
+                        await showTimes();
+                    } else {
+                        alert('Wystąpił błąd podczas tworzenia wydarzenia.');
+                    }
                 }
 
                 await finalize();
