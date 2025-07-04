@@ -94,7 +94,21 @@ if ($action === 'busy') {
 
 if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
-    $summary = $data['summary'] ?? 'Spotkanie';
+    $meetingType = $data['meetingType'] ?? $data['summary'] ?? 'spotkanie';
+    $attendees = $data['attendees'] ?? [];
+    $email = $attendees[0] ?? '';
+
+    $emojiMap = [
+        'onboarding' => '🎉',
+        'sesja umówiona' => '🤝',
+        'kup sesję' => '💸',
+        'full day' => '📅'
+    ];
+    $key = strtolower($meetingType);
+    $emoji = $emojiMap[$key] ?? '🗓️';
+
+    $summary = trim(sprintf('%s %s%s', $emoji, ucfirst($meetingType), $email ? ' - ' . $email : ''));
+
     $start = new DateTime($data['start']);
     $end = new DateTime($data['end']);
     $event = new Event([
@@ -102,10 +116,10 @@ if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         'start' => ['dateTime' => $start->format(DateTime::RFC3339)],
         'end' => ['dateTime' => $end->format(DateTime::RFC3339)],
     ]);
-    if (!empty($data['attendees'])) {
+    if (!empty($attendees)) {
         $event->setAttendees(array_map(function ($e) {
             return ['email' => $e];
-        }, $data['attendees']));
+        }, $attendees));
     }
     $created = $service->events->insert('primary', $event);
     header('Content-Type: application/json');
