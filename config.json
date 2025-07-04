@@ -1,37 +1,45 @@
 {
-  "debugBoxVisible": false,
-  "meetingTypes": {
-    "onboarding": {
-      "name": "Onboarding",
-      "calendar_title": "Onboarding",
-      "emoji": "🎉",
-      "description": "Krótka, 15minutowa sesja, podczas której omówimy zasady współpracy lub przedyskutujemy ustalony temat.",
-      "duration": 15,
-      "paid": false
-    },
-    "sesja umówiona": {
-      "name": "Sesja umówiona",
-      "calendar_title": "Sesja umówiona",
-      "emoji": "🤝",
-      "description": "Jeśli jesteś w procesie współpracy ze mną, wybierz tę opcję - i pracujemy! :)",
-      "duration": 60,
-      "paid": false
-    },
-    "kup sesję": {
-      "name": "Kup sesję",
-      "calendar_title": "Sesja płatna",
-      "emoji": "💸",
-      "description": "Jeśli chcesz od razu rozpocząć współpracę, wybierz tą opcję. System poprosi Cię o opłatę przed rezerwacją terminu.",
-      "duration": 60,
-      "paid": true
-    },
-    "full day": {
-      "name": "Full day",
-      "calendar_title": "Full day",
-      "emoji": "📅",
-      "description": "Jeśli chcesz zarezerwować termin całodniowy (warsztaty, przemówienie...), wybierz tę opcję, zarezerwuj termin i skontaktuj się ze mną.",
-      "duration": "full",
-      "paid": false
+    "debugBoxVisible": false,
+    "meetingTypes": {
+        "onboarding": {
+            "name": "Onboarding",
+            "calendar_title": "Onboarding",
+            "emoji": "🎉",
+            "duration": "10",
+            "description": "Krótka, 15minutowa sesja, podczas której omówimy zasady współpracy lub przedyskutujemy ustalony temat.",
+            "paid": false
+        },
+        "sesja umówiona": {
+            "name": "Sesja umówiona",
+            "calendar_title": "Sesja umówiona",
+            "emoji": "🤝",
+            "duration": "60",
+            "description": "Jeśli jesteś w procesie współpracy ze mną, wybierz tę opcję - i pracujemy! :)",
+            "paid": false
+        },
+        "kup sesję": {
+            "name": "Kup sesję",
+            "calendar_title": "Sesja płatna",
+            "emoji": "💸",
+            "duration": "60",
+            "description": "Jeśli chcesz od razu rozpocząć współpracę, wybierz tą opcję. System poprosi Cię o opłatę przed rezerwacją terminu.",
+            "paid": true
+        },
+        "full day": {
+            "name": "Full day",
+            "calendar_title": "Full day",
+            "emoji": "📅",
+            "duration": "full",
+            "description": "Jeśli chcesz zarezerwować termin całodniowy (warsztaty, przemówienie...), wybierz tę opcję, zarezerwuj termin i skontaktuj się ze mną.",
+            "paid": false
+        },
+        "Warsztaty online": {
+            "name": "Warsztaty online",
+            "calendar_title": "Warsztaty online",
+            "emoji": "",
+            "duration": "90",
+            "description": "Warsztaty online trwają 4h. Jeśli je u mnie kupiłeś, rezerwuj termin!",
+            "paid": false
+        }
     }
-  }
 }
