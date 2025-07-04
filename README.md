@@ -12,3 +12,13 @@ The site uses `config.json` for runtime settings. To enable Przelewy24 payments 
 
 After configuration the `Warsztaty online` option will redirect to Przelewy24 where the payment can be completed.
 
+### Debugging payments
+
+To inspect the raw response from the Przelewy24 API enable the "Pokaż debug box"
+option in `config.html`. When a payment request fails the response payload will
+be logged in this box.
+
+Additionally `backend/p24_init.php` appends each response from Przelewy24 to the
+file `backend/p24_debug.log`. Check this file on the server for low level
+details.
+

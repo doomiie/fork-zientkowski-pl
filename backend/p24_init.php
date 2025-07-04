@@ -49,8 +49,21 @@ curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 curl_setopt($ch, CURLOPT_POST, 1);
 curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($request));
 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
 $response = curl_exec($ch);
+$curlError = curl_error($ch);
+$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
+
+// save raw response for debugging
+$logLine = sprintf(
+    "%s HTTP %s CURL:%s RESPONSE:%s\n",
+    date('c'),
+    $httpCode,
+    $curlError ?: 'OK',
+    trim($response)
+);
+file_put_contents(__DIR__ . '/p24_debug.log', $logLine, FILE_APPEND);
 
 parse_str($response, $resp);
 if (!isset($resp['token']) || ($resp['error'] ?? '1') !== '0') {
