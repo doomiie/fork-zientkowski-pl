@@ -9,7 +9,10 @@
   <h1 class="text-2xl font-bold mb-4">Test płatności WTL</h1>
   <p class="mb-4">Poniższa ramka ładuje formularz płatności z WTL. Webhooki
   <code>wtl_before.php</code> i <code>wtl_after.php</code> zapisują
-  odebrane dane do plików <code>wtl_before.log</code> oraz <code>wtl_after.log</code>.</p>
+  odebrane dane do plików <code>wtl_before.log</code> oraz <code>wtl_after.log</code>.
+  W ustawieniach WTL można wskazać adres powrotu, np.
+  <code>/wtl_return.php</code>, by po zakończeniu płatności klient zobaczył
+  potwierdzenie.</p>
   <style>
   .wtl-responsive-iframe {
     width: 1px;
