@@ -4,7 +4,7 @@
     "onboarding": {
       "name": "Onboarding",
       "emoji": "🎉",
-      "duration": 30,
+      "duration": 15,
       "paid": false
     },
     "sesja umówiona": {
@@ -23,7 +23,7 @@
       "name": "Full day",
       "emoji": "📅",
       "duration": "full",
-      "paid": true
+      "paid": false
     }
   }
 }
