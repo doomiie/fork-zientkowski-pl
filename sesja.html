@@ -349,8 +349,9 @@
                 }
             }
 
-            async function fetchBusySlots(date, duration) {
-                const data = await apiRequest(`backend/calendar.php?action=busy&date=${date}&duration=${duration}&return=/sesja.html`);
+            async function fetchBusySlots(date, duration, fullDay = false) {
+                const fullParam = fullDay ? '&fullDay=1' : '';
+                const data = await apiRequest(`backend/calendar.php?action=busy&date=${date}&duration=${duration}${fullParam}&return=/sesja.html`);
                 const busy = data ? data.busy : [];
                 console.log(data);
                 const result = new Set();
@@ -374,7 +375,7 @@
                 });
 
                 const duration = meetingType === "onboarding" ? 30 : 60;
-                const busySlots = await fetchBusySlots(selectedDate, duration);
+                const busySlots = await fetchBusySlots(selectedDate, duration, meetingType === "full day");
                 logDebug(`Zajęte sloty: ${busySlots.join(', ') || 'brak'}`);
                 
 
