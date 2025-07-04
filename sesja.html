@@ -567,6 +567,7 @@
                             const msg = resp && resp.error ?
                                 `Błąd inicjowania płatności: ${resp.error}` :
                                 'Błąd inicjowania płatności';
+                            logDebug(`P24 response: ${JSON.stringify(resp)}`);
                             alert(msg);
                         }
                     } else {
