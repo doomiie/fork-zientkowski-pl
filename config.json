@@ -3,24 +3,28 @@
   "meetingTypes": {
     "onboarding": {
       "name": "Onboarding",
+      "calendar_title": "Onboarding",
       "emoji": "🎉",
       "duration": 30,
       "paid": false
     },
     "sesja umówiona": {
       "name": "Sesja umówiona",
+      "calendar_title": "Sesja umówiona",
       "emoji": "🤝",
       "duration": 60,
       "paid": false
     },
     "kup sesję": {
       "name": "Kup sesję",
+      "calendar_title": "Sesja płatna",
       "emoji": "💸",
       "duration": 60,
       "paid": true
     },
     "full day": {
       "name": "Full day",
+      "calendar_title": "Full day",
       "emoji": "📅",
       "duration": "full",
       "paid": true
