@@ -54,6 +54,7 @@
         }
     </script>
     <script src="./assets/js/initVjs.js"></script>
+    <script src="https://kotryszientkowski.elms.pl/assets/js/iframe-resizer-embed.js"></script>
 </head>
 
 <body>
@@ -263,6 +264,7 @@
                 debugBox.className =
                     "fixed bottom-0 right-0 w-72 max-h-48 overflow-y-auto bg-white border p-2 text-xs z-50";
                 document.body.appendChild(debugBox);
+                setInterval(fetchWebhookLogs, 5000);
             }
 
             function logDebug(msg) {
@@ -271,6 +273,35 @@
                 line.textContent = msg;
                 debugBox.appendChild(line);
                 debugBox.scrollTop = debugBox.scrollHeight;
+            }
+
+            let pollInterval = null;
+            let beforeCount = 0;
+            let afterCount = 0;
+
+            async function fetchWebhookLogs() {
+                const data = await fetch('backend/wtl_log.php').then(r => r.json()).catch(() => null);
+                if (!data) return;
+                (data.before || []).slice(beforeCount).forEach(l => logDebug('before: ' + l));
+                (data.after || []).slice(afterCount).forEach(l => logDebug('after: ' + l));
+                beforeCount = (data.before || []).length;
+                afterCount = (data.after || []).length;
+            }
+
+            function showPaymentIframe(onClose) {
+                const modal = document.getElementById('payment-modal');
+                const closeBtn = document.getElementById('payment-close');
+                modal.classList.remove('hidden');
+                iFrameResize({ log: false }, '#payment-frame');
+                fetchWebhookLogs();
+                pollInterval = setInterval(fetchWebhookLogs, 2000);
+                const handler = () => {
+                    modal.classList.add('hidden');
+                    clearInterval(pollInterval);
+                    closeBtn.removeEventListener('click', handler);
+                    if (onClose) onClose();
+                };
+                closeBtn.addEventListener('click', handler);
             }
             let meetingType = defaultType; // np. "onboarding", "sesja", "kup"
 
@@ -552,7 +583,11 @@
                     alert(successMsg);
                 }
 
-                await finalize();
+                if (mtConf.paid) {
+                    showPaymentIframe(finalize);
+                } else {
+                    await finalize();
+                }
 
             });
 
@@ -580,7 +615,12 @@
         });
     </script>
 
-
+    <div id="payment-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg w-full max-w-xl p-4 relative">
+            <button id="payment-close" class="absolute top-2 right-2 text-gray-600">✕</button>
+            <iframe id="payment-frame" class="w-full h-[70vh]" src="https://kotryszientkowski.elms.pl/assets/js/s.php?id=1f0e3dad99908345f7439f8ffabdffc4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+    </div>
 
 </body>
 
