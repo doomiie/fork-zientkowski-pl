@@ -1,11 +1,5 @@
 {
     "debugBoxVisible": false,
-    "paypal": {
-        "clientId": "AaLQ4kIi_VWUoh_tYnGC7NiJ2S5yNVNcG7Ln3oYgcg3-AmLa51rk_QuT8qeWPPCefC3cXDL_8G8hu00_",
-        "secret": "EPWeO1M-a3kAfLwNfTvo4ip8lnEB8LvtpPZlvr3fAdmPZca-vrTagfB700homf8UC47vfAtXrLhl2Hom",
-        "baseUrl": "https:\/\/api.paypal.com",
-        "currency": "PLN"
-    },
     "meetingTypes": {
         "onboarding": {
             "name": "Onboarding",
