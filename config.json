@@ -1,5 +1,5 @@
 {
-  "debugBoxVisible": true,
+  "debugBoxVisible": false,
   "meetingTypes": {
     "onboarding": {
       "name": "Onboarding",
