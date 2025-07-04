@@ -3,7 +3,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 // Ustawienia stałe
 $calendarId = 'primary';
-$date = '2025-07-07'; // na sztywno
+$date = '2025-07-11'; // na sztywno
 $startHour = 9;
 $endHour = 16;
 $intervalMinutes = 30;
