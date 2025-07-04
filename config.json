@@ -1,5 +1,9 @@
 {
     "debugBoxVisible": false,
+    "paypal": {
+        "clientId": "sb",
+        "currency": "PLN"
+    },
     "meetingTypes": {
         "onboarding": {
             "name": "Onboarding",
