@@ -46,11 +46,5 @@
       "description": "Warsztaty online trwają 4h. Jeśli je u mnie kupiłeś, rezerwuj termin!",
       "paid": true
     }
-  },
-  "przelewy24": {
-    "merchantId": "",
-    "posId": "",
-    "crc": "",
-    "sandbox": true
   }
 }
