@@ -132,6 +132,8 @@
                         <option disabled selected>Ładowanie…</option>
                     </select>
                     <p id="meeting-desc" class="mt-2 text-sm"></p>
+                    <p id="meeting-duration" class="text-sm text-gray-600"></p>
+                    <p id="meeting-price" class="text-sm text-gray-600"></p>
 
                 </div>
 
@@ -230,6 +232,8 @@
 
             const select = document.querySelector('select');
             const desc = document.getElementById('meeting-desc');
+            const durationEl = document.getElementById('meeting-duration');
+            const priceEl = document.getElementById('meeting-price');
 
             select.innerHTML = '';
             Object.entries(meetingTypesCfg).forEach(([key, mt]) => {
@@ -242,6 +246,18 @@
             select.value = defaultType;
             if (desc) {
                 desc.textContent = meetingTypesCfg[defaultType]?.description || '';
+            }
+            if (durationEl) {
+                const dur = meetingTypesCfg[defaultType]?.duration;
+                if (dur) {
+                    durationEl.textContent = dur === 'full' ? 'Czas trwania: cały dzień' : `Czas trwania: ${dur} min`;
+                } else {
+                    durationEl.textContent = '';
+                }
+            }
+            if (priceEl) {
+                const mt = meetingTypesCfg[defaultType] || {};
+                priceEl.textContent = mt.paid ? `Cena: ${mt.amount} PLN` : '';
             }
 
             let debugBox = null;
@@ -574,6 +590,18 @@
                 meetingType = e.target.value;
                 if (desc) {
                     desc.textContent = meetingTypesCfg[meetingType]?.description || '';
+                }
+                if (durationEl) {
+                    const dur = meetingTypesCfg[meetingType]?.duration;
+                    if (dur) {
+                        durationEl.textContent = dur === 'full' ? 'Czas trwania: cały dzień' : `Czas trwania: ${dur} min`;
+                    } else {
+                        durationEl.textContent = '';
+                    }
+                }
+                if (priceEl) {
+                    const mt = meetingTypesCfg[meetingType] || {};
+                    priceEl.textContent = mt.paid ? `Cena: ${mt.amount} PLN` : '';
                 }
                 if (selectedDate) showTimes(); // odśwież sloty jeśli dzień już wybrany
             });
