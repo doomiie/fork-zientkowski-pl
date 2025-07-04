@@ -39,7 +39,19 @@ curl_setopt($ch, CURLOPT_POST, 1);
 curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($verify));
 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 $response = curl_exec($ch);
+$curlError = curl_error($ch);
+$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
+$verifyDump = http_build_query($verify);
+$line = sprintf(
+    "%s VERIFY HTTP %s CURL:%s\nREQ:%s\nRESP:%s\n",
+    date('c'),
+    $httpCode,
+    $curlError ?: 'OK',
+    $verifyDump,
+    trim($response)
+);
+file_put_contents(__DIR__ . '/p24_debug.log', $line, FILE_APPEND);
 parse_str($response, $resp);
 if (($resp['error'] ?? '1') !== '0') {
     echo 'Błąd weryfikacji płatności';

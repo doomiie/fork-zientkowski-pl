@@ -22,7 +22,7 @@ if (!$merchantId || !$posId || !$crc) {
 }
 
 $sessionId = uniqid('p24_', true);
-$amountGrosz = intval($payload['amount']) * 100;
+$amountGrosz = (int) round(floatval($payload['amount']) * 100);
 $description = $payload['meetingType'] . ' ' . ($payload['date'] ?? '') . ' ' . ($payload['time'] ?? '');
 
 $scheme = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
@@ -40,8 +40,10 @@ $request = [
     'p24_country' => 'PL',
     'p24_url_return' => $returnBase . '?session=' . urlencode($sessionId),
     'p24_url_status' => $returnBase . '?session=' . urlencode($sessionId),
+    'p24_api_version' => '3.2',
     'p24_sign' => md5($sessionId . '|' . $posId . '|' . $amountGrosz . '|PLN|' . $crc)
 ];
+$reqDump = http_build_query($request);
 
 $url = $sandbox ? 'https://sandbox.przelewy24.pl/trnRegister' : 'https://secure.przelewy24.pl/trnRegister';
 $ch = curl_init($url);
@@ -57,10 +59,11 @@ curl_close($ch);
 
 // save raw response for debugging
 $logLine = sprintf(
-    "%s HTTP %s CURL:%s RESPONSE:%s\n",
+    "%s HTTP %s CURL:%s\nREQ:%s\nRESP:%s\n",
     date('c'),
     $httpCode,
     $curlError ?: 'OK',
+    $reqDump,
     trim($response)
 );
 file_put_contents(__DIR__ . '/p24_debug.log', $logLine, FILE_APPEND);
