@@ -276,6 +276,10 @@
                 debugBox.appendChild(line);
                 debugBox.scrollTop = debugBox.scrollHeight;
             }
+            logDebug(`PayPal clientId: ${paypalCfg.clientId || 'sb'}`);
+            logDebug(`PayPal currency: ${paypalCfg.currency || 'PLN'}`);
+            logDebug(`PayPal baseUrl: ${paypalCfg.baseUrl || 'not provided'}`);
+            logDebug(`Loaded PayPal script: ${paypalScript.src}`);
             let meetingType = defaultType; // np. "onboarding", "sesja", "kup"
 
 
@@ -560,8 +564,10 @@
                     const container = document.getElementById('paypal-button-container');
                     container.classList.remove('hidden');
                     container.innerHTML = '';
+                    logDebug(`Rendering PayPal buttons for ${mtConf.amount || '1.00'} ${paypalCfg.currency || 'PLN'}`);
                     paypal.Buttons({
                         createOrder: (data, actions) => {
+                            logDebug('Creating PayPal order');
                             return actions.order.create({
                                 purchase_units: [{
                                     amount: { value: mtConf.amount || '1.00' }
@@ -569,6 +575,7 @@
                             });
                         },
                         onApprove: (data, actions) => {
+                            logDebug('Order approved, capturing');
                             return actions.order.capture().then(finalize).catch(err => {
                                 console.error(err);
                                 alert('Błąd płatności');
@@ -577,6 +584,7 @@
                         onCancel: () => alert('Płatność anulowana'),
                         onError: err => {
                             console.error(err);
+                            logDebug('PayPal error: ' + err);
                             alert('Błąd płatności');
                         }
                     }).render('#paypal-button-container');
