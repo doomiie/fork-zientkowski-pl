@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edytuj konfigurację</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        ::-webkit-scrollbar { display: none; }
+        * { font-family: 'Space Grotesk', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50 p-8">
+    <div class="max-w-3xl mx-auto space-y-6">
+        <h1 class="text-3xl font-bold">Edycja config.json</h1>
+        <label class="flex items-center space-x-2">
+            <input type="checkbox" id="debugVisible" class="checkbox">
+            <span>Pokaż debug box</span>
+        </label>
+
+        <div id="meetings" class="space-y-4"></div>
+
+        <div class="flex space-x-2">
+            <button id="addMeeting" type="button" class="px-4 py-2 bg-blue-500 text-white rounded">Dodaj typ spotkania</button>
+            <button id="saveConfig" type="button" class="px-4 py-2 bg-green-600 text-white rounded">Zapisz</button>
+        </div>
+        <div id="status" class="text-green-600"></div>
+    </div>
+
+    <template id="meeting-template">
+        <div class="border p-4 rounded-md bg-white space-y-2">
+            <div class="flex justify-between items-center">
+                <input type="text" class="key border rounded px-2 py-1 mr-2 flex-1" placeholder="klucz">
+                <button type="button" class="remove text-red-500">Usuń</button>
+            </div>
+            <input type="text" class="name border rounded px-2 py-1 w-full" placeholder="nazwa">
+            <input type="text" class="calendar_title border rounded px-2 py-1 w-full" placeholder="tytuł w kalendarzu">
+            <input type="text" class="emoji border rounded px-2 py-1 w-full" placeholder="emoji">
+            <input type="text" class="duration border rounded px-2 py-1 w-full" placeholder="czas trwania">
+            <textarea class="description border rounded px-2 py-1 w-full" placeholder="opis"></textarea>
+            <label class="flex items-center space-x-2">
+                <input type="checkbox" class="paid">
+                <span>Płatne</span>
+            </label>
+        </div>
+    </template>
+
+    <script>
+    async function loadConfig() {
+        const cfg = await fetch('config.json').then(r => r.json()).catch(() => ({}));
+        document.getElementById('debugVisible').checked = cfg.debugBoxVisible !== false;
+        const mt = cfg.meetingTypes || {};
+        Object.entries(mt).forEach(([k, v]) => addMeeting(k, v));
+    }
+
+    function addMeeting(key = '', data = {}) {
+        const tmpl = document.getElementById('meeting-template').content.cloneNode(true);
+        const el = tmpl.querySelector('div');
+        el.querySelector('.key').value = key;
+        el.querySelector('.name').value = data.name || '';
+        el.querySelector('.calendar_title').value = data.calendar_title || '';
+        el.querySelector('.emoji').value = data.emoji || '';
+        el.querySelector('.duration').value = data.duration || '';
+        el.querySelector('.description').value = data.description || '';
+        el.querySelector('.paid').checked = !!data.paid;
+        tmpl.querySelector('.remove').onclick = () => el.remove();
+        document.getElementById('meetings').appendChild(tmpl);
+    }
+
+    async function saveConfig() {
+        const mt = {};
+        document.querySelectorAll('#meetings > div').forEach(el => {
+            const key = el.querySelector('.key').value.trim();
+            if (!key) return;
+            mt[key] = {
+                name: el.querySelector('.name').value,
+                calendar_title: el.querySelector('.calendar_title').value,
+                emoji: el.querySelector('.emoji').value,
+                duration: el.querySelector('.duration').value,
+                description: el.querySelector('.description').value,
+                paid: el.querySelector('.paid').checked
+            };
+        });
+        const cfg = {
+            debugBoxVisible: document.getElementById('debugVisible').checked,
+            meetingTypes: mt
+        };
+        const res = await fetch('backend/save_config.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(cfg)
+        });
+        document.getElementById('status').textContent = res.ok ? 'Zapisano!' : 'Błąd zapisu';
+    }
+
+    document.getElementById('addMeeting').onclick = () => addMeeting();
+    document.getElementById('saveConfig').onclick = saveConfig;
+
+    loadConfig();
+    </script>
+</body>
+</html>
