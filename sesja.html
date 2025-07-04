@@ -134,6 +134,7 @@
                         <option value="kup sesję" selected>Kup sesję</option>
                         <option value="full day">Full day</option>
                     </select>
+                    <p id="meeting-desc" class="mt-2 text-sm"></p>
 
                 </div>
 
@@ -224,6 +225,7 @@
             const meetingTypesCfg = config.meetingTypes || {};
 
             const select = document.querySelector('select');
+            const desc = document.getElementById('meeting-desc');
             select.innerHTML = '';
             Object.entries(meetingTypesCfg).forEach(([key, mt]) => {
                 const opt = document.createElement('option');
@@ -233,6 +235,9 @@
             });
             const defaultType = meetingTypesCfg['kup sesję'] ? 'kup sesję' : Object.keys(meetingTypesCfg)[0];
             select.value = defaultType;
+            if (desc) {
+                desc.textContent = meetingTypesCfg[defaultType]?.description || '';
+            }
 
             let debugBox = null;
             if (debugVisible) {
@@ -525,6 +530,9 @@
 
             document.querySelector("select").addEventListener("change", e => {
                 meetingType = e.target.value;
+                if (desc) {
+                    desc.textContent = meetingTypesCfg[meetingType]?.description || '';
+                }
                 if (selectedDate) showTimes(); // odśwież sloty jeśli dzień już wybrany
             });
 
