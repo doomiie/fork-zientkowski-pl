@@ -128,11 +128,8 @@
             <form id="meetingForm" class="space-y-6">
                 <div>
                     <label class="block mb-2 font-medium">Typ spotkania</label>
-                    <select class="w-full border border-gray-300 rounded-lg p-3" required>
-                        <option value="onboarding">Onboarding</option>
-                        <option value="sesja umówiona">Sesja umówiona</option>
-                        <option value="kup sesję" selected>Kup sesję</option>
-                        <option value="full day">Full day</option>
+                    <select id="meeting-type" class="w-full border border-gray-300 rounded-lg p-3" required>
+                        <option disabled selected>Ładowanie…</option>
                     </select>
                     <p id="meeting-desc" class="mt-2 text-sm"></p>
 
@@ -226,6 +223,7 @@
 
             const select = document.querySelector('select');
             const desc = document.getElementById('meeting-desc');
+
             select.innerHTML = '';
             Object.entries(meetingTypesCfg).forEach(([key, mt]) => {
                 const opt = document.createElement('option');
@@ -519,7 +517,7 @@
                 }
 
                 const email = form.querySelector("input[type='email']").value;
-                const meetingType = form.querySelector("select").value;
+                const meetingType = document.getElementById('meeting-type').value;
                 await createCalendarEvent(email, meetingType);
                 alert(`Rezerwacja przyjęta:
 🗓️ Data: ${selectedDate}
@@ -528,7 +526,7 @@
 📌 Typ: ${meetingType}`);
             });
 
-            document.querySelector("select").addEventListener("change", e => {
+            document.getElementById('meeting-type').addEventListener("change", e => {
                 meetingType = e.target.value;
                 if (desc) {
                     desc.textContent = meetingTypesCfg[meetingType]?.description || '';
