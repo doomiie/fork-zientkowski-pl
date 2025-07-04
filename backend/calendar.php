@@ -63,7 +63,8 @@ if ($action === 'busy') {
         exit();
     }
     $timeMin = $date . 'T00:00:00Z';
-    $timeMax = $date . 'T15:30:59Z';
+    $fullDay = isset($_GET['fullDay']) && $_GET['fullDay'] == '1';
+    $timeMax = $fullDay ? $date . 'T23:59:59Z' : $date . 'T15:30:59Z';
     $req = new FreeBusyRequest([
         'timeMin' => $timeMin,
         'timeMax' => $timeMax,
