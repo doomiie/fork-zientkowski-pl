@@ -221,6 +221,18 @@
 
             const config = await fetch('config.json').then(r => r.json()).catch(() => ({}));
             const debugVisible = config.debugBoxVisible !== false;
+            const meetingTypesCfg = config.meetingTypes || {};
+
+            const select = document.querySelector('select');
+            select.innerHTML = '';
+            Object.entries(meetingTypesCfg).forEach(([key, mt]) => {
+                const opt = document.createElement('option');
+                opt.value = key;
+                opt.textContent = `${mt.emoji} ${mt.name}`;
+                select.appendChild(opt);
+            });
+            const defaultType = meetingTypesCfg['kup sesję'] ? 'kup sesję' : Object.keys(meetingTypesCfg)[0];
+            select.value = defaultType;
 
             let debugBox = null;
             if (debugVisible) {
@@ -238,7 +250,7 @@
                 debugBox.appendChild(line);
                 debugBox.scrollTop = debugBox.scrollHeight;
             }
-            let meetingType = "kup sesję"; // np. "onboarding", "sesja", "kup"
+            let meetingType = defaultType; // np. "onboarding", "sesja", "kup"
 
 
             let selectedDate = null;
@@ -374,12 +386,13 @@
                     weekday: "long", year: "numeric", month: "long", day: "numeric"
                 });
 
-                const duration = meetingType === "onboarding" ? 30 : 60;
-                const busySlots = await fetchBusySlots(selectedDate, duration, meetingType === "full day");
+                const mtConf = meetingTypesCfg[meetingType] || {};
+                const duration = mtConf.duration === 'full' ? 60 : (mtConf.duration || 60);
+                const busySlots = await fetchBusySlots(selectedDate, duration, mtConf.duration === 'full');
                 logDebug(`Zajęte sloty: ${busySlots.join(', ') || 'brak'}`);
                 
 
-                if (meetingType === "full day") {
+                if (mtConf.duration === 'full') {
                     timeLabel.textContent = `Sprawdź dostępność (${dateLabel})`;
                     if (busySlots.length === 0) {
                         const fullBtn = document.createElement("button");
@@ -451,13 +464,14 @@
             async function createCalendarEvent(email, meetingType) {
                 let startDateTime;
                 let endDateTime;
-                if (meetingType === "full day") {
+                const mtConf = meetingTypesCfg[meetingType] || {};
+                if (mtConf.duration === 'full') {
                     startDateTime = new Date(`${selectedDate}T09:00:00`);
                     endDateTime = new Date(`${selectedDate}T17:00:00`);
                 } else {
                     startDateTime = new Date(`${selectedDate}T${selectedTime}:00`);
                     endDateTime = new Date(startDateTime);
-                    const minutes = meetingType === "onboarding" ? 30 : 60;
+                    const minutes = mtConf.duration || 60;
                     endDateTime.setMinutes(endDateTime.getMinutes() + minutes);
                 }
 
@@ -510,7 +524,7 @@
             });
 
             document.querySelector("select").addEventListener("change", e => {
-                meetingType = e.target.value.toLowerCase();
+                meetingType = e.target.value;
                 if (selectedDate) showTimes(); // odśwież sloty jeśli dzień już wybrany
             });
 
