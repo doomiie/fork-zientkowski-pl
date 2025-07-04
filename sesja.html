@@ -392,7 +392,7 @@
                 });
 
                 const mtConf = meetingTypesCfg[meetingType] || {};
-                const duration = mtConf.duration === 'full' ? 60 : (mtConf.duration || 60);
+                const duration = mtConf.duration === 'full' ? 60 : parseInt(mtConf.duration || '60', 10);
                 const busySlots = await fetchBusySlots(selectedDate, duration, mtConf.duration === 'full');
                 logDebug(`Zajęte sloty: ${busySlots.join(', ') || 'brak'}`);
                 
@@ -422,13 +422,12 @@
                 timeLabel.textContent = `Wybierz godzinę (${dateLabel})`;
 
                 const slots = [];
-                for (let h = 9; h <= 15; h++) {
-                    for (let m = 0; m < 60; m += duration) {
-                        const time = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
-                        const end = new Date(`${selectedDate}T${time}:00`);
-                        end.setMinutes(end.getMinutes() + duration);
-                        if (end.getHours() < 17) slots.push(time);
-                    }
+                let cursor = new Date(`${selectedDate}T09:00:00`);
+                const dayEnd = new Date(`${selectedDate}T17:00:00`);
+                while (cursor < dayEnd) {
+                    const time = cursor.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit', hour12: false });
+                    slots.push(time);
+                    cursor.setMinutes(cursor.getMinutes() + duration);
                 }
 
                 const toMinutes = t => {
@@ -484,7 +483,7 @@
                 } else {
                     startDateTime = new Date(`${selectedDate}T${selectedTime}:00`);
                     endDateTime = new Date(startDateTime);
-                    const minutes = mtConf.duration || 60;
+                    const minutes = parseInt(mtConf.duration || '60', 10);
                     endDateTime.setMinutes(endDateTime.getMinutes() + minutes);
                 }
 
