@@ -106,8 +106,9 @@ if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $key = strtolower($meetingType);
     $emoji = isset($meetingTypes[$key]['emoji']) ? $meetingTypes[$key]['emoji'] : '🗓️';
     $displayName = isset($meetingTypes[$key]['name']) ? $meetingTypes[$key]['name'] : ucfirst($meetingType);
+    $calendarTitle = isset($meetingTypes[$key]['calendar_title']) ? $meetingTypes[$key]['calendar_title'] : $displayName;
 
-    $summary = trim(sprintf('%s %s%s', $emoji, $displayName, $email ? ' - ' . $email : ''));
+    $summary = trim(sprintf('%s %s%s', $emoji, $calendarTitle, $email ? ' - ' . $email : ''));
 
     $start = new DateTime($data['start']);
     $end = new DateTime($data['end']);
