@@ -5,13 +5,15 @@
       "name": "Onboarding",
       "calendar_title": "Onboarding",
       "emoji": "🎉",
-      "duration": 15,
+      "description": "krótka, 15minutowa sesja, podczas której omówimy zasady współpracy lub przedyskutujemy ustalony temat.",
+      "duration": 30,
       "paid": false
     },
     "sesja umówiona": {
       "name": "Sesja umówiona",
       "calendar_title": "Sesja umówiona",
       "emoji": "🤝",
+      "description": "jeśli jesteś w procesie współpracy ze mną, wybierz tę opcję - i pracujemy! :)",
       "duration": 60,
       "paid": false
     },
@@ -19,6 +21,7 @@
       "name": "Kup sesję",
       "calendar_title": "Sesja płatna",
       "emoji": "💸",
+      "description": "jeśli chcesz od razu rozpocząć współpracę, wybierz tą opcję. System poprosi Cię o opłatę przed rezerwacją terminu.",
       "duration": 60,
       "paid": true
     },
@@ -26,6 +29,7 @@
       "name": "Full day",
       "calendar_title": "Full day",
       "emoji": "📅",
+      "description": "jeśli chcesz zarezerwować termin całodniowy (warsztaty, przemówienie...), wybierz tę opcję, zarezerwuj termin i skontaktuj się ze mną.",
       "duration": "full",
       "paid": false
     }
