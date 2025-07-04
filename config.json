@@ -10,6 +10,7 @@
             "calendar_title": "Onboarding",
             "emoji": "🎉",
             "duration": "10",
+            "amount": "0",
             "description": "Krótka, 15minutowa sesja, podczas której omówimy zasady współpracy lub przedyskutujemy ustalony temat.",
             "paid": false
         },
@@ -18,6 +19,7 @@
             "calendar_title": "Sesja umówiona",
             "emoji": "🤝",
             "duration": "60",
+            "amount": "0",
             "description": "Jeśli jesteś w procesie współpracy ze mną, wybierz tę opcję - i pracujemy! :)",
             "paid": false
         },
@@ -26,6 +28,7 @@
             "calendar_title": "Sesja płatna",
             "emoji": "💸",
             "duration": "60",
+            "amount": "600.00",
             "description": "Jeśli chcesz od razu rozpocząć współpracę, wybierz tą opcję. System poprosi Cię o opłatę przed rezerwacją terminu.",
             "paid": true
         },
@@ -34,6 +37,7 @@
             "calendar_title": "Full day",
             "emoji": "📅",
             "duration": "full",
+            "amount": "0",
             "description": "Jeśli chcesz zarezerwować termin całodniowy (warsztaty, przemówienie...), wybierz tę opcję, zarezerwuj termin i skontaktuj się ze mną.",
             "paid": false
         },
@@ -42,6 +46,7 @@
             "calendar_title": "Warsztaty online",
             "emoji": "",
             "duration": "90",
+            "amount": "0",
             "description": "Warsztaty online trwają 4h. Jeśli je u mnie kupiłeś, rezerwuj termin!",
             "paid": false
         }

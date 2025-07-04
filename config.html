@@ -108,6 +108,7 @@
             <input type="text" class="calendar_title border rounded px-2 py-1 w-full" placeholder="tytuł w kalendarzu">
             <input type="text" class="emoji border rounded px-2 py-1 w-full" placeholder="emoji">
             <input type="text" class="duration border rounded px-2 py-1 w-full" placeholder="czas trwania">
+            <input type="text" class="amount border rounded px-2 py-1 w-full" placeholder="cena">
             <textarea class="description border rounded px-2 py-1 w-full" placeholder="opis"></textarea>
             <label class="flex items-center space-x-2">
                 <input type="checkbox" class="paid">
@@ -134,6 +135,7 @@
         el.querySelector('.calendar_title').value = data.calendar_title || '';
         el.querySelector('.emoji').value = data.emoji || '';
         el.querySelector('.duration').value = data.duration || '';
+        el.querySelector('.amount').value = data.amount || '';
         el.querySelector('.description').value = data.description || '';
         el.querySelector('.paid').checked = !!data.paid;
         tmpl.querySelector('.remove').onclick = () => el.remove();
@@ -150,6 +152,7 @@
                 calendar_title: el.querySelector('.calendar_title').value,
                 emoji: el.querySelector('.emoji').value,
                 duration: el.querySelector('.duration').value,
+                amount: el.querySelector('.amount').value,
                 description: el.querySelector('.description').value,
                 paid: el.querySelector('.paid').checked
             };
