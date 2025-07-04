@@ -18,7 +18,7 @@ To inspect the raw response from the Przelewy24 API enable the "Pokaż debug box
 option in `config.html`. When a payment request fails the response payload will
 be logged in this box.
 
-Additionally `backend/p24_init.php` appends each response from Przelewy24 to the
-file `backend/p24_debug.log`. Check this file on the server for low level
-details.
+Additionally `backend/p24_init.php` and `backend/p24_return.php` append the sent
+request and raw response from Przelewy24 to the file `backend/p24_debug.log`.
+Check this log on the server for low level details.
 
