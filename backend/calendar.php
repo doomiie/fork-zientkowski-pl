@@ -71,13 +71,13 @@ if ($action === 'busy') {
         'items' => [['id' => 'primary']]
     ]);
     $res = $service->freebusy->query($req);
-    $busy = $res->getCalendars()['primary']['busy'] ?? [];
+    $busy = $res->getCalendars()['primary']->getBusy();
     $slots = [];
     foreach ($busy as $b) {
-        $start = new DateTime($b['start'], new DateTimeZone('UTC'));
+        $start = new DateTime($b->getStart(), new DateTimeZone('UTC'));
         $start->setTimezone(new DateTimeZone('Europe/Warsaw'));
 
-        $end = new DateTime($b['end'], new DateTimeZone('UTC'));
+        $end = new DateTime($b->getEnd(), new DateTimeZone('UTC'));
         $end->setTimezone(new DateTimeZone('Europe/Warsaw'));
 
         $cursor = clone $start;
