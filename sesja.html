@@ -529,7 +529,6 @@
                 const email = form.querySelector("input[type='email']").value;
                 const meetingType = document.getElementById('meeting-type').value;
                 const mtConf = meetingTypesCfg[meetingType] || {};
-
                 const successMsg = `Rezerwacja przyjęta:\n🗓️ Data: ${selectedDate}\n🕒 Godzina: ${selectedTime}\n📧 Email: ${email}\n📌 Typ: ${meetingType}`;
 
                 async function finalize() {
@@ -564,6 +563,7 @@
                 } else {
                     await finalize();
                 }
+
             });
 
             document.getElementById('meeting-type').addEventListener("change", e => {
