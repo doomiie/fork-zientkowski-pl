@@ -403,6 +403,7 @@
                     if (!isPast) {
                         btn.addEventListener("click", () => {
                             selectedDate = dateStr;
+                            selectedTime = null; // odznacz godzinę przy zmianie dnia
                             logDebug(`Wybrano dzień ${selectedDate}`);
                             [...calendarGrid.children].forEach(b => b.classList?.remove("bg-accent", "text-white"));
                             btn.classList.add("bg-accent", "text-white");
@@ -623,6 +624,8 @@
                 async function finalize() {
                     await createCalendarEvent(email, meetingType);
                     alert(successMsg);
+                    selectedTime = null;
+                    await showTimes(); // odśwież sloty po rezerwacji
                 }
 
                 if (mtConf.paid) {
