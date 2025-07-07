@@ -1,5 +1,14 @@
 {
   "debugBoxVisible": false,
+  "workingHours": {
+    "mon": { "start": "09:00", "end": "17:00" },
+    "tue": { "start": "09:00", "end": "17:00" },
+    "wed": { "start": "09:00", "end": "17:00" },
+    "thu": { "start": "09:00", "end": "17:00" },
+    "fri": { "start": "09:00", "end": "17:00" },
+    "sat": { "start": "09:00", "end": "17:00" },
+    "sun": { "start": "09:00", "end": "17:00" }
+  },
   "meetingTypes": {
     "onboarding": {
       "name": "Onboarding",

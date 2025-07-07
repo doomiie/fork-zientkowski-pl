@@ -58,6 +58,7 @@ $action = $_GET['action'] ?? '';
 $configPath = dirname(__DIR__) . '/config.json';
 $cfg = file_exists($configPath) ? json_decode(file_get_contents($configPath), true) : [];
 $meetingTypes = $cfg['meetingTypes'] ?? [];
+$workingHours = $cfg['workingHours'] ?? [];
 
 if ($action === 'busy') {
     $date = $_GET['date'] ?? '';
@@ -69,7 +70,15 @@ if ($action === 'busy') {
     }
     $timeMin = $date . 'T00:00:00Z';
     $fullDay = isset($_GET['fullDay']) && $_GET['fullDay'] == '1';
-    $timeMax = $fullDay ? $date . 'T23:59:59Z' : $date . 'T15:30:59Z';
+    if ($fullDay) {
+        $timeMax = $date . 'T23:59:59Z';
+    } else {
+        $dayKey = strtolower(date('D', strtotime($date))); // mon, tue, ...
+        $end = $workingHours[$dayKey]['end'] ?? '17:00';
+        $dt = new DateTime("$date $end", new DateTimeZone('Europe/Warsaw'));
+        $dt->setTimezone(new DateTimeZone('UTC'));
+        $timeMax = $dt->format('Y-m-d\TH:i:s\Z');
+    }
     $req = new FreeBusyRequest([
         'timeMin' => $timeMin,
         'timeMax' => $timeMax,
