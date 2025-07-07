@@ -7,6 +7,7 @@
     <title>Jerzy Zientkowski - Biografia</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+    <link rel="stylesheet" href="./assets/css/loader.css">
         rel="stylesheet">
 
     <style>
@@ -542,6 +543,7 @@
 
 <body class="bg-white">
     <!-- Gallery Modal -->
+    <div id="page-loader"></div>
     <div class="gallery-modal" id="galleryModal">
         <button class="gallery-modal-close" onclick="closeGalleryModal()">
             <i data-lucide="x" class="w-8 h-8"></i>
@@ -2155,6 +2157,7 @@
             });
         });
     </script>
+    <script defer src="./assets/js/loader.js"></script>
 </body>
 
 </html>
