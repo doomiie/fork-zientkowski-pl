@@ -226,6 +226,7 @@
             const config = await fetch('config.json').then(r => r.json()).catch(() => ({}));
             const debugVisible = config.debugBoxVisible !== false;
             const meetingTypesCfg = config.meetingTypes || {};
+            const workingHoursCfg = config.workingHours || {};
 
 
             const select = document.querySelector('select');
@@ -477,6 +478,11 @@
                 timeButtons.innerHTML = "";
                 
 
+                const dayKey = ['sun','mon','tue','wed','thu','fri','sat'][parsed.getDay()];
+                const whDay = workingHoursCfg[dayKey] || {};
+                const whStart = whDay.start || '09:00';
+                const whEnd = whDay.end || '17:00';
+
                 if (mtConf.duration === 'full') {
                     timeLabel.textContent = `Sprawdź dostępność (${dateLabel})`;
                     if (busySlots.length === 0) {
@@ -485,7 +491,7 @@
                         fullBtn.textContent = "Full day";
                         fullBtn.className = "border rounded px-3 py-2 text-sm transition hover:bg-accent hover:text-white";
                         fullBtn.addEventListener("click", () => {
-                            selectedTime = "09:00";
+                            selectedTime = whStart;
                             [...timeButtons.children].forEach(b => b.classList.remove("bg-accent", "text-white"));
                             fullBtn.classList.add("bg-accent", "text-white");
                         });
@@ -502,9 +508,9 @@
                 timeLabel.textContent = `Wybierz godzinę (${dateLabel})`;
 
                 const slots = [];
-                let cursor = new Date(`${selectedDate}T09:00:00`);
-                const dayEnd = new Date(`${selectedDate}T17:00:00`);
-                while (cursor < dayEnd) {
+                let cursor = new Date(`${selectedDate}T${whStart}:00`);
+                const dayEnd = new Date(`${selectedDate}T${whEnd}:00`);
+                while (cursor.getTime() + duration * 60000 <= dayEnd.getTime()) {
                     const time = cursor.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit', hour12: false });
                     slots.push(time);
                     cursor.setMinutes(cursor.getMinutes() + duration);
@@ -558,8 +564,12 @@
                 let endDateTime;
                 const mtConf = meetingTypesCfg[meetingType] || {};
                 if (mtConf.duration === 'full') {
-                    startDateTime = new Date(`${selectedDate}T09:00:00`);
-                    endDateTime = new Date(`${selectedDate}T17:00:00`);
+                    const dayKey = ['sun','mon','tue','wed','thu','fri','sat'][new Date(selectedDate).getDay()];
+                    const whDay = workingHoursCfg[dayKey] || {};
+                    const whStart = whDay.start || '09:00';
+                    const whEnd = whDay.end || '17:00';
+                    startDateTime = new Date(`${selectedDate}T${whStart}:00`);
+                    endDateTime = new Date(`${selectedDate}T${whEnd}:00`);
                 } else {
                     startDateTime = new Date(`${selectedDate}T${selectedTime}:00`);
                     endDateTime = new Date(startDateTime);

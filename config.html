@@ -81,6 +81,34 @@
             <span>Pokaż debug box</span>
         </label>
 
+        <div id="working-hours" class="space-y-2">
+            <h2 class="text-xl font-bold mt-4">Godziny pracy</h2>
+            <div class="flex items-center space-x-2" data-day="mon">
+                <span class="w-24">Poniedziałek</span>
+                <input type="time" class="wh-start border rounded px-2 py-1">
+                <input type="time" class="wh-end border rounded px-2 py-1">
+            </div>
+            <div class="flex items-center space-x-2" data-day="tue">
+                <span class="w-24">Wtorek</span>
+                <input type="time" class="wh-start border rounded px-2 py-1">
+                <input type="time" class="wh-end border rounded px-2 py-1">
+            </div>
+            <div class="flex items-center space-x-2" data-day="wed">
+                <span class="w-24">Środa</span>
+                <input type="time" class="wh-start border rounded px-2 py-1">
+                <input type="time" class="wh-end border rounded px-2 py-1">
+            </div>
+            <div class="flex items-center space-x-2" data-day="thu">
+                <span class="w-24">Czwartek</span>
+                <input type="time" class="wh-start border rounded px-2 py-1">
+                <input type="time" class="wh-end border rounded px-2 py-1">
+            </div>
+            <div class="flex items-center space-x-2" data-day="fri">
+                <span class="w-24">Piątek</span>
+                <input type="time" class="wh-start border rounded px-2 py-1">
+                <input type="time" class="wh-end border rounded px-2 py-1">
+            </div>
+        </div>
 
 
         <div id="meetings" class="space-y-4"></div>
@@ -116,6 +144,14 @@
     async function loadConfig() {
         const cfg = await fetch('config.json').then(r => r.json()).catch(() => ({}));
         document.getElementById('debugVisible').checked = cfg.debugBoxVisible !== false;
+
+        const wh = cfg.workingHours || {};
+        document.querySelectorAll('#working-hours [data-day]').forEach(row => {
+            const day = row.getAttribute('data-day');
+            row.querySelector('.wh-start').value = wh[day]?.start || '';
+            row.querySelector('.wh-end').value = wh[day]?.end || '';
+        });
+
         const mt = cfg.meetingTypes || {};
         Object.entries(mt).forEach(([k, v]) => addMeeting(k, v));
     }
@@ -150,8 +186,18 @@
                 paid: el.querySelector('.paid').checked
             };
         });
+        const wh = {};
+        document.querySelectorAll('#working-hours [data-day]').forEach(row => {
+            const day = row.getAttribute('data-day');
+            wh[day] = {
+                start: row.querySelector('.wh-start').value,
+                end: row.querySelector('.wh-end').value
+            };
+        });
+
         const cfg = {
             debugBoxVisible: document.getElementById('debugVisible').checked,
+            workingHours: wh,
             meetingTypes: mt,
         };
         const res = await fetch('backend/save_config.php', {
