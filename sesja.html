@@ -8,9 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google OAuth -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./assets/css/loader.css">
-        
     <style>
         ::-webkit-scrollbar {
             display: none;
@@ -457,6 +456,8 @@
                 showTimesLoading();
                 logDebug(`Sprawdzam sloty dla ${selectedDate}`);
 
+                const start = Date.now();
+
                 const timeLabel = document.getElementById("time-label");
                 const parsed = new Date(selectedDate + 'T00:00:00');
                 const dateLabel = parsed.toLocaleDateString("pl-PL", {
@@ -466,6 +467,12 @@
                 const mtConf = meetingTypesCfg[meetingType] || {};
                 const duration = mtConf.duration === 'full' ? 60 : parseInt(mtConf.duration || '60', 10);
                 const busySlots = await fetchBusySlots(selectedDate, duration, mtConf.duration === 'full');
+
+                const elapsed = Date.now() - start;
+                if (elapsed < 300) {
+                    await new Promise(r => setTimeout(r, 300 - elapsed));
+                }
+
                 logDebug(`Zajęte sloty: ${busySlots.join(', ') || 'brak'}`);
                 timeButtons.innerHTML = "";
                 
