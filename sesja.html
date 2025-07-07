@@ -60,7 +60,6 @@
 
 <body>
     <!-- Top Bar (Menu) -->
-    <div id="page-loader"></div>
     <nav
         class="fixed main-nav w-full bg-light/90 backdrop-blur-lg z-50 py-4 transition-all duration-300 border-b border-gray-200/50">
         <div class="max-w-[1400px] mx-auto px-6">
@@ -282,6 +281,24 @@
             let beforeCount = 0;
             let afterCount = 0;
 
+            function showCalendarLoading() {
+                calendarGrid.innerHTML = '';
+                for (let i = 0; i < 25; i++) {
+                    const ph = document.createElement('div');
+                    ph.className = 'calendar-placeholder';
+                    calendarGrid.appendChild(ph);
+                }
+            }
+
+            function showTimesLoading() {
+                timeButtons.innerHTML = '';
+                for (let i = 0; i < 9; i++) {
+                    const ph = document.createElement('div');
+                    ph.className = 'calendar-placeholder';
+                    timeButtons.appendChild(ph);
+                }
+            }
+
             async function fetchWebhookLogs() {
                 const data = await fetch('backend/wtl_log.php').then(r => r.json()).catch(() => null);
                 if (!data) return;
@@ -342,13 +359,15 @@
 
 
             function updateCalendar() {
-                const now = new Date();
-                const workingDays = getWorkingDaysFromMonth(monthOffset, 30);
-                const firstDay = workingDays[0];
-                const monthName = firstDay.toLocaleDateString("pl-PL", { month: "long", year: "numeric" });
+                showCalendarLoading();
+                requestAnimationFrame(() => {
+                    const now = new Date();
+                    const workingDays = getWorkingDaysFromMonth(monthOffset, 30);
+                    const firstDay = workingDays[0];
+                    const monthName = firstDay.toLocaleDateString("pl-PL", { month: "long", year: "numeric" });
 
-                calendarMonth.textContent = monthName;
-                calendarGrid.innerHTML = "";
+                    calendarMonth.textContent = monthName;
+                    calendarGrid.innerHTML = "";
 
                 // Oblicz ile pustych komórek przed pierwszym dniem miesiąca
                 const startDayOfWeek = firstDay.getDay(); // 1 (pon) – 5 (pt), 0 (nd)
@@ -396,6 +415,7 @@
 
                 prevMonthBtn.disabled = monthOffset <= -1;
                 nextMonthBtn.disabled = monthOffset >= 2;
+                });
             }
 
 
@@ -434,6 +454,7 @@
             async function showTimes() {
                 timeButtons.innerHTML = "";
                 timePicker.classList.remove("hidden");
+                showTimesLoading();
                 logDebug(`Sprawdzam sloty dla ${selectedDate}`);
 
                 const timeLabel = document.getElementById("time-label");
@@ -446,6 +467,7 @@
                 const duration = mtConf.duration === 'full' ? 60 : parseInt(mtConf.duration || '60', 10);
                 const busySlots = await fetchBusySlots(selectedDate, duration, mtConf.duration === 'full');
                 logDebug(`Zajęte sloty: ${busySlots.join(', ') || 'brak'}`);
+                timeButtons.innerHTML = "";
                 
 
                 if (mtConf.duration === 'full') {

@@ -16,3 +16,12 @@
   opacity: 0;
   transition: opacity 0.3s ease-out;
 }
+
+.calendar-placeholder {
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+  background: linear-gradient(100deg, #f0f0f0 20%, #e0e0e0 40%, #f0f0f0 60%);
+  background-size: 200% 100%;
+  animation: loader-shimmer 1.5s infinite;
+}
