@@ -407,6 +407,7 @@
                             logDebug(`Wybrano dzień ${selectedDate}`);
                             [...calendarGrid.children].forEach(b => b.classList?.remove("bg-accent", "text-white"));
                             btn.classList.add("bg-accent", "text-white");
+                            [...timeButtons.children].forEach(b => b.classList.remove("bg-accent", "text-white"));
                             showTimes();
                         });
                     }
@@ -535,7 +536,7 @@
 
                     btn.className =
                         "border rounded px-3 py-2 text-sm transition " +
-                        (isBusy ? "bg-orange-400 text-white cursor-not-allowed" : "hover:bg-accent hover:text-white");
+                        (isBusy ? "bg-red-500 text-white cursor-not-allowed" : "hover:bg-accent hover:text-white");
 
                     if (!isBusy) {
                         if (time === selectedTime) {
