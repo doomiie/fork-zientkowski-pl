@@ -311,6 +311,13 @@
             function showPaymentIframe(onClose) {
                 const modal = document.getElementById('payment-modal');
                 const closeBtn = document.getElementById('payment-close');
+                let paymentOk = false;
+                const msgHandler = (e) => {
+                    if (e.data && e.data.wtlPaymentStatus) {
+                        paymentOk = e.data.wtlPaymentStatus === 'success';
+                    }
+                };
+                window.addEventListener('message', msgHandler);
                 modal.classList.remove('hidden');
                 iFrameResize({ log: false }, '#payment-frame');
                 fetchWebhookLogs();
@@ -318,8 +325,13 @@
                 const handler = () => {
                     modal.classList.add('hidden');
                     clearInterval(pollInterval);
+                    window.removeEventListener('message', msgHandler);
                     closeBtn.removeEventListener('click', handler);
-                    if (onClose) onClose();
+                    if (paymentOk) {
+                        if (onClose) onClose();
+                    } else {
+                        alert('Płatność nie została potwierdzona, rezerwacja nie została zapisana.');
+                    }
                 };
                 closeBtn.addEventListener('click', handler);
             }
