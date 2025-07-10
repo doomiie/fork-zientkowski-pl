@@ -24,5 +24,8 @@ $success = in_array(strtolower($status), ['ok','success','1','true','paid']);
   <h2 class="font-semibold mt-4">Odebrane parametry</h2>
   <pre class="bg-gray-100 p-2"><?php echo htmlspecialchars(json_encode($_GET, JSON_PRETTY_PRINT)); ?></pre>
 <?php endif; ?>
+  <script>
+    window.parent.postMessage({ wtlPaymentStatus: <?php echo $success ? "'success'" : "'fail'"; ?> }, '*');
+  </script>
 </body>
 </html>
