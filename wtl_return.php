@@ -3,6 +3,10 @@ $log = __DIR__ . '/wtl_return.log';
 file_put_contents($log, date('c') . " " . json_encode($_GET) . "\n", FILE_APPEND);
 $status = $_GET['status'] ?? $_GET['result'] ?? $_GET['success'] ?? '';
 $success = in_array(strtolower($status), ['ok','success','1','true','paid']);
+// Treat missing status as success because WTL may not provide it
+if ($status === '' && !empty($_GET['wtl_offer_uid'])) {
+    $success = true;
+}
 ?>
 <!DOCTYPE html>
 <html lang="pl">
@@ -13,10 +17,10 @@ $success = in_array(strtolower($status), ['ok','success','1','true','paid']);
 </head>
 <body class="p-6">
   <h1 class="text-2xl font-bold mb-4">Wynik płatności</h1>
-<?php if ($status === ''): ?>
+<?php if ($success): ?>
+  <p class="text-green-600">Dziękujemy za rezerwację terminu.</p>
+<?php elseif ($status === ''): ?>
   <p>Nie udało się zweryfikować statusu transakcji.</p>
-<?php elseif ($success): ?>
-  <p class="text-green-600">Dziękujemy, płatność została przyjęta.</p>
 <?php else: ?>
   <p class="text-red-600">Niestety płatność nie powiodła się.</p>
 <?php endif; ?>
