@@ -312,9 +312,21 @@
                 const modal = document.getElementById('payment-modal');
                 const closeBtn = document.getElementById('payment-close');
                 let paymentOk = false;
+                let handler;
+                const cleanup = () => {
+                    modal.classList.add('hidden');
+                    clearInterval(pollInterval);
+                    window.removeEventListener('message', msgHandler);
+                    if (handler) closeBtn.removeEventListener('click', handler);
+                };
+                const finalize = () => {
+                    cleanup();
+                    if (onClose) onClose();
+                };
                 const msgHandler = (e) => {
                     if (e.data && e.data.wtlPaymentStatus) {
                         paymentOk = e.data.wtlPaymentStatus === 'success';
+                        if (paymentOk) finalize();
                     }
                 };
                 window.addEventListener('message', msgHandler);
@@ -322,11 +334,8 @@
                 iFrameResize({ log: false }, '#payment-frame');
                 fetchWebhookLogs();
                 pollInterval = setInterval(fetchWebhookLogs, 2000);
-                const handler = () => {
-                    modal.classList.add('hidden');
-                    clearInterval(pollInterval);
-                    window.removeEventListener('message', msgHandler);
-                    closeBtn.removeEventListener('click', handler);
+                handler = () => {
+                    cleanup();
                     if (paymentOk) {
                         if (onClose) onClose();
                     } else {
