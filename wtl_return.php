@@ -28,8 +28,14 @@ if ($status === '' && !empty($_GET['wtl_offer_uid'])) {
   <h2 class="font-semibold mt-4">Odebrane parametry</h2>
   <pre class="bg-gray-100 p-2"><?php echo htmlspecialchars(json_encode($_GET, JSON_PRETTY_PRINT)); ?></pre>
 <?php endif; ?>
+  <p id="return-link" class="mt-4 hidden"><a href="sesja.html" class="text-blue-600 underline">Powrót do rezerwacji</a></p>
   <script>
-    window.parent.postMessage({ wtlPaymentStatus: <?php echo $success ? "'success'" : "'fail'"; ?> }, '*');
+    if (window.parent !== window) {
+        window.parent.postMessage({ wtlPaymentStatus: <?php echo $success ? "'success'" : "'fail'"; ?> }, '*');
+    } else {
+        document.getElementById('return-link').classList.remove('hidden');
+        setTimeout(() => { window.location.href = 'sesja.html'; }, 5000);
+    }
   </script>
 </body>
 </html>
