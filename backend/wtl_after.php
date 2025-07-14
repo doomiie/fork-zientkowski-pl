@@ -7,7 +7,16 @@ date_default_timezone_set('Europe/Warsaw');
 
 $log = __DIR__ . '/../wtl_after.log';
 $payload = file_get_contents('php://input');
-file_put_contents($log, date('c') . " " . $payload . "\n", FILE_APPEND);
+file_put_contents($log, date('c') . " payload: " . $payload . "\n", FILE_APPEND);
+
+// Helper for verbose logging
+$logVerbose = function ($label, $data = null) use ($log) {
+    $line = date('c') . " " . $label;
+    if ($data !== null) {
+        $line .= " " . json_encode($data, JSON_UNESCAPED_UNICODE);
+    }
+    file_put_contents($log, $line . "\n", FILE_APPEND);
+};
 
 $data = json_decode($payload, true);
 if ($data) {
@@ -22,19 +31,30 @@ if ($data) {
         $client->setAccessType('offline');
 
         if (file_exists($tokenPath)) {
+            $logVerbose('loading token', $tokenPath);
             $client->setAccessToken(json_decode(file_get_contents($tokenPath), true));
+            $logVerbose('current token', $client->getAccessToken());
             if ($client->isAccessTokenExpired()) {
+                $logVerbose('token expired', null);
                 if ($client->getRefreshToken()) {
                     $client->fetchAccessTokenWithRefreshToken($client->getRefreshToken());
                     file_put_contents($tokenPath, json_encode($client->getAccessToken()));
+                    $logVerbose('token refreshed', $client->getAccessToken());
                 } else {
                     unlink($tokenPath);
+                    $logVerbose('token removed', null);
                 }
             }
         }
 
         if ($client->getAccessToken()) {
             $service = new Google\Service\Calendar($client);
+            try {
+                $primary = $service->calendarList->get('primary');
+                $logVerbose('using calendar', ['id' => $primary->id, 'summary' => $primary->summary]);
+            } catch (Throwable $e) {
+                $logVerbose('calendar info error', $e->getMessage());
+            }
 
             $cfgPath = dirname(__DIR__) . '/config.json';
             $cfg = file_exists($cfgPath) ? json_decode(file_get_contents($cfgPath), true) : [];
@@ -73,18 +93,31 @@ if ($data) {
                     'end' => ['dateTime' => $end->format(DateTime::RFC3339)],
                 ]);
 
+                $logVerbose('event payload', [
+                    'summary' => $summary,
+                    'start' => $start->format(DateTime::RFC3339),
+                    'end'   => $end->format(DateTime::RFC3339),
+                    'attendee' => $email,
+                ]);
+
                 if ($email) {
                     $event->setAttendees([['email' => $email]]);
                 }
 
-                $created = $service->events->insert('primary', $event);
-                file_put_contents($log, "created event " . $created->id . "\n", FILE_APPEND);
+                try {
+                    $created = $service->events->insert('primary', $event);
+                    $logVerbose('event created', ['id' => $created->id, 'link' => $created->htmlLink]);
+                } catch (Throwable $e) {
+                    $logVerbose('event insert error', $e->getMessage());
+                }
+            } else {
+                $logVerbose('missing full_date', $data);
             }
         } else {
-            file_put_contents($log, "no access token\n", FILE_APPEND);
+            $logVerbose('no access token', null);
         }
     } catch (Throwable $e) {
-        file_put_contents($log, "error: " . $e->getMessage() . "\n", FILE_APPEND);
+        $logVerbose('error', $e->getMessage());
     }
 }
 
