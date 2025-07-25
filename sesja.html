@@ -227,6 +227,12 @@
             const debugVisible = config.debugBoxVisible !== false;
             const meetingTypesCfg = config.meetingTypes || {};
             const workingHoursCfg = config.workingHours || {};
+            const minMeetingDuration = Math.min(
+                ...Object.values(meetingTypesCfg)
+                    .map(mt => mt.duration)
+                    .filter(d => d && d !== 'full')
+                    .map(d => parseInt(d, 10))
+            );
 
 
             const select = document.querySelector('select');
@@ -379,9 +385,9 @@
 
 
 
-            function updateCalendar() {
+            async function updateCalendar() {
                 showCalendarLoading();
-                requestAnimationFrame(() => {
+                requestAnimationFrame(async () => {
                     const now = new Date();
                     const workingDays = getWorkingDaysFromMonth(monthOffset, 30);
                     const firstDay = workingDays[0];
@@ -401,11 +407,41 @@
 
                 const todayStr = new Date().toLocaleDateString("sv-SE");
 
-                workingDays.forEach(day => {
+                for (const day of workingDays) {
                     const dateStr = day.toLocaleDateString("sv-SE");
                     const label = day.toLocaleDateString("pl-PL", { weekday: "short", day: "numeric" });
                     const isPast = day < new Date().setHours(0, 0, 0, 0);
                     const isToday = dateStr === todayStr;
+
+                    // Check if there is at least one free slot for the shortest meeting
+                    let isFullyBooked = false;
+                    if (!isPast) {
+                        const dayKey = ['sun','mon','tue','wed','thu','fri','sat'][day.getDay()];
+                        const whDay = workingHoursCfg[dayKey] || {};
+                        const whStart = whDay.start || '09:00';
+                        const whEnd = whDay.end || '17:00';
+
+                        const slots = [];
+                        let cursor = new Date(`${dateStr}T${whStart}:00`);
+                        const dayEnd = new Date(`${dateStr}T${whEnd}:00`);
+                        while (cursor.getTime() + minMeetingDuration * 60000 <= dayEnd.getTime()) {
+                            slots.push(cursor.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit', hour12: false }));
+                            cursor.setMinutes(cursor.getMinutes() + minMeetingDuration);
+                        }
+
+                        const busySlots = await fetchBusySlots(dateStr, minMeetingDuration);
+                        const toMinutes = t => {
+                            const [hh, mm] = t.split(':').map(Number);
+                            return hh * 60 + mm;
+                        };
+                        const busyMinutes = busySlots.map(toMinutes);
+                        const freeSlots = slots.filter(time => {
+                            const startMin = toMinutes(time);
+                            const endMin = startMin + minMeetingDuration;
+                            return !busyMinutes.some(bm => bm >= startMin && bm < endMin);
+                        });
+                        isFullyBooked = freeSlots.length === 0;
+                    }
 
                     const btn = document.createElement("button");
                     btn.type = "button";
@@ -414,14 +450,14 @@
 
                     btn.className =
                         "rounded-lg px-3 py-2 border text-sm font-medium transition " +
-                        (isPast
+                        (isPast || isFullyBooked
                             ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                             : "hover:bg-accent hover:text-white");
-                    if (isToday && !isPast) {
+                    if (isToday && !isPast && !isFullyBooked) {
                         btn.classList.add("border-green-500", "text-green-600");
                     }
 
-                    if (!isPast) {
+                    if (!isPast && !isFullyBooked) {
                         btn.addEventListener("click", () => {
                             selectedDate = dateStr;
                             selectedTime = null; // odznacz godzinę przy zmianie dnia
@@ -434,7 +470,7 @@
                     }
 
                     calendarGrid.appendChild(btn);
-                });
+                }
 
                 prevMonthBtn.disabled = monthOffset <= -1;
                 nextMonthBtn.disabled = monthOffset >= 2;
