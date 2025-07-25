@@ -2155,6 +2155,18 @@
                 el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
                 observer.observe(el);
             });
+
+            // Initialize gallery interactions
+            document.querySelectorAll('.gallery-item').forEach(item => {
+                const link = item.querySelector('.gallery-zoom a');
+                const imageSrc = link ? link.getAttribute('href') : item.querySelector('img').src;
+                item.addEventListener('click', () => openGalleryModal(imageSrc));
+            });
+
+            // Prevent modal from opening when clicking download links
+            document.querySelectorAll('.gallery-zoom a').forEach(link => {
+                link.addEventListener('click', e => e.stopPropagation());
+            });
         });
     </script>
     <script defer src="./assets/js/loader.js"></script>
