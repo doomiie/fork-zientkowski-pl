@@ -562,7 +562,7 @@
                             src="./assets/img/logo-jzplus-name-POZIOM-białe-210x58-1.png" alt="Logo">
                     </a>
                 </div>
-                <div class="flex items-center space-x-8">
+                <div class="hidden md:flex items-center space-x-8">
                     <a href="#galeria" class="nav-link relative transition-colors duration-300 font-medium"> Galeria
                     </a>
                     <a href="#bio" class="nav-link relative transition-colors duration-300 font-medium"> BIO</a>
@@ -570,7 +570,7 @@
                     <a href="index.html" class="nav-link relative transition-colors duration-300 font-medium"> Strona
                         głowna </a>
                 </div>
-                <div class="flex items-right space-x-6">
+                <div class="flex items-center space-x-6">
                     <button data-mobile-menu-btn class="md:hidden focus:outline-none">
                         <i data-lucide="menu" class="h-6 w-6 text-dark"></i>
                     </button>
@@ -579,6 +579,37 @@
             </div>
         </div>
     </nav>
+
+    <div data-mobile-menu class="fixed inset-y-0 right-0 w-4/5 max-w-sm bg-white z-50 transform translate-x-full transition-transform duration-200 ease-in-out shadow-2xl md:hidden">
+        <div class="p-6 h-full flex flex-col">
+            <div class="flex justify-between items-center mb-8">
+                <div class="text-xl font-bold">Menu</div>
+                <button data-mobile-menu-close class="focus:outline-none">
+                    <i data-lucide="x" class="h-6 w-6 text-dark"></i>
+                </button>
+            </div>
+            <div class="flex-1">
+                <div class="flex flex-col space-y-6">
+                    <a href="#galeria" class="text-lg font-medium text-dark hover:text-accent transition-colors duration-300">Galeria</a>
+                    <a href="#bio" class="text-lg font-medium text-dark hover:text-accent transition-colors duration-300">BIO</a>
+                    <a href="index.html" class="text-lg font-medium text-dark hover:text-accent transition-colors duration-300">Strona głowna</a>
+                </div>
+            </div>
+            <div class="mt-auto">
+                <div class="flex space-x-4 pt-6 border-t border-gray-200 mt-6">
+                    <a href="https://www.facebook.com/jerzy.zientkowski" target="_blank" aria-label="Facebook" class="text-dark hover:text-accent transition-colors duration-300">
+                        <i data-lucide="facebook" class="h-5 w-5"></i>
+                    </a>
+                    <a href="https://www.instagram.com/jerzyzientkowskiofficial/" target="_blank" aria-label="Instagram" class="text-dark hover:text-accent transition-colors duration-300">
+                        <i data-lucide="instagram" class="h-5 w-5"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/jerzyzientkowski/" target="_blank" aria-label="LinkedIn" class="text-dark hover:text-accent transition-colors duration-300">
+                        <i data-lucide="linkedin" class="h-5 w-5"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Hero Section -->
     <section class="min-h-screen pt-24 relative overflow-hidden bg-gradient-to-br from-white via-gray-50 to-white">
@@ -1793,6 +1824,7 @@
     <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollToPlugin.min.js"></script>
+    <script defer src="./assets/js/animations.js"></script>
 
     <script>
         // Gallery Modal Functions
