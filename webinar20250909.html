@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTC na Clubhouse - Webinar 9 września 2025</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/css/loader.css">
+  <style>
+      ::-webkit-scrollbar { display: none; }
+      * { font-family: 'Space Grotesk', sans-serif; scroll-behavior: smooth; }
+  </style>
+</head>
+<body class="bg-white text-gray-900">
+  <section class="max-w-3xl mx-auto px-4 py-8">
+     <h1 class="text-3xl md:text-4xl font-bold mb-4">HTC na Clubhouse – webinar 9 września 2025</h1>
+     <p class="mb-4">Opis webinaru oraz szczegóły przeniesione z artykułu: <a href="https://zientkowski.pl/htc-na-clubhouse/" class="text-blue-600 underline">HTC na Clubhouse</a>.</p>
+     <p class="mb-8">[Tutaj wstaw pełną treść z powyższego linku.]</p>
+     <h2 class="text-2xl font-semibold mb-2">Zapisz się</h2>
+     <form id="signup-form" class="flex flex-col md:flex-row gap-4">
+        <input type="email" name="email" id="email" required placeholder="Twój email" class="flex-1 px-4 py-2 border border-gray-300 rounded">
+        <button type="submit" class="px-6 py-2 bg-black text-white rounded">Zapisz się</button>
+     </form>
+     <div id="form-message" class="mt-4 text-sm"></div>
+  </section>
+  <script>
+    const scriptURL = 'REPLACE_WITH_YOUR_GOOGLE_SCRIPT_URL';
+    const form = document.getElementById('signup-form');
+    const msg = document.getElementById('form-message');
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+        .then(response => {
+          msg.textContent = 'Dziękujemy za zapis!';
+          form.reset();
+        })
+        .catch(error => {
+          console.error('Error!', error.message);
+          msg.textContent = 'Wystąpił błąd. Spróbuj ponownie.';
+        });
+    });
+  </script>
+</body>
+</html>
