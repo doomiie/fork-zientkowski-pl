@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Humor | Jerzy Zientkowski</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        * {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .nav-link {
+            position: relative;
+            padding-bottom: 4px;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: rgb(4, 3, 39);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .grain-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: url('data:image/svg+xml,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)"/></svg>');
+            opacity: 0.05;
+            pointer-events: none;
+            z-index: 1;
+        }
+    </style>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        accent: 'rgb(4, 3, 39)',
+                        dark: 'rgb(4, 3, 39)',
+                        light: '#F9F9F9'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-light">
+    <nav
+        class="fixed w-full bg-light/90 backdrop-blur-lg z-50 py-4 transition-all duration-300 border-b border-gray-200/50">
+        <div class="max-w-[1400px] mx-auto px-6">
+            <div class="flex justify-between items-center">
+                <a href="index.html" class="text-2xl font-bold tracking-tight flex items-center gap-3">
+                    <img class="brightness-0 max-w-[150px]"
+                        src="./assets/img/logo-jzplus-name-POZIOM-białe-210x58-1.png" alt="Logo">
+                </a>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html"
+                        class="nav-link text-dark hover:text-accent transition-colors duration-300">Start</a>
+                    <a href="linki.html"
+                        class="nav-link text-dark hover:text-accent transition-colors duration-300">Linki</a>
+                    <a href="bio.html"
+                        class="nav-link text-dark hover:text-accent transition-colors duration-300">Bio</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="pt-40 pb-20 relative overflow-hidden">
+        <div class="grain-overlay"></div>
+        <div class="max-w-[1100px] mx-auto px-6 relative z-10">
+            <header class="mb-8 text-center">
+                <h1 class="text-3xl md:text-5xl font-extrabold text-dark leading-tight">
+                    Jak zamienić proste prezentacje w pełne luzu, humoru i relacji rozmowy z widownią?
+                </h1>
+                <h2 class="mt-4 text-2xl md:text-3xl font-semibold text-dark">
+                    (I jak odkryć swój autentyczny styl humoru)
+                </h2>
+                <h3 class="mt-2 text-xl md:text-2xl font-bold text-dark">
+                    <p class="mt-2 text-gray-600">⚠️ Włącz głos i odpal nagranie⤵️</p>
+                </h3>
+            </header>
+
+
+            <div class="mt-6 rounded-2xl border border-gray-200 shadow-sm overflow-hidden bg-white">
+                <div class="relative w-full" style="padding-top:56.25%">
+                    <iframe class="absolute inset-0 w-full h-full" src="https://www.youtube.com/embed/N4_Yw9-uv08"
+                        title="YouTube video"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin" loading="lazy" allowfullscreen></iframe>
+                </div>
+            </div>
+
+
+
+            <div class="mt-8" id="unlock-note">
+                <h1 class="text-center text-3xl md:text-5xl font-extrabold text-dark leading-tight">(Kolejny krok już
+                    za...)</h1>
+                <h2  class="text-center text-2xl  text-gray-600"></h2>
+                <div id="countdown" class="mt-3 flex items-center justify-center gap-4 text-dark">
+                    <div class="text-center">
+                        <div class="text-4xl md:text-5xl font-extrabold" id="cd-min">07</div>
+                        <div class="text-xs uppercase tracking-wider text-gray-500">Minut</div>
+                    </div>
+                    <div class="text-4xl md:text-5xl font-extrabold">:</div>
+                    <div class="text-center">
+                        <div class="text-4xl md:text-5xl font-extrabold" id="cd-sec">00</div>
+                        <div class="text-xs uppercase tracking-wider text-gray-500">Sekund</div>
+                    </div>
+                </div>
+            </div>
+
+            <section id="cta" class="mt-10 hidden">
+                <a id="openPopup" href="#order"
+                    class="block w-full text-center bg-gradient-to-r from-yellow-700 to-yellow-400 text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:opacity-90 transition">
+                    TAAAAK! Kupuję dostęp do szkolenia i materiałów za straszliwe 97 zł!
+                </a>
+                <p class="mt-2 text-center text-sm text-gray-700">Włożyłem w to blisko 16tys zł. Zapytaj mnie, skąd ta kwota ;)</p>
+
+                <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+                    <img class="mx-auto max-w-full md:col-span-2"
+                        src="assets/img/Mockup do kursu.png"
+                        alt="bundle">
+                    <img class="mx-auto w-32"
+                        src="https://images.clickfunnels.com/cdn-cgi/image/width=1000px,fit=scale-down,f=auto,q=80/https://statics.myclickfunnels.com/workspace/erDPNZ/image/11038348/file/ff841246a3d4a847cad740f88f9a3f12.png"
+                        alt="guarantee">
+                </div>
+                <p class="mt-4 text-gray-600 italic text-center">365 DAY MONEY BACK GUARANTEE: If you do not get value
+                    from this training and templates you can claim a full refund at any time for any reason. Simply
+                    email your receipt and you will be refunded inside 3 working days.</p>
+            </section>
+
+            <!-- Popup Modal -->
+            <div id="popupOverlay" class="fixed inset-0 bg-black/60 z-[60] hidden">
+                <div class="min-h-full flex items-center justify-center p-4">
+                    <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-auto">
+                        <button id="closePopup" aria-label="Zamknij" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                        </button>
+                        <div class="p-4">
+                            <style>
+                            .wtl-responsive-iframe {
+                              width: 1px;
+                              min-width: 100%;
+                            }
+                            </style>
+                            <script src="https://kotryszientkowski.elms.pl/assets/js/iframe-resizer-embed.js"></script>
+                            <iframe class="wtl-responsive-iframe" src="https://kotryszientkowski.elms.pl/assets/js/s.php?id=6f4922f45568161a8cdf4ad2299f6d23" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            <script>
+                            document.addEventListener("DOMContentLoaded", function() {
+                              if (window.iFrameResize) {
+                                iFrameResize({
+                                  log: false,
+                                  checkOrigin: false
+                                }, ".wtl-responsive-iframe");
+                              }
+                            });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <section class="d-none hidden mt-20">
+                <h3 class="text-3xl md:text-4xl font-extrabold text-dark">Here’s Everything You’re Getting When You Sign
+                    Up Today..</h3>
+                <p class="mt-3 text-gray-700">I can’t wait for you to experience first hand how much more simple and
+                    complete this system is <b>than anything you’ve tried before..</b></p>
+                <div class="mt-8">
+                    <img class="mx-auto max-w-[720px] w-full"
+                        src="https://images.clickfunnels.com/cdn-cgi/image/width=1000px,fit=scale-down,f=auto,q=80/https://statics.myclickfunnels.com/workspace/erDPNZ/image/12051391/file/40a1c7805b41977215542f390b86236d.png"
+                        alt="everything">
+                </div>
+                <ul class="mt-8 space-y-4 text-lg md:text-xl">
+                    <li class="flex items-start gap-3"><svg class="w-6 h-6 text-yellow-600 shrink-0" viewBox="0 0 24 24"
+                            fill="currentColor">
+                            <path d="M9 16.2l-3.5-3.5L4 14.2 9 19l12-12-1.5-1.5z" />
+                        </svg> The Easy Yes 1K Offer Formula Training ($997 Value)</li>
+                    <li class="flex items-start gap-3"><svg class="w-6 h-6 text-yellow-600 shrink-0" viewBox="0 0 24 24"
+                            fill="currentColor">
+                            <path d="M9 16.2l-3.5-3.5L4 14.2 9 19l12-12-1.5-1.5z" />
+                        </svg> “Fill-in-the-blank” $1K Sales Page Template ($497 Value)</li>
+                    <li class="flex items-start gap-3"><svg class="w-6 h-6 text-yellow-600 shrink-0" viewBox="0 0 24 24"
+                            fill="currentColor">
+                            <path d="M9 16.2l-3.5-3.5L4 14.2 9 19l12-12-1.5-1.5z" />
+                        </svg> Buyer Magnet Email Template ($297 Value)</li>
+                </ul>
+                <h4 class="mt-8 text-2xl md:text-3xl font-semibold text-dark">NEW: 70% OFF LIFETIME ACCESS OFFER</h4>
+            </section>
+        </div>
+    </section>
+
+    <footer class="bg-light py-8 border-t border-gray-200/60">
+        <div class="container mx-auto px-6">
+            <div class="text-center text-gray-600">
+                <p>&copy; 2024 Jerzy Zientkowski. Wszelkie prawa zastrzeżone.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const cdMin = document.getElementById('cd-min');
+        const cdSec = document.getElementById('cd-sec');
+        const cdWrap = document.getElementById('countdown');
+        const unlockNote = document.getElementById('unlock-note');
+        const cta = document.getElementById('cta');
+        let remaining = 1 * 4; // seconds
+        function tick() {
+            const m = Math.floor(remaining / 60);
+            const s = remaining % 60;
+            cdMin.textContent = String(m).padStart(2, '0');
+            cdSec.textContent = String(s).padStart(2, '0');
+            if (remaining <= 0) {
+                cdWrap.classList.add('hidden');
+                unlockNote.classList.add('hidden');
+                cta.classList.remove('hidden');
+                return;
+            }
+            remaining -= 1;
+            setTimeout(tick, 1000);
+        }
+        tick();
+        // Popup logic
+        const openBtn = document.getElementById('openPopup');
+        const overlay = document.getElementById('popupOverlay');
+        const closeBtn = document.getElementById('closePopup');
+        function openModal(e){ if(e) e.preventDefault(); overlay.classList.remove('hidden'); document.body.style.overflow='hidden'; try{ if(window.iFrameResize){ iFrameResize({ log:false, checkOrigin:false }, '.wtl-responsive-iframe'); } }catch(_){} }
+        function closeModal(){ overlay.classList.add('hidden'); document.body.style.overflow='auto'; }
+        openBtn && openBtn.addEventListener('click', openModal);
+        closeBtn && closeBtn.addEventListener('click', closeModal);
+        overlay && overlay.addEventListener('click', (e)=>{ if(e.target===overlay) closeModal(); });
+        document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeModal(); });
+    </script>
+</body>
+
+</html>
