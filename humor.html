@@ -42,6 +42,26 @@
             pointer-events: none;
             z-index: 1;
         }
+
+        /* Masonry layout for references */
+        .masonry {
+            column-gap: 1.5rem; /* matches gap-6 */
+            column-count: 1;
+        }
+        @media (min-width: 640px) { /* sm */
+            .masonry { column-count: 2; }
+        }
+        @media (min-width: 768px) { /* md */
+            .masonry { column-count: 3; }
+        }
+        @media (min-width: 1024px) { /* lg */
+            .masonry { column-count: 3; }
+        }
+        .avoid-break {
+            break-inside: avoid;
+            -webkit-column-break-inside: avoid;
+            -moz-column-break-inside: avoid;
+        }
     </style>
 
     <script>
@@ -60,6 +80,36 @@
 </head>
 
 <body class="bg-light">
+    <!-- Popup Modal (moved to top-level to ensure highest stacking) -->
+    <div id="popupOverlay" class="fixed inset-0 bg-black/60 z-[10050] hidden">
+        <div class="min-h-full flex items-center justify-center p-4">
+            <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-auto z-[10060]">
+                <button id="closePopup" aria-label="Zamknij" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 z-[10070]">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+                <div class="p-4">
+                    <style>
+                    .wtl-responsive-iframe {
+                      width: 1px;
+                      min-width: 100%;
+                    }
+                    </style>
+                    <script src="https://kotryszientkowski.elms.pl/assets/js/iframe-resizer-embed.js"></script>
+                    <iframe class="wtl-responsive-iframe" src="https://kotryszientkowski.elms.pl/assets/js/s.php?id=6f4922f45568161a8cdf4ad2299f6d23" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                      if (window.iFrameResize) {
+                        iFrameResize({
+                          log: false,
+                          checkOrigin: false
+                        }, ".wtl-responsive-iframe");
+                      }
+                    });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
     <nav
         class="fixed w-full bg-light/90 backdrop-blur-lg z-50 py-4 transition-all duration-300 border-b border-gray-200/50">
         <div class="max-w-[1400px] mx-auto px-6">
@@ -69,12 +119,7 @@
                         src="./assets/img/logo-jzplus-name-POZIOM-białe-210x58-1.png" alt="Logo">
                 </a>
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="index.html"
-                        class="nav-link text-dark hover:text-accent transition-colors duration-300">Start</a>
-                    <a href="linki.html"
-                        class="nav-link text-dark hover:text-accent transition-colors duration-300">Linki</a>
-                    <a href="bio.html"
-                        class="nav-link text-dark hover:text-accent transition-colors duration-300">Bio</a>
+                    <a href="#referencje" class="nav-link text-dark hover:text-accent transition-colors duration-300">Referencje</a>
                 </div>
             </div>
         </div>
@@ -144,36 +189,7 @@
                     email your receipt and you will be refunded inside 3 working days.</p>
             </section>
 
-            <!-- Popup Modal -->
-            <div id="popupOverlay" class="fixed inset-0 bg-black/60 z-[60] hidden">
-                <div class="min-h-full flex items-center justify-center p-4">
-                    <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-auto">
-                        <button id="closePopup" aria-label="Zamknij" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                        </button>
-                        <div class="p-4">
-                            <style>
-                            .wtl-responsive-iframe {
-                              width: 1px;
-                              min-width: 100%;
-                            }
-                            </style>
-                            <script src="https://kotryszientkowski.elms.pl/assets/js/iframe-resizer-embed.js"></script>
-                            <iframe class="wtl-responsive-iframe" src="https://kotryszientkowski.elms.pl/assets/js/s.php?id=6f4922f45568161a8cdf4ad2299f6d23" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                            <script>
-                            document.addEventListener("DOMContentLoaded", function() {
-                              if (window.iFrameResize) {
-                                iFrameResize({
-                                  log: false,
-                                  checkOrigin: false
-                                }, ".wtl-responsive-iframe");
-                              }
-                            });
-                            </script>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <!-- Popup Modal moved to top-level -->
 
             <section class="d-none hidden mt-20">
                 <h3 class="text-3xl md:text-4xl font-extrabold text-dark">Here’s Everything You’re Getting When You Sign
@@ -204,6 +220,29 @@
         </div>
     </section>
 
+    <!-- Referencje -->
+    <section id="referencje" class="bg-light py-16 border-t border-gray-200/60 scroll-mt-24">
+        <div class="max-w-[1100px] mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-dark">Referencje</h2>
+            <p class="mt-2 text-gray-600">Opinie klientów i uczestników wydarzeń.</p>
+
+            <div id="references-columns" class="mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                <div id="col-0" class="flex flex-col"></div>
+                <div id="col-1" class="flex flex-col"></div>
+                <div id="col-2" class="flex flex-col"></div>
+            </div>
+
+            <div id="references-empty" class="mt-6 hidden text-gray-600">Brak referencji do wyświetlenia.</div>
+
+            <div class="mt-8 text-center">
+                <button id="references-more"
+                    class="px-6 py-3 rounded-xl border border-gray-300 bg-white hover:bg-gray-50 text-dark font-medium shadow-sm transition disabled:opacity-50 disabled:cursor-not-allowed">
+                    Pokaż 6 więcej
+                </button>
+            </div>
+        </div>
+    </section>
+
     <footer class="bg-light py-8 border-t border-gray-200/60">
         <div class="container mx-auto px-6">
             <div class="text-center text-gray-600">
@@ -211,6 +250,208 @@
             </div>
         </div>
     </footer>
+
+    <!-- CSV parser for robust handling (quoted newlines, etc.) -->
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <script>
+        // Referencje: dynamiczne wczytywanie z CSV i "Pokaż więcej"
+        (function () {
+            const COLUMNS_ID = 'references-columns';
+            const EMPTY_ID = 'references-empty';
+            const MORE_ID = 'references-more';
+            const CSV_PATH = 'referencje.csv';
+            const PAGE_SIZE = 6; // ile kafelków na "stronę"
+
+            const grid = document.getElementById(COLUMNS_ID);
+            const empty = document.getElementById(EMPTY_ID);
+            const moreBtn = document.getElementById(MORE_ID);
+            const section = document.getElementById('referencje');
+            const cols = [
+                document.getElementById('col-0'),
+                document.getElementById('col-1'),
+                document.getElementById('col-2'),
+            ];
+
+            function parseBool(v){ if(v==null) return false; const s = String(v).toLowerCase().trim(); return s==='' || s==='1' || s==='true' || s==='yes'; }
+            const hidden = {
+                imie: parseBool(section?.dataset?.hideImie),
+                rola: parseBool(section?.dataset?.hideRola),
+                event: parseBool(section?.dataset?.hideEvent),
+                opinia: parseBool(section?.dataset?.hideOpinia),
+                data: parseBool(section?.dataset?.hideData),
+                source: parseBool(section?.dataset?.hideSource)
+            };
+            const showCounter = ('showCounter' in (section?.dataset || {}))
+                ? parseBool(section?.dataset?.showCounter)
+                : !parseBool(section?.dataset?.hideCounter);
+
+            if (!grid || !moreBtn) return;
+
+            let all = [];
+            let shown = 0;
+            const assigned = new Map(); // globalIndex -> colIndex
+            const colHeights = [0, 0, 0];
+            const GAP = 24; // px; odpowiada mb-6
+
+            function escapeHTML(str) {
+                return str.replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+            }
+
+            function toHtmlWithBreaks(str) {
+                // zachowaj łamanie linii i podstawową sanitację
+                return escapeHTML(str).replace(/\r?\n/g, '<br>');
+            }
+
+            function tileTemplate(item, index, total) {
+                const name = (item["Imię, nazwisko"] || '').trim();
+                const role = (item['Rola'] || '').trim();
+                const event = (item['Event'] || '').trim();
+                const opinia = (item['Opinia'] || '').trim();
+                const data = (item['Data'] || '').trim();
+                const source = (item['Source'] || '').trim();
+                const avatar = (item['Zdjęcie profilowe'] || '').trim();
+                const hasAvatar = avatar.length > 0;
+
+                const metaBottomParts = [
+                    (!hidden.event && event) ? event : '',
+                    (!hidden.source && source) ? source : ''
+                ].filter(Boolean).map(escapeHTML);
+                const metaBottom = metaBottomParts.length ? `<div class="mt-3 text-xs text-gray-500 italic">${metaBottomParts.join(' • ')}</div>` : '';
+                const dateHtml = (!hidden.data && data) ? `<span class="text-xs text-gray-500">${escapeHTML(data)}</span>` : '';
+                const counterHtml = (showCounter && typeof index === 'number' && typeof total === 'number') ? `<span class="text-xs text-gray-500">${index + 1}/${total}</span>` : '';
+                const metaFooter = (dateHtml || counterHtml)
+                    ? `<div class="mt-3 flex items-center justify-between"><div class="text-xs text-gray-500">${dateHtml || ''}</div><div class="text-xs text-gray-500">${counterHtml || ''}</div></div>`
+                    : '';
+
+                const avatarHtml = hasAvatar ? `
+                    <div class="absolute left-1/2 -translate-x-1/2 -top-12 w-24 h-24 rounded-full border-4 border-white shadow-md overflow-hidden bg-white">
+                        <img src="${escapeHTML(avatar)}" alt="${escapeHTML(name || 'Zdjęcie profilowe')}" class="w-full h-full object-cover" loading="lazy" referrerpolicy="no-referrer" />
+                    </div>
+                ` : '';
+
+                return `
+                <article class="mb-6 avoid-break bg-white rounded-xl border border-gray-200 shadow-sm p-5 h-auto relative ${hasAvatar ? 'mt-12 pt-16' : ''}">
+                    ${avatarHtml}
+                    <div class="flex items-start justify-between gap-3">
+                        <div>
+                            ${(!hidden.imie && name) ? `<div class="text-lg font-semibold text-dark">${escapeHTML(name)}</div>` : ''}
+                            ${(!hidden.rola && role) ? `<div class="text-sm text-gray-500">${escapeHTML(role)}</div>` : ''}
+                        </div>
+                        
+                    </div>
+                    ${(!hidden.opinia && opinia) ? `<div class="mt-3 text-sm text-gray-700 whitespace-pre-line">${toHtmlWithBreaks(opinia)}</div>` : ''}
+                    ${metaBottom}
+                    ${metaFooter}
+                </article>`;
+            }
+
+            function measureTileHeight(html, colWidth) {
+                const wrapper = document.createElement('div');
+                wrapper.style.position = 'fixed';
+                wrapper.style.visibility = 'hidden';
+                wrapper.style.pointerEvents = 'none';
+                wrapper.style.left = '-9999px';
+                wrapper.style.top = '0';
+                wrapper.style.width = `${Math.max(0, colWidth)}px`;
+                wrapper.innerHTML = html;
+                document.body.appendChild(wrapper);
+                const el = wrapper.firstElementChild;
+                const h = el ? el.offsetHeight : 0;
+                document.body.removeChild(wrapper);
+                return h;
+            }
+
+            function renderMore() {
+                const next = all.slice(shown, shown + PAGE_SIZE);
+                if (next.length === 0) {
+                    moreBtn.disabled = true;
+                    moreBtn.textContent = 'Nic więcej do pokazania';
+                    return;
+                }
+                const total = all.length;
+                const colWidth = cols[0]?.getBoundingClientRect().width || 320;
+
+                const toAppend = [];
+                next.forEach((item, i) => {
+                    const globalIndex = shown + i;
+                    const tileHtml = tileTemplate(item, globalIndex, total);
+                    let colIndex;
+                    if (assigned.has(globalIndex)) {
+                        colIndex = assigned.get(globalIndex);
+                    } else {
+                        const h = measureTileHeight(tileHtml, colWidth);
+                        // znajdź najniższą kolumnę
+                        let minIdx = 0;
+                        for (let k = 1; k < colHeights.length; k++) {
+                            if (colHeights[k] < colHeights[minIdx]) minIdx = k;
+                        }
+                        colIndex = minIdx;
+                        assigned.set(globalIndex, colIndex);
+                        colHeights[colIndex] += h + GAP;
+                    }
+                    toAppend.push({ colIndex, html: tileHtml });
+                });
+
+                toAppend.forEach(({ colIndex, html }) => {
+                    const target = cols[colIndex] || cols[0];
+                    target.insertAdjacentHTML('beforeend', html);
+                });
+
+                shown += next.length;
+                if (shown >= all.length) {
+                    moreBtn.disabled = true;
+                    moreBtn.textContent = 'Nic więcej do pokazania';
+                }
+            }
+
+            function shuffle(arr) {
+                for (let i = arr.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [arr[i], arr[j]] = [arr[j], arr[i]];
+                }
+                return arr;
+            }
+
+            function init(data) {
+                all = data.filter(row => Object.values(row).some(v => (v || '').toString().trim().length > 0));
+                // Losowa kolejność referencji w ramach bieżącego załadowania strony
+                shuffle(all);
+                if (all.length === 0) {
+                    empty.classList.remove('hidden');
+                    moreBtn.classList.add('hidden');
+                    return;
+                }
+                empty.classList.add('hidden');
+                renderMore();
+                moreBtn.addEventListener('click', renderMore);
+            }
+
+            function parseCSVWithPapa() {
+                if (!window.Papa) return Promise.reject(new Error('PapaParse not available'));
+                return new Promise((resolve, reject) => {
+                    Papa.parse(CSV_PATH, {
+                        download: true,
+                        header: true,
+                        skipEmptyLines: false,
+                        complete: (results) => resolve(results.data || []),
+                        error: (err) => reject(err)
+                    });
+                });
+            }
+
+            // Start
+            parseCSVWithPapa()
+                .then(init)
+                .catch(() => {
+                    // Brak PapaParse lub błąd wczytywania – pokaż komunikat zamiast ryzykować błędny parsing
+                    if (empty) {
+                        empty.textContent = 'Nie udało się wczytać referencji.';
+                        empty.classList.remove('hidden');
+                    }
+                    moreBtn && moreBtn.classList.add('hidden');
+                });
+        })();
+    </script>
 
     <script>
         const cdMin = document.getElementById('cd-min');
