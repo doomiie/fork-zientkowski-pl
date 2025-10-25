@@ -68,6 +68,9 @@
         tailwind.config = {
             theme: {
                 extend: {
+                    screens: {
+                        xs: '400px' // dodatkowy breakpoint dla dużych telefonów
+                    },
                     colors: {
                         accent: 'rgb(4, 3, 39)',
                         dark: 'rgb(4, 3, 39)',
@@ -118,24 +121,36 @@
                     <img class="brightness-0 max-w-[150px]"
                         src="./assets/img/logo-jzplus-name-POZIOM-białe-210x58-1.png" alt="Logo">
                 </a>
-                <div class="hidden md:flex items-center space-x-8">
+                <div class="hidden md:flex items-center space-x-4">
                     <a href="#referencje" class="nav-link text-dark hover:text-accent transition-colors duration-300">Referencje</a>
+                    <a id="navCta" data-open-popup href="#order" class="hidden md:inline-block whitespace-nowrap px-4 py-2 rounded-lg bg-gradient-to-r from-yellow-700 to-yellow-400 text-white font-bold shadow hover:opacity-90 transition">
+                        TAAAAK! Kupuję dostęp
+                    </a>
                 </div>
             </div>
         </div>
     </nav>
 
-    <section class="pt-40 pb-20 relative overflow-hidden">
+    <section class="pt-20 md:pt-40 pb-20 relative overflow-hidden">
         <div class="grain-overlay"></div>
         <div class="max-w-[1100px] mx-auto px-6 relative z-10">
             <header class="mb-8 text-center">
-                <h1 class="text-3xl md:text-5xl font-extrabold text-dark leading-tight">
+                <h1 class="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-extrabold text-dark leading-tight">
                     Jak zamienić proste prezentacje w pełne luzu, humoru i relacji rozmowy z widownią?
                 </h1>
-                <h2 class="mt-4 text-2xl md:text-3xl font-semibold text-dark">
+                <div id="dev-hero-size" class="hidden mt-1 text-xs text-gray-500 italic">
+                    <span class="inline xs:hidden sm:hidden md:hidden lg:hidden xl:hidden 2xl:hidden">DEV: base — H1 text-2xl</span>
+                    <span class="hidden xs:inline sm:hidden md:hidden lg:hidden xl:hidden 2xl:hidden">DEV: xs — H1 text-3xl</span>
+                    <span class="hidden sm:inline md:hidden lg:hidden xl:hidden 2xl:hidden">DEV: sm — H1 text-4xl</span>
+                    <span class="hidden md:inline lg:hidden xl:hidden 2xl:hidden">DEV: md — H1 text-5xl</span>
+                    <span class="hidden lg:inline xl:hidden 2xl:hidden">DEV: lg — H1 text-5xl</span>
+                    <span class="hidden xl:inline 2xl:hidden">DEV: xl — H1 text-5xl</span>
+                    <span class="hidden 2xl:inline">DEV: 2xl — H1 text-5xl</span>
+                </div>
+                <h2 class="mt-4 text-sm md:text-xl font-semibold text-dark">
                     (I jak odkryć swój autentyczny styl humoru)
                 </h2>
-                <h3 class="mt-2 text-xl md:text-2xl font-bold text-dark">
+                <h3 class="mt-2 text-xs xs:text-xs sm:text-xs md:text-xl font-bold text-dark">
                     <p class="mt-2 text-gray-600">⚠️ Włącz głos i odpal nagranie⤵️</p>
                 </h3>
             </header>
@@ -153,24 +168,24 @@
 
 
             <div class="mt-8" id="unlock-note">
-                <h1 class="text-center text-3xl md:text-5xl font-extrabold text-dark leading-tight">(Kolejny krok już
+                <h1 class="text-center text-2xl sm:text-3xl md:text-5xl font-extrabold text-dark leading-tight">(Kolejny krok już
                     za...)</h1>
                 <h2  class="text-center text-2xl  text-gray-600"></h2>
                 <div id="countdown" class="mt-3 flex items-center justify-center gap-4 text-dark">
                     <div class="text-center">
-                        <div class="text-4xl md:text-5xl font-extrabold" id="cd-min">07</div>
+                        <div class="text-3xl md:text-5xl font-extrabold" id="cd-min">07</div>
                         <div class="text-xs uppercase tracking-wider text-gray-500">Minut</div>
                     </div>
-                    <div class="text-4xl md:text-5xl font-extrabold">:</div>
+                    <div class="text-3xl md:text-5xl font-extrabold">:</div>
                     <div class="text-center">
-                        <div class="text-4xl md:text-5xl font-extrabold" id="cd-sec">00</div>
+                        <div class="text-3xl md:text-5xl font-extrabold" id="cd-sec">00</div>
                         <div class="text-xs uppercase tracking-wider text-gray-500">Sekund</div>
                     </div>
                 </div>
             </div>
 
             <section id="cta" class="mt-10 hidden">
-                <a id="openPopup" href="#order"
+                <a id="openPopup" data-open-popup href="#order"
                     class="block w-full text-center bg-gradient-to-r from-yellow-700 to-yellow-400 text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:opacity-90 transition">
                     TAAAAK! Kupuję dostęp do szkolenia i materiałów za straszliwe 97 zł!
                 </a>
@@ -249,10 +264,17 @@
                 <p>&copy; 2024 Jerzy Zientkowski. Wszelkie prawa zastrzeżone.</p>
             </div>
         </div>
-    </footer>
+</footer>
 
     <!-- CSV parser for robust handling (quoted newlines, etc.) -->
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    
+    <!-- Docked CTA on mobile -->
+    <div id="ctaDock" class="fixed bottom-0 inset-x-0 z-[1000] hidden">
+        <a id="openPopupDock" data-open-popup href="#order" class="block w-full text-center bg-gradient-to-r from-yellow-700 to-yellow-400 text-white font-bold py-4 px-6 rounded-none shadow-[0_-2px_8px_rgba(0,0,0,0.15)] hover:opacity-90 transition">
+            TAAAAK! Kupuję dostęp do szkolenia i materiałów za straszliwe 97 zł!
+        </a>
+    </div>
     <script>
         // Referencje: dynamiczne wczytywanie z CSV i "Pokaż więcej"
         (function () {
@@ -476,15 +498,44 @@
         }
         tick();
         // Popup logic
-        const openBtn = document.getElementById('openPopup');
         const overlay = document.getElementById('popupOverlay');
         const closeBtn = document.getElementById('closePopup');
         function openModal(e){ if(e) e.preventDefault(); overlay.classList.remove('hidden'); document.body.style.overflow='hidden'; try{ if(window.iFrameResize){ iFrameResize({ log:false, checkOrigin:false }, '.wtl-responsive-iframe'); } }catch(_){} }
         function closeModal(){ overlay.classList.add('hidden'); document.body.style.overflow='auto'; }
-        openBtn && openBtn.addEventListener('click', openModal);
+        document.querySelectorAll('[data-open-popup]').forEach(el=> el.addEventListener('click', openModal));
         closeBtn && closeBtn.addEventListener('click', closeModal);
         overlay && overlay.addEventListener('click', (e)=>{ if(e.target===overlay) closeModal(); });
         document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeModal(); });
+
+        // Sticky CTA behavior
+        const navCta = document.getElementById('navCta');
+        const ctaDock = document.getElementById('ctaDock');
+        const mainCta = document.getElementById('openPopup');
+        const mqlMd = window.matchMedia('(min-width: 768px)');
+        function setVisibility(isMainCtaVisible){
+            if (isMainCtaVisible) {
+                navCta && navCta.classList.add('hidden');
+                ctaDock && ctaDock.classList.add('hidden');
+            } else {
+                if (mqlMd.matches) {
+                    navCta && navCta.classList.remove('hidden');
+                    ctaDock && ctaDock.classList.add('hidden');
+                } else {
+                    ctaDock && ctaDock.classList.remove('hidden');
+                    navCta && navCta.classList.add('hidden');
+                }
+            }
+        }
+        const io = new IntersectionObserver((entries)=>{
+            const entry = entries[0];
+            setVisibility(entry && entry.isIntersecting);
+        }, { root: null, threshold: 0.01 });
+        mainCta && io.observe(mainCta);
+        mqlMd.addEventListener ? mqlMd.addEventListener('change', ()=> setVisibility(mainCta ? isInViewport(mainCta) : true)) : mqlMd.addListener(()=> setVisibility(mainCta ? isInViewport(mainCta) : true));
+        function isInViewport(el){
+            const rect = el.getBoundingClientRect();
+            return rect.bottom > 0 && rect.top < (window.innerHeight || document.documentElement.clientHeight);
+        }
     </script>
 </body>
 
