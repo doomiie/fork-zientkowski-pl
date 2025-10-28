@@ -150,7 +150,8 @@ document.addEventListener('DOMContentLoaded', () => {
   lucide.createIcons();
   window.nav = new Navigation();
 
-  // Initial animations
+  // Initial animations (only if targets exist)
+  if (document.querySelector('.min-h-screen > div > div > div:first-child > *')) {
   gsap.from('.min-h-screen > div > div > div:first-child > *', {
     y: 30,
     opacity: 0,
@@ -158,7 +159,9 @@ document.addEventListener('DOMContentLoaded', () => {
     stagger: 0.1,
     ease: 'power1',
   });
+  }
 
+  if (document.querySelector('.min-h-screen .floating')) {
   gsap.from('.min-h-screen .floating', {
     scale: 0.9,
     opacity: 0,
@@ -166,7 +169,9 @@ document.addEventListener('DOMContentLoaded', () => {
     delay: 0.2,
     ease: 'power1',
   });
+  }
 
+  if (document.querySelector('.min-h-screen .floating + .absolute')) {
   gsap.from('.min-h-screen .floating + .absolute', {
     x: -50,
     opacity: 0,
@@ -174,7 +179,9 @@ document.addEventListener('DOMContentLoaded', () => {
     delay: 0.3,
     ease: 'power1',
   });
+  }
 
+  if (document.querySelector('.main-nav a')) {
   gsap.from('.main-nav a', {
     opacity: 0,
     y: -10,
@@ -182,10 +189,14 @@ document.addEventListener('DOMContentLoaded', () => {
     stagger: 0.05,
     ease: 'power1',
   });
+  }
 });
 
 document.addEventListener('DOMContentLoaded', () => {
   const marquee = document.getElementById('marquee');
+  if (!marquee || !marquee.children || marquee.children.length === 0) {
+    return;
+  }
   let speed = 2; // Default speed in pixels per frame
   let isPaused = false;
 

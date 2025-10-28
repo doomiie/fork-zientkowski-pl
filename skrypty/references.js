@@ -21,7 +21,7 @@
   function ReferencesWidget(target, options){
     this.root = (typeof target==='string') ? document.querySelector(target) : target;
     if (!this.root) throw new Error('ReferencesWidget target not found');
-    this.opts = merge(options, { csv:'referencje.csv', layout:'grid', shuffle:true, fields:{ imie:true, rola:true, event:true, opinia:true, data:true, source:true, avatar:true }, grid:{ pageSize:6 }, timeline:{ pageSize:6 }, carousel:{ clampLines:6, arrows:true, counter:true } });
+    this.opts = merge(options, { csv:'./assets/txt/referencje.csv', layout:'grid', shuffle:true, fields:{ imie:true, rola:true, event:true, opinia:true, data:true, source:true, avatar:true }, grid:{ pageSize:6 }, timeline:{ pageSize:6 }, carousel:{ clampLines:6, arrows:true, counter:true } });
   }
 
   ReferencesWidget.prototype.load = function(){
