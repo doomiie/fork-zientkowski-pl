@@ -30,7 +30,7 @@ AddDefaultCharset UTF-8
   RewriteBase /
 
   # Nie przepisywać żądań do statycznych zasobów (serwuj bezpośrednio)
-  RewriteCond %{REQUEST_URI} \.(?:css|js|mjs|map|png|jpe?g|gif|svg|webp|ico|bmp|avif|woff2?|ttf|otf|eot|mp3|wav|mp4|webm|ogv|json|xml|pdf|txt)$ [NC]
+  RewriteCond %{REQUEST_URI} \.(?:css|js|mjs|map|png|jpe?g|gif|svg|webp|ico|bmp|avif|woff2?|ttf|otf|eot|mp3|wav|mp4|webm|ogv|json|xml|pdf|txt|csv)$ [NC]
   RewriteRule ^ - [L]
 
   # Zezwalaj na .well-known (np. ACME/Let's Encrypt), ale blokuj inne ukryte zasoby
