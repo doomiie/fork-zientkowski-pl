@@ -415,6 +415,9 @@
             transform: translateY(0);
         }
 
+        .gallery-item:hover .gallery-overlay {
+  }
+
         .gallery-zoom {
             display: flex;
             flex-direction: column;
@@ -612,18 +615,7 @@
         </div>
     </div>
 
-    <!-- Referencje (u góry strony) -->
-    <section id="referencje" class="pt-28 pb-16 bg-gray-50">
-        <div class="max-w-[1400px] mx-auto px-6">
-            <div class="flex items-end justify-between gap-4 mb-6">
-                <div>
-                    <h2 class="text-4xl md:text-5xl font-bold mb-2 text-accent">Referencje</h2>
-                    <p class="text-lg text-gray-600">Wybrane opinie klientów.</p>
-                </div>
-            </div>
-            <div id="bioRefsGrid" data-layout="carousel"></div>
-        </div>
-    </section>
+
 
     <!-- Hero Section -->
     <section class="min-h-screen pt-24 relative overflow-hidden bg-gradient-to-br from-white via-gray-50 to-white">
@@ -792,9 +784,21 @@
             </div>
         </div>
     </section>
+        <!-- Referencje (u góry strony) -->
+    <section id="referencje" class="pt-28 pb-16 bg-gray-50">
+        <div class="max-w-[1400px] mx-auto px-6">
+            <div class="flex items-end justify-between gap-4 mb-6">
+                <div>
+                    <h2 class="text-4xl md:text-5xl font-bold mb-2 text-accent">Referencje</h2>
+                    <p class="text-lg text-gray-600">Wybrane opinie klientów.</p>
+                </div>
+            </div>
+            <div id="bioRefsGrid" data-layout="carousel"></div>
+        </div>
+    </section>
 
     <!-- Timeline Section -->
-    <section class="py-24 bg-gray-50 relative overflow-hidden">
+    <section class="py-24 bg-gray-50 relative overflow-hidden hidden">
         <div class="max-w-[1400px] mx-auto px-6">
             <div class="text-center mb-20">
                 <h2 class="text-4xl md:text-5xl font-bold mb-6 text-accent">
@@ -933,435 +937,8 @@
                     Do pobrania na potrzeby promocji, mediów społecznościowych i publikacji.
                 </p>
             </div>
-            <div class="gallery-grid">
-
-                <div class="gallery-item" data-aos="fade-up" data-aos-delay="0">
-                    <img src="./assets/img/2015-08-30 Jerzy Zientkowski BTI - Gdańsk - 1.webp"
-                        alt="2015-08-30 Jerzy Zientkowski BTI - Gdańsk - 1">
-                    <div class="gallery-overlay">
-                        <div class="gallery-content">
-                            <h3 class="text-xl font-bold mb-2">2015</h3>
-                            <p class="text-sm opacity-90">2015-08-30 Jerzy Zientkowski BTI - Gdańsk - 1</p>
-                            <div class="gallery-zoom">
-                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
-                                <span>Kliknij aby zobaczyć</span>
-                                <a target="_blank" href="./assets/img/2015-08-30 Jerzy Zientkowski BTI - Gdańsk - 1.jpg"
-                                    download class="ml-4 text-sm underline">Pobierz (5472x3648, 2,2MB)</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="gallery-item" data-aos="fade-up" data-aos-delay="100">
-                    <img src="./assets/img/2015-08-30 Jerzy Zientkowski BTI - Gdańsk - 2.webp"
-                        alt="2015-08-30 Jerzy Zientkowski BTI - Gdańsk - 2">
-                    <div class="gallery-overlay">
-                        <div class="gallery-content">
-                            <h3 class="text-xl font-bold mb-2">2015</h3>
-                            <p class="text-sm opacity-90">2015-08-30 Jerzy Zientkowski BTI - Gdańsk - 2</p>
-                            <div class="gallery-zoom">
-                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
-                                <span>Kliknij aby zobaczyć</span>
-                                <a target="_blank" href="./assets/img/2015-08-30 Jerzy Zientkowski BTI - Gdańsk - 2.jpg"
-                                    download class="ml-4 text-sm underline">Pobierz (5472x3648, 2,5MB)</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="gallery-item" data-aos="fade-up" data-aos-delay="200">
-                    <img src="./assets/img/2016-10-20 Jerzy Zientkowski BTI - Warszawa - 1.webp"
-                        alt="2016-10-20 Jerzy Zientkowski BTI - Warszawa - 1">
-                    <div class="gallery-overlay">
-                        <div class="gallery-content">
-                            <h3 class="text-xl font-bold mb-2">2016</h3>
-                            <p class="text-sm opacity-90">2016-10-20 Jerzy Zientkowski BTI - Warszawa - 1</p>
-                            <div class="gallery-zoom">
-                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
-                                <span>Kliknij aby zobaczyć</span>
-                                <a target="_blank"
-                                    href="./assets/img/2016-10-20 Jerzy Zientkowski BTI - Warszawa - 1.jpg" download
-                                    class="ml-4 text-sm underline">Pobierz (1805x1205, 0,1MB)</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="gallery-item" data-aos="fade-up" data-aos-delay="300">
-                    <img src="./assets/img/2016-10-20 Jerzy Zientkowski BTI - Warszawa - 2.webp"
-                        alt="2016-10-20 Jerzy Zientkowski BTI - Warszawa - 2">
-                    <div class="gallery-overlay">
-                        <div class="gallery-content">
-                            <h3 class="text-xl font-bold mb-2">2016</h3>
-                            <p class="text-sm opacity-90">2016-10-20 Jerzy Zientkowski BTI - Warszawa - 2</p>
-                            <div class="gallery-zoom">
-                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
-                                <span>Kliknij aby zobaczyć</span>
-                                <a target="_blank"
-                                    href="./assets/img/2016-10-20 Jerzy Zientkowski BTI - Warszawa - 2.jpg" download
-                                    class="ml-4 text-sm underline">Pobierz (5472x3648, 10,5MB)</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="gallery-item" data-aos="fade-up" data-aos-delay="400">
-                    <img src="./assets/img/2016-10-20 Jerzy Zientkowski BTI - Warszawa - 3.webp"
-                        alt="2016-10-20 Jerzy Zientkowski BTI - Warszawa - 3">
-                    <div class="gallery-overlay">
-                        <div class="gallery-content">
-                            <h3 class="text-xl font-bold mb-2">2016</h3>
-                            <p class="text-sm opacity-90">2016-10-20 Jerzy Zientkowski BTI - Warszawa - 3</p>
-                            <div class="gallery-zoom">
-                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
-                                <span>Kliknij aby zobaczyć</span>
-                                <a target="_blank"
-                                    href="./assets/img/2016-10-20 Jerzy Zientkowski BTI - Warszawa - 3.jpg" download
-                                    class="ml-4 text-sm underline">Pobierz (5472x3648, 12,0MB)</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="gallery-item tall" data-aos="fade-up" data-aos-delay="500">
-                    <img src="./assets/img/2017-10-25 Jerzy Zientkowski Męski Czwartek - Poznań - 1.webp"
-                        alt="2017-10-25 Jerzy Zientkowski Męski Czwartek - Poznań - 1">
-                    <div class="gallery-overlay">
-                        <div class="gallery-content">
-                            <h3 class="text-xl font-bold mb-2">2017</h3>
-                            <p class="text-sm opacity-90">2017-10-25 Jerzy Zientkowski Męski Czwartek - Poznań - 1</p>
-                            <div class="gallery-zoom">
-                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
-                                <span>Kliknij aby zobaczyć</span>
-                                <a target="_blank"
-                                    href="./assets/img/2017-10-25 Jerzy Zientkowski Męski Czwartek - Poznań - 1.jpg"
-                                    download class="ml-4 text-sm underline">Pobierz (3648x5472, 8,0MB)</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="gallery-item tall" data-aos="fade-up" data-aos-delay="600">
-                    <img src="./assets/img/2017-10-25 Jerzy Zientkowski Męski Czwartek - Poznań - 2.webp"
-                        alt="2017-10-25 Jerzy Zientkowski Męski Czwartek - Poznań - 2">
-                    <div class="gallery-overlay">
-                        <div class="gallery-content">
-                            <h3 class="text-xl font-bold mb-2">2017</h3>
-                            <p class="text-sm opacity-90">2017-10-25 Jerzy Zientkowski Męski Czwartek - Poznań - 2</p>
-                            <div class="gallery-zoom">
-                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
-                                <span>Kliknij aby zobaczyć</span>
-                                <a target="_blank"
-                                    href="./assets/img/2017-10-25 Jerzy Zientkowski Męski Czwartek - Poznań - 2.jpg"
-                                    download class="ml-4 text-sm underline">Pobierz (3648x5472, 7,2MB)</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="gallery-item" data-aos="fade-up" data-aos-delay="700">
-                    <img src="./assets/img/2017-10-30 Jerzy Zientkowski BTI - Warszawa - 1.webp"
-                        alt="2017-10-30 Jerzy Zientkowski BTI - Warszawa - 1">
-                    <div class="gallery-overlay">
-                        <div class="gallery-content">
-                            <h3 class="text-xl font-bold mb-2">2017</h3>
-                            <p class="text-sm opacity-90">2017-10-30 Jerzy Zientkowski BTI - Warszawa - 1</p>
-                            <div class="gallery-zoom">
-                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
-                                <span>Kliknij aby zobaczyć</span>
-                                <a target="_blank"
-                                    href="./assets/img/2017-10-30 Jerzy Zientkowski BTI - Warszawa - 1.jpg" download
-                                    class="ml-4 text-sm underline">Pobierz (4096x2730, 0,8MB)</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="gallery-item" data-aos="fade-up" data-aos-delay="800">
-                    <img src="./assets/img/2017-10-30 Jerzy Zientkowski BTI - Warszawa - 2.webp"
-                        alt="2017-10-30 Jerzy Zientkowski BTI - Warszawa - 2">
-                    <div class="gallery-overlay">
-                        <div class="gallery-content">
-                            <h3 class="text-xl font-bold mb-2">2017</h3>
-                            <p class="text-sm opacity-90">2017-10-30 Jerzy Zientkowski BTI - Warszawa - 2</p>
-                            <div class="gallery-zoom">
-                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
-                                <span>Kliknij aby zobaczyć</span>
-                                <a target="_blank"
-                                    href="./assets/img/2017-10-30 Jerzy Zientkowski BTI - Warszawa - 2.jpg" download
-                                    class="ml-4 text-sm underline">Pobierz (6720x4480, 7,1MB)</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="gallery-item" data-aos="fade-up" data-aos-delay="900">
-                    <img src="./assets/img/2018-02-28 Jerzy Zientkowski Konferencja Sprzedaż - Poznań.webp"
-                        alt="2018-02-28 Jerzy Zientkowski Konferencja Sprzedaż - Poznań">
-                    <div class="gallery-overlay">
-                        <div class="gallery-content">
-                            <h3 class="text-xl font-bold mb-2">2018</h3>
-                            <p class="text-sm opacity-90">2018-02-28 Jerzy Zientkowski Konferencja Sprzedaż - Poznań</p>
-                            <div class="gallery-zoom">
-                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
-                                <span>Kliknij aby zobaczyć</span>
-                                <a target="_blank"
-                                    href="./assets/img/2018-02-28 Jerzy Zientkowski Konferencja Sprzedaż - Poznań.jpg"
-                                    download class="ml-4 text-sm underline">Pobierz (5184x3456, 4,2MB)</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="gallery-item" data-aos="fade-up" data-aos-delay="1000">
-                    <img src="./assets/img/2020-01-22 Jerzy Zientkowski Sales Angels - Warszawa.webp"
-                        alt="2020-01-22 Jerzy Zientkowski Sales Angels - Warszawa">
-                    <div class="gallery-overlay">
-                        <div class="gallery-content">
-                            <h3 class="text-xl font-bold mb-2">2020</h3>
-                            <p class="text-sm opacity-90">2020-01-22 Jerzy Zientkowski Sales Angels - Warszawa</p>
-                            <div class="gallery-zoom">
-                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
-                                <span>Kliknij aby zobaczyć</span>
-                                <a target="_blank"
-                                    href="./assets/img/2020-01-22 Jerzy Zientkowski Sales Angels - Warszawa.jpg"
-                                    download class="ml-4 text-sm underline">Pobierz (600x600, 0,2MB)</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="gallery-item wide" data-aos="fade-up" data-aos-delay="1100">
-                    <img src="./assets/img/2023-10-05 Jerzy Zientkowski u Klienta DNA - Warszawa - 1.webp"
-                        alt="2023-10-05 Jerzy Zientkowski u Klienta DNA - Warszawa - 1">
-                    <div class="gallery-overlay">
-                        <div class="gallery-content">
-                            <h3 class="text-xl font-bold mb-2">2023</h3>
-                            <p class="text-sm opacity-90">2023-10-05 Jerzy Zientkowski u Klienta DNA - Warszawa - 1</p>
-                            <div class="gallery-zoom">
-                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
-                                <span>Kliknij aby zobaczyć</span>
-                                <a target="_blank"
-                                    href="./assets/img/2023-10-05 Jerzy Zientkowski u Klienta DNA - Warszawa - 1.jpg"
-                                    download class="ml-4 text-sm underline">Pobierz (4000x1868, 2,0MB)</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="gallery-item tall" data-aos="fade-up" data-aos-delay="1200">
-                    <img src="./assets/img/2023-10-17 Jerzy Zientkowski u Klienta DNA - Warszawa - 1.webp"
-                        alt="2023-10-17 Jerzy Zientkowski u Klienta DNA - Warszawa - 1">
-                    <div class="gallery-overlay">
-                        <div class="gallery-content">
-                            <h3 class="text-xl font-bold mb-2">2023</h3>
-                            <p class="text-sm opacity-90">2023-10-17 Jerzy Zientkowski u Klienta DNA - Warszawa - 1</p>
-                            <div class="gallery-zoom">
-                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
-                                <span>Kliknij aby zobaczyć</span>
-                                <a target="_blank"
-                                    href="./assets/img/2023-10-17 Jerzy Zientkowski u Klienta DNA - Warszawa - 1.jpg"
-                                    download class="ml-4 text-sm underline">Pobierz (1868x4000, 1,7MB)</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="gallery-item tall" data-aos="fade-up" data-aos-delay="1300">
-                    <img src="./assets/img/2024-02-18 Jerzy Zientkowski po warsztatach - Warszawa - 1.webp"
-                        alt="2024-02-18 Jerzy Zientkowski po warsztatach - Warszawa - 1">
-                    <div class="gallery-overlay">
-                        <div class="gallery-content">
-                            <h3 class="text-xl font-bold mb-2">2024</h3>
-                            <p class="text-sm opacity-90">2024-02-18 Jerzy Zientkowski po warsztatach - Warszawa - 1</p>
-                            <div class="gallery-zoom">
-                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
-                                <span>Kliknij aby zobaczyć</span>
-                                <a target="_blank"
-                                    href="./assets/img/2024-02-18 Jerzy Zientkowski po warsztatach - Warszawa - 1.jpg"
-                                    download class="ml-4 text-sm underline">Pobierz (2544x3392, 3,8MB)</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="gallery-item" data-aos="fade-up" data-aos-delay="1400">
-                    <img src="./assets/img/2024-04-26 Jerzy Zientkowski u Klienta DNA - Warszawa - 1.webp"
-                        alt="2024-04-26 Jerzy Zientkowski u Klienta DNA - Warszawa - 1">
-                    <div class="gallery-overlay">
-                        <div class="gallery-content">
-                            <h3 class="text-xl font-bold mb-2">2024</h3>
-                            <p class="text-sm opacity-90">2024-04-26 Jerzy Zientkowski u Klienta DNA - Warszawa - 1</p>
-                            <div class="gallery-zoom">
-                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
-                                <span>Kliknij aby zobaczyć</span>
-                                <a target="_blank"
-                                    href="./assets/img/2024-04-26 Jerzy Zientkowski u Klienta DNA - Warszawa - 1.jpg"
-                                    download class="ml-4 text-sm underline">Pobierz (3392x2544, 3,0MB)</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="gallery-item tall" data-aos="fade-up" data-aos-delay="1500">
-                    <img src="./assets/img/2024-05-10 Jerzy Zientkowski u Klienta DNA - Gdańsk - 1.webp"
-                        alt="2024-05-10 Jerzy Zientkowski u Klienta DNA - Gdańsk - 1">
-                    <div class="gallery-overlay">
-                        <div class="gallery-content">
-                            <h3 class="text-xl font-bold mb-2">2024</h3>
-                            <p class="text-sm opacity-90">2024-05-10 Jerzy Zientkowski u Klienta DNA - Gdańsk - 1</p>
-                            <div class="gallery-zoom">
-                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
-                                <span>Kliknij aby zobaczyć</span>
-                                <a target="_blank"
-                                    href="./assets/img/2024-05-10 Jerzy Zientkowski u Klienta DNA - Gdańsk - 1.jpg"
-                                    download class="ml-4 text-sm underline">Pobierz (1868x4000, 3,3MB)</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="gallery-item" data-aos="fade-up" data-aos-delay="1600">
-                    <img src="./assets/img/2024-06-14 Jerzy Zientkowski Urodziny Sales Angels - Warszawa - 1.webp"
-                        alt="2024-06-14 Jerzy Zientkowski Urodziny Sales Angels - Warszawa - 1">
-                    <div class="gallery-overlay">
-                        <div class="gallery-content">
-                            <h3 class="text-xl font-bold mb-2">2024</h3>
-                            <p class="text-sm opacity-90">2024-06-14 Jerzy Zientkowski Urodziny Sales Angels - Warszawa
-                                - 1
-                            </p>
-                            <div class="gallery-zoom">
-                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
-                                <span>Kliknij aby zobaczyć</span>
-                                <a target="_blank"
-                                    href="./assets/img/2024-06-14 Jerzy Zientkowski Urodziny Sales Angels - Warszawa - 1.jpg"
-                                    download class="ml-4 text-sm underline">Pobierz (3840x2560, 5,2MB)</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="gallery-item tall" data-aos="fade-up" data-aos-delay="1700">
-                    <img src="./assets/img/2025-03-27 Jerzy Zientkowski Święto Kapitalizmu - Warszawa - 1.webp"
-                        alt="2025-03-27 Jerzy Zientkowski Święto Kapitalizmu - Warszawa - 1">
-                    <div class="gallery-overlay">
-                        <div class="gallery-content">
-                            <h3 class="text-xl font-bold mb-2">2025</h3>
-                            <p class="text-sm opacity-90">2025-03-27 Jerzy Zientkowski Święto Kapitalizmu - Warszawa - 1
-                            </p>
-                            <div class="gallery-zoom">
-                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
-                                <span>Kliknij aby zobaczyć</span>
-                                <a target="_blank"
-                                    href="./assets/img/2025-03-27 Jerzy Zientkowski Święto Kapitalizmu - Warszawa - 1.jpg"
-                                    download class="ml-4 text-sm underline">Pobierz (1848x2775, 1,4MB)</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="gallery-item" data-aos="fade-up" data-aos-delay="1800">
-                    <img src="./assets/img/2025-04-16 Jerzy Zientkowski Power Day - Warszawa - 1.webp"
-                        alt="2025-04-16 Jerzy Zientkowski Power Day - Warszawa - 1">
-                    <div class="gallery-overlay">
-                        <div class="gallery-content">
-                            <h3 class="text-xl font-bold mb-2">2025</h3>
-                            <p class="text-sm opacity-90">2025-04-16 Jerzy Zientkowski Power Day - Warszawa - 1</p>
-                            <div class="gallery-zoom">
-                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
-                                <span>Kliknij aby zobaczyć</span>
-                                <a target="_blank"
-                                    href="./assets/img/2025-04-16 Jerzy Zientkowski Power Day - Warszawa - 1.jpg"
-                                    download class="ml-4 text-sm underline">Pobierz (2400x1600, 1,7MB)</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="gallery-item" data-aos="fade-up" data-aos-delay="1900">
-                    <img src="./assets/img/2025-04-16 Jerzy Zientkowski Power Day - Warszawa - 2.webp"
-                        alt="2025-04-16 Jerzy Zientkowski Power Day - Warszawa - 2">
-                    <div class="gallery-overlay">
-                        <div class="gallery-content">
-                            <h3 class="text-xl font-bold mb-2">2025</h3>
-                            <p class="text-sm opacity-90">2025-04-16 Jerzy Zientkowski Power Day - Warszawa - 2</p>
-                            <div class="gallery-zoom">
-                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
-                                <span>Kliknij aby zobaczyć</span>
-                                <a target="_blank"
-                                    href="./assets/img/2025-04-16 Jerzy Zientkowski Power Day - Warszawa - 2.jpg"
-                                    download class="ml-4 text-sm underline">Pobierz (2400x1600, 1,5MB)</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="gallery-item" data-aos="fade-up" data-aos-delay="2000">
-                    <img src="./assets/img/2025-04-26 Jerzy Zientkowski u Klienta NDA - Okocim - 1.webp"
-                        alt="2025-04-26 Jerzy Zientkowski u Klienta NDA - Okocim - 1">
-                    <div class="gallery-overlay">
-                        <div class="gallery-content">
-                            <h3 class="text-xl font-bold mb-2">2025</h3>
-                            <p class="text-sm opacity-90">2025-04-26 Jerzy Zientkowski u Klienta NDA - Okocim - 1</p>
-                            <div class="gallery-zoom">
-                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
-                                <span>Kliknij aby zobaczyć</span>
-                                <a target="_blank"
-                                    href="./assets/img/2025-04-26 Jerzy Zientkowski u Klienta NDA - Okocim - 1.jpg"
-                                    download class="ml-4 text-sm underline">Pobierz (6000x4000, 2,3MB)</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="gallery-item" data-aos="fade-up" data-aos-delay="2100">
-                    <img src="./assets/img/2025-04-26 Jerzy Zientkowski u Klienta NDA - Okocim - 2.webp"
-                        alt="2025-04-26 Jerzy Zientkowski u Klienta NDA - Okocim - 2">
-                    <div class="gallery-overlay">
-                        <div class="gallery-content">
-                            <h3 class="text-xl font-bold mb-2">2025</h3>
-                            <p class="text-sm opacity-90">2025-04-26 Jerzy Zientkowski u Klienta NDA - Okocim - 2</p>
-                            <div class="gallery-zoom">
-                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
-                                <span>Kliknij aby zobaczyć</span>
-                                <a target="_blank"
-                                    href="./assets/img/2025-04-26 Jerzy Zientkowski u Klienta NDA - Okocim - 2.jpg"
-                                    download class="ml-4 text-sm underline">Pobierz (6000x4000, 2,4MB)</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="gallery-item" data-aos="fade-up" data-aos-delay="2200">
-                    <img src="./assets/img/2025-05-25 Jerzy Zientkowski TEDxPabianice - Pabianice - 1.webp"
-                        alt="2025-05-25 Jerzy Zientkowski TEDxPabianice - Pabianice - 1">
-                    <div class="gallery-overlay">
-                        <div class="gallery-content">
-                            <h3 class="text-xl font-bold mb-2">2025</h3>
-                            <p class="text-sm opacity-90">2025-05-25 Jerzy Zientkowski TEDxPabianice - Pabianice - 1</p>
-                            <div class="gallery-zoom">
-                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
-                                <span>Kliknij aby zobaczyć</span>
-                                <a target="_blank"
-                                    href="./assets/img/2025-05-25 Jerzy Zientkowski TEDxPabianice - Pabianice - 1.jpg"
-                                    download class="ml-4 text-sm underline">Pobierz (2048x1365, 1,5MB)</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="gallery-item" data-aos="fade-up" data-aos-delay="2300">
-                    <img src="./assets/img/2025-05-25 Jerzy Zientkowski TEDxPabianice - Pabianice - 2.webp"
-                        alt="2025-05-25 Jerzy Zientkowski TEDxPabianice - Pabianice - 2">
-                    <div class="gallery-overlay">
-                        <div class="gallery-content">
-                            <h3 class="text-xl font-bold mb-2">2025</h3>
-                            <p class="text-sm opacity-90">2025-05-25 Jerzy Zientkowski TEDxPabianice - Pabianice - 2</p>
-                            <div class="gallery-zoom">
-                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
-                                <span>Kliknij aby zobaczyć</span>
-                                <a target="_blank"
-                                    href="./assets/img/2025-05-25 Jerzy Zientkowski TEDxPabianice - Pabianice - 2.jpg"
-                                    download class="ml-4 text-sm underline">Pobierz (2048x1365, 1,1MB)</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="gallery-item" data-aos="fade-up" data-aos-delay="2400">
-                    <img src="./assets/img/2025-05-25 Jerzy Zientkowski TEDxPabianice - Pabianice - 3.webp"
-                        alt="2025-05-25 Jerzy Zientkowski TEDxPabianice - Pabianice - 3">
-                    <div class="gallery-overlay">
-                        <div class="gallery-content">
-                            <h3 class="text-xl font-bold mb-2">2025</h3>
-                            <p class="text-sm opacity-90">2025-05-25 Jerzy Zientkowski TEDxPabianice - Pabianice - 3</p>
-                            <div class="gallery-zoom">
-                                <i data-lucide="zoom-in" class="h-6 w-6"></i>
-                                <span>Kliknij aby zobaczyć</span>
-                                <a target="_blank"
-                                    href="./assets/img/2025-05-25 Jerzy Zientkowski TEDxPabianice - Pabianice - 3.jpg"
-                                    download class="ml-4 text-sm underline">Pobierz (2048x1365, 1,4MB)</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+           
+            <div id="masonryGallery"></div>
         </div>
     </section>
 
@@ -1445,318 +1022,7 @@
         </div>
     </section>
 
-    <!-- Testimonials Carousel -->
-    <section class="py-24 bg-gray-50 hidden">
-        <div class="max-w-[1400px] mx-auto px-6">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl md:text-5xl font-bold mb-6 text-accent">
-                    Głosy doświadczenia
-                </h2>
-                <p class="text-xl text-gray-600">
-                    Co mówią klienci o współpracy ze mną
-                </p>
-            </div>
-
-            <div class="testimonial-carousel">
-                <button class="carousel-button prev" id="prevBtn">
-                    <i data-lucide="chevron-left" class="w-6 h-6"></i>
-                </button>
-
-                <div class="testimonial-viewport">
-                    <div class="testimonial-track" id="testimonialTrack">
-                        <!-- Testimonial 1 -->
-                        <div class="testimonial-slide">
-                            <div class="testimonial-card">
-                                <div class="testimonial-content">
-                                    <div class="flex items-start space-x-4 mb-6">
-                                        <div
-                                            class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
-                                            <i data-lucide="quote" class="w-6 h-6 text-accent"></i>
-                                        </div>
-                                        <div>
-                                            <div class="font-semibold text-accent text-lg">Marek Kłopotowski</div>
-                                        </div>
-                                    </div>
-                                    <div class="testimonial-text">
-                                        "Dzięki jego doświadczeniu, pozytywnej i cierpliwej postawie oraz elastyczności
-                                        dałem doskonałe przemówienie. Zaskoczył mnie pomagając w przygotowaniu się,
-                                        poświęcając znacznie więcej uwagi i czasu niż zostało uzgodnione."
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Testimonial 2 -->
-                        <div class="testimonial-slide">
-                            <div class="testimonial-card">
-                                <div class="testimonial-content">
-                                    <div class="flex items-start space-x-4 mb-6">
-                                        <div
-                                            class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
-                                            <i data-lucide="quote" class="w-6 h-6 text-accent"></i>
-                                        </div>
-                                        <div>
-                                            <div class="font-semibold text-accent text-lg">Piotr Szybiak</div>
-                                            <div class="text-sm text-gray-500">Allegro</div>
-                                        </div>
-                                    </div>
-                                    <div class="testimonial-text">
-                                        "Współpraca z nim oznacza uporządkowanie struktur przemówienia i dotarcie do
-                                        jasności przekazu. Jego doświadczenie biznesowe sprawia, że jest praktykiem,
-                                        który wie, co działa w komunikacji."
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Testimonial 3 -->
-                        <div class="testimonial-slide">
-                            <div class="testimonial-card">
-                                <div class="testimonial-content">
-                                    <div class="flex items-start space-x-4 mb-6">
-                                        <div
-                                            class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
-                                            <i data-lucide="quote" class="w-6 h-6 text-accent"></i>
-                                        </div>
-                                        <div>
-                                            <div class="font-semibold text-accent text-lg">Piotr Chimko</div>
-                                        </div>
-                                    </div>
-                                    <div class="testimonial-text">
-                                        "Kilka pytań, które ci zada spowoduje, że zaczniesz inaczej myśleć o tym,
-                                        jak komunikować się z publicznością. Jurek jest niezwykle precyzyjny i skupiony
-                                        na procesie i efekcie. Jeśli chcesz dobrze mówić do ludzi, Jurek to dobry
-                                        adres!"
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Testimonial 4 -->
-                        <div class="testimonial-slide">
-                            <div class="testimonial-card">
-                                <div class="testimonial-content">
-                                    <div class="flex items-start space-x-4 mb-6">
-                                        <div
-                                            class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
-                                            <i data-lucide="quote" class="w-6 h-6 text-accent"></i>
-                                        </div>
-                                        <div>
-                                            <div class="font-semibold text-accent text-lg">Sebastian Kotów</div>
-                                        </div>
-                                    </div>
-                                    <div class="testimonial-text">
-                                        "Wspiera mnie przy okazji wystąpień i konferencji szczególnie dla bardzo
-                                        wymagających
-                                        uczestników. Moje wykłady, po konsultacjach z Jurkiem wyglądają zupełnie
-                                        inaczej.
-                                        Entuzjastyczny odbiór widowni jest miernikiem skuteczności jego wsparcia."
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Testimonial 5 -->
-                        <div class="testimonial-slide">
-                            <div class="testimonial-card">
-                                <div class="testimonial-content">
-                                    <div class="flex items-start space-x-4 mb-6">
-                                        <div
-                                            class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
-                                            <i data-lucide="quote" class="w-6 h-6 text-accent"></i>
-                                        </div>
-                                        <div>
-                                            <div class="font-semibold text-accent text-lg">Bartosz Liberski</div>
-                                        </div>
-                                    </div>
-                                    <div class="testimonial-text">
-                                        "Od Jerzy się nauczyłem więcej niż z jakiejkolwiek książki o wystąpieniach czy
-                                        storytellingu. Jego wystąpienia, video na YT i książki to skarb wiedzy.
-                                        Jak chcesz się uczyć od najlepszych, to Jerzy jest tym człowiekiem!"
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Testimonial 6 -->
-                        <div class="testimonial-slide">
-                            <div class="testimonial-card">
-                                <div class="testimonial-content">
-                                    <div class="flex items-start space-x-4 mb-6">
-                                        <div
-                                            class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
-                                            <i data-lucide="quote" class="w-6 h-6 text-accent"></i>
-                                        </div>
-                                        <div>
-                                            <div class="font-semibold text-accent text-lg">Bartosz Miszkiewicz</div>
-                                            <div class="text-sm text-gray-500">President of the Board at Symlog</div>
-                                        </div>
-                                    </div>
-                                    <div class="testimonial-text">
-                                        "W bardzo skomasowanej formie dostajesz gigantyczną dawkę wiedzy na temat
-                                        wystąpień publicznych, obecnych trendów prezentacji i wszystkiego co robisz źle.
-                                        Wiedza taka nie leży na ulicy i od razu widać profesjonalistę."
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Testimonial 7 -->
-                        <div class="testimonial-slide">
-                            <div class="testimonial-card">
-                                <div class="testimonial-content">
-                                    <div class="flex items-start space-x-4 mb-6">
-                                        <div
-                                            class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
-                                            <i data-lucide="quote" class="w-6 h-6 text-accent"></i>
-                                        </div>
-                                        <div>
-                                            <div class="font-semibold text-accent text-lg">Jan Siwek</div>
-                                            <div class="text-sm text-gray-500">Co-founder at Alstor</div>
-                                        </div>
-                                    </div>
-                                    <div class="testimonial-text">
-                                        "Jurek Zientkowski to wspaniały mentor umiejący przygotować w sferze wewnętrznej
-                                        studenta oraz pomagający wykorzystać naturalne walory. Potrafi zachęcić do
-                                        odważnych
-                                        wystąpień na różnych poziomach przemawiania."
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Testimonial 8 -->
-                        <div class="testimonial-slide">
-                            <div class="testimonial-card">
-                                <div class="testimonial-content">
-                                    <div class="flex items-start space-x-4 mb-6">
-                                        <div
-                                            class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
-                                            <i data-lucide="quote" class="w-6 h-6 text-accent"></i>
-                                        </div>
-                                        <div>
-                                            <div class="font-semibold text-accent text-lg">Grzegorz Turniak</div>
-                                            <div class="text-sm text-gray-500">Master of Networking</div>
-                                        </div>
-                                    </div>
-                                    <div class="testimonial-text">
-                                        "Jerzy jest niesamowitą osobowością, doskonałym mówcą, coachem i mentorem w
-                                        dziedzinie
-                                        przemawiania. Dzięki jego cennym wskazówkom moje wystąpienia nabierały solidnej
-                                        struktury,
-                                        lekkości i blasku."
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Testimonial 9 -->
-                        <div class="testimonial-slide">
-                            <div class="testimonial-card">
-                                <div class="testimonial-content">
-                                    <div class="flex items-start space-x-4 mb-6">
-                                        <div
-                                            class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
-                                            <i data-lucide="quote" class="w-6 h-6 text-accent"></i>
-                                        </div>
-                                        <div>
-                                            <div class="font-semibold text-accent text-lg">Marcin Tadeusiak</div>
-                                            <div class="text-sm text-gray-500">Prezes Zarządu w JT S.A.</div>
-                                        </div>
-                                    </div>
-                                    <div class="testimonial-text">
-                                        "Pan Jerzy jest ogromnym wsparciem. Pracując z nim, można przygotować się do
-                                        każdego
-                                        wystąpienia, analizując zarówno jakość i formę przekazu. Pan Jerzy pomaga
-                                        wydobywać
-                                        z chaosu informacji najistotniejsze treści. Jest mistrzem SYNTEZY."
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Testimonial 10 -->
-                        <div class="testimonial-slide">
-                            <div class="testimonial-card">
-                                <div class="testimonial-content">
-                                    <div class="flex items-start space-x-4 mb-6">
-                                        <div
-                                            class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
-                                            <i data-lucide="quote" class="w-6 h-6 text-accent"></i>
-                                        </div>
-                                        <div>
-                                            <div class="font-semibold text-accent text-lg">Cezary Walenciuk</div>
-                                            <div class="text-sm text-gray-500">Programista w AXA</div>
-                                        </div>
-                                    </div>
-                                    <div class="testimonial-text">
-                                        "Dzięki Jerzemu zacząłem swoją przygodę z przemawianiem. To było w roku 2014
-                                        a obecnie ma zapewne jeszcze lepsze materiały warsztatowe z przemawiania.
-                                        Bardzo polecam współpracę z Jerzym!"
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Testimonial 11 -->
-                        <div class="testimonial-slide">
-                            <div class="testimonial-card">
-                                <div class="testimonial-content">
-                                    <div class="flex items-start space-x-4 mb-6">
-                                        <div
-                                            class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
-                                            <i data-lucide="quote" class="w-6 h-6 text-accent"></i>
-                                        </div>
-                                        <div>
-                                            <div class="font-semibold text-accent text-lg">Anna Kowalska</div>
-                                            <div class="text-sm text-gray-500">Manager w Microsoft</div>
-                                        </div>
-                                    </div>
-                                    <div class="testimonial-text">
-                                        "Jerzy przekształcił moje podejście do prezentacji korporacyjnych. Jego metody
-                                        pomagają nie tylko w lepszym przekazie, ale także w budowaniu pewności siebie
-                                        na scenie. Niezastąpiony mentor dla każdego lidera."
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Testimonial 12 -->
-                        <div class="testimonial-slide">
-                            <div class="testimonial-card">
-                                <div class="testimonial-content">
-                                    <div class="flex items-start space-x-4 mb-6">
-                                        <div
-                                            class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
-                                            <i data-lucide="quote" class="w-6 h-6 text-accent"></i>
-                                        </div>
-                                        <div>
-                                            <div class="font-semibold text-accent text-lg">Tomasz Nowicki</div>
-                                            <div class="text-sm text-gray-500">Dyrektor Sprzedaży</div>
-                                        </div>
-                                    </div>
-                                    <div class="testimonial-text">
-                                        "Dzięki wskazówkom Jerzego moje prezentacje sprzedażowe osiągają znacznie lepsze
-                                        rezultaty. Jego umiejętność dostosowania przekazu do różnych grup odbiorców
-                                        jest fenomenalna. Polecam każdemu profesjonaliście."
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <button class="carousel-button next" id="nextBtn">
-                    <i data-lucide="chevron-right" class="w-6 h-6"></i>
-                </button>
-
-                <!-- Carousel Indicators -->
-                <div class="carousel-indicators" id="carouselIndicators">
-                    <!-- Dots will be generated by JavaScript -->
-                </div>
-            </div>
-        </div>
-    </section>
+ 
 
     <!-- Call to Action -->
     <section class="py-24 bg-accent text-white relative overflow-hidden">
@@ -1774,7 +1040,7 @@
             </p>
 
             <div class="flex flex-col sm:flex-row gap-6 justify-center">
-                <a href="index.html#kontakt"
+                <a href="sesja"
                     class="px-8 py-4 bg-white text-accent rounded-full hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 font-semibold">
                     Umów spotkanie
                 </a>
@@ -1792,7 +1058,7 @@
                 </div>
                 <div class="flex items-center justify-center space-x-3">
                     <i data-lucide="phone" class="w-6 h-6"></i>
-                    <span>615 (0) 38 123 4567</span>
+                    <span>+48 601 534 576</span>
                 </div>
                 <div class="flex items-center justify-center space-x-3">
                     <i data-lucide="map-pin" class="w-6 h-6"></i>
@@ -1823,7 +1089,7 @@
 
                 <div class="border-t border-white/20 pt-8">
                     <p class="text-white/60 mb-4">&copy; 2012-2025 Jerzy Zientkowski. Wszelkie prawa zastrzeżone</p>
-                    <div class="flex justify-center items-center space-x-6 text-sm text-white/60">
+                    <div class="flex justify-center items-center space-x-6 text-sm text-white/60 hidden">
                         <a href="#" class="hover:text-white transition-colors">Polityka prywatności</a>
                         <span>|</span>
                         <a href="#" class="hover:text-white transition-colors">Regulamin</a>
@@ -2220,9 +1486,12 @@
         <!-- CSV parser + References widget -->
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
     <script src="skrypty/references.js"></script>
+    <script src="skrypty/gallery.js"></script>
     <script>
         // Inicjalizacja widgetu referencji (GRID) na g�rze strony
         new ReferencesWidget('#bioRefsGrid', { layout: 'carousel', csv: 'assets/txt/referencje.csv', carousel: { clampLines: 3, arrows: true, counter: true } }).load();
+    
+        new Gallery('#masonryGallery', { json: 'assets/gallery.json' }).load();
     </script>
     <script defer src="./assets/js/loader.js"></script>
 </body>
