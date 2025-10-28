@@ -1,0 +1,73 @@
+###############################################################################
+# Podstawowe zabezpieczenia dla bieżącego katalogu (Apache 2.4+)
+# Bezpieczne domyślne ustawienia bez ryzyka psucia istniejącej aplikacji.
+###############################################################################
+
+# 1) Wyłączenie indeksowania katalogów i niepotrzebnych funkcji
+Options -Indexes -ExecCGI -Includes -MultiViews
+
+# Ustal indeks katalogu na index.html
+DirectoryIndex index.html
+
+# 2) Domyślne kodowanie
+AddDefaultCharset UTF-8
+
+# 3) Nagłówki bezpieczeństwa (wspierane przez większość hostingów)
+<IfModule mod_headers.c>
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set X-XSS-Protection "1; mode=block"
+  # Ustawienia uprawnień dla urządzeń (najczęstsze pola). Rozszerz w razie potrzeby.
+  Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+  # Jeśli PHP/serwer dodaje X-Powered-By, spróbuj go ukryć
+  Header always unset X-Powered-By
+</IfModule>
+
+# 4) Blokada niebezpiecznych metod (TRACE/TRACK)
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Nie przepisywać żądań do statycznych zasobów (serwuj bezpośrednio)
+  RewriteCond %{REQUEST_URI} \.(?:css|js|mjs|map|png|jpe?g|gif|svg|webp|ico|bmp|avif|woff2?|ttf|otf|eot|mp3|wav|mp4|webm|ogv|json|xml|pdf|txt)$ [NC]
+  RewriteRule ^ - [L]
+
+  # Zezwalaj na .well-known (np. ACME/Let's Encrypt), ale blokuj inne ukryte zasoby
+  RewriteCond %{REQUEST_URI} !^/\.well-known/ [NC]
+  RewriteRule (^|/)\.(?!well-known/) - [F]
+
+  # Zablokuj metody TRACE i TRACK
+  RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)$ [NC]
+  RewriteRule .* - [F]
+
+  # Root "/" serwuj jako index.html (wewnętrznie, bez zewnętrznego redirectu)
+  RewriteRule ^$ index.html [L]
+
+  # Czyste adresy bez rozszerzeń → odpowiednie pliki .html
+  # Działa dla /index -> /index.html oraz /maska -> /maska.html
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME}.html -f
+  RewriteRule ^(.+)$ $1.html [L]
+</IfModule>
+
+# 5) Ochrona wrażliwych i tymczasowych plików przed bezpośrednim dostępem
+<FilesMatch "(^\.|\.bak$|\.backup$|\.swp$|~$|\.zip$|\.tar$|\.t?gz$|\.gz$|\.7z$|\.rar$|\.sql$|\.log$|\.ini$|\.y(a)?ml$|\.md$|\.config$|composer\.(json|lock)$|package(-lock)?\.json|yarn\.lock|webpack\.config\.js|gulpfile\.js|Gruntfile\.js|\.htaccess|\.htpasswd)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+# 6) Opcjonalnie: ścisła polityka treści (może wymagać dopasowania do zasobów)
+# Uwaga: Aktywuj tylko, jeśli wiesz, że nie złamie ładowania zasobów z CDN.
+# <IfModule mod_headers.c>
+#   Header always set Content-Security-Policy "default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self' 'unsafe-inline'"
+# </IfModule>
+
+###############################################################################
+# Koniec
+###############################################################################
