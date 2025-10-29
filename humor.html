@@ -8,7 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <style>
         * {
@@ -543,6 +544,23 @@
             </div>
         </div>
 </footer>
+    <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function(){
+        const map = { volume_up:'volume-2', play_circle:'play-circle', south:'arrow-down', person:'user', record_voice_over:'mic', link:'link' };
+        document.querySelectorAll('.material-icons').forEach(el => {
+          const name = (el.textContent||'').trim();
+          const icon = map[name];
+          if (icon) {
+            const i = document.createElement('i');
+            i.setAttribute('data-lucide', icon);
+            i.className = 'w-6 h-6';
+            el.replaceWith(i);
+          }
+        });
+        try { lucide.createIcons(); } catch(e){}
+      });
+    </script>
 
     <!-- CSV parser for robust handling (quoted newlines, etc.) -->
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>

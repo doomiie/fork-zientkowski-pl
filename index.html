@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Jerzy Zientkowski</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
     * { font-family: 'Space Grotesk', sans-serif; }
     .nav-link { position: relative; padding-bottom: 4px; }
@@ -59,7 +60,7 @@
           <a href="bio" class="group block rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-indigo-500">
             <div class="p-6 flex items-start gap-4">
               <div class="shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-500 text-white flex items-center justify-center">
-                <span class="material-icons">person</span>
+                <i data-lucide="user" class="w-6 h-6"></i>
               </div>
               <div>
                 <h3 class="text-lg font-semibold text-dark">Bio</h3>
@@ -72,7 +73,7 @@
           <a href="sesja" class="group block rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-indigo-500">
             <div class="p-6 flex items-start gap-4">
               <div class="shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-500 text-white flex items-center justify-center">
-                <span class="material-icons">record_voice_over</span>
+                <i data-lucide="mic" class="w-6 h-6"></i>
               </div>
               <div>
                 <h3 class="text-lg font-semibold text-dark">Sesja</h3>
@@ -85,7 +86,7 @@
           <a href="linki" class="group block rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-indigo-500">
             <div class="p-6 flex items-start gap-4">
               <div class="shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-amber-600 to-yellow-500 text-white flex items-center justify-center">
-                <span class="material-icons">link</span>
+                <i data-lucide="link" class="w-6 h-6"></i>
               </div>
               <div>
                 <h3 class="text-lg font-semibold text-dark">Linki</h3>
@@ -106,5 +107,7 @@
     </div>
 </footer>
   <script defer src="/admin/tracking.js.php"></script>
+  <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script>document.addEventListener('DOMContentLoaded',function(){ try{ lucide.createIcons(); }catch(e){} });</script>
 </body>
 </html>

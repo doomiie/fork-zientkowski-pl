@@ -6,6 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LP1 — Autentyczny Humor w Biznesie</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
     rel="stylesheet">
   <style>
@@ -16,18 +19,60 @@
     .bg-light {
       background-color: #F9F9F9;
     }
+    .text-dark { color: rgb(4, 3, 39); }
+    .text-accent { color: rgb(4, 3, 39) !important; }
+    .bg-dark { background-color: rgb(4, 3, 39) !important; }
+    .hover\:bg-dark:hover { background-color: rgb(4, 3, 39) !important; }
+    .nav-link { position: relative; padding-bottom: 4px; }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: rgb(4, 3, 39);
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover::after { width: 100%; }
   </style>
 </head>
 
 <body class="bg-light min-h-screen flex flex-col">
   <!-- Header -->
-  <header class="fixed w-full bg-light/90 backdrop-blur-lg z-50 py-4 border-b border-gray-200/50">
-    <div class="max-w-[1200px] mx-auto px-6 flex items-center justify-between">
-      <a href="/" class="flex items-center gap-3 text-dark font-bold">
+  <header class="fixed w-full bg-white z-50 py-4 border-b border-gray-200/50">
+    <div class="max-w-[1200px] mx-auto px-6 flex items-center">
+      <a href="/" class="flex items-center gap-3 font-bold">
         <img src="/assets/img/logo_main.png" alt="Logo" class="brightness-0 max-w-[140px]">
       </a>
+      <div class="hidden md:flex items-center space-x-8 ml-auto">
+        <a href="#o-kursie" class="nav-link relative text-dark hover:text-accent transition-colors duration-300">O kursie</a>
+        <a href="#program" class="nav-link relative text-dark hover:text-accent transition-colors duration-300">Program</a>
+        <a href="#referencje" class="nav-link relative text-dark hover:text-accent transition-colors duration-300">Referencje</a>
+      </div>
+      <div class="flex items-center ml-auto md:ml-8 md:hidden">
+        <button id="menuToggleLP" aria-label="Menu" class="p-2 rounded-lg border border-gray-300 text-gray-800 hover:bg-gray-50">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
     </div>
   </header>
+
+  <!-- Mobile off-canvas menu -->
+  <div id="mobileMenuOverlayLP" class="fixed inset-0 bg-black/50 z-[1000] hidden"></div>
+  <aside id="mobileMenuLP" class="fixed inset-y-0 right-0 w-4/5 max-w-sm bg-white z-[1001] shadow-xl transform translate-x-full transition-transform">
+    <div class="p-4 flex items-center justify-between border-b border-gray-200">
+      <span class="font-semibold text-dark">Menu</span>
+      <button id="menuCloseLP" aria-label="Zamknij menu" class="p-2 rounded-lg text-gray-600 hover:bg-gray-50">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <nav class="p-4 space-y-3">
+      <a href="#o-kursie" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-50 text-dark">O kursie</a>
+      <a href="#program" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-50 text-dark">Program</a>
+      <a href="#referencje" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-50 text-dark">Referencje</a>
+    </nav>
+  </aside>
 
   <!-- Content -->
   <main class="flex-1 pt-24 pb-16">
@@ -56,9 +101,9 @@
           </h2>
           <h3 class="mt-2 text-xs xs:text-xs sm:text-xs md:text-xl font-bold text-dark">
             <div class="mt-2 flex items-center justify-center gap-3 text-gray-600">
-              <span class="material-icons" title="Włącz głos">volume_up</span>
-              <span class="material-icons" title="Odtwórz nagranie">play_circle</span>
-              <span class="material-icons" title="Niżej">south</span>
+              <i data-lucide="volume-2" class="w-6 h-6" title="Włącz głos"></i>
+              <i data-lucide="play-circle" class="w-6 h-6" title="Odtwórz nagranie"></i>
+              <i data-lucide="arrow-down" class="w-6 h-6" title="Niżej"></i>
             </div>
           </h3>
         </header>
@@ -93,14 +138,13 @@
           </div>
         </div>
 
-        <section id="cta" class="mt-10 hidden">
+        <section id="cta" class="mt-10 ">
           <a id="openPopup" data-open-popup data-cta-variant="long" href="#order"
-            class="block w-full text-center bg-gradient-to-r from-yellow-700 to-yellow-400 text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:opacity-90 transition"></a>
-          <p class="mt-2 text-center text-sm text-gray-700">WL?oLLyL?em w to blisko 16tys zL?. Zapytaj mnie, skąd ta
-            kwota ;)</p>
+            class="block w-full text-center bg-gradient-to-r from-yellow-700 to-yellow-400 text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:opacity-90 transition">TAAAAK! Kupuję dostęp do szkolenia i materiałów za straszliwe 299 zL? <span class="line-through opacity-70">399 zL?</span>!</a>
+          <p class="mt-2 text-center text-sm text-gray-700">Włożyłem w to blisko 16tys zł?. Zapytaj mnie, skąd ta  kwota ;)</p>
 
           <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-            <img class="mx-auto max-w-full md:col-span-2" src="assets/img/Mockup do kursu.png" alt="bundle">
+            <img class="mx-auto max-w-full md:col-span-8" src="/assets/img/Mockup_do_kursu.png" alt="bundle">
 
           </div>
           <p class="mt-4 text-gray-600 italic text-center">Tu claim</p>
@@ -136,6 +180,27 @@
         </section>
       </div>
     </section>
+    <!-- Placeholder sections to be filled later -->
+    <section id="o-kursie" class="py-16">
+      <div class="max-w-[1100px] mx-auto px-6">
+        <h2 class="text-2xl md:text-3xl font-bold text-dark mb-3">O kursie</h2>
+        <p class="text-gray-700">Sekcja w przygotowaniu. Tutaj umieścimy opis kursu.</p>
+      </div>
+    </section>
+
+    <section id="program" class="py-16 bg-white">
+      <div class="max-w-[1100px] mx-auto px-6">
+        <h2 class="text-2xl md:text-3xl font-bold text-dark mb-3">Program</h2>
+        <p class="text-gray-700">Sekcja w przygotowaniu. Tutaj umieścimy program kursu.</p>
+      </div>
+    </section>
+
+    <section id="referencje" class="py-16">
+      <div class="max-w-[1100px] mx-auto px-6">
+        <h2 class="text-2xl md:text-3xl font-bold text-dark mb-3">Referencje</h2>
+        <p class="text-gray-700">Sekcja w przygotowaniu. Tutaj pojawią się referencje.</p>
+      </div>
+    </section>
   </main>
 
   <!-- Footer -->
@@ -145,7 +210,40 @@
     </div>
   </footer>
 
+  <!-- Back to top FAB -->
+  <button id="backToTop" aria-label="Do góry" title="Do góry" class="hidden fixed right-4 sm:right-6 bottom-4 sm:bottom-6 z-[1100] rounded-full bg-dark text-white shadow-lg hover:bg-dark p-2.5 sm:p-3 transition">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
+  </button>
+
+  
+
+  <script>
+    (function(){
+      const btn = document.getElementById('backToTop');
+      function update(){ btn && (window.scrollY > 300 ? btn.classList.remove('hidden') : btn.classList.add('hidden')); }
+      window.addEventListener('scroll', update, { passive: true });
+      update();
+      btn && btn.addEventListener('click', function(e){ e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    })();
+  </script>
+
   <!-- Tracking (Hotjar, FB Pixel) -->
   <script defer src="/admin/tracking.js.php"></script>
+  <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script>document.addEventListener('DOMContentLoaded',function(){ try{ lucide.createIcons(); }catch(e){} });</script>
+  <script>
+    (function(){
+      const overlay = document.getElementById('mobileMenuOverlayLP');
+      const menu = document.getElementById('mobileMenuLP');
+      const openBtn = document.getElementById('menuToggleLP');
+      const closeBtn = document.getElementById('menuCloseLP');
+      function open(){ overlay.classList.remove('hidden'); menu.classList.remove('translate-x-full'); }
+      function close(){ overlay.classList.add('hidden'); menu.classList.add('translate-x-full'); }
+      openBtn && openBtn.addEventListener('click', open);
+      closeBtn && closeBtn.addEventListener('click', close);
+      overlay && overlay.addEventListener('click', close);
+      document.addEventListener('keydown', e=>{ if(e.key==='Escape') close(); });
+    })();
+  </script>
 </body>
 <html>
