@@ -49,6 +49,10 @@ require_login();
         <ul>
           <li><a class="btn" href="redirects.php">Zarządzaj przekierowaniami</a></li>
         </ul>
+        <h2 style="margin-top:12px;">Poczta</h2>
+        <ul>
+          <li><a class="btn" href="mail.php">Gmail OAuth – konfiguracja i test</a></li>
+        </ul>
       <?php endif; ?>
     </div>
   </main>

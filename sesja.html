@@ -484,6 +484,7 @@
 
 
             async function apiRequest(url, options = {}) {
+                console.log('API Request:', url, options);
                 options.credentials = options.credentials || 'include';
                 const resp = await fetch(url, options);
                 if (resp.status === 401) {
@@ -503,7 +504,7 @@
 
             async function fetchBusySlots(date, duration, fullDay = false) {
                 const fullParam = fullDay ? '&fullDay=1' : '';
-                const data = await apiRequest(`backend/calendar.php?action=busy&date=${date}&duration=${duration}${fullParam}&return=/sesja.html`);
+                const data = await apiRequest(`/backend/calendar.php?action=busy&date=${date}&duration=${duration}${fullParam}&return=/sesja.html`);
                 const busy = data ? data.busy : [];
                 console.log(data);
                 const result = new Set();
