@@ -6,6 +6,14 @@ Options -Indexes
   IndexIgnore *
 </IfModule>
 
+# Ensure index.php (or login.php) is used as directory index
+DirectoryIndex index.php login.php
+
+# On some hosts, an explicit allow is required
+<IfModule mod_authz_core.c>
+  Require all granted
+</IfModule>
+
 # Deny access to sensitive files
 <FilesMatch "\.(sql|md|sh|bak|ini|log)$">
   Require all denied
@@ -30,4 +38,3 @@ Options -Indexes
   Header set Referrer-Policy "strict-origin-when-cross-origin"
   Header set X-XSS-Protection "0"
 </IfModule>
-

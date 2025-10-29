@@ -50,7 +50,15 @@ AddDefaultCharset UTF-8
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME}.html -f
   RewriteRule ^(.+)$ $1.html [L]
+  # 3) Jeśli nie istnieje ani plik/katalog, ani odpowiedni .html → przekaż do resolvera przekierowań
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME}.html !-f
+  RewriteRule ^ redirects_resolver.php [L,QSA]
 </IfModule>
+
+# Global 404 handler (for any non‑PHP 404s not caught by rewrites)
+ErrorDocument 404 /404.php
 
 # 5) Ochrona wrażliwych i tymczasowych plików przed bezpośrednim dostępem
 <FilesMatch "(^\.|\.bak$|\.backup$|\.swp$|~$|\.zip$|\.tar$|\.t?gz$|\.gz$|\.7z$|\.rar$|\.sql$|\.log$|\.ini$|\.y(a)?ml$|\.md$|\.config$|composer\.(json|lock)$|package(-lock)?\.json|yarn\.lock|webpack\.config\.js|gulpfile\.js|Gruntfile\.js|\.htaccess|\.htpasswd)$">

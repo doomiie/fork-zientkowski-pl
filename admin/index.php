@@ -23,8 +23,8 @@ require_login();
     <div><strong>Panel administracyjny</strong></div>
     <div>
       Zalogowano jako: <?php echo htmlspecialchars(current_user_email(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>
-      &nbsp;|&nbsp;
-      <a class="btn" href="logout.php">Wyloguj</a>
+      &nbsp;|&nbsp; <?php echo htmlspecialchars(current_user_role(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>
+      &nbsp;|&nbsp; <a class="btn" href="logout.php">Wyloguj</a>
     </div>
   </header>
   <main>
@@ -35,8 +35,22 @@ require_login();
         <li>Dodaj tu swoje widoki administracyjne.</li>
         <li>Ta strona wymaga zalogowania (sprawdzane w <code>require_login()</code>).</li>
       </ul>
+      <hr style="margin:16px 0; border:none; border-top:1px solid #e5e7eb;">
+      <h2>Ustawienia konta</h2>
+      <ul>
+        <li><a class="btn" href="password.php">Zmień swoje hasło</a></li>
+      </ul>
+      <?php if (is_admin()): ?>
+        <h2 style="margin-top:12px;">Zarządzanie użytkownikami</h2>
+        <ul>
+          <li><a class="btn" href="users_password.php">Zmień hasło użytkownika</a></li>
+        </ul>
+        <h2 style="margin-top:12px;">Przekierowania</h2>
+        <ul>
+          <li><a class="btn" href="redirects.php">Zarządzaj przekierowaniami</a></li>
+        </ul>
+      <?php endif; ?>
     </div>
   </main>
 </body>
 </html>
-
