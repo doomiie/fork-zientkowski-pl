@@ -39,6 +39,10 @@
         .nav-link:hover::after {
             width: 100%;
         }
+
+        /* Hide navigation on this page */
+        .main-nav { display: none !important; }
+        [data-mobile-menu] { display: none !important; }
     </style>
     <script>
         tailwind.config = {
@@ -227,6 +231,75 @@
             const timeButtons = document.getElementById("time-buttons");
             const form = document.getElementById("meetingForm");
             const prevMonthBtn = document.getElementById("prev-month");
+
+            // Notifications bar (cookie-backed)
+            const notifBar = document.createElement('div');
+            notifBar.id = 'notif-bar';
+            notifBar.className = 'fixed bottom-4 right-4 z-50 flex flex-col items-end gap-2';
+            notifBar.innerHTML = `
+              <div id="notif-panel" class="hidden bg-white border border-gray-200 rounded-lg shadow-xl w-80 max-h-96 overflow-y-auto">
+                <div class=\"px-3 py-2 border-b font-semibold text-sm\">Powiadomienia o rezerwacjach</div>
+                <div id=\"notif-list\" class=\"p-2 space-y-2\"></div>
+              </div>
+              <button id=\"notif-toggle\" type=\"button\" class=\"px-3 py-2 rounded-full shadow border bg-white hover:bg-gray-50 text-sm font-semibold\">
+                Powiadomienia (<span id=\"notif-count\">0</span>)
+              </button>
+            `;
+            document.body.appendChild(notifBar);
+            const notifPanel = document.getElementById('notif-panel');
+            const notifToggle = document.getElementById('notif-toggle');
+            const notifList = document.getElementById('notif-list');
+            const notifCount = document.getElementById('notif-count');
+
+            function setCookie(name, value, days) {
+                const d = new Date();
+                d.setTime(d.getTime() + days*24*60*60*1000);
+                const expires = 'expires=' + d.toUTCString();
+                document.cookie = name + '=' + encodeURIComponent(value) + ';' + expires + ';path=/;SameSite=Lax';
+            }
+            function getCookie(name) {
+                const cname = name + '=';
+                const arr = document.cookie.split(';');
+                for (let c of arr) {
+                    c = c.trim();
+                    if (c.indexOf(cname) === 0) return decodeURIComponent(c.substring(cname.length));
+                }
+                return '';
+            }
+            function loadReservations() {
+                try { return JSON.parse(getCookie('reservations') || '[]'); } catch { return []; }
+            }
+            function saveReservations(list) {
+                try { setCookie('reservations', JSON.stringify(list.slice(0, 20)), 30); } catch {}
+            }
+            function renderReservations() {
+                const list = loadReservations();
+                notifCount.textContent = list.length;
+                notifList.innerHTML = '';
+                list.forEach(item => {
+                    const el = document.createElement('div');
+                    el.className = 'border border-gray-200 rounded p-2 text-sm';
+                    el.innerHTML = `
+                      <div class=\"font-semibold\">${item.title || 'Rezerwacja'}</div>
+                      <div class=\"text-gray-600\">${item.when || ''}</div>
+                      ${item.email ? `<div class=\"text-gray-600\">${item.email}</div>` : ''}
+                      ${item.meetLink ? `<a class=\"text-accent underline\" target=\"_blank\" href=\"${item.meetLink}\">Google Meet</a>` : ''}
+                      <div class=\"text-[11px] text-gray-400 mt-1\">${item.createdAt ? new Date(item.createdAt).toLocaleString('pl-PL') : ''}</div>
+                    `;
+                    notifList.appendChild(el);
+                });
+            }
+            function addReservationNotification(data) {
+                const list = loadReservations();
+                list.unshift(data);
+                saveReservations(list);
+                renderReservations();
+                notifPanel.classList.remove('hidden');
+            }
+            notifToggle.addEventListener('click', () => {
+                notifPanel.classList.toggle('hidden');
+            });
+            renderReservations();
 
             const config = await fetch('config.json').then(r => r.json()).catch(() => ({}));
             const debugVisible = config.debugBoxVisible !== false;
@@ -702,7 +775,15 @@
 
                 async function finalize() {
                     await createCalendarEvent(email, meetingType);
-                    alert(successMsg);
+                    const mt = meetingTypesCfg[meetingType] || {};
+                    const whenTxt = `${selectedDate} ${selectedTime || ''}`.trim();
+                    addReservationNotification({
+                        title: `${(mt.emoji||'')} ${(mt.name||meetingType)}`.trim(),
+                        when: whenTxt,
+                        email: email || '',
+                        meetLink: '',
+                        createdAt: new Date().toISOString(),
+                    });
                     selectedTime = null;
                     await showTimes(); // odśwież sloty po rezerwacji
                 }

@@ -1,0 +1,13 @@
+-- Site-wide settings (Hotjar, etc.)
+
+CREATE TABLE IF NOT EXISTS site_settings (
+  id TINYINT UNSIGNED NOT NULL DEFAULT 1,
+  hotjar_enabled TINYINT(1) NOT NULL DEFAULT 0,
+  hotjar_site_id VARCHAR(32) NULL,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO site_settings (id) VALUES (1)
+  ON DUPLICATE KEY UPDATE id = id;
+

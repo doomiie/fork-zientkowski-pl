@@ -125,15 +125,72 @@ if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         'summary' => $summary,
         'start' => ['dateTime' => $start->format(DateTime::RFC3339)],
         'end' => ['dateTime' => $end->format(DateTime::RFC3339)],
+        // Request Google Meet conference on creation
+        'conferenceData' => [
+            'createRequest' => [
+                'requestId' => bin2hex(random_bytes(8)),
+                'conferenceSolutionKey' => [ 'type' => 'hangoutsMeet' ],
+            ],
+        ],
     ]);
     if (!empty($attendees)) {
         $event->setAttendees(array_map(function ($e) {
             return ['email' => $e];
         }, $attendees));
     }
-    $created = $service->events->insert('primary', $event);
+    // Pass conferenceDataVersion to enable conference creation
+    $created = $service->events->insert('primary', $event, ['conferenceDataVersion' => 1]);
+
+    // Extract Google Meet link if available
+    $meetLink = '';
+    if (method_exists($created, 'getHangoutLink')) {
+        $meetLink = (string)$created->getHangoutLink();
+    }
+    if (!$meetLink && method_exists($created, 'getConferenceData')) {
+        $conf = $created->getConferenceData();
+        if ($conf && method_exists($conf, 'getEntryPoints')) {
+            foreach ((array)$conf->getEntryPoints() as $ep) {
+                if (method_exists($ep, 'getEntryPointType') && $ep->getEntryPointType() === 'video') {
+                    if (method_exists($ep, 'getUri')) {
+                        $meetLink = (string)$ep->getUri();
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    // Send notification email about the reservation
+    try {
+        require_once __DIR__ . '/../admin/db.php';
+        require_once __DIR__ . '/../admin/lib/Mailer.php';
+        $mailer = new GmailOAuthMailer($pdo);
+
+        $startPl = new DateTime($data['start']);
+        $startPl->setTimezone(new DateTimeZone('Europe/Warsaw'));
+        $endPl = new DateTime($data['end']);
+        $endPl->setTimezone(new DateTimeZone('Europe/Warsaw'));
+
+        $whenTxt = $startPl->format('Y-m-d H:i') . ' – ' . $endPl->format('H:i') . ' (Europe/Warsaw)';
+        $subject = 'Nowa rezerwacja: ' . $displayName . ' ' . $startPl->format('Y-m-d H:i');
+        $html = '<p>Nowa rezerwacja terminu.</p>'
+              . '<p><strong>Typ:</strong> ' . htmlspecialchars($displayName, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</p>'
+              . '<p><strong>Kiedy:</strong> ' . htmlspecialchars($whenTxt, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</p>'
+              . '<p><strong>E-mail uczestnika:</strong> ' . htmlspecialchars($email, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</p>';
+        if (!empty($meetLink)) {
+            $safeLink = htmlspecialchars($meetLink, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+            $html .= '<p><strong>Google Meet:</strong> <a href="' . $safeLink . '">' . $safeLink . '</a></p>';
+        }
+
+        $mailer->send('jerzy+rezerwacje@zientkowski.pl', $subject, $html);
+    } catch (Throwable $e) {
+        // Swallow errors to not break API response
+    }
     header('Content-Type: application/json');
-    echo json_encode($created);
+    echo json_encode([
+        'event' => $created,
+        'meetLink' => $meetLink,
+    ]);
     exit();
 }
 
