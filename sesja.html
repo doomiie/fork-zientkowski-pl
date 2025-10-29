@@ -418,8 +418,9 @@
                     const isPast = day < new Date().setHours(0, 0, 0, 0);
                     const isToday = dateStr === todayStr;
 
-                    // Check if there is at least one free slot for the shortest meeting
+                    // Check availability for the shortest meeting duration
                     let isFullyBooked = false;
+                    let isAllFree = false; // green badge when true, otherwise yellow
                     if (!isPast) {
                         const dayKey = ['sun','mon','tue','wed','thu','fri','sat'][day.getDay()];
                         const whDay = workingHoursCfg[dayKey] || {};
@@ -446,6 +447,7 @@
                             return !busyMinutes.some(bm => bm >= startMin && bm < endMin);
                         });
                         isFullyBooked = freeSlots.length === 0;
+                        isAllFree = busySlots.length === 0;
                     }
 
                     const btn = document.createElement("button");
@@ -460,6 +462,19 @@
                             : "hover:bg-accent hover:text-white");
                     if (isToday && !isPast && !isFullyBooked) {
                         btn.classList.add("border-green-500", "text-green-600");
+                    }
+
+                    // Add availability badge: red = fully booked, green = all free, yellow = partial
+                    if (!isPast) {
+                        btn.classList.add('relative', 'pr-5');
+                        const badge = document.createElement('span');
+                        let color = 'bg-yellow-400';
+                        let title = 'Częściowo zajęte';
+                        if (isFullyBooked) { color = 'bg-red-500'; title = 'Brak dostępnych slotów'; }
+                        else if (isAllFree) { color = 'bg-green-500'; title = 'Wszystkie sloty wolne'; }
+                        badge.className = 'absolute top-1 right-1 w-2.5 h-2.5 rounded-full ' + color;
+                        badge.title = title;
+                        btn.appendChild(badge);
                     }
 
                     if (!isPast && !isFullyBooked) {
