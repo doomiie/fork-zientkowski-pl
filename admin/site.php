@@ -14,8 +14,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $enabled = isset($_POST['hotjar_enabled']) ? 1 : 0;
             $siteId = trim((string)($_POST['hotjar_site_id'] ?? ''));
-            $stmt = $pdo->prepare('UPDATE site_settings SET hotjar_enabled = ?, hotjar_site_id = ? WHERE id = 1');
-            $stmt->execute([$enabled, $siteId !== '' ? $siteId : null]);
+            $fbEnabled = isset($_POST['fb_pixel_enabled']) ? 1 : 0;
+            $fbId = trim((string)($_POST['fb_pixel_id'] ?? ''));
+            $stmt = $pdo->prepare('UPDATE site_settings SET hotjar_enabled = ?, hotjar_site_id = ?, fb_pixel_enabled = ?, fb_pixel_id = ? WHERE id = 1');
+            $stmt->execute([
+              $enabled,
+              $siteId !== '' ? $siteId : null,
+              $fbEnabled,
+              $fbId !== '' ? $fbId : null,
+            ]);
             $ok = 'Zapisano ustawienia.';
         } catch (Throwable $e) {
             $error = 'Błąd zapisu ustawień.';
@@ -75,10 +82,22 @@ try {
           <label for="hotjar_site_id">Hotjar Site ID</label>
           <input type="text" id="hotjar_site_id" name="hotjar_site_id" placeholder="np. 1234567" value="<?php echo htmlspecialchars((string)($row['hotjar_site_id'] ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>">
           <div class="muted" style="margin-top:8px;">Wklej numer Site ID z Hotjar (bez dodatkowych znaków). Gdy włączone, skrypt zostanie dołączony na stronach z wczytanym plikiem <code>/admin/hotjar.js.php</code>.</div>
+          <div style="margin-top:12px;">
+            <a class="btn" target="_blank" rel="noopener" href="https://insights.hotjar.com/sites/568048/dashboard/hNXeibUGf7qaRkcnzHGRCy-Site-overview">Otwórz Hotjar dashboard</a>
+          </div>
+          <hr style="margin:16px 0; border:none; border-top:1px solid #e5e7eb;">
+          <div style="margin:8px 0 16px;">
+            <label><input type="checkbox" name="fb_pixel_enabled" value="1" <?php echo !empty($row['fb_pixel_enabled']) ? 'checked' : ''; ?>> Włącz Facebook Pixel</label>
+          </div>
+          <label for="fb_pixel_id">Facebook Pixel ID</label>
+          <input type="text" id="fb_pixel_id" name="fb_pixel_id" placeholder="np. 123456789012345" value="<?php echo htmlspecialchars((string)($row['fb_pixel_id'] ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>">
+          <div class="muted" style="margin-top:8px;">Wklej numer Pixel ID z Meta Events Manager. Gdy włączone, skrypt będzie dostępny pod <code>/admin/fbpixel.js.php</code>.</div>
+          <div style="margin-top:12px;">
+            <a class="btn" target="_blank" rel="noopener" href="https://www.facebook.com/events_manager2/list/pixel">Otwórz Meta Events Manager</a>
+          </div>
           <div style="margin-top:16px;"><button type="submit">Zapisz</button></div>
         </form>
       </div>
     </main>
   </body>
   </html>
-

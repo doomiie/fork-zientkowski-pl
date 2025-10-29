@@ -53,6 +53,10 @@ require_login();
         <ul>
           <li><a class="btn" href="mail.php">Gmail OAuth – konfiguracja i test</a></li>
         </ul>
+        <h2 style="margin-top:12px;">Ustawienia serwisu</h2>
+        <ul>
+          <li><a class="btn" href="site.php">Hotjar i inne ustawienia</a></li>
+        </ul>
       <?php endif; ?>
     </div>
   </main>
