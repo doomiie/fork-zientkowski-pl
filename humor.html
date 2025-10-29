@@ -44,70 +44,7 @@
             z-index: 1;
         }
 
-        /* Masonry layout for references */
-        .masonry {
-            column-gap: 1.5rem; /* matches gap-6 */
-            column-count: 1;
-        }
-        @media (min-width: 640px) { /* sm */
-            .masonry { column-count: 2; }
-        }
-        @media (min-width: 768px) { /* md */
-            .masonry { column-count: 3; }
-        }
-        @media (min-width: 1024px) { /* lg */
-            .masonry { column-count: 3; }
-        }
-        .avoid-break {
-            break-inside: avoid;
-            -webkit-column-break-inside: avoid;
-            -moz-column-break-inside: avoid;
-        }
-
-        /* Timeline styles */
-        .timeline {
-            position: relative;
-            z-index: 0;
-        }
-        .timeline::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 50%;
-            width: 2px;
-            transform: translateX(-1px);
-            background: #e5e7eb; /* gray-200 */
-            z-index: 0;
-        }
-        .timeline-dot {
-            position: absolute;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 12px;
-            height: 12px;
-            border-radius: 9999px;
-            background: #d1d5db; /* gray-300 */
-            border: 2px solid #fff;
-            box-shadow: 0 0 0 1px #e5e7eb; /* subtle outline to blend with line */
-            z-index: 0; /* under bubbles/cards, like the line */
-        }
-        .year-segment {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-1px);
-            width: 2px;
-            z-index: 0; /* under items */
-        }
-        .timeline-item { position: relative; z-index: 2; }
-        .timeline-expander { overflow: hidden; max-height: 0; opacity: 0; transition: max-height .25s ease, opacity .25s ease, margin-top .25s ease; }
-        .timeline-expander.open { opacity: 1; margin-top: 0.5rem; }
-
-        /* Horizontal scroller helpers */
-        .hide-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        /* Remove clamp on expand (override line-clamp) */
-        .ref-summary.no-clamp { display: block !important; -webkit-line-clamp: initial !important; -webkit-box-orient: initial !important; overflow: visible !important; }
+        /* removed reference/timeline styles */
     </style>
 
     <script>

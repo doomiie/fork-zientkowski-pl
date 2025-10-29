@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LP1 — Autentyczny Humor w Biznesie</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .bg-light {
+      background-color: #F9F9F9;
+    }
+  </style>
+</head>
+
+<body class="bg-light min-h-screen flex flex-col">
+  <!-- Header -->
+  <header class="fixed w-full bg-light/90 backdrop-blur-lg z-50 py-4 border-b border-gray-200/50">
+    <div class="max-w-[1200px] mx-auto px-6 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-3 text-dark font-bold">
+        <img src="/assets/img/logo_main.png" alt="Logo" class="brightness-0 max-w-[140px]">
+      </a>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <main class="flex-1 pt-24 pb-16">
+
+
+    <section class="pt-10 md:pt-20 pb-20 relative overflow-hidden">
+      <div class="grain-overlay"></div>
+      <div class="max-w-[1100px] mx-auto px-6 relative z-10">
+        <header class="mb-8 text-center">
+          <h1 class="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-extrabold text-dark leading-tight">
+            Jak zamienić proste prezentacje w pełne luzu, humoru i relacji rozmowy z widownią
+          </h1>
+          <div id="dev-hero-size" class=" mt-1 text-xs text-gray-500 italic">
+            <span class="inline xs:hidden sm:hidden md:hidden lg:hidden xl:hidden 2xl:hidden">DEV: base — H1
+              text-2xl</span>
+            <span class="hidden xs:inline sm:hidden md:hidden lg:hidden xl:hidden 2xl:hidden">DEV: xs — H1
+              text-3xl</span>
+            <span class="hidden sm:inline md:hidden lg:hidden xl:hidden 2xl:hidden">DEV: sm — H1 text-4xl</span>
+            <span class="hidden md:inline lg:hidden xl:hidden 2xl:hidden">DEV: md — H1 text-5xl</span>
+            <span class="hidden lg:inline xl:hidden 2xl:hidden">DEV: lg — H1 text-5xl</span>
+            <span class="hidden xl:inline 2xl:hidden">DEV: xl — H1 text-5xl</span>
+            <span class="hidden 2xl:inline">DEV: 2xl — H1 text-5xl</span>
+          </div>
+          <h2 class="mt-4 text-sm md:text-xl font-semibold text-dark">
+            (I jak odkryć swój autentyczny styl humoru)
+          </h2>
+          <h3 class="mt-2 text-xs xs:text-xs sm:text-xs md:text-xl font-bold text-dark">
+            <div class="mt-2 flex items-center justify-center gap-3 text-gray-600">
+              <span class="material-icons" title="Włącz głos">volume_up</span>
+              <span class="material-icons" title="Odtwórz nagranie">play_circle</span>
+              <span class="material-icons" title="Niżej">south</span>
+            </div>
+          </h3>
+        </header>
+
+
+        <div class="mt-6 rounded-2xl border border-gray-200 shadow-sm overflow-hidden bg-white">
+          <div class="relative w-full" style="padding-top:56.25%">
+            <iframe class="absolute inset-0 w-full h-full" src="https://www.youtube.com/embed/N4_Yw9-uv08"
+              title="YouTube video"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin" loading="lazy" allowfullscreen></iframe>
+          </div>
+        </div>
+
+
+
+        <div class="mt-8" id="unlock-note">
+          <h1 class="text-center text-2xl sm:text-3xl md:text-5xl font-extrabold text-dark leading-tight">(Kolejny krok
+            już
+            za...)</h1>
+          <h2 class="text-center text-2xl  text-gray-600"></h2>
+          <div id="countdown" class="mt-3 flex items-center justify-center gap-4 text-dark">
+            <div class="text-center">
+              <div class="text-3xl md:text-5xl font-extrabold" id="cd-min">07</div>
+              <div class="text-xs uppercase tracking-wider text-gray-500">Minut</div>
+            </div>
+            <div class="text-3xl md:text-5xl font-extrabold">:</div>
+            <div class="text-center">
+              <div class="text-3xl md:text-5xl font-extrabold" id="cd-sec">00</div>
+              <div class="text-xs uppercase tracking-wider text-gray-500">Sekund</div>
+            </div>
+          </div>
+        </div>
+
+        <section id="cta" class="mt-10 hidden">
+          <a id="openPopup" data-open-popup data-cta-variant="long" href="#order"
+            class="block w-full text-center bg-gradient-to-r from-yellow-700 to-yellow-400 text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:opacity-90 transition"></a>
+          <p class="mt-2 text-center text-sm text-gray-700">WL?oLLyL?em w to blisko 16tys zL?. Zapytaj mnie, skąd ta
+            kwota ;)</p>
+
+          <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+            <img class="mx-auto max-w-full md:col-span-2" src="assets/img/Mockup do kursu.png" alt="bundle">
+
+          </div>
+          <p class="mt-4 text-gray-600 italic text-center">Tu claim</p>
+        </section>
+
+        <!-- Popup Modal moved to top-level -->
+
+        <section class="d-none  mt-20">
+          <h3 class="text-3xl md:text-4xl font-extrabold text-dark">Here’s Everything You’re Getting When You Sign
+            Up Today..</h3>
+          <p class="mt-3 text-gray-700">I can’t wait for you to experience first hand how much more simple and
+            complete this system is <b>than anything you’ve tried before..</b></p>
+          <div class="mt-8">
+            <img class="mx-auto max-w-[720px] w-full"
+              src="https://images.clickfunnels.com/cdn-cgi/image/width=1000px,fit=scale-down,f=auto,q=80/https://statics.myclickfunnels.com/workspace/erDPNZ/image/12051391/file/40a1c7805b41977215542f390b86236d.png"
+              alt="everything">
+          </div>
+          <ul class="mt-8 space-y-4 text-lg md:text-xl">
+            <li class="flex items-start gap-3"><svg class="w-6 h-6 text-yellow-600 shrink-0" viewBox="0 0 24 24"
+                fill="currentColor">
+                <path d="M9 16.2l-3.5-3.5L4 14.2 9 19l12-12-1.5-1.5z" />
+              </svg> The Easy Yes 1K Offer Formula Training ($997 Value)</li>
+            <li class="flex items-start gap-3"><svg class="w-6 h-6 text-yellow-600 shrink-0" viewBox="0 0 24 24"
+                fill="currentColor">
+                <path d="M9 16.2l-3.5-3.5L4 14.2 9 19l12-12-1.5-1.5z" />
+              </svg> ?sFill-in-the-blank?t $1K Sales Page Template ($497 Value)</li>
+            <li class="flex items-start gap-3"><svg class="w-6 h-6 text-yellow-600 shrink-0" viewBox="0 0 24 24"
+                fill="currentColor">
+                <path d="M9 16.2l-3.5-3.5L4 14.2 9 19l12-12-1.5-1.5z" />
+              </svg> Buyer Magnet Email Template ($297 Value)</li>
+          </ul>
+          <h4 class="mt-8 text-2xl md:text-3xl font-semibold text-dark">NEW: 70% OFF LIFETIME ACCESS OFFER</h4>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="mt-auto bg-light py-8 border-t border-gray-200/60">
+    <div class="max-w-[1200px] mx-auto px-6 text-center text-gray-600">
+      <p>&copy; 2011-2025 Jerzy Zientkowski. Wszelkie prawa zastrzeżone.</p>
+    </div>
+  </footer>
+
+  <!-- Tracking (Hotjar, FB Pixel) -->
+  <script defer src="/admin/tracking.js.php"></script>
+</body>
+<html>
