@@ -1,0 +1,935 @@
+﻿<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lorem ipsum</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <style>
+        * {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .nav-link {
+            position: relative;
+            padding-bottom: 4px;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: rgb(4, 3, 39);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .grain-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: url('data:image/svg+xml,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)"/></svg>');
+            opacity: 0.05;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* removed unused reference/timeline styles */
+    </style>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    screens: {
+                        xs: '400px' // dodatkowy breakpoint dla duLLych telefonAlw
+                    },
+                    colors: {
+                        accent: 'rgb(4, 3, 39)',
+                        dark: 'rgb(4, 3, 39)',
+                        light: '#F9F9F9'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-light">
+    <!-- Popup Modal (moved to top-level to ensure highest stacking) -->
+    <div id="popupOverlay" class="fixed inset-0 bg-black/60 z-[10050] hidden">
+        <div class="min-h-full flex items-center justify-center p-4">
+            <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-auto z-[10060]">
+                <button id="closePopup" aria-label="Zamknij" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 z-[10070]">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+                <div class="p-4">
+                    <style>
+                    .wtl-responsive-iframe {
+                      width: 1px;
+                      min-width: 100%;
+                    }
+                    </style>
+                    <h2 class="text-lg md:text-2xl font-bold text-dark mb-3">Lorem ipsum</h2>
+                    <script src="https://kotryszientkowski.elms.pl/assets/js/iframe-resizer-embed.js"></script>
+                    <iframe class="wtl-responsive-iframe" src="https://kotryszientkowski.elms.pl/assets/js/s.php?id=98f13708210194c475687be6106a3b84" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                      iFrameResize({
+                        log: false,
+                        checkOrigin: false
+                      }, ".wtl-responsive-iframe");
+                    });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+    <nav
+        class="fixed w-full bg-light/90 backdrop-blur-lg z-50 py-4 transition-all duration-300 border-b border-gray-200/50">
+        <div class="max-w-[1400px] mx-auto px-6">
+            <div class="flex justify-between items-center">
+                <a href="index.html" class="text-2xl font-bold tracking-tight flex items-center gap-3">
+                    <img class="brightness-0 max-w-[150px]"
+                        src="./assets/img/logo_main.png" alt="Logo">
+                </a>
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="#opis-kursu" class="nav-link text-dark hover:text-accent transition-colors duration-300">Lorem ipsum</a>
+                    <a href="#agenda" class="nav-link text-dark hover:text-accent transition-colors duration-300">Lorem ipsum</a>
+                    <a id="navCta" data-open-popup data-cta-variant="short" href="#order" class="hidden md:hidden whitespace-nowrap px-4 py-2 rounded-lg bg-gradient-to-r from-yellow-700 to-yellow-400 text-white font-bold shadow hover:opacity-90 transition"></a>
+                </div>
+                <button id="menuToggle" aria-label="Menu" class="md:hidden inline-flex items-center justify-center p-2 rounded-lg border border-gray-300 text-dark hover:bg-gray-50">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile off-canvas menu -->
+    <div id="mobileMenuOverlay" class="fixed inset-0 bg-black/50 z-[10020] hidden"></div>
+    <aside id="mobileMenu" class="fixed inset-y-0 right-0 w-4/5 sm:w-1/2 max-w-xs bg-white z-[10030] shadow-xl transform translate-x-full transition-transform">
+        <div class="p-4 flex items-center justify-between border-b border-gray-200">
+            <span class="font-semibold text-dark">Lorem ipsum</span>
+            <button id="menuClose" aria-label="Zamknij menu" class="p-2 rounded-lg text-gray-600 hover:bg-gray-50">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <nav class="p-4 space-y-3">
+            <a href="#opis-kursu" class="block px-3 py-2 rounded-lg hover:bg-gray-50 text-dark">Lorem ipsum</a>
+            <a href="#agenda" class="block px-3 py-2 rounded-lg hover:bg-gray-50 text-dark">Lorem ipsum</a>
+            <hr class="my-3">
+            <button data-open-popup data-cta-variant="long" class="w-full px-4 py-3 rounded-lg bg-gradient-to-r from-yellow-700 to-yellow-400 text-white font-bold shadow hover:opacity-90 transition"></button>
+        </nav>
+    </aside>
+
+    <section class="pt-20 md:pt-40 pb-20 relative overflow-hidden">
+        <div class="grain-overlay"></div>
+        <div class="max-w-[1100px] mx-auto px-6 relative z-10">
+            <header class="mb-8 text-center">
+                <h1 class="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-extrabold text-dark leading-tight">Lorem ipsum</h1>
+                <div id="dev-hero-size" class=" mt-1 text-xs text-gray-500 italic">
+                    <span class="inline xs:hidden sm:hidden md:hidden lg:hidden xl:hidden 2xl:hidden">Lorem ipsum</span>
+                    <span class="hidden xs:inline sm:hidden md:hidden lg:hidden xl:hidden 2xl:hidden">Lorem ipsum</span>
+                    <span class="hidden sm:inline md:hidden lg:hidden xl:hidden 2xl:hidden">Lorem ipsum</span>
+                    <span class="hidden md:inline lg:hidden xl:hidden 2xl:hidden">Lorem ipsum</span>
+                    <span class="hidden lg:inline xl:hidden 2xl:hidden">Lorem ipsum</span>
+                    <span class="hidden xl:inline 2xl:hidden">Lorem ipsum</span>
+                    <span class="hidden 2xl:inline">Lorem ipsum</span>
+                </div>
+                <h2 class="mt-4 text-sm md:text-xl font-semibold text-dark">Lorem ipsum</h2>
+                <h3 class="mt-2 text-xs xs:text-xs sm:text-xs md:text-xl font-bold text-dark">
+                    <div class="mt-2 flex items-center justify-center gap-3 text-gray-600">
+                        <span class="material-icons" title="WL?ącz gL?os">Lorem ipsum</span>
+                        <span class="material-icons" title="OdtwAlrz nagranie">Lorem ipsum</span>
+                        <span class="material-icons" title="NiLLej">Lorem ipsum</span>
+                    </div>
+                </h3>
+            </header>
+
+
+            <div class="mt-6 rounded-2xl border border-gray-200 shadow-sm overflow-hidden bg-white">
+                <div class="relative w-full" style="padding-top:56.25%">
+                    <iframe class="absolute inset-0 w-full h-full" src="https://www.youtube.com/embed/N4_Yw9-uv08"
+                        title="YouTube video"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin" loading="lazy" allowfullscreen></iframe>
+                </div>
+            </div>
+
+
+
+            <div class="mt-8" id="unlock-note">
+                <h1 class="text-center text-2xl sm:text-3xl md:text-5xl font-extrabold text-dark leading-tight">Lorem ipsum</h1>
+                <h2  class="text-center text-2xl  text-gray-600"></h2>
+                <div id="countdown" class="mt-3 flex items-center justify-center gap-4 text-dark">
+                    <div class="text-center">
+                        <div class="text-3xl md:text-5xl font-extrabold" id="cd-min">07</div>
+                        <div class="text-xs uppercase tracking-wider text-gray-500">Minut</div>
+                    </div>
+                    <div class="text-3xl md:text-5xl font-extrabold">:</div>
+                    <div class="text-center">
+                        <div class="text-3xl md:text-5xl font-extrabold" id="cd-sec">00</div>
+                        <div class="text-xs uppercase tracking-wider text-gray-500">Sekund</div>
+                    </div>
+                </div>
+            </div>
+
+            <section id="cta" class="mt-10 hidden">
+                <a id="openPopup" data-open-popup data-cta-variant="long" href="#order"
+                    class="block w-full text-center bg-gradient-to-r from-yellow-700 to-yellow-400 text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:opacity-90 transition"></a>
+                <p class="mt-2 text-center text-sm text-gray-700">Lorem ipsum</p>
+
+                <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+                    <img class="mx-auto max-w-full md:col-span-2"
+                        src="assets/img/Mockup do kursu.png"
+                        alt="bundle">
+                    
+                </div>
+                <p class="mt-4 text-gray-600 italic text-center">Lorem ipsum</p>
+            </section>
+
+            <!-- Popup Modal moved to top-level -->
+
+            <section class="d-none hidden mt-20">
+                <h3 class="text-3xl md:text-4xl font-extrabold text-dark">Lorem ipsum</h3>
+                <p class="mt-3 text-gray-700">I can’t wait for you to experience first hand how much more simple and
+                    complete this system is <b>than anything you’ve tried before..</b></p>
+                <div class="mt-8">
+                    <img class="mx-auto max-w-[720px] w-full"
+                        src="https://images.clickfunnels.com/cdn-cgi/image/width=1000px,fit=scale-down,f=auto,q=80/https://statics.myclickfunnels.com/workspace/erDPNZ/image/12051391/file/40a1c7805b41977215542f390b86236d.png"
+                        alt="everything">
+                </div>
+                <ul class="mt-8 space-y-4 text-lg md:text-xl">
+                    <li class="flex items-start gap-3"><svg class="w-6 h-6 text-yellow-600 shrink-0" viewBox="0 0 24 24"
+                            fill="currentColor">
+                            <path d="M9 16.2l-3.5-3.5L4 14.2 9 19l12-12-1.5-1.5z" />
+                        </svg> The Easy Yes 1K Offer Formula Training ($997 Value)</li>
+                    <li class="flex items-start gap-3"><svg class="w-6 h-6 text-yellow-600 shrink-0" viewBox="0 0 24 24"
+                            fill="currentColor">
+                            <path d="M9 16.2l-3.5-3.5L4 14.2 9 19l12-12-1.5-1.5z" />
+                        </svg> ?sFill-in-the-blank?t $1K Sales Page Template ($497 Value)</li>
+                    <li class="flex items-start gap-3"><svg class="w-6 h-6 text-yellow-600 shrink-0" viewBox="0 0 24 24"
+                            fill="currentColor">
+                            <path d="M9 16.2l-3.5-3.5L4 14.2 9 19l12-12-1.5-1.5z" />
+                        </svg> Buyer Magnet Email Template ($297 Value)</li>
+                </ul>
+                <h4 class="mt-8 text-2xl md:text-3xl font-semibold text-dark">Lorem ipsum</h4>
+            </section>
+        </div>
+    </section>
+
+    <!-- Opis kursu -->
+    <section id="opis-kursu" class="bg-light py-16 border-t border-gray-200/60 scroll-mt-24">
+        <div class="max-w-[1100px] mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-dark">Lorem ipsum</h2>
+            <div class="mt-4 space-y-4 text-gray-700 leading-relaxed text-base md:text-lg">
+                <p>Lorem ipsum</p>
+                <p>Lorem ipsum</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Agenda kursu -->
+    <section id="agenda" class="bg-light py-16 border-t border-gray-200/60 scroll-mt-24">
+        <div class="max-w-[1100px] mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-dark">Lorem ipsum</h2>
+            <p class="mt-2 text-gray-600">Lorem ipsum</p>
+
+            <style>
+                .disclosure-expander{overflow:hidden;max-height:0;opacity:0;transition:max-height .3s ease,opacity .2s ease;margin-top:.25rem}
+                .disclosure-expander.open{opacity:1;margin-top:.5rem}
+            </style>
+            <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                <!-- ModuL? 1 -->
+                <article class="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition">
+                    <div class="flex items-start gap-4">
+                        <div class="shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-indigo-600 to-violet-500 text-white flex items-center justify-center font-bold">1</div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-dark">Lorem ipsum</h3>
+                            <p class="mt-1 text-gray-700 text-sm md:text-base">Lorem ipsum</p>
+                            <button class="agenda-toggle mt-3 inline-flex items-center gap-2 text-sm font-medium text-indigo-700 hover:text-indigo-900" aria-expanded="false" aria-controls="agenda-exp-1">
+                                <span>Lorem ipsum</span>
+                                <svg class="h-4 w-4 transition-transform" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd"/></svg>
+                            </button>
+                            <div id="agenda-exp-1" class="disclosure-expander text-gray-700 text-sm md:text-base">
+                                <p class="mt-2">Lorem ipsum</p>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+                <!-- ModuL? 2 -->
+                <article class="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition">
+                    <div class="flex items-start gap-4">
+                        <div class="shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-indigo-600 to-violet-500 text-white flex items-center justify-center font-bold">2</div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-dark">Lorem ipsum</h3>
+                            <p class="mt-1 text-gray-700 text-sm md:text-base">Lorem ipsum</p>
+                            <button class="agenda-toggle mt-3 inline-flex items-center gap-2 text-sm font-medium text-indigo-700 hover:text-indigo-900" aria-expanded="false" aria-controls="agenda-exp-2"><span>Lorem ipsum</span><svg class="h-4 w-4 transition-transform" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd"/></svg></button>
+                            <div id="agenda-exp-2" class="disclosure-expander text-gray-700 text-sm md:text-base">
+                                <p class="mt-2">Lorem ipsum</p>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+                <!-- ModuL? 3 -->
+                <article class="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition">
+                    <div class="flex items-start gap-4">
+                        <div class="shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-indigo-600 to-violet-500 text-white flex items-center justify-center font-bold">3</div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-dark">Lorem ipsum</h3>
+                            <p class="mt-1 text-gray-700 text-sm md:text-base">Lorem ipsum</p>
+                            <button class="agenda-toggle mt-3 inline-flex items-center gap-2 text-sm font-medium text-indigo-700 hover:text-indigo-900" aria-expanded="false" aria-controls="agenda-exp-3"><span>Lorem ipsum</span><svg class="h-4 w-4 transition-transform" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd"/></svg></button>
+                            <div id="agenda-exp-3" class="disclosure-expander text-gray-700 text-sm md:text-base">
+                                <p class="mt-2">Lorem ipsum</p>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+                <!-- ModuL? 4 -->
+                <article class="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition">
+                    <div class="flex items-start gap-4">
+                        <div class="shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-indigo-600 to-violet-500 text-white flex items-center justify-center font-bold">4</div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-dark">Lorem ipsum</h3>
+                            <p class="mt-1 text-gray-700 text-sm md:text-base">Lorem ipsum</p>
+                            <button class="agenda-toggle mt-3 inline-flex items-center gap-2 text-sm font-medium text-indigo-700 hover:text-indigo-900" aria-expanded="false" aria-controls="agenda-exp-4"><span>Lorem ipsum</span><svg class="h-4 w-4 transition-transform" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd"/></svg></button>
+                            <div id="agenda-exp-4" class="disclosure-expander text-gray-700 text-sm md:text-base">
+                                <p class="mt-2">Lorem ipsum</p>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+                <!-- ModuL? 5 -->
+                <article class="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition">
+                    <div class="flex items-start gap-4">
+                        <div class="shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-indigo-600 to-violet-500 text-white flex items-center justify-center font-bold">5</div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-dark">Lorem ipsum</h3>
+                            <p class="mt-1 text-gray-700 text-sm md:text-base">Lorem ipsum</p>
+                            <button class="agenda-toggle mt-3 inline-flex items-center gap-2 text-sm font-medium text-indigo-700 hover:text-indigo-900" aria-expanded="false" aria-controls="agenda-exp-5"><span>Lorem ipsum</span><svg class="h-4 w-4 transition-transform" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd"/></svg></button>
+                            <div id="agenda-exp-5" class="disclosure-expander text-gray-700 text-sm md:text-base">
+                                <p class="mt-2">Lorem ipsum</p>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+                <!-- ModuL? 6 -->
+                <article class="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition">
+                    <div class="flex items-start gap-4">
+                        <div class="shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-indigo-600 to-violet-500 text-white flex items-center justify-center font-bold">6</div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-dark">Lorem ipsum</h3>
+                            <p class="mt-1 text-gray-700 text-sm md:text-base">Lorem ipsum</p>
+                            <button class="agenda-toggle mt-3 inline-flex items-center gap-2 text-sm font-medium text-indigo-700 hover:text-indigo-900" aria-expanded="false" aria-controls="agenda-exp-6"><span>Lorem ipsum</span><svg class="h-4 w-4 transition-transform" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd"/></svg></button>
+                            <div id="agenda-exp-6" class="disclosure-expander text-gray-700 text-sm md:text-base">
+                                <p class="mt-2">Lorem ipsum</p>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+                <!-- ModuL? 7 -->
+                <article class="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition">
+                    <div class="flex items-start gap-4">
+                        <div class="shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-indigo-600 to-violet-500 text-white flex items-center justify-center font-bold">7</div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-dark">Lorem ipsum</h3>
+                            <p class="mt-1 text-gray-700 text-sm md:text-base">Lorem ipsum</p>
+                            <button class="agenda-toggle mt-3 inline-flex items-center gap-2 text-sm font-medium text-indigo-700 hover:text-indigo-900" aria-expanded="false" aria-controls="agenda-exp-7"><span>Lorem ipsum</span><svg class="h-4 w-4 transition-transform" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd"/></svg></button>
+                            <div id="agenda-exp-7" class="disclosure-expander text-gray-700 text-sm md:text-base">
+                                <p class="mt-2">Lorem ipsum</p>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+                <!-- ModuL? 8 -->
+                <article class="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition">
+                    <div class="flex items-start gap-4">
+                        <div class="shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-indigo-600 to-violet-500 text-white flex items-center justify-center font-bold">8</div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-dark">Lorem ipsum</h3>
+                            <p class="mt-1 text-gray-700 text-sm md:text-base">Lorem ipsum</p>
+                            <button class="agenda-toggle mt-3 inline-flex items-center gap-2 text-sm font-medium text-indigo-700 hover:text-indigo-900" aria-expanded="false" aria-controls="agenda-exp-8"><span>Lorem ipsum</span><svg class="h-4 w-4 transition-transform" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd"/></svg></button>
+                            <div id="agenda-exp-8" class="disclosure-expander text-gray-700 text-sm md:text-base">
+                                <p class="mt-2">Lorem ipsum</p>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+                <!-- ModuL? 9 -->
+                <article class="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition">
+                    <div class="flex items-start gap-4">
+                        <div class="shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-indigo-600 to-violet-500 text-white flex items-center justify-center font-bold">9</div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-dark">Lorem ipsum</h3>
+                            <p class="mt-1 text-gray-700 text-sm md:text-base">Lorem ipsum</p>
+                            <button class="agenda-toggle mt-3 inline-flex items-center gap-2 text-sm font-medium text-indigo-700 hover:text-indigo-900" aria-expanded="false" aria-controls="agenda-exp-9"><span>Lorem ipsum</span><svg class="h-4 w-4 transition-transform" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd"/></svg></button>
+                            <div id="agenda-exp-9" class="disclosure-expander text-gray-700 text-sm md:text-base">
+                                <p class="mt-2">Lorem ipsum</p>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+                <!-- ModuL? 10 -->
+                <article class="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition">
+                    <div class="flex items-start gap-4">
+                        <div class="shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-indigo-600 to-violet-500 text-white flex items-center justify-center font-bold">10</div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-dark">Lorem ipsum</h3>
+                            <p class="mt-1 text-gray-700 text-sm md:text-base">Lorem ipsum</p>
+                            <button class="agenda-toggle mt-3 inline-flex items-center gap-2 text-sm font-medium text-indigo-700 hover:text-indigo-900" aria-expanded="false" aria-controls="agenda-exp-10"><span>Lorem ipsum</span><svg class="h-4 w-4 transition-transform" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd"/></svg></button>
+                            <div id="agenda-exp-10" class="disclosure-expander text-gray-700 text-sm md:text-base">
+                                <p class="mt-2">Lorem ipsum</p>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+                <!-- ModuL? 11 -->
+                <article class="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition">
+                    <div class="flex items-start gap-4">
+                        <div class="shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-indigo-600 to-violet-500 text-white flex items-center justify-center font-bold">11</div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-dark">Lorem ipsum</h3>
+                            <p class="mt-1 text-gray-700 text-sm md:text-base">Lorem ipsum</p>
+                            <button class="agenda-toggle mt-3 inline-flex items-center gap-2 text-sm font-medium text-indigo-700 hover:text-indigo-900" aria-expanded="false" aria-controls="agenda-exp-11"><span>Lorem ipsum</span><svg class="h-4 w-4 transition-transform" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd"/></svg></button>
+                            <div id="agenda-exp-11" class="disclosure-expander text-gray-700 text-sm md:text-base">
+                                <p class="mt-2">Lorem ipsum</p>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+                <!-- ModuL? 12 -->
+                <article class="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition">
+                    <div class="flex items-start gap-4">
+                        <div class="shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-indigo-600 to-violet-500 text-white flex items-center justify-center font-bold">12</div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-dark">Lorem ipsum</h3>
+                            <p class="mt-1 text-gray-700 text-sm md:text-base">Lorem ipsum</p>
+                            <button class="agenda-toggle mt-3 inline-flex items-center gap-2 text-sm font-medium text-indigo-700 hover:text-indigo-900" aria-expanded="false" aria-controls="agenda-exp-12"><span>Lorem ipsum</span><svg class="h-4 w-4 transition-transform" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd"/></svg></button>
+                            <div id="agenda-exp-12" class="disclosure-expander text-gray-700 text-sm md:text-base">
+                                <p class="mt-2">Lorem ipsum</p>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+                <!-- ModuL? 13 -->
+                <article class="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition">
+                    <div class="flex items-start gap-4">
+                        <div class="shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-indigo-600 to-violet-500 text-white flex items-center justify-center font-bold">13</div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-dark">Lorem ipsum</h3>
+                            <p class="mt-1 text-gray-700 text-sm md:text-base">Lorem ipsum</p>
+                            <button class="agenda-toggle mt-3 inline-flex items-center gap-2 text-sm font-medium text-indigo-700 hover:text-indigo-900" aria-expanded="false" aria-controls="agenda-exp-13"><span>Lorem ipsum</span><svg class="h-4 w-4 transition-transform" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd"/></svg></button>
+                            <div id="agenda-exp-13" class="disclosure-expander text-gray-700 text-sm md:text-base">
+                                <p class="mt-2">Lorem ipsum</p>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+                <!-- ModuL? 14 -->
+                <article class="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition">
+                    <div class="flex items-start gap-4">
+                        <div class="shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-indigo-600 to-violet-500 text-white flex items-center justify-center font-bold">14</div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-dark">Lorem ipsum</h3>
+                            <p class="mt-1 text-gray-700 text-sm md:text-base">Lorem ipsum</p>
+                            <button class="agenda-toggle mt-3 inline-flex items-center gap-2 text-sm font-medium text-indigo-700 hover:text-indigo-900" aria-expanded="false" aria-controls="agenda-exp-14"><span>Lorem ipsum</span><svg class="h-4 w-4 transition-transform" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd"/></svg></button>
+                            <div id="agenda-exp-14" class="disclosure-expander text-gray-700 text-sm md:text-base">
+                                <p class="mt-2">Lorem ipsum</p>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+                <!-- ModuL? 15 -->
+                <article class="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition">
+                    <div class="flex items-start gap-4">
+                        <div class="shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-indigo-600 to-violet-500 text-white flex items-center justify-center font-bold">15</div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-dark">Lorem ipsum</h3>
+                            <p class="mt-1 text-gray-700 text-sm md:text-base">Lorem ipsum</p>
+                            <button class="agenda-toggle mt-3 inline-flex items-center gap-2 text-sm font-medium text-indigo-700 hover:text-indigo-900" aria-expanded="false" aria-controls="agenda-exp-15"><span>Lorem ipsum</span><svg class="h-4 w-4 transition-transform" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd"/></svg></button>
+                            <div id="agenda-exp-15" class="disclosure-expander text-gray-700 text-sm md:text-base">
+                                <p class="mt-2">Lorem ipsum</p>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Spacer for docked CTA so footer can scroll above it on mobile -->
+    <div id="ctaDockSpacer" aria-hidden="true" class="hidden" style="height:0"></div>
+
+    <footer class="bg-light py-8 border-t border-gray-200/60">
+        <div class="container mx-auto px-6">
+            <div class="text-center text-gray-600">
+                <p>Lorem ipsum</p>
+            </div>
+        </div>
+</footer>\r\n    <!-- Docked CTA on mobile -->
+    <div id="ctaDock" class="fixed bottom-0 inset-x-0 z-[1000] hidden">
+        <a id="openPopupDock" data-open-popup data-cta-variant="long" href="#order" class="block w-full text-center bg-gradient-to-r from-yellow-700 to-yellow-400 text-white font-bold py-4 px-6 rounded-none shadow-[0_-2px_8px_rgba(0,0,0,0.15)] hover:opacity-90 transition"></a>
+    </div>
+    
+    <!-- Back to top FAB -->
+    <button id="backToTop" aria-label="Do góry" title="Do góry" class="hidden fixed right-4 sm:right-6 bottom-4 sm:bottom-6 z-[1100] rounded-full bg-dark/90 text-white shadow-lg hover:bg-dark p-2.5 sm:p-3 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
+    </button>
+
+    <script>
+        const cdMin = document.getElementById('cd-min');
+        const cdSec = document.getElementById('cd-sec');
+        const cdWrap = document.getElementById('countdown');
+        const unlockNote = document.getElementById('unlock-note');
+        const cta = document.getElementById('cta');
+        let remaining = 1 * 4; // seconds
+        function tick() {
+            const m = Math.floor(remaining / 60);
+            const s = remaining % 60;
+            cdMin.textContent = String(m).padStart(2, '0');
+            cdSec.textContent = String(s).padStart(2, '0');
+            if (remaining <= 0) {
+                cdWrap.classList.add('hidden');
+                unlockNote.classList.add('hidden');
+                cta.classList.remove('hidden');
+                return;
+            }
+            remaining -= 1;
+            setTimeout(tick, 1000);
+        }
+        tick();
+        // Popup logic
+        const overlay = document.getElementById('popupOverlay');
+        const closeBtn = document.getElementById('closePopup');
+        function openModal(e){ if(e) e.preventDefault(); overlay.classList.remove('hidden'); document.body.style.overflow='hidden'; try{ if(window.iFrameResize){ iFrameResize({ log:false, checkOrigin:false }, '.wtl-responsive-iframe'); } }catch(_){} }
+        function closeModal(){ overlay.classList.add('hidden'); document.body.style.overflow='auto'; }
+        document.querySelectorAll('[data-open-popup]').forEach(el=> el.addEventListener('click', openModal));
+        closeBtn && closeBtn.addEventListener('click', closeModal);
+        overlay && overlay.addEventListener('click', (e)=>{ if(e.target===overlay) closeModal(); });
+        document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeModal(); });
+
+        // Sticky CTA behavior
+        const navCta = document.getElementById('navCta');
+        const ctaDock = document.getElementById('ctaDock');
+        const ctaDockSpacer = document.getElementById('ctaDockSpacer');
+        const mainCta = document.getElementById('openPopup');
+        const ctaSection = document.getElementById('cta');
+        const mqlMd = window.matchMedia('(min-width: 768px)');
+        const backToTop = document.getElementById('backToTop');
+
+        function updateDockSpacer(){
+            if (!ctaDock || !ctaDockSpacer) return;
+            const visible = !ctaDock.classList.contains('hidden');
+            if (visible) {
+                const h =  ctaDock.offsetHeight || 0;
+                ctaDockSpacer.style.height = h + 'px';
+                ctaDockSpacer.classList.remove('hidden');
+            } else {
+                ctaDockSpacer.style.height = '0px';
+                ctaDockSpacer.classList.add('hidden');
+            }
+        }
+
+        function showNav(show){
+            if (!navCta) return;
+            if (show) {
+                navCta.classList.remove('hidden');
+                navCta.classList.remove('md:hidden');
+                navCta.classList.add('md:inline-block');
+            } else {
+                navCta.classList.add('hidden');
+                navCta.classList.add('md:hidden');
+                navCta.classList.remove('md:inline-block');
+            }
+        }
+        function showDock(show){
+            if (!ctaDock) return;
+            if (show) ctaDock.classList.remove('hidden'); else ctaDock.classList.add('hidden');
+            updateDockSpacer();
+            // Adjust back-to-top button to sit above dock on mobile
+            if (backToTop) {
+                const margin = 16; // px
+                const extra = show ? (ctaDock.offsetHeight || 0) : 0;
+                backToTop.style.bottom = (extra + margin) + 'px';
+            }
+        }
+
+        function setVisibility(isMainCtaVisible){
+            const unlocked = ctaSection && !ctaSection.classList.contains('hidden');
+            if (!unlocked) {
+                showNav(false);
+                showDock(false);
+                return;
+            }
+            if (isMainCtaVisible) {
+                showNav(false);
+                showDock(false);
+            } else {
+                if (mqlMd.matches) {
+                    showNav(true);
+                    showDock(false);
+                } else {
+                    showDock(true);
+                    showNav(false);
+                }
+            }
+        }
+        const io = new IntersectionObserver((entries)=>{
+            const entry = entries[0];
+            setVisibility(entry && entry.isIntersecting);
+        }, { root: null, threshold: 0.01 });
+        mainCta && io.observe(mainCta);
+        // React to breakpoint changes
+        const onBpChange = ()=> setVisibility(mainCta ? isInViewport(mainCta) : true);
+        mqlMd.addEventListener ? mqlMd.addEventListener('change', onBpChange) : mqlMd.addListener(onBpChange);
+        // Observe CTA section unlock (hidden class removal)
+        if (ctaSection) {
+            const mo = new MutationObserver(()=> setVisibility(mainCta ? isInViewport(mainCta) : true));
+            mo.observe(ctaSection, { attributes: true, attributeFilter: ['class'] });
+        }
+        // Initial state
+        setVisibility(mainCta ? isInViewport(mainCta) : true);
+        window.addEventListener('resize', updateDockSpacer);
+
+        // Back to top logic
+        function updateBackToTop(){
+            const threshold = 300; // px
+            if (window.scrollY > threshold) {
+                backToTop && backToTop.classList.remove('hidden');
+            } else {
+                backToTop && backToTop.classList.add('hidden');
+            }
+        }
+        updateBackToTop();
+        window.addEventListener('scroll', updateBackToTop, { passive: true });
+        backToTop && backToTop.addEventListener('click', (e)=>{
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Central CTA text setup
+        (function(){
+            const CTA_TEXT_HTML = 'TAAAAK! Kupuję dostęp do szkolenia i materiałów za straszliwe 299 zł <span class="line-through opacity-70">399zł</span>!';
+            const CTA_SHORT = 'TAAAAK! Kupuję dostęp';
+            document.querySelectorAll('[data-cta-variant]').forEach(el=>{
+                const v = el.getAttribute('data-cta-variant');
+                if (v === 'short') {
+                    el.textContent = CTA_SHORT;
+                } else {
+                    el.innerHTML = CTA_TEXT_HTML;
+                }
+            });
+        })();
+
+        // Referencje: przewijane poziomo
+        (function(){
+            const CSV_PATH = 'referencje.csv';
+            const scroller = document.getElementById('refScroller');
+            const track = document.getElementById('refTrack');
+            const prevBtn = document.getElementById('refPrev');
+            const nextBtn = document.getElementById('refNext');
+            const counterEl = document.getElementById('refCounter');
+            if (!scroller || !track) return;
+
+            function escapeHTML(str){ return String(str||'').replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+            function toHtmlWithBreaks(str){ return escapeHTML(str).replace(/\r?\n/g,'<br>'); }
+            function cardTemplate(item, idx){
+                const name = (item['Imię, nazwisko']||'').trim();
+                const role = (item['Rola']||'').trim();
+                const opinia = (item['Opinia']||'').trim();
+                const data = (item['Data']||'').trim();
+                const avatar = (item['Zdjęcie profilowe']||'').trim();
+                const hasAvatar = !!avatar;
+                const avatarHtml = hasAvatar ? `<img src="${escapeHTML(avatar)}" alt="${escapeHTML(name||'Zdjęcie profilowe')}" class="w-10 h-10 rounded-full object-cover" loading="lazy">` : '';
+                return `
+                <article class="ref-card snap-start shrink-0 w-[280px] sm:w-[320px] md:w-[360px] bg-white border border-gray-200 rounded-xl shadow-sm p-5" data-idx="${idx}">
+                    <div class="flex items-start gap-3">
+                        ${avatarHtml}
+                        <div class="min-w-0">
+                            ${name?`<div class=\"font-semibold text-dark truncate\">${escapeHTML(name)}</div>`:''}
+                            ${role?`<div class=\"text-xs text-gray-500 truncate\">${escapeHTML(role)}</div>`:''}
+                        </div>
+                        ${data?`<div class=\"ml-auto text-xs text-gray-500\">${escapeHTML(data)}</div>`:''}
+                    </div>
+                    ${opinia?`<div class=\"ref-summary mt-3 text-sm text-gray-700 line-clamp-6\">${toHtmlWithBreaks(opinia)}</div>`:''}
+                    <div class="ref-caret-wrap mt-2 flex items-center justify-center">
+                        <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-indigo-50 text-indigo-700">
+                            <svg class="ref-caret h-4 w-4 transition-transform" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd"/></svg>
+                        </span>
+                    </div>
+                    <div class="ref-expander disclosure-expander text-gray-700 text-sm md:text-base"></div>
+                </article>`;
+            }
+
+            function parseCSV(){
+                return new Promise((resolve,reject)=>{
+                    if (!window.Papa) return reject(new Error('Papa missing'));
+                    Papa.parse(CSV_PATH, {download:true,header:true,skipEmptyLines:false,complete:(r)=>resolve(r.data||[]),error:reject});
+                });
+            }
+
+            function updateNav(){
+                const maxScroll = scroller.scrollWidth - scroller.clientWidth - 2;
+                const x = scroller.scrollLeft;
+                if (prevBtn) prevBtn.disabled = (x<=0);
+                if (nextBtn) nextBtn.disabled = (x>=maxScroll);
+                // update counter: approximate current index by nearest snap point
+                const cards = track.querySelectorAll('.ref-card');
+                let current = 1;
+                let minDist = Infinity;
+                cards.forEach((card, i)=>{
+                    const rect = card.getBoundingClientRect();
+                    const cont = scroller.getBoundingClientRect();
+                    const dist = Math.abs(rect.left - cont.left);
+                    if (dist < minDist){ minDist = dist; current = i+1; }
+                });
+                if (counterEl) counterEl.textContent = `${current}/${cards.length}`;
+            }
+            prevBtn && prevBtn.addEventListener('click', ()=>{
+                scroller.scrollBy({left: -Math.max(280, Math.floor(scroller.clientWidth*0.9)), behavior:'smooth'});
+            });
+            nextBtn && nextBtn.addEventListener('click', ()=>{
+                scroller.scrollBy({left: Math.max(280, Math.floor(scroller.clientWidth*0.9)), behavior:'smooth'});
+            });
+            scroller.addEventListener('scroll', updateNav, {passive:true});
+            window.addEventListener('resize', updateNav, {passive:true});
+
+            parseCSV().then(rows=>{
+                const data = rows.filter(r=> Object.values(r).some(v=> (v||'').toString().trim().length>0));
+                // potasuj caL?oL?ć dla L?wieLLoL?ci
+                for (let i=data.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [data[i],data[j]]=[data[j],data[i]]; }
+                track.innerHTML = data.map((it,idx)=> cardTemplate(it, idx)).join('');
+                // mark truncated cards and hide caret if not truncated
+                track.querySelectorAll('.ref-card').forEach(card=>{
+                    const summary = card.querySelector('.ref-summary');
+                    const caret = card.querySelector('.ref-caret');
+                    const caretWrap = card.querySelector('.ref-caret-wrap');
+                    if (!summary){ caret && (caret.parentElement.style.visibility='hidden'); return; }
+                    let truncated = summary.scrollHeight > summary.clientHeight + 1; // quick check
+                    if (!truncated){
+                        // fallback precise measurement without clamp
+                        const clone = summary.cloneNode(true);
+                        clone.classList.add('no-clamp');
+                        clone.style.position='fixed'; clone.style.left='-9999px'; clone.style.top='0';
+                        clone.style.width = summary.clientWidth+'px';
+                        document.body.appendChild(clone);
+                        truncated = clone.scrollHeight > summary.clientHeight + 1;
+                        document.body.removeChild(clone);
+                    }
+                    summary.dataset.truncated = truncated ? '1' : '0';
+                    if (!truncated && caret){ caret.parentElement.style.visibility='hidden'; }
+                });
+                // click to expand to full card
+                track.addEventListener('click', (e)=>{
+                    const card = e.target.closest('.ref-card');
+                    if (!card) return;
+                    const idx = parseInt(card.getAttribute('data-idx'),10);
+                    const exp = card.querySelector('.ref-expander');
+                    const summary = card.querySelector('.ref-summary');
+                    const caret = card.querySelector('.ref-caret');
+                    const caretWrap = card.querySelector('.ref-caret-wrap');
+                    if (!summary || summary.dataset.truncated !== '1') return;
+                    const isOpen = exp.classList.contains('open');
+                    // close any other open card
+                    track.querySelectorAll('.ref-expander.open').forEach(el=>{
+                        if (el!==exp){
+                            const h = el.scrollHeight; el.style.maxHeight = h+'px';
+                            requestAnimationFrame(()=>{ el.style.maxHeight='0px'; el.classList.remove('open'); });
+                            const c = el.closest('.ref-card')?.querySelector('.ref-caret');
+                            if (c) c.style.transform = 'rotate(0deg)';
+                        }
+                    });
+                    if (!isOpen){
+                        // move summary into expander and remove clamp; caret stays under full text -> move it too
+                        if (summary.parentElement !== exp){
+                            exp.appendChild(summary);
+                            summary.classList.add('no-clamp');
+                        }
+                        if (caretWrap && caretWrap.parentElement !== exp){
+                            exp.appendChild(caretWrap);
+                        }
+                        exp.classList.add('open');
+                        exp.style.maxHeight='0px';
+                        requestAnimationFrame(()=>{ const h=exp.scrollHeight||200; exp.style.maxHeight=h+'px'; });
+                        if (caret) caret.style.transform = 'rotate(180deg)';
+                    } else {
+                        // collapse and move summary back above expander, restore clamp
+                        const h=exp.scrollHeight; exp.style.maxHeight=h+'px';
+                        requestAnimationFrame(()=>{ exp.style.maxHeight='0px'; exp.classList.remove('open'); });
+                        setTimeout(()=>{
+                            // If summary currently lives inside expander, move it back above
+                            if (summary && exp.contains(summary)){
+                                exp.parentNode.insertBefore(summary, exp);
+                                summary.classList.remove('no-clamp');
+                            }
+                            // Move caret wrap back under summary (and above expander)
+                            if (caretWrap && exp.contains(caretWrap)){
+                                exp.parentNode.insertBefore(caretWrap, exp);
+                            }
+                        }, 260);
+                        if (caret) caret.style.transform = 'rotate(0deg)';
+                    }
+                });
+                updateNav();
+            }).catch(()=>{
+                // ciche pominięcie sekcji jeL?li bL?ąd CSV
+            });
+        })();
+
+        // Agenda disclosure toggles
+        (function(){
+            // Lessons data per module (order preserved)
+            const lessons = {
+                1: ['Powitanie','CzeL?ć, Jestem Jerzy','Zamiast wstępu','Jak uLLywać kursu'],
+                2: ['Zasady w humorze','Zasada Jacka Vincenta','Humor dodaje skrzydeL?','Humor nie ma być dygresją','Problem a rozwiązanie','Na co zwracać uwagę','ZL?e praktyki','Typy L?miechu'],
+                3: ['Humor - cytaty','John Dewey','Charlie Chaplin','Will Rogers','Bill Hickcs','E.B. White','Max Eastman'],
+                4: ['Po co humor','Skupienie','Relacje','Zmiana emocji','Rozbrajanie logiki'],
+                5: ['Humor sL?owny','W komunikacji','Zmiana znaczenia sL?Alw'],
+                6: ['Humor graficzny','ZapoLLyczenia','Definicje','Inne przykłady'],
+                7: ['Humorem w siebie','Graficzny','Zdjęcia z przeszL?oL?ci','Przypadkowe zaniedbanie','NiepowaLLnoL?ć','Gesty','Poziom mAlwcy','Informacje','Zarobki','SMS o treL?ci'],
+                8: ['Interakcje','Ominięcie celu','Wy, nie oni','Fotowoltaika','Nie zepsujcie mi tego','Wyczekanie','ZapomniaL?em','Przejęzyczenie intencjonalne','Przejęzyczenie z parmezanem','Zadania','Dyskomfort','Ochotnik','Technikalia','Piątka z przytulasem'],
+                9: ['Storytelling','Budowanie obrazAlw','Facet, ktAlego nie ma','Braciszek'],
+                10:['Redefiniowanie sL?Alw','Marzenia','Faktura','Szpagat','Warstwy: okulista z L?odzi','Warstwy: 12 mln'],
+                11:['Absurd','Lądowanie w indiach','Widzę Was'],
+                12:['Klasyka','Lewo, lewo, prawo','Timing'],
+                13:['Co dalej?','Mentoring indywidualny','Warsztaty dla Twojej firmy'],
+                14:['Bonusy','Mistrzowska mowa z 2012'],
+                15:['Narzedzia','Kopiowanie','WymyL?lanie (celowe, improwizacja)','Humor nieintencjonalny -> intencjonalny','Budowanie followup','KreatywnoL?ć (np lista sL?Alw)']
+            };
+
+            function renderLessons(moduleIndex, exp){
+                if (!lessons[moduleIndex] || exp.dataset.lessonsRendered==='1') return;
+                const items = lessons[moduleIndex];
+                const wrap = document.createElement('div');
+                wrap.className = 'mt-3';
+                const h = document.createElement('h4');
+                h.className = 'text-sm font-semibold text-gray-900';
+                h.textContent = 'Lekcje';
+                wrap.appendChild(h);
+                const ul = document.createElement('ul');
+                ul.className = 'mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2 lessons-list';
+                items.forEach((title, idx)=>{
+                    const li = document.createElement('li');
+                    li.className = 'flex items-center gap-3 rounded-lg border border-gray-200 hover:border-gray-300 bg-white/70 px-3 py-2 shadow-sm';
+                    const num = document.createElement('span');
+                    num.className = 'inline-flex items-center justify-center w-7 h-7 rounded-full bg-indigo-50 text-indigo-700 text-xs font-semibold';
+                    num.textContent = String(idx+1).padStart(2,'0');
+                    const txt = document.createElement('span');
+                    txt.className = 'text-gray-800 text-sm';
+                    txt.textContent = title;
+                    li.appendChild(num);
+                    li.appendChild(txt);
+                    ul.appendChild(li);
+                });
+                wrap.appendChild(ul);
+                exp.appendChild(wrap);
+                exp.dataset.lessonsRendered='1';
+            }
+
+            function closeAllExcept(skipId){
+                document.querySelectorAll('.agenda-toggle[aria-expanded="true"]').forEach(b=>{
+                    const id = b.getAttribute('aria-controls');
+                    if (id && id !== skipId){
+                        const exp = document.getElementById(id);
+                        if (exp){
+                            b.setAttribute('aria-expanded','false');
+                            const icon = b.querySelector('svg');
+                            const h = exp.scrollHeight;
+                            exp.style.maxHeight = h + 'px';
+                            requestAnimationFrame(()=>{
+                                exp.style.maxHeight = '0px';
+                                exp.classList.remove('open');
+                            });
+                            icon && (icon.style.transform = 'rotate(0deg)');
+                        }
+                    }
+                });
+            }
+            function toggle(btn, exp){
+                const isOpen = btn.getAttribute('aria-expanded') === 'true';
+                if (!isOpen) closeAllExcept(exp.id);
+                btn.setAttribute('aria-expanded', String(!isOpen));
+                const icon = btn.querySelector('svg');
+                if (!isOpen) {
+                    exp.classList.add('open');
+                    exp.style.maxHeight = '0px';
+                    requestAnimationFrame(()=>{
+                        const h = exp.scrollHeight || (exp.firstElementChild ? exp.firstElementChild.getBoundingClientRect().height : 200);
+                        exp.style.maxHeight = h + 'px';
+                    });
+                    icon && (icon.style.transform = 'rotate(180deg)');
+                    // lazy-render lessons on open
+                    const m = (btn.getAttribute('aria-controls')||'').match(/agenda-exp-(\d+)/);
+                    if (m) renderLessons(parseInt(m[1],10), exp);
+                } else {
+                    const h = exp.scrollHeight;
+                    exp.style.maxHeight = h + 'px';
+                    requestAnimationFrame(()=>{
+                        exp.style.maxHeight = '0px';
+                        exp.classList.remove('open');
+                    });
+                    icon && (icon.style.transform = 'rotate(0deg)');
+                }
+            }
+            document.querySelectorAll('.agenda-toggle').forEach(btn=>{
+                const id = btn.getAttribute('aria-controls');
+                const exp = id && document.getElementById(id);
+                if (!exp) return;
+                btn.addEventListener('click', (e)=>{ e.preventDefault(); toggle(btn, exp); });
+                btn.addEventListener('keydown', (e)=>{ if (e.key==='Enter' || e.key===' ') { e.preventDefault(); toggle(btn, exp); } });
+            });
+        })();
+
+        
+        // Mobile off-canvas menu
+        (function(){
+            const menuToggle = document.getElementById('menuToggle');
+            const menuClose = document.getElementById('menuClose');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const mobileOverlay = document.getElementById('mobileMenuOverlay');
+            function openMenu(){
+                mobileMenu && mobileMenu.classList.remove('translate-x-full');
+                mobileOverlay && mobileOverlay.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+            function closeMenu(){
+                mobileMenu && mobileMenu.classList.add('translate-x-full');
+                mobileOverlay && mobileOverlay.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+            menuToggle && menuToggle.addEventListener('click', openMenu);
+            menuClose && menuClose.addEventListener('click', closeMenu);
+            mobileOverlay && mobileOverlay.addEventListener('click', closeMenu);
+            document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeMenu(); });
+            document.querySelectorAll('#mobileMenu a, #mobileMenu [data-open-popup]').forEach(el=>{
+                el.addEventListener('click', ()=> closeMenu());
+            });
+        })();
+        function isInViewport(el){
+            const rect = el.getBoundingClientRect();
+            return rect.bottom > 0 && rect.top < (window.innerHeight || document.documentElement.clientHeight);
+        }
+    </script>
+  <script defer src="/admin/tracking.js.php"></script>
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
