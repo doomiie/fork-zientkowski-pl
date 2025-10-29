@@ -1,0 +1,33 @@
+# Basic hardening for admin area
+
+Options -Indexes
+
+<IfModule mod_autoindex.c>
+  IndexIgnore *
+</IfModule>
+
+# Deny access to sensitive files
+<FilesMatch "\.(sql|md|sh|bak|ini|log)$">
+  Require all denied
+</FilesMatch>
+
+# Prevent direct access to this .htaccess itself
+<Files ".htaccess">
+  Require all denied
+</Files>
+
+# Force HTTPS (uncomment if your host supports HTTPS and mod_rewrite)
+#<IfModule mod_rewrite.c>
+#  RewriteEngine On
+#  RewriteCond %{HTTPS} !=on
+#  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+#</IfModule>
+
+# Security headers (lightweight, adjust to your needs)
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  Header set X-XSS-Protection "0"
+</IfModule>
+
