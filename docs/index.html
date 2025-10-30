@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dokumenty do pobrania</title>
+  <link rel="preload" as="style" href="/assets/css/app.min.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/assets/css/app.min.css"></noscript>
+  <style>
+    body { font-family: 'Space Grotesk', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    .bg-light { background-color: #F9F9F9; }
+  </style>
+</head>
+<body class="bg-light min-h-screen flex flex-col">
+  <nav class="fixed w-full bg-white z-50 py-4 border-b border-gray-200/50">
+    <div class="max-w-[1200px] mx-auto px-6 flex items-center">
+      <a href="/" class="flex items-center gap-3 text-dark font-bold">
+        <img src="/assets/img/logo_main.png" alt="Logo" class="brightness-0 max-w-[140px]">
+      </a>
+      <div class="ml-auto text-sm text-gray-600">Dokumenty</div>
+    </div>
+  </nav>
+
+  <main class="flex-1 pt-24 pb-16">
+    <section class="py-12">
+      <div class="max-w-[1100px] mx-auto px-6">
+        <h1 class="text-3xl md:text-4xl font-extrabold text-dark mb-6">Dokumenty do pobrania</h1>
+        <div id="docs-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
+        <div id="empty" class="text-gray-600">Brak dokumentów do pobrania.</div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="mt-auto bg-light py-8 border-t border-gray-200/60">
+    <div class="max-w-[1200px] mx-auto px-6 text-center text-gray-600">
+      <p>&copy; 2011-2025 Jerzy Zientkowski. Wszelkie prawa zastrzeżone.</p>
+    </div>
+  </footer>
+
+  <script>
+    (async function(){
+      const wrap = document.getElementById('docs-list');
+      const empty = document.getElementById('empty');
+      try {
+        const resp = await fetch('/backend/docs.php', { credentials: 'omit' });
+        const data = await resp.json();
+        const items = (data && data.items) ? data.items : [];
+        if (!items.length) { empty.classList.remove('hidden'); return; }
+        empty.classList.add('hidden');
+        items.forEach(it => {
+          const card = document.createElement('a');
+          card.href = it.file_path;
+          card.className = 'block rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition p-5';
+          card.target = '_blank';
+          card.rel = 'noopener';
+          card.innerHTML = `
+            <div class="flex items-start gap-4">
+              <div class="shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-500 text-white flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-dark">${(it.display_name||it.original_name||'Plik')}</h3>
+                <p class="mt-1 text-gray-600 text-sm">${(it.original_name||'')}</p>
+              </div>
+            </div>`;
+          wrap.appendChild(card);
+        });
+      } catch (e) {
+        empty.textContent = 'Nie udało się pobrać listy dokumentów.';
+      }
+    })();
+  </script>
+</body>
+</html>
+

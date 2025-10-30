@@ -50,6 +50,7 @@
         <a href="#o-kursie" class="nav-link relative text-dark hover:text-accent transition-colors duration-300">O kursie</a>
         <a href="#program" class="nav-link relative text-dark hover:text-accent transition-colors duration-300">Program</a>
         <a href="#referencje" class="nav-link relative text-dark hover:text-accent transition-colors duration-300">Referencje</a>
+        <a id="navCta" href="#cta" class="hidden md:hidden whitespace-nowrap px-4 py-2 rounded-lg bg-gradient-to-r from-yellow-700 to-yellow-400 text-white font-bold shadow hover:opacity-90 transition">Kup teraz</a>
       </div>
       <div class="flex items-center ml-auto md:ml-8 md:hidden">
         <button id="menuToggleLP" aria-label="Menu" class="p-2 rounded-lg border border-gray-300 text-gray-800 hover:bg-gray-50">
@@ -211,6 +212,14 @@
     </div>
   </footer>
 
+  <!-- Spacer for docked CTA so footer can scroll above it on mobile -->
+  <div id="ctaDockSpacer" aria-hidden="true" class="hidden" style="height:0"></div>
+
+  <!-- Docked CTA on mobile -->
+  <div id="ctaDock" class="fixed bottom-0 inset-x-0 z-[1000] hidden">
+    <a id="openPopupDock" href="#cta" class="block w-full text-center bg-gradient-to-r from-yellow-700 to-yellow-400 text-white font-bold py-4 px-6 rounded-none shadow-[0_-2px_8px_rgba(0,0,0,0.15)] hover:opacity-90 transition">Kup teraz</a>
+  </div>
+
   <!-- Back to top FAB -->
   <button id="backToTop" aria-label="Do góry" title="Do góry" class="hidden fixed right-4 sm:right-6 bottom-4 sm:bottom-6 z-[1100] rounded-full bg-dark text-white shadow-lg hover:bg-dark p-2.5 sm:p-3 transition">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
@@ -232,6 +241,95 @@
   <script defer src="/admin/tracking.js.php"></script>
   <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   <script>document.addEventListener('DOMContentLoaded',function(){ try{ lucide.createIcons(); }catch(e){} });</script>
+  
+  <!-- Sticky CTA logic (desktop nav button or mobile bottom dock) -->
+  <script>
+    (function(){
+      const navCta = document.getElementById('navCta');
+      const ctaDock = document.getElementById('ctaDock');
+      const ctaDockSpacer = document.getElementById('ctaDockSpacer');
+      const mainCta = document.querySelector('#cta a, #openPopup');
+      const ctaSection = document.getElementById('cta');
+      const mqlMd = window.matchMedia('(min-width: 768px)');
+      const backToTop = document.getElementById('backToTop');
+
+      function updateDockSpacer(){
+        if (!ctaDock || !ctaDockSpacer) return;
+        const visible = !ctaDock.classList.contains('hidden');
+        if (visible) {
+          const h = ctaDock.offsetHeight || 0;
+          ctaDockSpacer.style.height = h + 'px';
+          ctaDockSpacer.classList.remove('hidden');
+        } else {
+          ctaDockSpacer.style.height = '0px';
+          ctaDockSpacer.classList.add('hidden');
+        }
+      }
+
+      function showNav(show){
+        if (!navCta) return;
+        if (show) {
+          navCta.classList.remove('hidden');
+          navCta.classList.remove('md:hidden');
+          navCta.classList.add('md:inline-block');
+        } else {
+          navCta.classList.add('hidden');
+          navCta.classList.add('md:hidden');
+          navCta.classList.remove('md:inline-block');
+        }
+      }
+
+      function showDock(show){
+        if (!ctaDock) return;
+        if (show) ctaDock.classList.remove('hidden'); else ctaDock.classList.add('hidden');
+        updateDockSpacer();
+        // keep back-to-top above dock
+        if (backToTop) {
+          const margin = 16; // px
+          const extra = show ? (ctaDock.offsetHeight || 0) : 0;
+          backToTop.style.bottom = (extra + margin) + 'px';
+        }
+      }
+
+      function isInViewport(el){
+        if (!el) return true;
+        const r = el.getBoundingClientRect();
+        return r.top < (window.innerHeight || 0) && r.bottom > 0;
+      }
+
+      function setVisibility(isMainCtaVisible){
+        const unlocked = !!ctaSection;
+        if (!unlocked) { showNav(false); showDock(false); return; }
+        if (isMainCtaVisible) {
+          showNav(false);
+          showDock(false);
+        } else {
+          if (mqlMd.matches) {
+            showNav(true);
+            showDock(false);
+          } else {
+            showDock(true);
+            showNav(false);
+          }
+        }
+      }
+
+      // Observe CTA visibility
+      const io = new IntersectionObserver((entries)=>{
+        const entry = entries[0];
+        setVisibility(entry && entry.isIntersecting);
+      }, { root: null, threshold: 0.01 });
+      if (mainCta) io.observe(mainCta);
+
+      // React to breakpoint changes and on resize to keep spacer synced
+      const onBpChange = ()=> setVisibility(mainCta ? isInViewport(mainCta) : true);
+      if (mqlMd.addEventListener) mqlMd.addEventListener('change', onBpChange); else mqlMd.addListener(onBpChange);
+      window.addEventListener('resize', updateDockSpacer);
+
+      // Initial state
+      setVisibility(mainCta ? isInViewport(mainCta) : true);
+    })();
+  </script>
   <script>
     (function(){
       const overlay = document.getElementById('mobileMenuOverlayLP');

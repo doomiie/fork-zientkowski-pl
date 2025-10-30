@@ -45,6 +45,10 @@ require_login();
         <ul>
           <li><a class="btn" href="users_password.php">Zmień hasło użytkownika</a></li>
         </ul>
+        <h2 style="margin-top:12px;">Dokumenty</h2>
+        <ul>
+          <li><a class="btn" href="docs.php">Dodaj/zarządzaj dokumentami</a></li>
+        </ul>
         <h2 style="margin-top:12px;">Przekierowania</h2>
         <ul>
           <li><a class="btn" href="redirects.php">Zarządzaj przekierowaniami</a></li>
