@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Jerzy Zientkowski</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preload" as="style" href="/assets/css/app.min.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/assets/css/app.min.css"></noscript>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -15,9 +16,7 @@
     .nav-link:hover::after { width: 100%; }
     .bg-light { background-color: #F9F9F9; }
   </style>
-  <script>
-    tailwind.config = { theme: { extend: { colors: { accent: 'rgb(4, 3, 39)', dark: 'rgb(4, 3, 39)', light: '#F9F9F9' } } } };
-  </script>
+  
   <link rel="icon" type="image/png" href="/assets/img/favicon/favicon-96x96.png" sizes="96x96" />
 <link rel="icon" type="image/svg+xml" href="/assets/img/favicon/favicon.svg" />
 <link rel="shortcut icon" href="/assets/img/favicon/favicon.ico" />
