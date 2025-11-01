@@ -23,6 +23,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               $fbEnabled,
               $fbId !== '' ? $fbId : null,
             ]);
+            // Update Mailchimp independently (accept snippet or URL)
+            try {
+                $mcEnabled = isset($_POST['mailchimp_enabled']) ? 1 : 0;
+                $mcRaw = trim((string)($_POST['mailchimp_code'] ?? ''));
+                $mcUrl = '';
+                if ($mcRaw !== '') {
+                    if (preg_match('#https://chimpstatic\\.com/[^"\']+#', $mcRaw, $m)) {
+                        $mcUrl = $m[0];
+                    } elseif (preg_match('#^https://[^\s]+$#', $mcRaw)) {
+                        $mcUrl = $mcRaw;
+                    }
+                }
+                $stmt2 = $pdo->prepare('UPDATE site_settings SET mailchimp_enabled = ?, mailchimp_url = ? WHERE id = 1');
+                $stmt2->execute([
+                  $mcEnabled,
+                  $mcUrl !== '' ? $mcUrl : null,
+                ]);
+            } catch (Throwable $e2) {
+                // ignore if column missing; migration may not be applied yet
+            }
             $ok = 'Zapisano ustawienia.';
         } catch (Throwable $e) {
             $error = 'Błąd zapisu ustawień.';
@@ -95,6 +115,13 @@ try {
           <div style="margin-top:12px;">
             <a class="btn" target="_blank" rel="noopener" href="https://www.facebook.com/events_manager2/list/pixel">Otwórz Meta Events Manager</a>
           </div>
+          <hr style="margin:16px 0; border:none; border-top:1px solid #e5e7eb;">
+          <div style="margin:8px 0 16px;">
+            <label><input type="checkbox" name="mailchimp_enabled" value="1" <?php echo !empty($row['mailchimp_enabled']) ? 'checked' : ''; ?>> Włącz Mailchimp</label>
+          </div>
+          <label for="mailchimp_code">Mailchimp snippet lub URL</label>
+          <input type="text" id="mailchimp_code" name="mailchimp_code" placeholder="Wklej cały snippet lub sam URL z chimpstatic.com..." value="<?php echo htmlspecialchars((string)($row['mailchimp_url'] ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>">
+          <div class="muted" style="margin-top:8px;">Wklej pełen kod Mailchimp (zaczyna się od &lt;script id=&quot;mcjs&quot;&gt;...&lt;/script&gt;) albo sam adres URL z domeny <code>chimpstatic.com</code>. Skrypt zostanie dołączony na stronach z loaderem <code>/admin/tracking.js.php</code>.</div>
           <div style="margin-top:16px;"><button type="submit">Zapisz</button></div>
         </form>
       </div>

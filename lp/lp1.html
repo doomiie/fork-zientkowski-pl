@@ -2,16 +2,25 @@
 <html lang="pl">
 
 <head>
+  <script
+    id="mcjs">!function (c, h, i, m, p) { m = c.createElement(h), p = c.getElementsByTagName(h)[0], m.async = 1, m.src = i, p.parentNode.insertBefore(m, p) }(document, "script", "https://chimpstatic.com/mcjs-connected/js/users/a6668a84e3a3a8d0563bd3fcc/08a38687e17bc48d8e6fcd0b8.js");</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LP1 — Autentyczny Humor w Biznesie</title>
   <link rel="preload" as="style" href="/assets/css/app.min.css" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="/assets/css/app.min.css"></noscript>
-  
+  <noscript>
+    <link rel="stylesheet" href="/assets/css/app.min.css">
+  </noscript>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
     rel="stylesheet">
+  <link rel="icon" type="image/png" href="/assets/img/favicon/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon/favicon.svg" />
+  <link rel="shortcut icon" href="/assets/img/favicon/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
   <style>
     * {
       font-family: 'Space Grotesk', sans-serif;
@@ -20,11 +29,28 @@
     .bg-light {
       background-color: #F9F9F9;
     }
-    .text-dark { color: rgb(4, 3, 39); }
-    .text-accent { color: rgb(4, 3, 39) !important; }
-    .bg-dark { background-color: rgb(4, 3, 39) !important; }
-    .hover\:bg-dark:hover { background-color: rgb(4, 3, 39) !important; }
-    .nav-link { position: relative; padding-bottom: 4px; }
+
+    .text-dark {
+      color: rgb(4, 3, 39);
+    }
+
+    .text-accent {
+      color: rgb(4, 3, 39) !important;
+    }
+
+    .bg-dark {
+      background-color: rgb(4, 3, 39) !important;
+    }
+
+    .hover\:bg-dark:hover {
+      background-color: rgb(4, 3, 39) !important;
+    }
+
+    .nav-link {
+      position: relative;
+      padding-bottom: 4px;
+    }
+
     .nav-link::after {
       content: '';
       position: absolute;
@@ -35,11 +61,67 @@
       background: rgb(4, 3, 39);
       transition: width 0.3s ease;
     }
-    .nav-link:hover::after { width: 100%; }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    /* Fallback dla list w treści programu, gdy klasy Tailwind są zpurge'owane */
+    #program .prog-expander ul {
+      list-style: disc;
+      padding-left: 1.25rem;
+      margin-top: .25rem;
+    }
+
+    #program .prog-expander ol {
+      list-style: decimal;
+      padding-left: 1.25rem;
+      margin-top: .25rem;
+    }
+
+    #program .prog-expander li {
+      margin-top: .25rem;
+    }
   </style>
 </head>
 
 <body class="bg-light min-h-screen flex flex-col">
+  <!-- Popup Modal (copied 1:1 from humor.html) -->
+  <div id="popupOverlay" class="fixed inset-0 bg-black/60 z-[10050] hidden">
+    <div class="min-h-full flex items-center justify-center p-4">
+      <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-auto z-[10060]">
+        <button id="closePopup" aria-label="Zamknij"
+          class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 z-[10070]">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        <div class="p-4">
+          <style>
+            .wtl-responsive-iframe {
+              width: 1px;
+              min-width: 100%;
+            }
+          </style>
+          <h2 class="text-lg md:text-2xl font-bold text-dark mb-3">Kurs online Autentyczny Humor w Biznesie</h2>
+          <script src="https://kotryszientkowski.elms.pl/assets/js/iframe-resizer-embed.js"></script>
+          <iframe class="wtl-responsive-iframe"
+            src="https://kotryszientkowski.elms.pl/assets/js/s.php?id=98f13708210194c475687be6106a3b84" frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen></iframe>
+          <script>
+            document.addEventListener("DOMContentLoaded", function () {
+              iFrameResize({
+                log: false,
+                checkOrigin: false
+              }, ".wtl-responsive-iframe");
+            });
+          </script>
+        </div>
+      </div>
+    </div>
+  </div>
   <!-- Header -->
   <header class="fixed w-full bg-white z-50 py-4 border-b border-gray-200/50">
     <div class="max-w-[1200px] mx-auto px-6 flex items-center">
@@ -47,14 +129,22 @@
         <img src="/assets/img/logo_main.png" alt="Logo" class="brightness-0 max-w-[140px]">
       </a>
       <div class="hidden md:flex items-center space-x-8 ml-auto">
-        <a href="#o-kursie" class="nav-link relative text-dark hover:text-accent transition-colors duration-300">O kursie</a>
-        <a href="#program" class="nav-link relative text-dark hover:text-accent transition-colors duration-300">Program</a>
-        <a href="#referencje" class="nav-link relative text-dark hover:text-accent transition-colors duration-300">Referencje</a>
-        <a id="navCta" href="#cta" class="hidden md:hidden whitespace-nowrap px-4 py-2 rounded-lg bg-gradient-to-r from-yellow-700 to-yellow-400 text-white font-bold shadow hover:opacity-90 transition">Kup teraz</a>
+        <a href="#o-kursie" class="nav-link relative text-dark hover:text-accent transition-colors duration-300">O
+          kursie</a>
+        <a href="#program"
+          class="nav-link relative text-dark hover:text-accent transition-colors duration-300">Program</a>
+        <a href="#referencje"
+          class="nav-link relative text-dark hover:text-accent transition-colors duration-300">Referencje</a>
+        <a id="navCta" data-open-popup data-cta-variant="short" href="#order"
+          class="hidden md:hidden whitespace-nowrap px-4 py-2 rounded-lg bg-gradient-to-r from-yellow-700 to-yellow-400 text-white font-bold shadow hover:opacity-90 transition"></a>
       </div>
       <div class="flex items-center ml-auto md:ml-8 md:hidden">
-        <button id="menuToggleLP" aria-label="Menu" class="p-2 rounded-lg border border-gray-300 text-gray-800 hover:bg-gray-50">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        <button id="menuToggleLP" aria-label="Menu"
+          class="p-2 rounded-lg border border-gray-300 text-gray-800 hover:bg-gray-50">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
         </button>
       </div>
     </div>
@@ -62,17 +152,24 @@
 
   <!-- Mobile off-canvas menu -->
   <div id="mobileMenuOverlayLP" class="fixed inset-0 bg-black/50 z-[1000] hidden"></div>
-  <aside id="mobileMenuLP" class="fixed inset-y-0 right-0 w-4/5 max-w-sm bg-white z-[1001] shadow-xl transform translate-x-full transition-transform">
+  <aside id="mobileMenuLP"
+    class="fixed inset-y-0 right-0 w-4/5 max-w-sm bg-white z-[1001] shadow-xl transform translate-x-full transition-transform">
     <div class="p-4 flex items-center justify-between border-b border-gray-200">
       <span class="font-semibold text-dark">Menu</span>
       <button id="menuCloseLP" aria-label="Zamknij menu" class="p-2 rounded-lg text-gray-600 hover:bg-gray-50">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
       </button>
     </div>
     <nav class="p-4 space-y-3">
       <a href="#o-kursie" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-50 text-dark">O kursie</a>
       <a href="#program" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-50 text-dark">Program</a>
       <a href="#referencje" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-50 text-dark">Referencje</a>
+      <hr class="my-3">
+      <button data-open-popup data-cta-variant="long"
+        class="w-full px-4 py-3 rounded-lg bg-gradient-to-r from-yellow-700 to-yellow-400 text-white font-bold shadow hover:opacity-90 transition"></button>
     </nav>
   </aside>
 
@@ -142,8 +239,11 @@
 
         <section id="cta" class="mt-10 ">
           <a id="openPopup" data-open-popup data-cta-variant="long" href="#order"
-            class="block w-full text-center bg-gradient-to-r from-yellow-700 to-yellow-400 text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:opacity-90 transition">TAAAAK! Kupuję dostęp do szkolenia i materiałów za straszliwe 299 zL? <span class="line-through opacity-70">399 zL?</span>!</a>
-          <p class="mt-2 text-center text-sm text-gray-700">Włożyłem w to blisko 16tys zł?. Zapytaj mnie, skąd ta  kwota ;)</p>
+            class="block w-full text-center bg-gradient-to-r from-yellow-700 to-yellow-400 text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:opacity-90 transition">TAAAAK!
+            Kupuję dostęp do szkolenia i materiałów za straszliwe 299 zL? <span class="line-through opacity-70">399
+              zL?</span>!</a>
+          <p class="mt-2 text-center text-sm text-gray-700">Włożyłem w to blisko 16tys zł?. Zapytaj mnie, skąd ta kwota
+            ;)</p>
 
           <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
             <img class="mx-auto max-w-full md:col-span-8" src="/assets/img/Mockup_do_kursu.png" alt="bundle">
@@ -186,23 +286,50 @@
     <section id="o-kursie" class="py-16">
       <div class="max-w-[1100px] mx-auto px-6">
         <h2 class="text-2xl md:text-3xl font-bold text-dark mb-3">O kursie</h2>
-        <p class="text-gray-700">Sekcja w przygotowaniu. Tutaj umieścimy opis kursu.</p>
+        <div class="space-y-4 text-gray-700 leading-relaxed">
+          <p>
+            Humor w biznesie to nie żart – to narzędzie, które buduje relacje, przyciąga uwagę i sprzedaje z lekkością.
+            Ten kurs to praktyczny przewodnik po świecie mówców, sprzedawców i liderów, którzy chcą mówić z charyzmą i
+            błyskotliwością, bez tanich trików i sztucznego śmiechu. Od zasad i psychologii humoru, przez storytelling,
+            po gesty, improwizację i kontrolę sceny – dowiesz się, jak śmiać się mądrze i mówić skuteczniej.
+          </p>
+          <p>
+            Dla menedżerów, trenerów, freelancerów i wszystkich, którzy występują przed ludźmi. „Autentyczny humor w
+            biznesie” pomoże Ci zamienić stres w pewność, a zwykłe prezentacje w zapamiętywane wystąpienia. Bo
+            profesjonalizm nie wyklucza luzu – wręcz przeciwnie, zaczyna się tam, gdzie potrafisz rozbawić innych, nie
+            tracąc wiarygodności.
+          </p>
+        </div>
+      </div>
+    </section> <!-- Placeholder sections to be filled later -->
+    <section id="o-kursie" class="py-16">
+      <div class="max-w-[1100px] mx-auto px-6">
+        <h2 class="text-2xl md:text-3xl font-bold text-dark mb-3">O kursie</h2>
+        <div class="space-y-4 text-gray-700 leading-relaxed">
+          
+        </div>
       </div>
     </section>
 
     <section id="program" class="py-16 bg-white">
       <div class="max-w-[1100px] mx-auto px-6">
-        <h2 class="text-2xl md:text-3xl font-bold text-dark mb-3">Program</h2>
-        <p class="text-gray-700">Sekcja w przygotowaniu. Tutaj umieścimy program kursu.</p>
+        <h2 class="text-2xl md:text-3xl font-bold text-dark mb-6">Program</h2>
+        <div id="program-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
       </div>
     </section>
 
-    <section id="referencje" class="py-16">
+
+
+    <!-- Referencje (grid przez widget) -->
+    <section id="referencje" class="bg-light py-16 border-t border-gray-200/60 scroll-mt-24"
+      data-filter="humor* skuteczno*">
       <div class="max-w-[1100px] mx-auto px-6">
-        <h2 class="text-2xl md:text-3xl font-bold text-dark mb-3">Referencje</h2>
-        <p class="text-gray-700">Sekcja w przygotowaniu. Tutaj pojawią się referencje.</p>
+        <h2 class="text-3xl md:text-4xl font-extrabold text-dark">Referencje</h2>
+        <p class="mt-2 text-gray-600">Opinie klientów i uczestników wydarzeń.</p>
+        <div id="refsGrid" class="mt-8"></div>
       </div>
     </section>
+
   </main>
 
   <!-- Footer -->
@@ -217,34 +344,216 @@
 
   <!-- Docked CTA on mobile -->
   <div id="ctaDock" class="fixed bottom-0 inset-x-0 z-[1000] hidden">
-    <a id="openPopupDock" href="#cta" class="block w-full text-center bg-gradient-to-r from-yellow-700 to-yellow-400 text-white font-bold py-4 px-6 rounded-none shadow-[0_-2px_8px_rgba(0,0,0,0.15)] hover:opacity-90 transition">Kup teraz</a>
+    <a id="openPopupDock" data-open-popup data-cta-variant="long" href="#order"
+      class="block w-full text-center bg-gradient-to-r from-yellow-700 to-yellow-400 text-white font-bold py-4 px-6 rounded-none shadow-[0_-2px_8px_rgba(0,0,0,0.15)] hover:opacity-90 transition"></a>
   </div>
 
   <!-- Back to top FAB -->
-  <button id="backToTop" aria-label="Do góry" title="Do góry" class="hidden fixed right-4 sm:right-6 bottom-4 sm:bottom-6 z-[1100] rounded-full bg-dark text-white shadow-lg hover:bg-dark p-2.5 sm:p-3 transition">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
+  <button id="backToTop" aria-label="Do góry" title="Do góry"
+    class="hidden fixed right-4 sm:right-6 bottom-4 sm:bottom-6 z-[1100] rounded-full bg-dark text-white shadow-lg hover:bg-dark p-2.5 sm:p-3 transition">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+    </svg>
   </button>
 
-  
 
+  <script src="/skrypty/references.js?v=20251030"></script>
   <script>
-    (function(){
+    console.log('Initializing ReferencesWidget...');
+    new ReferencesWidget('#refsGrid', { layout: 'carousel', keywords: 'humo;śmie;fun;zabaw', csv: '/assets/txt/referencje.csv', grid: { pageSize: 6 }, fields: { imie: true, rola: true, opinia: true, data: true, avatar: true } }).load();
+    console.log('ReferencesWidget initialized.');
+    (function () {
       const btn = document.getElementById('backToTop');
-      function update(){ btn && (window.scrollY > 300 ? btn.classList.remove('hidden') : btn.classList.add('hidden')); }
+      function update() { btn && (window.scrollY > 300 ? btn.classList.remove('hidden') : btn.classList.add('hidden')); }
       window.addEventListener('scroll', update, { passive: true });
       update();
-      btn && btn.addEventListener('click', function(e){ e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+      btn && btn.addEventListener('click', function (e) { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    })();
+  </script>
+
+  <!-- Popup logic + CTA text (copied 1:1 from humor.html) -->
+  <script>
+    (function () {
+      // Popup logic
+      const overlay = document.getElementById('popupOverlay');
+      const closeBtn = document.getElementById('closePopup');
+      function openModal(e) { if (e) e.preventDefault(); overlay && overlay.classList.remove('hidden'); document.body.style.overflow = 'hidden'; try { if (window.iFrameResize) { iFrameResize({ log: false, checkOrigin: false }, '.wtl-responsive-iframe'); } } catch (_) { } }
+      function closeModal() { overlay && overlay.classList.add('hidden'); document.body.style.overflow = 'auto'; }
+      document.querySelectorAll('[data-open-popup]').forEach(el => el.addEventListener('click', openModal));
+      closeBtn && closeBtn.addEventListener('click', closeModal);
+      overlay && overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+      // Central CTA text setup
+      (function () {
+        const CTA_TEXT_HTML = 'TAAAAK! Kupuję dostęp do kursu za straszliwe 299 zł <span class="line-through opacity-70">399 zł</span>!';
+        const CTA_SHORT = 'TAAAAK! Kupuję dostęp';
+        document.querySelectorAll('[data-cta-variant]').forEach(el => {
+          const v = el.getAttribute('data-cta-variant');
+          if (v === 'short') {
+            el.textContent = CTA_SHORT;
+          } else {
+            el.innerHTML = CTA_TEXT_HTML;
+          }
+        });
+      })();
     })();
   </script>
 
   <!-- Tracking (Hotjar, FB Pixel) -->
   <script defer src="/admin/tracking.js.php"></script>
   <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-  <script>document.addEventListener('DOMContentLoaded',function(){ try{ lucide.createIcons(); }catch(e){} });</script>
-  
+  <script>document.addEventListener('DOMContentLoaded', function () { try { lucide.createIcons(); } catch (e) { } });</script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const items = [];
+      // Override Program items with updated copy
+      items.length = 0;
+      items.push(
+        {
+          icon: 'clapperboard',
+          title: '01. Zamiast wstępu',
+          lead: 'Autentyczny start bez blichtru, w którym zobaczysz prawdziwego mówcę — bez scenicznego ego, za to z doświadczeniem, dystansem i prawdą o tym, czym naprawdę jest humor w biznesie.',
+          html: `
+            <p>W tej części Jerzy odsłania kulisy kursu i swoje podejście do autentyczności. Zamiast udawania perfekcji i pustych sloganów, pokazuje, że humor można trenować tak samo jak inne umiejętności. To nie dar ani talent, tylko rezultat pracy i świadomości.</p>
+            <p>Poznasz jego drogę od niepewności do świadomego wykorzystania humoru w wystąpieniach i sprzedaży. Zrozumiesz, że śmiech nie służy do rozbawienia, lecz do zbliżenia — do widowni, do klienta, do zespołu. To wstęp, który ustawia ton całego kursu: szczerość, konkret, praktyka.</p>
+          `
+        },
+        {
+          icon: 'settings',
+          title: '02. Zasady w humorze',
+          lead: 'Fundament skutecznego humoru — sześć zasad, które pozwalają być zabawnym z klasą, nie ryzykując utraty wiarygodności i sympatii odbiorców.',
+          html: `
+            <p>Ta sekcja stanowi rdzeń kursu. Poznasz m.in. zasadę 5–30, zasadę Jacka Vincenta oraz ideę, że humor powinien być narzędziem, nie dygresją. Dowiesz się, jak żartować bez przekraczania granic, unikać tematów ryzykownych (religia, polityka, seks) i rozpoznawać złe praktyki: żarty na siłę, przesadną autoironię czy suchary.</p>
+            <p>Jerzy pokazuje, że humor nie jest „ozdobą” prezentacji, lecz sposobem na osiągnięcie celu — skupienia, relacji lub emocjonalnego otwarcia. Dzięki przykładom i analizom zrozumiesz, jak łączyć humor z profesjonalizmem, by ludzie chcieli Cię słuchać, a nie tylko się śmiać.</p>
+          `
+        },
+        {
+          icon: 'target',
+          title: '04. Po co humor',
+          lead: 'Cztery strategiczne cele humoru, które pozwalają zamienić śmiech w uwagę, relację, emocjonalną zmianę i głębsze zrozumienie przekazu.',
+          html: `
+            <p>Humor to nie przypadek — to narzędzie komunikacji. W tej części poznasz cztery jego kluczowe funkcje: przyciąganie uwagi, budowanie relacji, przełamywanie emocjonalnych barier i rozbrajanie logicznego oporu.</p>
+            <p>Każdy z tych celów Jerzy rozwija w osobnej lekcji, pokazując, jak humor potrafi „przełączyć” widza z analizy na emocje. Dowiesz się, jak śmiechem odzyskać uwagę sali, stworzyć atmosferę zaufania i przemycić przekaz, który zapadnie w pamięć. To esencja myślenia strategicznego o humorze — nie po to, żeby było śmiesznie, ale po to, żeby było skutecznie.</p>
+          `
+        },
+        {
+          icon: 'wrench',
+          title: '15. Narzędzia',
+          lead: 'Zestaw praktycznych metod i ćwiczeń — od kopiowania i adaptowania humoru po tworzenie własnych, nieintencjonalnych perełek.',
+          html: `
+            <p>Ostatni moduł to skrzynka narzędziowa mówcy. Znajdziesz tu trzy filary pracy nad humorem: <b>kopiowanie</b> (analiza i przetwarzanie cudzych pomysłów), <b>wymyślanie</b> (budowanie własnych gagów i metafor) oraz <b>nieintencjonalny humor</b> — ten, który pojawia się naturalnie, gdy jesteś sobą.</p>
+            <p>Jerzy pokazuje, jak ćwiczyć obserwację, timing i spontaniczność. Dzięki tej sekcji zamienisz teorię w praktykę — zbudujesz repertuar, który możesz wykorzystać w każdej sytuacji zawodowej.</p>
+          `
+        },
+        {
+          icon: 'user',
+          title: '07. Humorem w siebie',
+          lead: 'Autoironia i dystans jako bezpieczna forma humoru — sposób na pokazanie ludzkiej strony profesjonalisty, bez utraty autorytetu.',
+          html: `
+            <p>Jerzy uczy tu jednego z najtrudniejszych, a zarazem najbezpieczniejszych rodzajów humoru: śmiechu z samego siebie. Przez przykłady zdjęć z przeszłości, błędów w prezentacjach i niepoważnych akcentów pokazuje, jak budować sympatię przez autentyczność.</p>
+            <p>Zobaczysz, jak dane, liczby czy nawet raporty można podać z humorem. W tej sekcji nauczysz się, że dystans to nie brak profesjonalizmu, tylko jego dojrzała forma — a autoironia rozbraja napięcie lepiej niż perfekcyjny żart.</p>
+          `
+        },
+        {
+          icon: 'message-circle',
+          title: '08. Interakcje',
+          lead: 'Humor jako dialog z publicznością — jak rozśmieszać ludzi, angażując ich do wspólnego przeżycia i współtworzenia wystąpienia.',
+          html: `
+            <p>Ta część kursu to praktyka w najczystszej postaci. Jerzy pokazuje, jak humor może wynikać z interakcji — z reakcji sali, improwizacji, błędów czy spontaniczności.</p>
+            <p>Poznajesz ćwiczenia takie jak „ominięcie celu”, „wyczekanie” czy „piątka z przytulasem”, które uczą reagować na publiczność i budować relację w czasie rzeczywistym. Dowiesz się, jak żartować bez scenariusza, jak wykorzystać przejęzyczenia i lapsusy, by wzmocnić kontakt zamiast go psuć.</p>
+          `
+        },
+        {
+          icon: 'book-open',
+          title: '09. Storytelling',
+          lead: 'Humor w opowiadaniu historii — jak budować obrazy, emocje i pointy, które bawią i zostają w pamięci.',
+          html: `
+            <p>Storytelling to przestrzeń, w której humor działa najgłębiej. W tej sekcji poznasz technikę budowania obrazów — od prostych metafor po zaskakujące kontrasty.</p>
+            <p>Jerzy pokazuje to na przykładach: „Facet, którego nie ma”, „Braciszek” i innych historiach, które rozśmieszają i uczą jednocześnie. Dowiesz się, jak tworzyć narracje, które prowadzą widownię od powagi do śmiechu, a potem do refleksji.</p>
+          `
+        },
+        {
+          icon: 'type',
+          title: '10. Redefiniowanie słów',
+          lead: 'Jak grać znaczeniem, rytmem i absurdem języka — humor słowny, który zaskakuje, uczy i rozluźnia atmosferę.',
+          html: `
+            <p>Ta sekcja poświęcona jest językowi — najprostszemu i najpotężniejszemu narzędziu mówcy. Jerzy pokazuje, jak redefiniować pojęcia („marzenia”, „faktura”), bawić się znaczeniem słów i rytmem wypowiedzi.</p>
+            <p>Uczy, że dobre przejęzyczenie może być świadome, a absurdalne skojarzenie — celowe. Zrozumiesz, jak humor językowy odświeża myślenie, ożywia wystąpienia i sprawia, że Twoje słowa zostają w głowie słuchacza.</p>
+          `
+        },
+        {
+          icon: 'arrow-right-circle',
+          title: '13. Co dalej',
+          lead: 'Zakończenie kursu i zaproszenie do działania — jak wprowadzić autentyczny humor do swojego stylu komunikacji i kariery.',
+          html: `
+            <p>To nie koniec nauki, lecz początek nowej praktyki. Jerzy podsumowuje kluczowe lekcje i zaprasza uczestników do dalszej pracy — indywidualnej, mentorskiej i scenicznej.</p>
+            <p>Pokazuje, jak wdrażać humor w codzienne prezentacje, rozmowy z klientami i marketing. Dowiesz się, jak ćwiczyć swój „humorowy mięsień” i rozwijać osobisty styl, który łączy profesjonalizm z lekkością.</p>
+          `
+        }
+      );
+
+      const grid = document.getElementById('program-grid');
+      if (!grid) return;
+      grid.innerHTML = items.map((it, idx) => `
+        <article class="prog-card group relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition">
+          <div class="flex items-start gap-4">
+            <div class="shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-indigo-600 to-violet-500 text-white flex items-center justify-center">
+              <i data-lucide="${it.icon}" class="w-5 h-5"></i>
+            </div>
+            <div class="min-w-0 flex-1">
+              <h3 class="text-lg font-semibold text-dark">${it.title}</h3>
+              <p class="mt-1 text-gray-700 text-sm md:text-base">${it.lead}</p>
+              <button type="button" class="prog-toggle mt-3 inline-flex items-center gap-2 text-sm font-medium text-indigo-700 hover:text-indigo-900" aria-expanded="false">
+                <span>Więcej</span>
+                <svg class="h-4 w-4 transition-transform" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd"/></svg>
+              </button>
+              <div class="prog-expander text-gray-700 text-sm md:text-base" style="max-height:0; overflow:hidden; transition:max-height .25s ease, margin-top .25s ease;">
+                <div class="pt-2">${it.html}</div>
+              </div>
+            </div>
+          </div>
+        </article>
+      `).join('');
+
+      // Recreate lucide icons for newly inserted content
+      try { if (window.lucide && lucide.createIcons) lucide.createIcons(); } catch (e) { }
+
+      // Accordion behavior
+      const cards = Array.from(document.querySelectorAll('.prog-card'));
+      cards.forEach((card) => {
+        const btn = card.querySelector('.prog-toggle');
+        const exp = card.querySelector('.prog-expander');
+        btn && btn.addEventListener('click', () => {
+          const isOpen = exp.classList.contains('open');
+          // close others
+          cards.forEach(c => {
+            const e = c.querySelector('.prog-expander');
+            const b = c.querySelector('.prog-toggle svg');
+            if (!e) return;
+            if (c !== card) {
+              e.style.maxHeight = '0px'; e.classList.remove('open'); if (b) b.style.transform = 'rotate(0deg)';
+            }
+          });
+          if (!isOpen) {
+            exp.classList.add('open');
+            exp.style.maxHeight = '0px';
+            requestAnimationFrame(() => { exp.style.maxHeight = (exp.scrollHeight || 200) + 'px'; });
+            const icon = card.querySelector('.prog-toggle svg'); if (icon) icon.style.transform = 'rotate(180deg)';
+          } else {
+            const h = exp.scrollHeight; exp.style.maxHeight = h + 'px';
+            requestAnimationFrame(() => { exp.style.maxHeight = '0px'; exp.classList.remove('open'); });
+            const icon = card.querySelector('.prog-toggle svg'); if (icon) icon.style.transform = 'rotate(0deg)';
+          }
+        });
+      });
+    });
+  </script>
+
   <!-- Sticky CTA logic (desktop nav button or mobile bottom dock) -->
   <script>
-    (function(){
+    (function () {
       const navCta = document.getElementById('navCta');
       const ctaDock = document.getElementById('ctaDock');
       const ctaDockSpacer = document.getElementById('ctaDockSpacer');
@@ -253,7 +562,7 @@
       const mqlMd = window.matchMedia('(min-width: 768px)');
       const backToTop = document.getElementById('backToTop');
 
-      function updateDockSpacer(){
+      function updateDockSpacer() {
         if (!ctaDock || !ctaDockSpacer) return;
         const visible = !ctaDock.classList.contains('hidden');
         if (visible) {
@@ -266,7 +575,7 @@
         }
       }
 
-      function showNav(show){
+      function showNav(show) {
         if (!navCta) return;
         if (show) {
           navCta.classList.remove('hidden');
@@ -279,7 +588,7 @@
         }
       }
 
-      function showDock(show){
+      function showDock(show) {
         if (!ctaDock) return;
         if (show) ctaDock.classList.remove('hidden'); else ctaDock.classList.add('hidden');
         updateDockSpacer();
@@ -291,13 +600,13 @@
         }
       }
 
-      function isInViewport(el){
+      function isInViewport(el) {
         if (!el) return true;
         const r = el.getBoundingClientRect();
         return r.top < (window.innerHeight || 0) && r.bottom > 0;
       }
 
-      function setVisibility(isMainCtaVisible){
+      function setVisibility(isMainCtaVisible) {
         const unlocked = !!ctaSection;
         if (!unlocked) { showNav(false); showDock(false); return; }
         if (isMainCtaVisible) {
@@ -315,14 +624,14 @@
       }
 
       // Observe CTA visibility
-      const io = new IntersectionObserver((entries)=>{
+      const io = new IntersectionObserver((entries) => {
         const entry = entries[0];
         setVisibility(entry && entry.isIntersecting);
       }, { root: null, threshold: 0.01 });
       if (mainCta) io.observe(mainCta);
 
       // React to breakpoint changes and on resize to keep spacer synced
-      const onBpChange = ()=> setVisibility(mainCta ? isInViewport(mainCta) : true);
+      const onBpChange = () => setVisibility(mainCta ? isInViewport(mainCta) : true);
       if (mqlMd.addEventListener) mqlMd.addEventListener('change', onBpChange); else mqlMd.addListener(onBpChange);
       window.addEventListener('resize', updateDockSpacer);
 
@@ -331,17 +640,17 @@
     })();
   </script>
   <script>
-    (function(){
+    (function () {
       const overlay = document.getElementById('mobileMenuOverlayLP');
       const menu = document.getElementById('mobileMenuLP');
       const openBtn = document.getElementById('menuToggleLP');
       const closeBtn = document.getElementById('menuCloseLP');
-      function open(){ overlay.classList.remove('hidden'); menu.classList.remove('translate-x-full'); }
-      function close(){ overlay.classList.add('hidden'); menu.classList.add('translate-x-full'); }
+      function open() { overlay.classList.remove('hidden'); menu.classList.remove('translate-x-full'); }
+      function close() { overlay.classList.add('hidden'); menu.classList.add('translate-x-full'); }
       openBtn && openBtn.addEventListener('click', open);
       closeBtn && closeBtn.addEventListener('click', close);
       overlay && overlay.addEventListener('click', close);
-      document.addEventListener('keydown', e=>{ if(e.key==='Escape') close(); });
+      document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
     })();
   </script>
 </body>

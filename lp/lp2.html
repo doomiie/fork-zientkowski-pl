@@ -1,0 +1,257 @@
+<html lang="pl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LP2 — Ebook: Autentyczny Humor w Biznesie</title>
+  <link rel="preload" as="style" href="/assets/css/app.min.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/assets/css/app.min.css"></noscript>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="/assets/img/favicon/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon/favicon.svg" />
+  <link rel="shortcut icon" href="/assets/img/favicon/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <script id="mcjs">!function(c,h,i,m,p){m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.src=i,p.parentNode.insertBefore(m,p)}(document,"script","https://chimpstatic.com/mcjs-connected/js/users/a6668a84e3a3a8d0563bd3fcc/08a38687e17bc48d8e6fcd0b8.js");</script>
+  <style>
+    * { font-family: 'Space Grotesk', sans-serif; }
+    .bg-light { background-color: #F9F9F9; }
+    .text-dark { color: rgb(4, 3, 39); }
+    .text-accent { color: rgb(4, 3, 39) !important; }
+    .bg-dark { background-color: rgb(4, 3, 39) !important; }
+    .hover\:bg-dark:hover { background-color: rgb(4, 3, 39) !important; }
+    .nav-link { position: relative; padding-bottom: 4px; }
+    .nav-link::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: rgb(4, 3, 39); transition: width 0.3s ease; }
+    .nav-link:hover::after { width: 100%; }
+  </style>
+</head>
+
+<body class="bg-light min-h-screen flex flex-col">
+  <header class="fixed w-full bg-white z-50 py-4 border-b border-gray-200/50">
+    <div class="max-w-[1200px] mx-auto px-6 flex items-center">
+      <a href="/" class="flex items-center gap-3 font-bold">
+        <img src="/assets/img/logo_main.png" alt="Logo" class="brightness-0 max-w-[140px]">
+      </a>
+      <div class="hidden md:flex items-center space-x-8 ml-auto">
+        <a href="#o-ebooku" class="nav-link relative text-dark hover:text-accent transition-colors duration-300">O ebooku</a>
+        <a href="#spis" class="nav-link relative text-dark hover:text-accent transition-colors duration-300">Spis treści</a>
+        <a href="#opinie" class="nav-link relative text-dark hover:text-accent transition-colors duration-300">Opinie</a>
+        <a href="#pobierz" id="navCta" class="hidden md:hidden whitespace-nowrap px-4 py-2 rounded-lg bg-gradient-to-r from-yellow-700 to-yellow-400 text-white font-bold shadow hover:opacity-90 transition">Pobierz ebook</a>
+      </div>
+      <div class="flex items-center ml-auto md:ml-8 md:hidden">
+        <button id="menuToggleLP2" aria-label="Menu" class="p-2 rounded-lg border border-gray-300 text-gray-800 hover:bg-gray-50">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div id="mobileMenuOverlayLP2" class="fixed inset-0 bg-black/50 z-[1000] hidden"></div>
+  <aside id="mobileMenuLP2" class="fixed inset-y-0 right-0 w-4/5 max-w-sm bg-white z-[1001] shadow-xl transform translate-x-full transition-transform">
+    <div class="p-4 flex items-center justify-between border-b border-gray-200">
+      <span class="font-semibold text-dark">Menu</span>
+      <button id="menuCloseLP2" aria-label="Zamknij menu" class="p-2 rounded-lg text-gray-600 hover:bg-gray-50">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <nav class="p-4 space-y-3">
+      <a href="#o-ebooku" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-50 text-dark">O ebooku</a>
+      <a href="#spis" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-50 text-dark">Spis treści</a>
+      <a href="#opinie" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-50 text-dark">Opinie</a>
+      <hr class="my-3">
+      <a href="#pobierz" class="block px-4 py-3 rounded-lg bg-gradient-to-r from-yellow-700 to-yellow-400 text-white font-bold shadow hover:opacity-90 transition">Pobierz ebook</a>
+    </nav>
+  </aside>
+
+  <main class="flex-1 pt-24 pb-16">
+    <section class="pt-10 md:pt-20 pb-16 relative overflow-hidden">
+      <div class="max-w-[1100px] mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
+        <div>
+          <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-dark leading-tight">Ebook: Autentyczny Humor w Biznesie</h1>
+          <p class="mt-4 text-gray-700 text-lg">Praktyczny przewodnik, jak używać humoru z klasą, by przyciągać uwagę, budować relacje i mówić skuteczniej — bez tanich trików.</p>
+          <ul class="mt-6 space-y-3 text-gray-700">
+            <li class="flex items-start gap-3"><i data-lucide="check-circle" class="w-5 h-5 text-emerald-600 mt-0.5"></i><span>Konkretne zasady i przykłady, które wdrożysz od razu</span></li>
+            <li class="flex items-start gap-3"><i data-lucide="check-circle" class="w-5 h-5 text-emerald-600 mt-0.5"></i><span>Bezpieczne tematy, właściwe granice i dobre praktyki</span></li>
+            <li class="flex items-start gap-3"><i data-lucide="check-circle" class="w-5 h-5 text-emerald-600 mt-0.5"></i><span>Gotowe schematy do prezentacji, sprzedaży i komunikacji</span></li>
+          </ul>
+          <div class="mt-8 flex flex-wrap gap-4">
+            <a href="#pobierz" class="inline-flex items-center gap-2 bg-dark text-white px-5 py-3 rounded-lg shadow hover:opacity-90 transition">
+              <i data-lucide="download" class="w-5 h-5"></i><span>Pobierz ebook</span>
+            </a>
+            <a href="#spis" class="inline-flex items-center gap-2 px-5 py-3 rounded-lg border border-gray-300 text-dark hover:bg-gray-50 transition">
+              <i data-lucide="book-open" class="w-5 h-5"></i><span>Zobacz spis treści</span>
+            </a>
+          </div>
+        </div>
+        <div class="relative">
+          <div class="rounded-2xl overflow-hidden border border-gray-200 bg-white shadow-sm">
+            <img src="/assets/img/Mockup_do_kursu.png" alt="Okładka ebooka" class="w-full h-auto">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="o-ebooku" class="py-16">
+      <div class="max-w-[1100px] mx-auto px-6 grid md:grid-cols-3 gap-8 items-start">
+        <div class="md:col-span-2">
+          <h2 class="text-2xl md:text-3xl font-bold text-dark">Co znajdziesz w środku</h2>
+          <p class="mt-3 text-gray-700">Zbiór zasad, przykładów i krótkich ćwiczeń, które pokażą Ci, jak świadomie używać humoru w prezentacjach i rozmowach. Bez pustych frazesów — same konkrety.</p>
+          <div class="mt-6 grid sm:grid-cols-2 gap-4">
+            <div class="flex items-start gap-3 p-4 rounded-xl border border-gray-200 bg-white shadow-sm"><i data-lucide="target" class="w-5 h-5 text-dark mt-0.5"></i><div><b>4 cele humoru</b><div class="text-gray-700">Skupienie, relacje, emocje i rozbrajanie logiki.</div></div></div>
+            <div class="flex items-start gap-3 p-4 rounded-xl border border-gray-200 bg-white shadow-sm"><i data-lucide="shield" class="w-5 h-5 text-dark mt-0.5"></i><div><b>Bezpieczne ramy</b><div class="text-gray-700">Tematy i granice, które budują profesjonalizm.</div></div></div>
+            <div class="flex items-start gap-3 p-4 rounded-xl border border-gray-200 bg-white shadow-sm"><i data-lucide="wand" class="w-5 h-5 text-dark mt-0.5"></i><div><b>Praktyczne techniki</b><div class="text-gray-700">Jak zaczynać, puentować i prowadzić emocje.</div></div></div>
+            <div class="flex items-start gap-3 p-4 rounded-xl border border-gray-200 bg-white shadow-sm"><i data-lucide="users" class="w-5 h-5 text-dark mt-0.5"></i><div><b>Case studies</b><div class="text-gray-700">Przykłady z wystąpień, sprzedaży i warsztatów.</div></div></div>
+          </div>
+        </div>
+        <aside class="md:col-span-1">
+          <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+            <div class="flex items-center gap-3">
+              <img src="/assets/img/jerzy_avatar.jpg" alt="Autor" class="w-12 h-12 rounded-full object-cover">
+              <div>
+                <div class="font-semibold text-dark">Jerzy Zientkowski</div>
+                <div class="text-gray-600 text-sm">mówca, trener, autor</div>
+              </div>
+            </div>
+            <p class="mt-3 text-gray-700">Autor setek wystąpień i projektów szkoleniowych. Pokazuje, jak humor działa w praktyce — i jak używać go świadomie.</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="spis" class="py-16 bg-white">
+      <div class="max-w-[1100px] mx-auto px-6">
+        <h2 class="text-2xl md:text-3xl font-bold text-dark mb-6">Spis treści (wybrane)</h2>
+        <div class="grid md:grid-cols-2 gap-6">
+          <ul class="space-y-2 text-gray-700">
+            <li class="flex gap-2"><span class="text-gray-500">01.</span><span>Zamiast wstępu — autentyczność zamiast pozorów</span></li>
+            <li class="flex gap-2"><span class="text-gray-500">02.</span><span>Zasady w humorze — sześć filarów</span></li>
+            <li class="flex gap-2"><span class="text-gray-500">03.</span><span>Bezpieczne i ryzykowne obszary</span></li>
+            <li class="flex gap-2"><span class="text-gray-500">04.</span><span>Po co humor — cele strategiczne</span></li>
+          </ul>
+          <ul class="space-y-2 text-gray-700">
+            <li class="flex gap-2"><span class="text-gray-500">05.</span><span>Humor w storytellingu</span></li>
+            <li class="flex gap-2"><span class="text-gray-500">06.</span><span>Język — redefiniowanie słów</span></li>
+            <li class="flex gap-2"><span class="text-gray-500">07.</span><span>Interakcje i spontaniczność</span></li>
+            <li class="flex gap-2"><span class="text-gray-500">08.</span><span>Narzędzia — jak ćwiczyć i wdrażać</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="opinie" class="py-16">
+      <div class="max-w-[1100px] mx-auto px-6">
+        <h2 class="text-2xl md:text-3xl font-bold text-dark mb-6">Opinie czytelników</h2>
+        <div class="grid md:grid-cols-3 gap-6">
+          <article class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-gray-200"></div>
+              <div><b>Anna</b><div class="text-sm text-gray-600">HR Manager</div></div>
+            </div>
+            <p class="mt-3 text-gray-700">Konkretnie, lekko i praktycznie. Wreszcie wiem, jak użyć humoru na spotkaniach bez ryzyka.</p>
+          </article>
+          <article class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-gray-200"></div>
+              <div><b>Marek</b><div class="text-sm text-gray-600">Sprzedaż</div></div>
+            </div>
+            <p class="mt-3 text-gray-700">Świetne przykłady i proste schematy. Widzę różnicę w rozmowach z klientami.</p>
+          </article>
+          <article class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-gray-200"></div>
+              <div><b>Kasia</b><div class="text-sm text-gray-600">Marketing</div></div>
+            </div>
+            <p class="mt-3 text-gray-700">Zero „sucharów”, dużo klasy i dystansu. Dokładnie tego potrzebowałam.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="pobierz" class="py-16 bg-white">
+      <div class="max-w-[900px] mx-auto px-6">
+        <h2 class="text-2xl md:text-3xl font-bold text-dark text-center">Pobierz ebook</h2>
+        <p class="mt-3 text-gray-700 text-center">Wpisz swoje dane, a wyślemy Ci link do pobrania. Dołączysz też do listy, na której dzielimy się praktycznymi wskazówkami o humorze w biznesie.</p>
+        <form id="leadForm" class="mt-8 max-w-[640px] mx-auto grid gap-4" novalidate>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-dark mb-1" for="fname">Imię</label>
+              <input id="fname" name="FNAME" type="text" class="w-full rounded-lg border border-gray-300 px-4 py-3" placeholder="Jan" required>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-dark mb-1" for="lname">Nazwisko</label>
+              <input id="lname" name="LNAME" type="text" class="w-full rounded-lg border border-gray-300 px-4 py-3" placeholder="Kowalski">
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-dark mb-1" for="email">E-mail</label>
+            <input id="email" name="EMAIL" type="email" class="w-full rounded-lg border border-gray-300 px-4 py-3" placeholder="jan@firma.pl" required>
+          </div>
+          <div class="flex items-start gap-3">
+            <input id="consent" type="checkbox" class="mt-1" required>
+            <label for="consent" class="text-sm text-gray-700">Wyrażam zgodę na przesyłanie materiałów i informacji od Jerzego Zientkowskiego. Mogę wypisać się w dowolnym momencie.</label>
+          </div>
+          <input type="hidden" name="SOURCE" value="lp2-ebook">
+          <button type="submit" class="mt-2 inline-flex items-center justify-center gap-2 bg-dark text-white px-5 py-3 rounded-lg shadow hover:opacity-90 transition">
+            <i data-lucide="send" class="w-5 h-5"></i><span>Wyślij i pobierz</span>
+          </button>
+          <div id="formNote" class="hidden text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg p-3"></div>
+          <div id="formErr" class="hidden text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg p-3"></div>
+        </form>
+        <p class="mt-4 text-xs text-gray-500 text-center">Chronimy Twoją prywatność. Szczegóły w polityce prywatności.</p>
+      </div>
+    </section>
+  </main>
+
+  <button id="backToTop" aria-label="Do góry" title="Do góry" class="hidden fixed right-4 sm:right-6 bottom-4 sm:bottom-6 z-[1100] rounded-full bg-dark/90 text-white shadow-lg hover:bg-dark p-2.5 sm:p-3 transition">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
+  </button>
+
+  <script defer src="/admin/tracking.js.php"></script>
+  <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script>document.addEventListener('DOMContentLoaded',function(){ try{ lucide.createIcons(); }catch(e){} });</script>
+  <script>
+    (function(){
+      const overlay = document.getElementById('mobileMenuOverlayLP2');
+      const menu = document.getElementById('mobileMenuLP2');
+      const openBtn = document.getElementById('menuToggleLP2');
+      const closeBtn = document.getElementById('menuCloseLP2');
+      function open(){ overlay.classList.remove('hidden'); menu.classList.remove('translate-x-full'); }
+      function close(){ overlay.classList.add('hidden'); menu.classList.add('translate-x-full'); }
+      openBtn && openBtn.addEventListener('click', open);
+      closeBtn && closeBtn.addEventListener('click', close);
+      overlay && overlay.addEventListener('click', close);
+      document.addEventListener('keydown', e=>{ if(e.key==='Escape') close(); });
+    })();
+  </script>
+  <script>
+    (function(){
+      const btn = document.getElementById('backToTop');
+      function update(){ btn && (window.scrollY > 300 ? btn.classList.remove('hidden') : btn.classList.add('hidden')); }
+      window.addEventListener('scroll', update, { passive: true });
+      update();
+      btn && btn.addEventListener('click', function(e){ e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    })();
+  </script>
+  <script>
+    (function(){
+      const form = document.getElementById('leadForm');
+      const note = document.getElementById('formNote');
+      const err = document.getElementById('formErr');
+      function show(el, msg){ if(!el) return; el.textContent = msg; el.classList.remove('hidden'); }
+      function hide(el){ if(!el) return; el.classList.add('hidden'); el.textContent=''; }
+      form && form.addEventListener('submit', function(e){
+        e.preventDefault(); hide(note); hide(err);
+        const email = (document.getElementById('email')||{}).value||'';
+        const consent = (document.getElementById('consent')||{}).checked;
+        if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { show(err,'Podaj poprawny adres e‑mail.'); return; }
+        if(!consent){ show(err,'Wymagana zgoda na wysyłkę materiałów.'); return; }
+        show(note,'Dziękujemy! Wkrótce wyślemy link do pobrania (integracja z Mailchimp zostanie podpięta).');
+        form.reset();
+      });
+    })();
+  </script>
+</body>
+</html>
+
