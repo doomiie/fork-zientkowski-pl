@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wbudowane Wideo</title>
+  <link rel="preload" as="style" href="/assets/css/app.min.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="/assets/css/app.min.css">
+  </noscript>
+  <link rel="stylesheet" href="/assets/css/custom.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="icon" type="image/png" href="/assets/img/favicon/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon/favicon.svg" />
+  <link rel="shortcut icon" href="/assets/img/favicon/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+</head>
+
+<body class="bg-light min-h-screen flex flex-col">
+  <header id="siteHeader" class="fixed w-full z-50 py-4 transition-all duration-300 header-solid">
+    <div class="max-w-[1200px] mx-auto px-6 flex items-center">
+      <a href="/" class="flex items-center gap-3 font-bold">
+        <img id="siteHeaderLogo" src="/assets/img/logo_main.png" alt="Logo"
+          class="brightness-0 logo-main max-w-[140px]">
+      </a>
+      <nav class="hidden md:flex items-center space-x-8 ml-auto">
+        <a href="/" class="nav-link relative text-dark hover:text-accent transition-colors duration-300">Strona
+          główna</a>
+      </nav>
+      <div class="flex items-center ml-auto md:ml-8 md:hidden">
+        <a href="/" class="p-2 rounded-lg border border-gray-300 text-gray-800 hover:bg-gray-50" aria-label="Home">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 pt-24 pb-16">
+    <section id="video" class="py-10">
+      <div class="max-w-[1200px] mx-auto px-6">
+        <h1 id="videoTitle" class="text-2xl md:text-3xl font-bold text-dark mb-6">Przykładowe nagranie</h1>
+        <h3 class="mt-2 text-xs xs:text-xs sm:text-xs md:text-xl font-bold text-dark mb-1">
+          <div class="mt-2 flex items-center justify-center gap-3 text-black">
+            <i data-lucide="volume-2" class="w-6 h-6" title="Włącz głos"></i>
+            <i data-lucide="play-circle" class="w-6 h-6" title="Odtwórz nagranie"></i>
+            <i data-lucide="arrow-down" class="w-6 h-6" title="Niżej"></i>
+          </div>
+        </h3>
+        <div class="relative w-full" style="padding-top: 56.25%;">
+          <iframe id="ytFrame" class="absolute inset-0 w-full h-full rounded-xl border border-gray-200 shadow-sm" src=""
+            title="YouTube video" frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen></iframe>
+        </div>
+        <div id="videoErr" class="hidden mt-4 text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg p-3">
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="mt-auto py-6 border-t border-gray-200 bg-white">
+    <div class="max-w-[1200px] mx-auto px-6 text-sm text-gray-600">
+      © <span id="y"></span> Zientkowski.pl
+    </div>
+  </footer>
+
+  <!-- Header is solid by default on this page (no scroll behavior needed) -->
+
+  <script>
+    (function () {
+      function setYear() { try { document.getElementById('y').textContent = new Date().getFullYear(); } catch (e) { } }
+      setYear();
+
+      var err = document.getElementById('videoErr');
+      var frame = document.getElementById('ytFrame');
+      var heading = document.getElementById('videoTitle');
+
+      function showError(msg) { if (err) { err.textContent = msg; err.classList.remove('hidden'); } }
+      function clearError() { if (err) { err.textContent = ''; err.classList.add('hidden'); } }
+
+      function pickId() {
+        // 1) GET
+        try {
+          var p = new URLSearchParams(location.search);
+          var q = (p.get('id') || '').trim();
+          if (q) return q;
+        } catch (e) { }
+        // 2) Hash (?id=... or _method=post&id=...)
+        try {
+          var h = (location.hash || '').replace(/^#/, '');
+          if (h) { var hp = new URLSearchParams(h); var hid = (hp.get('id') || '').trim(); if (hid) return hid; }
+        } catch (e) { }
+        // 3) sessionStorage handoff
+        try {
+          var saved = sessionStorage.getItem('__embed_post');
+          if (saved) { var obj = JSON.parse(saved) || {}; if (obj.id) { return (obj.id + '').trim(); } }
+        } catch (e) { }
+        return '';
+      }
+
+      function extractYouTubeId(v) {
+        if (!v) return '';
+        v = (v + '').trim();
+        // If full URL, try to parse
+        if (/^https?:\/\//i.test(v)) {
+          try {
+            var u = new URL(v);
+            if (/(youtube\.com|youtube-nocookie\.com)$/i.test(u.hostname) || /(^|\.)youtube\.com$/i.test(u.hostname)) {
+              var vid = u.searchParams.get('v') || '';
+              if (vid) return vid;
+              // Shorts or embed
+              var m = u.pathname.match(/\/shorts\/([a-zA-Z0-9_-]{6,})/);
+              if (m && m[1]) return m[1];
+              m = u.pathname.match(/\/embed\/([a-zA-Z0-9_-]{6,})/);
+              if (m && m[1]) return m[1];
+            }
+            if (/(^|\.)youtu\.be$/i.test(u.hostname)) {
+              var seg = u.pathname.replace(/^\//, '');
+              if (seg) return seg;
+            }
+          } catch (e) { }
+        }
+        // Otherwise assume it's an id
+        return v;
+      }
+
+      function isSafeId(id) { return /^[a-zA-Z0-9_-]{6,64}$/.test(id); }
+
+      function getQueryTitle() {
+        try { var p = new URLSearchParams(location.search); var t = (p.get('title') || '').trim(); if (t) return t; } catch (e) { }
+        try { var h = (location.hash || '').replace(/^#/, ''); if (h) { var hp = new URLSearchParams(h); var ht = (hp.get('title') || '').trim(); if (ht) return ht; } } catch (e) { }
+        try { var saved = sessionStorage.getItem('__embed_post'); if (saved) { var o = JSON.parse(saved) || {}; if (o.title) { return (o.title + '').trim(); } } } catch (e) { }
+        return '';
+      }
+
+      function setHeadingTitle(text) {
+        if (heading) { heading.textContent = text; }
+        try { document.title = text; } catch (e) {}
+      }
+
+      function tryFetchYouTubeTitle(id) {
+        return fetch('https://www.youtube.com/oembed?url=' + encodeURIComponent('https://www.youtube.com/watch?v=' + id) + '&format=json', { mode: 'cors' })
+          .then(function (r) { if (!r.ok) throw new Error('oEmbed HTTP ' + r.status); return r.json(); })
+          .then(function (data) { return (data && data.title) ? (data.title + '') : ''; })
+          .catch(function () { return ''; });
+      }
+
+      function build() {
+        clearError();
+        var raw = pickId();
+        var id = extractYouTubeId(raw);
+        if (!isSafeId(id)) { showError('Brak poprawnego identyfikatora wideo. Przekaż ?id=... lub wyślij w POST/haszu.'); return; }
+        var params = new URLSearchParams();
+        params.set('rel', '0');
+        params.set('modestbranding', '1');
+        params.set('playsinline', '1');
+        params.set('autoplay', '1');
+        params.set('mute', '1'); // wymagane przez politykę autoplay w przeglądarkach
+        var src = 'https://www.youtube.com/embed/' + encodeURIComponent(id) + '?' + params.toString();
+        frame && frame.setAttribute('src', src);
+
+        // Ustal tytuł: najpierw spróbuj z YT oEmbed, potem &title=..., na końcu fallback
+        tryFetchYouTubeTitle(id).then(function (t) {
+          if (t) { setHeadingTitle(t); return; }
+          var qTitle = getQueryTitle();
+          if (qTitle) { setHeadingTitle(qTitle); return; }
+          setHeadingTitle('Przykładowe nagranie');
+        });
+      }
+      build();
+    })();
+  </script>
+  <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script>document.addEventListener('DOMContentLoaded', function () { try { lucide.createIcons(); } catch (e) { } });</script>
+</body>
+
+</html>

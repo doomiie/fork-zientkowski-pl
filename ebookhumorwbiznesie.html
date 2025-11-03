@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ebook: Autentyczny Humor w Biznesie</title>
+  <link rel="preload" as="style" href="/assets/css/app.min.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/assets/css/app.min.css"></noscript>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="/assets/img/favicon/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon/favicon.svg" />
+  <link rel="shortcut icon" href="/assets/img/favicon/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <style>*{font-family:'Space Grotesk',sans-serif}.bg-light{background-color:#F9F9F9}.text-dark{color:rgb(4,3,39)}.bg-dark{background-color:rgb(4,3,39)!important}</style>
+</head>
+<body class="bg-light min-h-screen flex flex-col">
+  <main class="flex-1">
+    <!-- Hero only (copied from lp/lp2.html) -->
+    <section id="hero" class="relative min-h-screen flex items-center overflow-hidden">
+      <div class="absolute inset-0">
+        <img src="/assets/img/wystapienia.webp" alt="Tło – wystąpienia" class="w-full h-full object-cover" loading="eager" decoding="async">
+        <div class="absolute inset-0 bg-black/50"></div>
+      </div>
+      <div class="relative z-10 w-full">
+        <div class="max-w-[1100px] mx-auto px-6">
+          <div class="max-w-2xl text-white">
+            <h1 class="text-3xl sm:text-5xl md:text-6xl font-extrabold leading-tight">Autentyczny humor w biznesie</h1>
+            <p class="mt-4 text-base sm:text-lg text-white/90">Pobierz darmowy ebook i naucz się korzystać z humoru w pracy bez ryzyka – praktyczne zasady, przykłady i narzędzia.</p>
+            <form id="heroForm" class="mt-6 grid gap-3 md:grid-cols-[1fr_auto]" novalidate>
+              <input type="email" name="EMAIL" placeholder="Twój e-mail" required class="w-full rounded-lg border border-white/30 bg-white/90 text-gray-900 placeholder-gray-500 px-4 py-3">
+              <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap px-6 py-3 rounded-lg bg-gradient-to-r from-yellow-700 to-yellow-400 text-white font-bold shadow hover:opacity-90 transition">Pobierz ebook</button>
+            </form>
+            <div id="heroFormErr" class="hidden mt-2 text-sm text-red-200"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+    <script>
+    (function(){
+      const form = document.getElementById('heroForm');
+      const err = document.getElementById('heroFormErr');
+      function showError(msg){ if(err){ err.textContent = msg; err.classList.remove('hidden'); } }
+      function clearError(){ if(err){ err.textContent = ''; err.classList.add('hidden'); } }
+      if(form){
+        form.addEventListener('submit', async function(e){
+          e.preventDefault();
+          clearError();
+          const emailInput = form.querySelector('input[type=\"email\"]');
+          const email = (emailInput && emailInput.value ? emailInput.value : '').trim();
+        const ok = (emailInput && typeof emailInput.checkValidity === 'function')
+          ? emailInput.checkValidity()
+          : /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+          if(!ok){ showError('Podaj poprawny adres e-mail.'); return; }
+          try{
+            const res = await fetch('/backend/mailchimp_subscribe.php', { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ email }) });
+            const data = await res.json().catch(()=>({}));
+            if(!res.ok || data.error){ showError(data.error || 'Błąd zapisu.'); return; }
+            window.location.href = '/lp/ebookhumorwbiznesieup.html';
+          }catch(ex){ showError('Błąd połączenia.'); }
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
+
+
+
+

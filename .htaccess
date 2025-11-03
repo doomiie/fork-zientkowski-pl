@@ -23,6 +23,16 @@ AddDefaultCharset UTF-8
   # Jeśli PHP/serwer dodaje X-Powered-By, spróbuj go ukryć
   Header always unset X-Powered-By
 </IfModule>
+# Blokada xmlrpc.php (ochrona przed nadużyciami)
+<FilesMatch "(?i)^xmlrpc\.php$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order deny,allow
+    Deny from all
+  </IfModule>
+</FilesMatch>
 
 # 4) Blokada niebezpiecznych metod (TRACE/TRACK)
 <IfModule mod_rewrite.c>
@@ -84,4 +94,6 @@ ErrorDocument 404 /404.php
 ###############################################################################
 # Koniec
 ###############################################################################
+
+
 
