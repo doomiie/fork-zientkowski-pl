@@ -7,6 +7,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LP1 — Autentyczny Humor w Biznesie</title>
+  <link rel="stylesheet" href="/assets/css/custom.min.css">
   <link rel="preload" as="style" href="/assets/css/app.min.css" onload="this.onload=null;this.rel='stylesheet'">
   <noscript>
     <link rel="stylesheet" href="/assets/css/app.min.css">
@@ -21,68 +22,6 @@
   <link rel="shortcut icon" href="/assets/img/favicon/favicon.ico" />
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon/apple-touch-icon.png" />
   <link rel="manifest" href="/site.webmanifest" />
-  <style>
-    * {
-      font-family: 'Space Grotesk', sans-serif;
-    }
-
-    .bg-light {
-      background-color: #F9F9F9;
-    }
-
-    .text-dark {
-      color: rgb(4, 3, 39);
-    }
-
-    .text-accent {
-      color: rgb(4, 3, 39) !important;
-    }
-
-    .bg-dark {
-      background-color: rgb(4, 3, 39) !important;
-    }
-
-    .hover\:bg-dark:hover {
-      background-color: rgb(4, 3, 39) !important;
-    }
-
-    .nav-link {
-      position: relative;
-      padding-bottom: 4px;
-    }
-
-    .nav-link::after {
-      content: '';
-      position: absolute;
-      bottom: -4px;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: rgb(4, 3, 39);
-      transition: width 0.3s ease;
-    }
-
-    .nav-link:hover::after {
-      width: 100%;
-    }
-
-    /* Fallback dla list w treści programu, gdy klasy Tailwind są zpurge'owane */
-    #program .prog-expander ul {
-      list-style: disc;
-      padding-left: 1.25rem;
-      margin-top: .25rem;
-    }
-
-    #program .prog-expander ol {
-      list-style: decimal;
-      padding-left: 1.25rem;
-      margin-top: .25rem;
-    }
-
-    #program .prog-expander li {
-      margin-top: .25rem;
-    }
-  </style>
 </head>
 
 <body class="bg-light min-h-screen flex flex-col">
@@ -98,12 +37,7 @@
           </svg>
         </button>
         <div class="p-4">
-          <style>
-            .wtl-responsive-iframe {
-              width: 1px;
-              min-width: 100%;
-            }
-          </style>
+
           <h2 class="text-lg md:text-2xl font-bold text-dark mb-3">Kurs online Autentyczny Humor w Biznesie</h2>
           <script src="https://kotryszientkowski.elms.pl/assets/js/iframe-resizer-embed.js"></script>
           <iframe class="wtl-responsive-iframe"
@@ -123,10 +57,10 @@
     </div>
   </div>
   <!-- Header -->
-  <header class="fixed w-full bg-white z-50 py-4 border-b border-gray-200/50">
+  <header id="siteHeader" class="fixed w-full z-50 py-4 transition-all duration-300 header-transparent">
     <div class="max-w-[1200px] mx-auto px-6 flex items-center">
       <a href="/" class="flex items-center gap-3 font-bold">
-        <img src="/assets/img/logo_main.png" alt="Logo" class="brightness-0 max-w-[140px]">
+        <img id="siteHeaderLogo" src="/assets/img/logo_main.png" alt="Logo" class="brightness-0 max-w-[140px]">
       </a>
       <div class="hidden md:flex items-center space-x-8 ml-auto">
         <a href="#o-kursie" class="nav-link relative text-dark hover:text-accent transition-colors duration-300">O
@@ -174,17 +108,42 @@
   </aside>
 
   <!-- Content -->
-  <main class="flex-1 pt-24 pb-16">
+  <main class="flex-1  pb-16">
 
+    <section id="hero" class="relative min-h-screen flex items-center overflow-hidden">
+      <div class="absolute inset-0">
+        <img src="/assets/img/wystapienia.webp" alt="Tło wystąpienia na Invest Cuffs" class="w-full h-full object-cover"
+          style="object-position:left center !important;" loading="eager" decoding="async">
+        class="w-full h-full object-cover object-left float-left" loading="eager" decoding="async">
+        <div class="absolute inset-0 bg-black/50"></div>
+      </div>
+      <div class="relative z-10 w-full">
+        <div class="max-w-[1100px] mx-auto px-6">
+          <div class="max-w-2xl text-white">
+            <h1 class="text-3xl sm:text-5xl md:text-6xl font-extrabold leading-tight">Autentyczny humor w&nbsp;biznesie
+            </h1>
+            <p class="mt-4 text-xl sm:text-3xl md:text-4xl text-white/90">Kup kurs i&nbsp;naucz się korzystać
+              z&nbsphumoru w&nbsp;pracy bez ryzyka – praktyczne zasady, przykłady i&nbsp;narzędzia.</p>
 
-    <section class="pt-10 md:pt-20 pb-20 relative overflow-hidden">
+            <a id="openPopup" data-open-popup data-cta-variant="long" href="#order"
+              class="block w-full text-center bg-gradient-to-r from-yellow-700 to-yellow-400 text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:opacity-90 transition">TAAAAK!
+              Kupuję dostęp do szkolenia i materiałów za straszliwe 1299 zł <span class="line-through opacity-70">399
+                zL?</span>123</a>
+
+            <div id="heroFormErr" class="hidden mt-2 text-sm text-red-200"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pt-10 md:pt-20 pb-20 relative overflow-hidden ">
       <div class="grain-overlay"></div>
       <div class="max-w-[1100px] mx-auto px-6 relative z-10">
         <header class="mb-8 text-center">
           <h1 class="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-extrabold text-dark leading-tight">
             Jak zamienić proste prezentacje w pełne luzu, humoru i relacji rozmowy z widownią
           </h1>
-          <div id="dev-hero-size" class=" mt-1 text-xs text-gray-500 italic">
+          <div id="dev-hero-size" class=" mt-1 text-xs text-gray-500 italic hidden">
             <span class="inline xs:hidden sm:hidden md:hidden lg:hidden xl:hidden 2xl:hidden">DEV: base — H1
               text-2xl</span>
             <span class="hidden xs:inline sm:hidden md:hidden lg:hidden xl:hidden 2xl:hidden">DEV: xs — H1
@@ -195,10 +154,10 @@
             <span class="hidden xl:inline 2xl:hidden">DEV: xl — H1 text-5xl</span>
             <span class="hidden 2xl:inline">DEV: 2xl — H1 text-5xl</span>
           </div>
-          <h2 class="mt-4 text-sm md:text-xl font-semibold text-dark">
+          <h2 id="o-kursie" class="mt-4 text-sm md:text-xl font-semibold text-dark">
             (I jak odkryć swój autentyczny styl humoru)
           </h2>
-          <h3 class="mt-2 text-xs xs:text-xs sm:text-xs md:text-xl font-bold text-dark">
+          <h3 class="mt-2 hidden text-xs xs:text-xs sm:text-xs md:text-xl font-bold text-dark">
             <div class="mt-2 flex items-center justify-center gap-3 text-gray-600">
               <i data-lucide="volume-2" class="w-6 h-6" title="Włącz głos"></i>
               <i data-lucide="play-circle" class="w-6 h-6" title="Odtwórz nagranie"></i>
@@ -218,36 +177,31 @@
           <div class="grid md:grid-cols-2 gap-6 items-center p-6">
             <div class="text-gray-700 leading-relaxed space-y-4">
               <p>
-                Humor w biznesie to nie �art � to narz�dzie, kt�re buduje relacje, przyci�ga uwag� i sprzedaje z lekko�ci�.
-                Ten kurs to praktyczny przewodnik po �wiecie m�wc�w, sprzedawc�w i lider�w, kt�rzy chc� m�wi� z charyzm� i
-                b�yskotliwo�ci�, bez tanich trik�w i sztucznego �miechu. Od zasad i psychologii humoru, przez storytelling,
-                po gesty, improwizacj� i kontrol� sceny � dowiesz si�, jak �mia� si� m�drze i m�wi� skuteczniej.
+                Humor w biznesie to nie żart – to narzędzie, które buduje relacje, przyciąga uwagę i sprzedaje z
+                lekkością.
+                Ten kurs to praktyczny przewodnik po świecie mówców, sprzedawców i liderów, którzy chcą mówić z charyzmą
+                i
+                błyskotliwością, bez tanich trików i sztucznego śmiechu. Od zasad i psychologii humoru, przez
+                storytelling,
+                po gesty, improwizację i kontrolę sceny – dowiesz się, jak śmiać się mądrze i mówić skuteczniej.
               </p>
               <p>
-                Dla mened�er�w, trener�w, freelancer�w i wszystkich, kt�rzy wyst�puj� przed lud�mi. �Autentyczny humor w
-                biznesie� pomo�e Ci zamieni� stres w pewno��, a zwyk�e prezentacje w zapami�tywane wyst�pienia. Bo
-                profesjonalizm nie wyklucza luzu � wr�cz przeciwnie, zaczyna si� tam, gdzie potrafisz rozbawi� innych, nie
-                trac�c wiarygodno�ci.
+                Dla menedżerów, trenerów, freelancerów i wszystkich, którzy występują przed ludźmi. „Autentyczny humor w
+                biznesie” pomoże Ci zamienić stres w pewność, a zwykłe prezentacje w zapamiętywane wystąpienia. Bo
+                profesjonalizm nie wyklucza luzu – wręcz przeciwnie, zaczyna się tam, gdzie potrafisz rozbawić innych,
+                nie
+                tracąc wiarygodności.
               </p>
             </div>
             <div class="relative">
-              <img class="mx-auto max-w-full" src="/assets/img/Mockup_do_kursu.png" alt="Mockup kursu: Autentyczny Humor w Biznesie">
+              <img class="mx-auto max-w-full" src="/assets/img/Mockup_do_kursu.png"
+                alt="Mockup kursu: Autentyczny Humor w Biznesie">
             </div>
           </div>
         </section>
-        <script>
-          document.addEventListener('DOMContentLoaded', function () {
-            try {
-              var dst = document.querySelector('.text-gray-700.leading-relaxed.space-y-4');
-              var src = document.querySelector('#o-kursie .space-y-4');
-              if (src && dst) { dst.innerHTML = src.innerHTML; }
-            } catch (e) {}
-          });
-        </script>
 
 
-
-        <div class="mt-8" id="unlock-note">
+        <div class="mt-8 hidden " id="unlock-note">
           <h1 class="text-center text-2xl sm:text-3xl md:text-5xl font-extrabold text-dark leading-tight">(Kolejny krok
             już
             za...)</h1>
@@ -265,17 +219,15 @@
           </div>
         </div>
 
-        <section id="cta" class="mt-10 ">
-          <a id="openPopup" data-open-popup data-cta-variant="long" href="#order"
-            class="block w-full text-center bg-gradient-to-r from-yellow-700 to-yellow-400 text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:opacity-90 transition">TAAAAK!
-            Kupuję dostęp do szkolenia i materiałów za straszliwe 299 zL? <span class="line-through opacity-70">399
-              zL?</span>!</a>
+        <section id="cta" class="mt-10  hidden">
+          <a id="openPopup1" data-open-popup data-cta-variant="long" href="#order"
+            class="block w-full text-center bg-gradient-to-r from-yellow-700 to-yellow-400 text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:opacity-90 transition">T</a>
           <p class="mt-2 text-center text-sm text-gray-700">
             Włożyłem w to blisko 16tys zł?. Zapytaj mnie, skąd ta kwota ;)
           </p>
 
           <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-            
+
 
           </div>
           <p class="mt-4 text-gray-600 italic text-center">Tu claim</p>
@@ -312,33 +264,51 @@
       </div>
     </section>
     <!-- Placeholder sections to be filled later -->
-    <section id="o-kursie" class="py-16">
+    <section class="py-16">
       <div class="max-w-[1100px] mx-auto px-6">
-        <h2 class="text-2xl md:text-3xl font-bold text-dark mb-3">O kursie</h2>
-        <div class="space-y-4 text-gray-700 leading-relaxed">
-          <p>
-            Humor w biznesie to nie żart – to narzędzie, które buduje relacje, przyciąga uwagę i sprzedaje z lekkością.
-            Ten kurs to praktyczny przewodnik po świecie mówców, sprzedawców i liderów, którzy chcą mówić z charyzmą i
-            błyskotliwością, bez tanich trików i sztucznego śmiechu. Od zasad i psychologii humoru, przez storytelling,
-            po gesty, improwizację i kontrolę sceny – dowiesz się, jak śmiać się mądrze i mówić skuteczniej.
-          </p>
-          <p>
-            Dla menedżerów, trenerów, freelancerów i wszystkich, którzy występują przed ludźmi. „Autentyczny humor w
-            biznesie” pomoże Ci zamienić stres w pewność, a zwykłe prezentacje w zapamiętywane wystąpienia. Bo
-            profesjonalizm nie wyklucza luzu – wręcz przeciwnie, zaczyna się tam, gdzie potrafisz rozbawić innych, nie
-            tracąc wiarygodności.
-          </p>
+        <h2 class="text-2xl md:text-3xl font-bold text-dark mb-3">Co kupujesz?</h2>
+        <div class="flex gap-8">
+          <!-- Image placeholder -->
+          <div class="hidden md:block w-1/3  rounded-lg">
+            <!-- Image will go here -->
+            <div class="aspect-[3/4] w-full h-full">
+              <img src="/assets/img/pointing_right.png" alt="Jerzy pokazujący w prawo"
+                class="w-full h-full object-cover rounded-lg" loading="lazy" decoding="async">
+            </div>
+          </div>
+
+          <!-- Text content -->
+          <div class="w-full md:w-2/3 space-y-4 text-gray-700 leading-relaxed">
+            <p>
+              Z jednej strony - kupujesz dostęp do platformy, na której znajduje się kurs online „Autentyczny Humor w
+              biznesie". Platforma WTL to nowoczesne, bezpieczne i wygodne miejsce do nauki z dowolnego urządzenia, z
+              dostępem do materiałów wideo, ćwiczeń i zasobów wspierających rozwój umiejętności. </p>
+            <p>
+              Po zakupie dostaniesz login i hasło, które pozwolą Ci korzystać z kursu przez 6 miesięcy od daty zakupu.
+              Dostaniesz też link do logowania, żebyś mógł zacząć naukę od razu.
+            </p>
+            <p>
+              Z drugiej strony - kupujesz moją wiedzę i doświadczenie sceniczne. Od 2008 roku, kiedy pierwszy raz
+              wyszedłem na sceny biznesowe (i ludzie śmiali się przez łzy), przez lata 2012-2016, kiedy szlifowałem
+              umiejętności na scenach Stowarzyszenia Profesjonalnych Mówców i BRian Tracy International Speakers Club,
+              do
+              czasów 2021-2025, gdzie na scenie Sales Angels mówiłem do największej społeczności sprzedawców w Polsce, a
+              na scenach Turbo Inspiracji - do tysięcy młodych ludzi przed maturą.
+            </p>
+            <p>
+              Ta różnorodność doświadczeń nauczyła mnie, jak dostosować humor do różnych odbiorców i sytuacji. W kursie
+              „Autentyczny humor w biznesie" podzielę się z Tobą sprawdzonymi technikami i strategiami, które pomogą Ci
+              stać się pewnym siebie mówcą, potrafiącym rozbawić i zaangażować publiczność.
+              Ale - w autentyczny sposób.
+            </p>
+            <p>
+              Nie znajdziesz tutaj sucharów (chyba że moje własne), recept z książek czy sztucznych trików. Znajdziesz
+              narzędzia, które pozwolą Ci zbudować Twoje własne, autentyczne podejście do humoru w biznesie.
+            </p>
+          </div>
         </div>
       </div>
     </section> <!-- Placeholder sections to be filled later -->
-    <section id="o-kursie" class="py-16">
-      <div class="max-w-[1100px] mx-auto px-6">
-        <h2 class="text-2xl md:text-3xl font-bold text-dark mb-3">O kursie</h2>
-        <div class="space-y-4 text-gray-700 leading-relaxed">
-
-        </div>
-      </div>
-    </section>
 
     <section id="program" class="py-16 bg-white">
       <div class="max-w-[1100px] mx-auto px-6">
@@ -389,6 +359,8 @@
 
   <script src="/skrypty/references.js?v=20251030"></script>
   <script>
+
+
     console.log('Initializing ReferencesWidget...');
     new ReferencesWidget('#refsGrid', { layout: 'carousel', keywords: 'humo;śmie;fun;zabaw', csv: '/assets/txt/referencje.csv', grid: { pageSize: 6 }, fields: { imie: true, rola: true, opinia: true, data: true, avatar: true } }).load();
     console.log('ReferencesWidget initialized.');
@@ -420,6 +392,10 @@
         const CTA_SHORT = 'TAAAAK! Kupuję dostęp';
         document.querySelectorAll('[data-cta-variant]').forEach(el => {
           const v = el.getAttribute('data-cta-variant');
+      el.addEventListener('click', function () {
+        fbq('trackCustom', 'PoputAHwB2025CTA_Clicked');
+        console.log('FB Pixel: PoputAHwB2025CTA_Clicked event sent.', { element: el, variant: v } );
+      });    
           if (v === 'short') {
             el.textContent = CTA_SHORT;
           } else {
@@ -433,7 +409,7 @@
   <!-- Tracking (Hotjar, FB Pixel) -->
   <script defer src="/admin/tracking.js.php"></script>
   <script>
-    (function(){
+    (function () {
       try {
         const getParams = Object.fromEntries(new URLSearchParams(window.location.search));
         console.log('[lp1] GET params:', getParams);
@@ -447,7 +423,7 @@
         const hash = (window.location.hash || '').replace(/^#/, '');
         if (hash) {
           const hsp = new URLSearchParams(hash);
-          if ((hsp.get('_method')||'').toLowerCase() === 'post') {
+          if ((hsp.get('_method') || '').toLowerCase() === 'post') {
             hsp.delete('_method');
             postParams = Object.fromEntries(hsp.entries());
           }
@@ -455,7 +431,7 @@
         if (!Object.keys(postParams).length) {
           const saved = sessionStorage.getItem('__lp1_post');
           if (saved) {
-            try { postParams = JSON.parse(saved) || {}; } catch(_) {}
+            try { postParams = JSON.parse(saved) || {}; } catch (_) { }
             sessionStorage.removeItem('__lp1_post');
           }
         }
@@ -621,6 +597,11 @@
       const ctaSection = document.getElementById('cta');
       const mqlMd = window.matchMedia('(min-width: 768px)');
       const backToTop = document.getElementById('backToTop');
+      mainCta.addEventListener('click', function () {
+        fbq('trackCustom', 'PoputAHwB2025CTA_Clicked');
+        console.log('FB Pixel: PoputAHwB2025CTA_Clicked event sent.');
+      });
+      
 
       function updateDockSpacer() {
         if (!ctaDock || !ctaDockSpacer) return;
@@ -711,6 +692,44 @@
       closeBtn && closeBtn.addEventListener('click', close);
       overlay && overlay.addEventListener('click', close);
       document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+      // Hide mobile menu after clicking any link inside it
+      try {
+        const menuLinks = (menu && menu.querySelectorAll('a[href]')) || [];
+        menuLinks.forEach(function (a) {
+          a.addEventListener('click', function () {
+            // Defer to allow default anchor handling (scroll) start
+            setTimeout(close, 0);
+          });
+        });
+      } catch (_) { }
+    })();
+  </script>
+  <script>
+    (function () {
+      var header = document.getElementById('siteHeader');
+      var logo = document.getElementById('siteHeaderLogo');
+      if (!header) return;
+      // enable smooth transitions
+      header.style.transition = 'background-color .95s ease, box-shadow .95s ease, padding .95s ease, transform .95s ease';
+      logo.style.transition = 'filter .95s ease, transform .95s ease, opacity .95s ease';
+
+      let rafId = null;
+      function onScroll() {
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(() => {
+          if (window.scrollY > 10) {
+            header.classList.add('header-solid');
+            header.classList.remove('header-transparent');
+            logo.classList.add('brightness-0');
+          } else {
+            header.classList.add('header-transparent');
+            header.classList.remove('header-solid');
+            logo.classList.remove('brightness-0');
+          }
+        });
+      }
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
     })();
   </script>
 </body>

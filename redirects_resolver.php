@@ -20,6 +20,8 @@ try {
     if ($row) {
         $now = new DateTimeImmutable('now');
         $destination = (string)$row['target'];
+        // Preserve incoming query string parameters when redirecting
+        $qs = parse_url($uri, PHP_URL_QUERY) ?: '';
         if (!empty($row['expires_at'])) {
             $exp = new DateTimeImmutable((string)$row['expires_at']);
             if ($exp < $now) {
@@ -37,6 +39,13 @@ try {
             $pdo->prepare('UPDATE redirects SET hit_count = hit_count + 1, last_hit_at = NOW() WHERE id = ?')->execute([(int)$row['id']]);
         } catch (Throwable $e) {}
 
+        if ($qs !== '') {
+            if (strpos($destination, '?') !== false) {
+                $destination .= '&' . $qs;
+            } else {
+                $destination .= '?' . $qs;
+            }
+        }
         header('Location: ' . $destination, true, $code);
         exit;
     }

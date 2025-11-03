@@ -66,6 +66,27 @@
   </aside>
 
   <main class="flex-1 pt-24 pb-16">
+  <section id="hero" class="relative min-h-screen flex items-center overflow-hidden">
+      <div class="absolute inset-0">
+        <img src="/assets/img/wystapienia.webp" alt="Tło – wystąpienia" class="w-full h-full object-cover" loading="eager" decoding="async">
+        <div class="absolute inset-0 bg-black/50"></div>
+      </div>
+      <div class="relative z-10 w-full">
+        <div class="max-w-[1100px] mx-auto px-6">
+          <div class="max-w-2xl text-white">
+            <h1 class="text-3xl sm:text-5xl md:text-6xl font-extrabold leading-tight">Autentyczny humor w biznesie</h1>
+            <p class="mt-4 text-xl sm:text-3xl md:text-4xl text-white/90">Pobierz darmowy ebook i naucz się korzystać z humoru w pracy bez ryzyka – praktyczne zasady, przykłady i narzędzia.</p>
+            <form id="heroForm" class="mt-6 grid gap-3 md:grid-cols-[1fr_auto]" novalidate>
+              <input type="email" name="EMAIL" placeholder="Twój e-mail" required class="w-full rounded-lg border border-white/30 bg-white/90 text-gray-900 placeholder-gray-500 px-4 py-3">
+              <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap px-6 py-3 rounded-lg bg-gradient-to-r from-yellow-700 to-yellow-400 text-white font-bold shadow hover:opacity-90 transition">Pobierz ebook</button>
+            </form>
+            <div id="heroFormErr" class="hidden mt-2 text-sm text-red-200"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
     <section class="pt-10 md:pt-20 pb-16 relative overflow-hidden">
       <div class="max-w-[1100px] mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
         <div>

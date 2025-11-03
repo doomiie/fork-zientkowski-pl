@@ -137,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <main>
     <div class="card">
       <h1 style="margin-top:0;"><?php echo $isEdit ? 'Edytuj' : 'Dodaj'; ?> przekierowanie</h1>
-      <p class="muted">WaÅ¼ne do: jeÅ›li puste â€” bezterminowo. Po dacie: kieruje na fallback (wymagany).</p>
+      <p class="muted">Wa??ne do: je?>li puste " bezterminowo. Po dacie: kieruje na fallback (wymagany). Parametry zapytania (GET, np. <code>?test=123&amp;taste=good+taste+here</code>) s automatycznie przekazywane do celu.</p>
       <?php if ($error): ?><div class="error"><?php echo htmlspecialchars($error, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></div><?php endif; ?>
       <?php if ($ok): ?><div class="ok"><?php echo htmlspecialchars($ok, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></div><?php endif; ?>
       <form method="post" action="redirects_edit.php<?php echo $isEdit ? ('?id=' . (int)$id) : '';?>" autocomplete="off">
@@ -160,7 +160,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           </div>
         </div>
 
-        <label for="target">Cel (np. /webinar2025.html)</label>
+        <label for="target">Cel (np. /webinar2025.html). Parametry z linku Ÿród³owego zostan¹ do³¹czone do celu.</label>
         <input type="text" id="target" name="target" value="<?php echo htmlspecialchars($target, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" required>
 
         <label for="fallback">Fallback (po wygaÅ›niÄ™ciu)</label>
@@ -177,4 +177,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </main>
 </body>
 </html>
+
 
