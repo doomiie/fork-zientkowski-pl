@@ -317,14 +317,26 @@
             const priceEl = document.getElementById('meeting-price');
 
             select.innerHTML = '';
-            Object.entries(meetingTypesCfg).forEach(([key, mt]) => {
+const entries = Object.entries(meetingTypesCfg);
+entries.sort((a,b) => {
+  const oa = (a[1] && (typeof a[1].order === 'number' || typeof a[1].order === 'string')) ? parseInt(a[1].order, 10) : NaN;
+  const ob = (b[1] && (typeof b[1].order === 'number' || typeof b[1].order === 'string')) ? parseInt(b[1].order, 10) : NaN;
+  const sa = Number.isFinite(oa) ? oa : 9999;
+  const sb = Number.isFinite(ob) ? ob : 9999;
+  if (sa !== sb) return sa - sb;
+  return String(a[0]).localeCompare(String(b[0]));
+});
+            entries.forEach(([key, mt]) => {
                 const opt = document.createElement('option');
                 opt.value = key;
-                opt.textContent = `${mt.emoji} ${mt.name}`;
+                opt.textContent = `${(mt.emoji||'')} ${(mt.name||key)}`.trim();
                 select.appendChild(opt);
             });
-            const defaultType = meetingTypesCfg['kup sesję'] ? 'kup sesję' : Object.keys(meetingTypesCfg)[0];
-            select.value = defaultType;
+const defaultType = meetingTypesCfg['kup sesj?t'] ? 'kup sesj?t' : (entries.length ? entries[0][0] : undefined);
+//const defaultType = Object.keys(meetingTypesCfg)[0]? meetingTypesCfg['kup sesj?t'] : 'kup sesj?t';
+console.log('Default meeting type:', defaultType);
+console.log('Meeting types config:', meetingTypesCfg);
+if (defaultType) select.value = defaultType;
             if (desc) {
                 desc.textContent = meetingTypesCfg[defaultType]?.description || '';
             }
@@ -787,6 +799,31 @@
                 }
 
                 if (mtConf.paid) {
+                    try {
+                        const frame = document.getElementById('payment-frame');
+                        const titleEl = document.getElementById('payment-title');
+                        const mtJson = ((cfgFromJson.meetingTypes || {})[meetingType]) || {};
+                        const amount = (mtJson.amount || mtConf.amount || '').toString().trim();
+                        if (titleEl) titleEl.textContent = amount ? `Sesja płatna, ${amount} zł` : 'Sesja płatna';
+
+                        let paidLink = (mtConf.paid_link) || mtJson.paid_link || frame?.getAttribute('src') || '';
+                        if (frame && paidLink) {
+                            try {
+                                const u = new URL(paidLink, location.origin);
+                                const emailVal = (form.querySelector("input[type='email']")?.value || '').trim();
+                                if (emailVal) u.searchParams.set('prefill_email', emailVal);
+                                paidLink = u.toString();
+                            } catch(_) {}
+                            frame.setAttribute('src', paidLink);
+                            // Try postMessage prefill after load (cross-origin safe if supported by receiver)
+                            const emailVal = (form.querySelector("input[type='email']")?.value || '').trim();
+                            if (emailVal) {
+                                frame.addEventListener('load', function once(){
+                                    try { frame.contentWindow.postMessage({ wtlAction: 'prefill_email', email: emailVal }, '*'); } catch(_) {}
+                                }, { once: true });
+                            }
+                        }
+                    } catch(e) {}
                     showPaymentIframe(finalize);
                 } else {
                     await finalize();
@@ -821,6 +858,7 @@
     <div id="payment-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
         <div class="bg-white rounded-lg w-full max-w-xl p-4 relative">
             <button id="payment-close" class="absolute top-2 right-2 text-gray-600">✕</button>
+            <h3 id="payment-title" class="text-lg font-bold mb-3">Sesja płatna</h3>
             <iframe id="payment-frame" class="w-full h-[70vh]" src="https://kotryszientkowski.elms.pl/assets/js/s.php?id=1f0e3dad99908345f7439f8ffabdffc4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
     </div>
@@ -844,3 +882,5 @@
 </body>
 
 </html>
+
+

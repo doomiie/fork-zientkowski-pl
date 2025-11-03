@@ -5,7 +5,7 @@
 
 date_default_timezone_set('Europe/Warsaw');
 
-$log = __DIR__ . '/../wtl_after.log';
+$log = __DIR__ . '/wtl_after.log';
 $payload = file_get_contents('php://input');
 file_put_contents($log, date('c') . " payload: " . $payload . "\n", FILE_APPEND);
 

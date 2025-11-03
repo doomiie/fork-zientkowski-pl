@@ -17,7 +17,8 @@
       "duration": "15",
       "amount": "",
       "description": "Krótka, 15minutowa sesja, podczas której omówimy zasady współpracy lub przedyskutujemy ustalony temat.",
-      "paid": false
+      "paid": false,
+      "order": 20
     },
     "sesja umówiona": {
       "name": "Sesja umówiona",
@@ -26,16 +27,19 @@
       "duration": "60",
       "amount": "",
       "description": "Jeśli jesteś w procesie współpracy ze mną, wybierz tę opcję - i pracujemy! :)",
-      "paid": false
+      "paid": false,
+      "order": 10
     },
     "kup sesję": {
       "name": "Kup sesję",
       "calendar_title": "Sesja płatna",
       "emoji": "💸",
       "duration": "60",
-      "amount": "1375",
+      "amount": "1512",
       "description": "Jeśli chcesz od razu rozpocząć współpracę, wybierz tą opcję. System poprosi Cię o opłatę przed rezerwacją terminu.",
-      "paid": true
+      "paid": true,
+      "paid_link": "https://kotryszientkowski.elms.pl/assets/js/s.php?id=1f0e3dad99908345f7439f8ffabdffc4",
+      "order": 30
     },
     "full day": {
       "name": "Full day",
@@ -44,7 +48,8 @@
       "duration": "full",
       "amount": "",
       "description": "Jeśli chcesz zarezerwować termin całodniowy (warsztaty, przemówienie...), wybierz tę opcję, zarezerwuj termin i skontaktuj się ze mną.",
-      "paid": false
+      "paid": false,
+      "order": 40
     },
     "Warsztaty online": {
       "name": "Warsztaty online",
@@ -53,7 +58,8 @@
       "duration": "90",
       "amount": "1",
       "description": "Warsztaty online trwają 4h. Jeśli je u mnie kupiłeś, rezerwuj termin!",
-      "paid": true
+      "paid": true,
+      "order": 50
     }
   }
 }
