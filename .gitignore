@@ -3,3 +3,5 @@ vendor/
 backend/credentials.json
 token.json
 node_modules/
+backend/secrets.php
+backend/secrets.example.php
