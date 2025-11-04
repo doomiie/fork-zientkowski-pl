@@ -104,6 +104,11 @@ function humanTokenStatus(?array $t): string {
             window.location.href = data.authUrl; // full-page redirect to Google consent
             return;
           }
+          if (res.ok && data && data.ok) {
+            show('Już autoryzowano — możesz wysłać test.', true);
+            showOut(JSON.stringify(data, null, 2));
+            return;
+          }
           show('Nie udało się rozpocząć autoryzacji. Sprawdź konfigurację.', false);
           if (data) showOut(JSON.stringify(data, null, 2));
         } catch(ex) {

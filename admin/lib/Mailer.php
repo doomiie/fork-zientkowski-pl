@@ -26,7 +26,7 @@ class GmailOAuthMailer {
         ]);
     }
 
-    public function send(string $to, string $subject, string $htmlBody, ?string $textBody = null): array {
+    public function send(string $to, string $subject, string $htmlBody, ?string $textBody = null, array $attachments = []): array {
         $s = $this->getSettings();
         if (($s['provider'] ?? '') !== 'gmail_oauth') {
             throw new RuntimeException('Unsupported provider');
@@ -38,7 +38,7 @@ class GmailOAuthMailer {
         }
         $fromName = (string)($s['sender_name'] ?? '');
         $accessToken = $this->refreshAccessToken((string)$s['client_id'], (string)$s['client_secret'], (string)$s['refresh_token']);
-        $raw = $this->buildMime($s['sender_email'], $fromName, $to, $subject, $htmlBody, $textBody);
+        $raw = $this->buildMime($s['sender_email'], $fromName, $to, $subject, $htmlBody, $textBody, $attachments);
         $resp = $this->gmailSendRaw($accessToken, $raw);
         $this->pdo->prepare('UPDATE mail_settings SET last_used_at = NOW() WHERE id=1')->execute();
         return $resp;
@@ -123,8 +123,7 @@ class GmailOAuthMailer {
         return '=?UTF-8?B?' . base64_encode($text) . '?=';
     }
 
-    private function buildMime(string $fromEmail, string $fromName, string $toEmail, string $subject, string $html, ?string $text = null): string {
-        $boundary = 'b_' . bin2hex(random_bytes(8));
+    private function buildMime(string $fromEmail, string $fromName, string $toEmail, string $subject, string $html, ?string $text = null, array $attachments = []): string {
         $date = date('r');
         $from = $fromName ? ($this->encodeHeader($fromName) . " <{$fromEmail}>") : $fromEmail;
         $headers = [];
@@ -133,26 +132,96 @@ class GmailOAuthMailer {
         $headers[] = 'Subject: ' . $this->encodeHeader($subject);
         $headers[] = 'MIME-Version: 1.0';
         $headers[] = 'Date: ' . $date;
-        $headers[] = 'Content-Type: multipart/alternative; boundary="' . $boundary . '"';
 
         $textPart = $text ?? strip_tags(preg_replace('/<br\b[^>]*>/i', "\n", $html));
+
+        // If no attachments, build simple multipart/alternative
+        if (empty($attachments)) {
+            $altBoundary = 'b_alt_' . bin2hex(random_bytes(8));
+            $headers[] = 'Content-Type: multipart/alternative; boundary="' . $altBoundary . '"';
+            $parts = [];
+            $parts[] = '--' . $altBoundary;
+            $parts[] = 'Content-Type: text/plain; charset=UTF-8';
+            $parts[] = 'Content-Transfer-Encoding: base64';
+            $parts[] = '';
+            $parts[] = chunk_split(base64_encode($textPart));
+            $parts[] = '--' . $altBoundary;
+            $parts[] = 'Content-Type: text/html; charset=UTF-8';
+            $parts[] = 'Content-Transfer-Encoding: base64';
+            $parts[] = '';
+            $parts[] = chunk_split(base64_encode($html));
+            $parts[] = '--' . $altBoundary . '--';
+            $parts[] = '';
+            return implode("\r\n", $headers) . "\r\n\r\n" . implode("\r\n", $parts);
+        }
+
+        // With attachments: multipart/mixed containing multipart/alternative and files
+        $mixBoundary = 'b_mix_' . bin2hex(random_bytes(8));
+        $altBoundary = 'b_alt_' . bin2hex(random_bytes(8));
+        $headers[] = 'Content-Type: multipart/mixed; boundary="' . $mixBoundary . '"';
+
         $parts = [];
-        $parts[] = '--' . $boundary;
+        // First part: the alternative block
+        $parts[] = '--' . $mixBoundary;
+        $parts[] = 'Content-Type: multipart/alternative; boundary="' . $altBoundary . '"';
+        $parts[] = '';
+        $parts[] = '--' . $altBoundary;
         $parts[] = 'Content-Type: text/plain; charset=UTF-8';
         $parts[] = 'Content-Transfer-Encoding: base64';
         $parts[] = '';
         $parts[] = chunk_split(base64_encode($textPart));
-
-        $parts[] = '--' . $boundary;
+        $parts[] = '--' . $altBoundary;
         $parts[] = 'Content-Type: text/html; charset=UTF-8';
         $parts[] = 'Content-Transfer-Encoding: base64';
         $parts[] = '';
         $parts[] = chunk_split(base64_encode($html));
+        $parts[] = '--' . $altBoundary . '--';
 
-        $parts[] = '--' . $boundary . '--';
+        // Attachments (accept file paths or arrays with inline content)
+        foreach ($attachments as $att) {
+            $content = null;
+            $mime = 'application/octet-stream';
+            $name = 'attachment.bin';
 
-        $raw = implode("\r\n", $headers) . "\r\n\r\n" . implode("\r\n", $parts);
-        return $raw;
+            if (is_array($att)) {
+                if (isset($att['content']) && is_string($att['content'])) {
+                    $content = $att['content'];
+                }
+                if (!empty($att['mime'])) { $mime = (string)$att['mime']; }
+                if (!empty($att['name'])) { $name = (string)$att['name']; }
+                if ($content === null && !empty($att['path']) && is_readable((string)$att['path'])) {
+                    $content = @file_get_contents((string)$att['path']);
+                    if ($name === 'attachment.bin') { $name = basename((string)$att['path']); }
+                    $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+                    if ($mime === 'application/octet-stream') {
+                        if ($ext === 'pdf') { $mime = 'application/pdf'; }
+                    }
+                }
+            } else {
+                $filePath = (string)$att;
+                if (!is_readable($filePath)) { continue; }
+                $content = @file_get_contents($filePath);
+                if ($content === false) { continue; }
+                $name = basename($filePath);
+                $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+                if ($ext === 'pdf') { $mime = 'application/pdf'; }
+            }
+
+            if (!is_string($content) || $content === '') { continue; }
+            // Safe ASCII fallback filename for headers
+            $safeName = preg_replace('/[^A-Za-z0-9_.-]+/', '_', $name);
+            if ($safeName === '' || $safeName === null) { $safeName = 'attachment.bin'; }
+
+            $parts[] = '--' . $mixBoundary;
+            $parts[] = 'Content-Type: ' . $mime . '; name="' . $safeName . '"';
+            $parts[] = 'Content-Transfer-Encoding: base64';
+            $parts[] = 'Content-Disposition: attachment; filename="' . $safeName . '"';
+            $parts[] = '';
+            $parts[] = chunk_split(base64_encode($content));
+        }
+
+        $parts[] = '--' . $mixBoundary . '--';
+        $parts[] = '';
+        return implode("\r\n", $headers) . "\r\n\r\n" . implode("\r\n", $parts);
     }
 }
-

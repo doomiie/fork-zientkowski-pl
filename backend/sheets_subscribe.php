@@ -1,5 +1,4 @@
-<?php
-declare(strict_types=1);
+﻿<?php
 
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
@@ -94,10 +93,50 @@ try {
   $values = [ [ date('Y-m-d H:i:s'), $email, 'ebookhumorwbiznesie' ] ];
   $body = new Google_Service_Sheets_ValueRange([ 'values' => $values ]);
   $params = [ 'valueInputOption' => 'RAW' ];
-  $service->spreadsheets_values->append($spreadsheetId, $range, $body, $params);
+  $appendResp = $service->spreadsheets_values->append($spreadsheetId, $range, $body, $params);
+  $updatedRange = method_exists($appendResp, 'getUpdates') && $appendResp->getUpdates() ? $appendResp->getUpdates()->getUpdatedRange() : null;
+  $updatedRows  = method_exists($appendResp, 'getUpdates') && $appendResp->getUpdates() ? $appendResp->getUpdates()->getUpdatedRows()  : null;
 
-  echo json_encode(['ok' => true]);
+  // Send confirmation email synchronously and include status in response
+  $mail = false; $mailError = null;
+  try {
+    require_once __DIR__ . '/../admin/db.php';
+    require_once __DIR__ . '/../admin/lib/Mailer.php';
+    $mailer = new GmailOAuthMailer($pdo);
+    // ASCII-only to avoid encoding pitfalls on some hosts
+    $subject = 'Dzięki za pobranie ebooka';
+    $html = '<p>Dziekuje za pobranie ebooka, Jerzy</p>';
+    $text = 'Dziekuje za pobranie ebooka, Jerzy';
+    $docRoot = rtrim((string)($_SERVER['DOCUMENT_ROOT'] ?? dirname(__DIR__)), '/');
+    $filePath = $docRoot . '/docs/Autentyczny Humor w Biznesie, 2025, ebook Jerzy Zientkowski.pdf';
+    $atts = [];
+    if (is_readable($filePath)) {
+      $atts[] = $filePath;
+    } else {
+      // Try remote fetch to embed as attachment if FS is not readable
+      $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
+      $host = $_SERVER['HTTP_HOST'] ?? 'zientkowski.pl';
+      $url = $scheme . '://' . $host . '/docs/' . rawurlencode('Autentyczny Humor w Biznesie, 2025, ebook Jerzy Zientkowski.pdf');
+      $ctx = stream_context_create(['http' => ['timeout' => 15]]);
+      $remote = @file_get_contents($url, false, $ctx);
+      if (is_string($remote) && $remote !== '') {
+        $atts[] = [ 'name' => 'ebook.pdf', 'mime' => 'application/pdf', 'content' => $remote ];
+      } else {
+        // Final fallback: link only
+        $html .= 'From ' . htmlspecialchars($filePath, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '<p><a href="' . htmlspecialchars($url, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '">Pobierz ebook (link)</a></p>';
+        $text .= "\nPobierz ebook (link): " . $url;
+      }
+    }
+    $mailer->send($email, $subject, $html, $text, $atts);
+    $mail = true;
+  } catch (Throwable $e) {
+    $mailError = $e->getMessage();
+  }
+  $resp = ['ok' => true, 'range' => $range, 'updatedRange' => $updatedRange, 'updatedRows' => $updatedRows, 'mail' => $mail];
+  if (!$mail) { $resp['mailError'] = $mailError; }
+  echo json_encode($resp);
 } catch (Throwable $e) {
   http_response_code(500);
   echo json_encode(['error' => 'Błąd zapisu do Arkuszy Google.', 'detail' => $e->getMessage()]);
 }
+
