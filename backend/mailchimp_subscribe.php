@@ -23,14 +23,19 @@ if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
 }
 
 // Configuration
-$apiKey = getenv('APP_MC_API_KEY') ?: '';
-$listId = getenv('APP_MC_LIST_ID') ?: '0198f94b4b';
+// Prefer environment variables; allow optional fallback via backend/secrets.php (not committed)
+if (file_exists(__DIR__ . '/secrets.php')) {
+  // expects optional $MC_API_KEY and $MC_LIST_ID
+  @include __DIR__ . '/secrets.php';
+}
+$apiKey = getenv('APP_MC_API_KEY') ?: (isset($MC_API_KEY) ? (string)$MC_API_KEY : '');
+$listId = getenv('APP_MC_LIST_ID') ?: (isset($MC_LIST_ID) ? (string)$MC_LIST_ID : '0198f94b4b');
 $tagName = 'ebook_ahwb_pobrany';
 $doubleOptIn = true; // włączony
 
 if ($apiKey === '' || strpos($apiKey, '-') === false) {
   http_response_code(500);
-  echo json_encode(['error' => 'Brak klucza Mailchimp (APP_MC_API_KEY). Ustaw zmienną środowiskową.']);
+  echo json_encode(['error' => 'Brak klucza Mailchimp. Ustaw APP_MC_API_KEY (env) lub dodaj backend/secrets.php z $MC_API_KEY.']);
   exit;
 }
 if ($listId === '') {
@@ -78,7 +83,6 @@ $payload = [
 ];
 $res = mc_request('PUT', $upsertUrl, $payload, $apiKey);
 
-// If explicit status change needed for existing member (e.g., was unsubscribed), do not force it here; leave as-is.
 if ($res['status'] >= 400) {
   // Return MC error if present
   $msg = 'Błąd zapisu w Mailchimp.';
@@ -88,10 +92,58 @@ if ($res['status'] >= 400) {
   exit;
 }
 
-// Add tag (active)
+// Determine member status and reconcile according to requirements
+$currentStatus = '';
+if (is_array($res['body']) && isset($res['body']['status'])) {
+  $currentStatus = (string)$res['body']['status'];
+}
+
+// If already subscribed, just add tag; no confirmation e-mail will be sent in this case
+if ($currentStatus === 'subscribed') {
+  $tagUrl = $base . "/lists/" . rawurlencode($listId) . "/members/" . $subscriberHash . "/tags";
+  $tagPayload = [ 'tags' => [[ 'name' => $tagName, 'status' => 'active' ]] ];
+  $tagRes = mc_request('POST', $tagUrl, $tagPayload, $apiKey);
+  echo json_encode(['ok' => true, 'mc_status' => 'subscribed', 'tagged' => ($tagRes['status'] < 400)]);
+  exit;
+}
+
+// If previously unsubscribed/cleaned/archived, request confirmation by setting status pending
+if (in_array($currentStatus, ['unsubscribed','cleaned','archived'], true)) {
+  $patchUrl = $base . "/lists/" . rawurlencode($listId) . "/members/" . $subscriberHash;
+  $patch = mc_request('PATCH', $patchUrl, ['status' => 'pending'], $apiKey);
+  if ($patch['status'] >= 400) {
+    $msg = 'Nie udało się wysłać ponownego potwierdzenia.';
+    if (is_array($patch['body']) && !empty($patch['body']['detail'])) { $msg = (string)$patch['body']['detail']; }
+    http_response_code(400);
+    echo json_encode(['error' => $msg, 'mc' => $patch['body']]);
+    exit;
+  }
+  // proceed to tagging after status update (tagging may still apply only after confirmation)
+}
+
+// Add tag (active) for new/pending subscribers
 $tagUrl = $base . "/lists/" . rawurlencode($listId) . "/members/" . $subscriberHash . "/tags";
 $tagPayload = [ 'tags' => [[ 'name' => $tagName, 'status' => 'active' ]] ];
 $tagRes = mc_request('POST', $tagUrl, $tagPayload, $apiKey);
 // Ignore tag errors for now; proceed
 
-echo json_encode(['ok' => true]);
+// Send ebook link via configured mailer (best-effort)
+try {
+    require_once __DIR__ . '/../admin/db.php';
+    require_once __DIR__ . '/../admin/lib/Mailer.php';
+    $mailer = new GmailOAuthMailer($pdo);
+    $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
+    $host = $_SERVER['HTTP_HOST'] ?? 'zientkowski.pl';
+    $baseUrl = $scheme . '://' . $host;
+    $fileName = 'Autentyczny Humor w Biznesie, 2025, ebook Jerzy Zientkowski.pdf';
+    $fileUrl = $baseUrl . '/docs/' . rawurlencode($fileName);
+    $subject = 'Oto Twój Ebook';
+    $safeUrl = htmlspecialchars($fileUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    $html = '<p>Dziękujemy za zapis.</p><p><a href="' . $safeUrl . '">Kliknij tutaj, aby pobrać ebook</a>.</p>';
+    $text = "Dziękujemy za zapis.\nPobierz ebook: " . $fileUrl;
+    $mailer->send($email, $subject, $html, $text);
+} catch (Throwable $e) {
+    // ignore mail errors, do not block API response
+}
+
+echo json_encode(['ok' => true, 'mc_status' => ($currentStatus !== '' ? $currentStatus : 'pending')]);

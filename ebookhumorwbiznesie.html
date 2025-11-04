@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
@@ -57,8 +57,13 @@
           : /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
           if(!ok){ showError('Podaj poprawny adres e-mail.'); return; }
           try{
-            const res = await fetch('/backend/mailchimp_subscribe.php', { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ email }) });
+            const res = await fetch('/backend/sheets_subscribe.php', { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ email }) });
             const data = await res.json().catch(()=>({}));
+            if (res.status === 401 && data && data.error === 'auth_required' && data.authUrl) {
+              window.open(data.authUrl, '_blank', 'noopener');
+              showError('Autoryzuj dostęp do Arkuszy Google, wróć i kliknij ponownie.');
+              return;
+            }
             if(!res.ok || data.error){ showError(data.error || 'Błąd zapisu.'); return; }
             window.location.href = '/lp/ebookhumorwbiznesieup.html';
           }catch(ex){ showError('Błąd połączenia.'); }
@@ -68,6 +73,7 @@
   </script>
 </body>
 </html>
+
 
 
 

@@ -58,6 +58,11 @@ require_login();
           <li><a class="btn" href="404stats.php">404 - raporty i analiza</a></li>
         </ul>
 
+        <h2 style="margin-top:12px;">Integracje</h2>
+        <ul>
+          <li><a class="btn" href="sheets.php">Google Sheets — autoryzacja i test</a></li>
+        </ul>
+
         <h2 style="margin-top:12px;">Poczta</h2>
         <ul>
           <li><a class="btn" href="mail.php">Gmail OAuth – konfiguracja i test</a></li>
