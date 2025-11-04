@@ -100,35 +100,75 @@ try {
   // Send confirmation email synchronously and include status in response
   $mail = false; $mailError = null;
   try {
+    // Resolve per-landing mail config (POST overrides, fallback to /lp/<landing>.json from Referer)
+    $docRoot = rtrim((string)($_SERVER['DOCUMENT_ROOT'] ?? dirname(__DIR__)), '/');
+    $mailSubject = null; $mailTemplate = null; $mailAttachment = null;
+    if (isset($data['mail_subject']) && is_string($data['mail_subject'])) { $mailSubject = trim($data['mail_subject']); }
+    if (isset($data['mail_template']) && is_string($data['mail_template'])) { $mailTemplate = trim($data['mail_template']); }
+    if (isset($data['mail_attachment']) && is_string($data['mail_attachment'])) { $mailAttachment = trim($data['mail_attachment']); }
+
+    if ($mailSubject === null || $mailTemplate === null || $mailAttachment === null) {
+      $ref = (string)($_SERVER['HTTP_REFERER'] ?? '');
+      if ($ref !== '') {
+        $path = parse_url($ref, PHP_URL_PATH) ?: '';
+        $base = basename($path);
+        if ($base !== '') {
+          $name = preg_replace('/\.[^.]+$/', '', $base);
+          $cfgPath = $docRoot . '/lp/' . $name . '.json';
+          if (is_readable($cfgPath)) {
+            $cfg = json_decode((string)file_get_contents($cfgPath), true);
+            if (is_array($cfg) && isset($cfg['mail']) && is_array($cfg['mail'])) {
+              $m = $cfg['mail'];
+              if ($mailSubject === null && !empty($m['subject'])) $mailSubject = (string)$m['subject'];
+              if ($mailTemplate === null && !empty($m['template'])) $mailTemplate = (string)$m['template'];
+              if ($mailAttachment === null && !empty($m['attachment'])) $mailAttachment = (string)$m['attachment'];
+            }
+          }
+        }
+      }
+    }
+
+    if ($mailSubject === null) { $mailSubject = 'Dziękujemy za pobranie ebooka'; }
+    if ($mailTemplate === null) { $mailTemplate = 'ebookhumorwbiznesie.html'; }
+
+    $safeTpl = preg_replace('/[^A-Za-z0-9_.-]+/', '', (string)$mailTemplate);
+    $tplPath = $docRoot . '/docs/mail/' . $safeTpl;
+    $html = is_readable($tplPath) ? (string)file_get_contents($tplPath) : '<p>Dziękujemy za pobranie ebooka.</p><p><a href="{{DOWNLOAD_URL}}">Pobierz</a></p>';
+
+    $downloadUrl = null; $atts = [];
+    if ($mailAttachment) {
+      $attPath = (string)$mailAttachment;
+      if (str_starts_with($attPath, '/')) {
+        $abs = $docRoot . $attPath;
+        if (is_readable($abs)) {
+          $atts[] = $abs;
+        } else {
+          $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
+          $host = $_SERVER['HTTP_HOST'] ?? 'zientkowski.pl';
+          $url = $scheme . '://' . $host . $attPath;
+          $ctx = stream_context_create(['http' => ['timeout' => 15]]);
+          $remote = @file_get_contents($url, false, $ctx);
+          if (is_string($remote) && $remote !== '') {
+            $atts[] = [ 'name' => 'ebook.pdf', 'mime' => 'application/pdf', 'content' => $remote ];
+          }
+          $downloadUrl = $url;
+        }
+        if ($downloadUrl === null) {
+          $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
+          $host = $_SERVER['HTTP_HOST'] ?? 'zientkowski.pl';
+          $downloadUrl = $scheme . '://' . $host . $attPath;
+        }
+      }
+    }
+
+    // Placeholder substitution
+    $html = str_replace(['{{EMAIL}}','{{DOWNLOAD_URL}}','{{DATE}}'], [htmlspecialchars($email, ENT_QUOTES|ENT_SUBSTITUTE, 'UTF-8'), (string)$downloadUrl, date('Y-m-d H:i')], $html);
+    $text = trim(strip_tags(preg_replace('/<br\b[^>]*>/i', "\n", $html)));
+
     require_once __DIR__ . '/../admin/db.php';
     require_once __DIR__ . '/../admin/lib/Mailer.php';
     $mailer = new GmailOAuthMailer($pdo);
-    // ASCII-only to avoid encoding pitfalls on some hosts
-    $subject = 'Dzięki za pobranie ebooka';
-    $html = '<p>Dziekuje za pobranie ebooka, Jerzy</p>';
-    $text = 'Dziekuje za pobranie ebooka, Jerzy';
-    $docRoot = rtrim((string)($_SERVER['DOCUMENT_ROOT'] ?? dirname(__DIR__)), '/');
-    $filePath = $docRoot . '/docs/Autentyczny Humor w Biznesie, 2025, ebook Jerzy Zientkowski.pdf';
-    $atts = [];
-    if (is_readable($filePath)) {
-      $atts[] = $filePath;
-    } else {
-      // Try remote fetch to embed as attachment if FS is not readable
-      $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
-      $host = $_SERVER['HTTP_HOST'] ?? 'zientkowski.pl';
-      $url = $scheme . '://' . $host . '/docs/' . rawurlencode('Autentyczny Humor w Biznesie, 2025, ebook Jerzy Zientkowski.pdf');
-      $ctx = stream_context_create(['http' => ['timeout' => 15]]);
-      $remote = @file_get_contents($url, false, $ctx);
-      if (is_string($remote) && $remote !== '') {
-        $atts[] = [ 'name' => 'ebook.pdf', 'mime' => 'application/pdf', 'content' => $remote ];
-      } else {
-        // Final fallback: link only
-        $html .= 'From ' . htmlspecialchars($filePath, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '<p><a href="' . htmlspecialchars($url, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '">Pobierz ebook (link)</a></p>';
-        $text .= "\nPobierz ebook (link): " . $url;
-      }
-    }
-    $mailer->send($email, $subject, $html, $text, $atts);
-    $mail = true;
+    $mailer->send($email, $mailSubject, $html, $text, $atts);
   } catch (Throwable $e) {
     $mailError = $e->getMessage();
   }

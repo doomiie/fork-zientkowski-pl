@@ -1,0 +1,8 @@
+{
+  "mail": {
+    "subject": "Hej, dzięki za pobranie ebooka „Autentyczny humor w biznesie”!",
+    "template": "mail_ebookhumorwbiznesie.html",
+    "attachment": "/docs/Autentyczny Humor w Biznesie, 2025, ebook Jerzy Zientkowski.pdf"
+  }
+}
+

@@ -36,7 +36,6 @@
             <div id="heroFormErr" class="hidden mt-2 text-sm text-red-200"></div>
           </div>
         </div>
-      </div>
     </section>
   </main>
 
@@ -56,7 +55,6 @@
           ? emailInput.checkValidity()
           : /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
           if(!ok){ showError('Podaj poprawny adres e-mail.'); return; }
-          try{
             const res = await fetch('/backend/sheets_subscribe.php', { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ email }) });
             const data = await res.json().catch(()=>({}));
             if (res.status === 401 && data && data.error === 'auth_required' && data.authUrl) {
@@ -65,7 +63,7 @@
               return;
             }
             if(!res.ok || data.error){ showError(data.error || 'Błąd zapisu.'); return; }
-            //window.location.href = '/lp/ebookhumorwbiznesieup.html';
+            window.location.href = '/lp/ebookhumorwbiznesieup.html';
           }catch(ex){ showError('Błąd połączenia.'); }
         });
       }
@@ -73,8 +71,3 @@
   </script>
 </body>
 </html>
-
-
-
-
-
