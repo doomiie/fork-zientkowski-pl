@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
@@ -21,18 +21,25 @@
     <!-- Hero only (copied from lp/lp2.html) -->
     <section id="hero" class="relative min-h-screen flex items-center overflow-hidden">
       <div class="absolute inset-0">
-        <img src="/assets/img/wystapienia.webp" alt="Tło – wystąpienia" class="w-full h-full object-cover" loading="eager" decoding="async">
+        <img src="/assets/img/wystapienia.webp" alt="Tło - wystąpienia" class="w-full h-full object-cover" loading="eager" decoding="async">
         <div class="absolute inset-0 bg-black/50"></div>
       </div>
       <div class="relative z-10 w-full">
         <div class="max-w-[1100px] mx-auto px-6">
           <div class="max-w-2xl text-white">
             <h1 class="text-3xl sm:text-5xl md:text-6xl font-extrabold leading-tight">Autentyczny humor w biznesie</h1>
-            <p class="mt-4 text-base sm:text-lg text-white/90">Pobierz darmowy ebook i naucz się korzystać z humoru w pracy bez ryzyka – praktyczne zasady, przykłady i narzędzia.</p>
+            <p class="mt-4 text-base sm:text-lg text-white/90">Pobierz darmowy ebook i naucz się korzystać z humoru w pracy bez ryzyka - praktyczne zasady, przykłady i narzędzia.</p>
             <form id="heroForm" class="mt-6 grid gap-3 md:grid-cols-[1fr_auto]" novalidate>
-              <input type="email" name="EMAIL" placeholder="Twój e-mail" required class="w-full rounded-lg border border-white/30 bg-white/90 text-gray-900 placeholder-gray-500 px-4 py-3">
-              <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap px-6 py-3 rounded-lg bg-gradient-to-r from-yellow-700 to-yellow-400 text-white font-bold shadow hover:opacity-90 transition">Pobierz ebook</button>
+              <input id="heroEmail" type="email" name="EMAIL" placeholder="Twój e-mail" required class="w-full rounded-lg border border-white/30 bg-white/90 text-gray-900 placeholder-gray-500 px-4 py-3">
+              <button id="heroSubmit" type="submit" class="inline-flex items-center justify-center whitespace-nowrap px-6 py-3 rounded-lg bg-gradient-to-r from-yellow-700 to-yellow-400 text-white font-bold shadow hover:opacity-90 transition">Pobierz ebook</button>
             </form>
+            <div id="heroSpinner" class="hidden mt-3 text-white/90 text-sm inline-flex items-center gap-2">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="#ffffff" stroke-width="4"/>
+                <path class="opacity-90" fill="#ffffff" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
+              </svg>
+              <span>Przetwarzam zapis…</span>
+            </div>
             <div id="heroFormErr" class="hidden mt-2 text-sm text-red-200"></div>
           </div>
         </div>
@@ -44,17 +51,47 @@
       const form = document.getElementById('heroForm');
       const err = document.getElementById('heroFormErr');
       function showError(msg){ if(err){ err.textContent = msg; err.classList.remove('hidden'); } }
+      const emailEl = document.getElementById("heroEmail");
+      const submitEl = document.getElementById("heroSubmit");
+      const spinnerEl = document.getElementById("heroSpinner");
+      function setLoading(on){
+        if (on) {
+          if (emailEl) { emailEl.setAttribute("disabled","disabled"); emailEl.style.opacity = '0.6'; emailEl.style.cursor = 'not-allowed'; }
+          if (submitEl) { submitEl.setAttribute("disabled","disabled"); submitEl.style.opacity = '0.8'; submitEl.style.cursor = 'not-allowed'; }
+          if (spinnerEl) {
+            spinnerEl.classList.remove("hidden");
+            // inject keyframes once
+            if (!document.getElementById('hero-spinner-anim')) {
+              const style = document.createElement('style');
+              style.id = 'hero-spinner-anim';
+              style.textContent = '@keyframes hero-spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}';
+              document.head.appendChild(style);
+            }
+            const svg = spinnerEl.querySelector('svg');
+            if (svg) {
+              svg.style.animation = 'hero-spin 1s linear infinite';
+              svg.style.transformOrigin = '50% 50%';
+            }
+          }
+        } else {
+          if (emailEl) { emailEl.removeAttribute("disabled"); emailEl.style.opacity = ''; emailEl.style.cursor = ''; }
+          if (submitEl) { submitEl.removeAttribute("disabled"); submitEl.style.opacity = ''; submitEl.style.cursor = ''; }
+          if (spinnerEl) { spinnerEl.classList.add("hidden"); }
+        }
+      }
       function clearError(){ if(err){ err.textContent = ''; err.classList.add('hidden'); } }
       if(form){
         form.addEventListener('submit', async function(e){
           e.preventDefault();
           clearError();
-          const emailInput = form.querySelector('input[type=\"email\"]');
+          const emailInput = form.querySelector('input[type="email"]');
           const email = (emailInput && emailInput.value ? emailInput.value : '').trim();
         const ok = (emailInput && typeof emailInput.checkValidity === 'function')
           ? emailInput.checkValidity()
           : /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
           if(!ok){ showError('Podaj poprawny adres e-mail.'); return; }
+          try {
+          setLoading(true);
             const res = await fetch('/backend/sheets_subscribe.php', { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ email }) });
             const data = await res.json().catch(()=>({}));
             if (res.status === 401 && data && data.error === 'auth_required' && data.authUrl) {
@@ -64,10 +101,11 @@
             }
             if(!res.ok || data.error){ showError(data.error || 'Błąd zapisu.'); return; }
             window.location.href = '/lp/ebookhumorwbiznesieup.html';
-          }catch(ex){ showError('Błąd połączenia.'); }
+          } catch (ex) { showError('Błąd połączenia.'); console.warn('Submit error:', ex); } finally { setLoading(false); }
         });
       }
     })();
   </script>
 </body>
 </html>
+

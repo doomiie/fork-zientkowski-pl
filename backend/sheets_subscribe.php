@@ -40,7 +40,7 @@ try {
       file_put_contents($tokenPath, json_encode($token));
       $client->setAccessToken($token);
     }
-    $return = $_GET['state'] ?? $_GET['return'] ?? '/ebookhumorwbiznesie.html';
+    $return = $_GET['state'] ?? $_GET['return'] ?? '/lp/ebookhumorwbiznesie.html';
     header('Location: ' . $return);
     exit;
   }
@@ -55,7 +55,7 @@ try {
       file_put_contents($tokenPath, json_encode($client->getAccessToken()));
     } else {
       // Try to preserve a return target for UX; prefer explicit ?return=
-      $ret = $_GET['return'] ?? ($_SERVER['HTTP_REFERER'] ?? '/ebookhumorwbiznesie.html');
+      $ret = $_GET['return'] ?? ($_SERVER['HTTP_REFERER'] ?? '/lp/ebookhumorwbiznesie.html');
       // Carry return via OAuth state, then build auth URL
       $client->setState($ret);
       $authUrl = $client->createAuthUrl();

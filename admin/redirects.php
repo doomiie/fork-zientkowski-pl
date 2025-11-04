@@ -93,7 +93,12 @@ try {
             <?php foreach ($rows as $r): ?>
               <tr>
                 <td><?php echo (int)$r['id']; ?></td>
-                <td><code><?php echo htmlspecialchars($r['link'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></code></td>
+                <td>
+                  <?php $href = (string)$r['link']; ?>
+                  <a href="<?php echo htmlspecialchars($href, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" target="_blank" rel="noopener">
+                    <code><?php echo htmlspecialchars($r['link'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></code>
+                  </a>
+                </td>
                 <td><?php echo (int)$r['http_code']; ?></td>
                 <td style="max-width:260px; overflow:auto;"><code><?php echo htmlspecialchars($r['target'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></code></td>
                 <td><?php echo htmlspecialchars((string)$r['expires_at'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></td>
@@ -122,4 +127,3 @@ try {
   </main>
 </body>
 </html>
-
