@@ -2,15 +2,36 @@
 <html lang="pl">
 
 <head>
-    <script id="mcjs">!function(c,h,i,m,p){m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.src=i,p.parentNode.insertBefore(m,p)}(document,"script","https://chimpstatic.com/mcjs-connected/js/users/a6668a84e3a3a8d0563bd3fcc/08a38687e17bc48d8e6fcd0b8.js");</script>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jerzy Zientkowski - Biografia</title>
     <link rel="preload" as="style" href="/assets/css/app.min.css" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="/assets/css/app.min.css"></noscript>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
-    rel="stylesheet">
+    <!-- Local font: Space Grotesk (subset PL) -->
+    <link rel="preload" as="font" href="/assets/fonts/SpaceGrotesk-PL.woff2" type="font/woff2" crossorigin>
+    <style>
+        @font-face { font-family: 'Space Grotesk'; src: url('/assets/fonts/SpaceGrotesk-PL.woff2') format('woff2'); font-weight: 300 700; font-style: normal; font-display: swap; }
+    </style>
     <link rel="stylesheet" href="./assets/css/loader.css">
+    <!-- SEO -->
+    <!-- OSTRZEŻENIE: description/OG/twitter opis dodany automatycznie — proszę zweryfikować. -->
+    <meta name="description" content="Biografia Jerzego Zientkowskiego — doświadczenie, wystąpienia, projekty.">
+    <meta name="author" content="Jerzy Zientkowski">
+    <meta property="og:title" content="Jerzy Zientkowski - Biografia">
+    <meta property="og:description" content="Biografia Jerzego Zientkowskiego — doświadczenie, wystąpienia, projekty.">
+    <meta property="og:image" content="https://zientkowski.pl/assets/img/wystapienia.webp">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://zientkowski.pl/bio.html">
+    <meta property="og:site_name" content="Jerzy Zientkowski">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="fb:app_id" content="REPLACE_WITH_FACEBOOK_APP_ID">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Jerzy Zientkowski - Biografia">
+    <meta name="twitter:description" content="Biografia Jerzego Zientkowskiego — doświadczenie, wystąpienia, projekty.">
+    <meta name="twitter:image" content="https://zientkowski.pl/assets/img/wystapienia.webp">
+    <link rel="canonical" href="https://zientkowski.pl/bio.html" />
 
     <style>
         ::-webkit-scrollbar {
@@ -538,7 +559,10 @@
 <link rel="shortcut icon" href="assets/img/favicon/favicon.ico" />
 <link rel="apple-touch-icon" sizes="180x180" href="assets/img/favicon/apple-touch-icon.png" />
 <link rel="manifest" href="/site.webmanifest" />
-</head>
+  <!-- Consent: default denied for analytics/marketing (GCM v2) -->
+  <script>window.dataLayer=window.dataLayer||[];window.dataLayer.push({consent:"default",ad_storage:"denied",analytics_storage:"denied",ad_user_data:"denied",ad_personalization:"denied",functionality_storage:"granted",security_storage:"granted"});</script>
+  <link rel="stylesheet" href="/assets/css/consent.css?v=dev3">
+  <script defer src="/assets/js/consent.js?v=dev3"></script></head>
 
 <body class="bg-white">
     <!-- Gallery Modal -->
@@ -565,7 +589,7 @@
                     <a href="#bio" class="nav-link font-medium text-dark hover:text-accent underline decoration-dotted underline-offset-4">O mnie</a>
                     <a href="#referencje" class="nav-link font-medium text-dark hover:text-accent underline decoration-dotted underline-offset-4">Referencje</a>
                     <a href="#galeria" class="nav-link font-medium text-dark hover:text-accent underline decoration-dotted underline-offset-4">Galeria</a>
-                    <a href="index.html#kontakt" class="nav-link font-medium text-dark hover:text-accent underline decoration-dotted underline-offset-4">Kontakt</a>
+                    <a href="kontakt.html" class="nav-link font-medium text-dark hover:text-accent underline decoration-dotted underline-offset-4">Kontakt</a>
                     <a href="https://zientkowski.pl" class="inline-flex items-center px-4 py-2 rounded-full border border-accent text-accent hover:bg-accent hover:text-white transition-colors duration-200" data-external>Home</a>
                 </div>
                 <div class="flex items-center space-x-6 ml-auto md:ml-0">
@@ -1491,7 +1515,7 @@
         new Gallery('#masonryGallery', { json: 'assets/gallery.json' }).load();
     </script>
     <script defer src="./assets/js/loader.js"></script>
-  <script defer src="/admin/tracking.js.php"></script>
+  <!-- tracking removed; consent.js will load when granted -->
     <!-- Back to top FAB -->
     <button id="backToTop" aria-label="Do góry" title="Do góry" class="hidden fixed right-4 sm:right-6 bottom-4 sm:bottom-6 z-[1100] rounded-full bg-dark/90 text-white shadow-lg hover:bg-dark p-2.5 sm:p-3 transition">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
@@ -1510,6 +1534,8 @@
 </body>
 
 </html>
+
+
 
 
 

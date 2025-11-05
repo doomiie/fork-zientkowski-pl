@@ -30,7 +30,10 @@
     /* Wider tiles: use auto-fit with a higher min width so headings fit one line */
     .contact-grid { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
   </style>
-</head>
+  <!-- Consent: default denied for analytics/marketing (GCM v2) -->
+  <script>window.dataLayer=window.dataLayer||[];window.dataLayer.push({consent:"default",ad_storage:"denied",analytics_storage:"denied",ad_user_data:"denied",ad_personalization:"denied",functionality_storage:"granted",security_storage:"granted"});</script>
+  <link rel="stylesheet" href="/assets/css/consent.css?v=dev3">
+  <script defer src="/assets/js/consent.js?v=dev3"></script></head>
 <body class="bg-light min-h-screen flex flex-col">
   <!-- Header: fixed + transparent so hero image sits underneath -->
   <!-- UX: przezroczysty nagłówek daje wrażenie przestrzeni i skraca drogę do treści -->
@@ -283,3 +286,5 @@
   </script>
 </body>
 </html>
+
+

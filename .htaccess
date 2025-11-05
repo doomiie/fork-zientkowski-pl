@@ -57,7 +57,7 @@ AddDefaultCharset UTF-8
   RewriteRule .* - [F]
 
   # Root "/" serwuj jako index.html (wewnętrznie, bez zewnętrznego redirectu)
-  RewriteRule ^$ index.html [L]
+ RewriteRule ^$ index.html [L]
 
   # Czyste adresy bez rozszerzeń → odpowiednie pliki .html
   # Działa dla /index -> /index.html oraz /maska -> /maska.html
@@ -71,6 +71,35 @@ AddDefaultCharset UTF-8
   RewriteCond %{REQUEST_FILENAME}.html !-f
   RewriteRule ^ redirects_resolver.php [L,QSA]
 </IfModule>
+
+# 4a) Długie cache dla statycznych zasobów (1 rok + immutable)
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType application/json "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType image/avif "access plus 1 year"
+  ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
+<IfModule mod_headers.c>
+  # Wymuś nagłówki cache nawet przy odpowiedziach 304 itp.
+  <FilesMatch "\.(?:css|js|mjs|png|jpe?g|gif|svg|webp|avif|ico|woff2|ttf)$">
+    Header always set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  # Dla HTML krótki cache, by nie buforować stron długo
+  <FilesMatch "\.(?:html)$">
+    Header always set Cache-Control "public, max-age=300, must-revalidate"
+  </FilesMatch>
+  # ETag bywa nadpisywany przez serwer/CDN — można go wyłączyć, by unikać rewalidacji
+  Header unset ETag
+</IfModule>
+
+# 4b) Poprawny typ MIME dla WOFF2 (niektóre hostingi wymagają ręcznego dodania)
+AddType font/woff2 .woff2
 
 # Global 404 handler (for any non‑PHP 404s not caught by rewrites)
 ErrorDocument 404 /404.php

@@ -6,15 +6,35 @@
   <title>LP2 — Ebook: Autentyczny Humor w Biznesie</title>
   <link rel="preload" as="style" href="/assets/css/app.min.css" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="/assets/css/app.min.css"></noscript>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Local font: Space Grotesk (subset PL) -->
+  <link rel="preload" as="font" href="/assets/fonts/SpaceGrotesk-PL.woff2" type="font/woff2" crossorigin>
+  <style>
+    @font-face { font-family: 'Space Grotesk'; src: url('/assets/fonts/SpaceGrotesk-PL.woff2') format('woff2'); font-weight: 300 700; font-style: normal; font-display: swap; }
+  </style>
   <link rel="icon" type="image/png" href="/assets/img/favicon/favicon-96x96.png" sizes="96x96" />
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon/favicon.svg" />
   <link rel="shortcut icon" href="/assets/img/favicon/favicon.ico" />
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon/apple-touch-icon.png" />
   <link rel="manifest" href="/site.webmanifest" />
-  <script id="mcjs">!function(c,h,i,m,p){m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.src=i,p.parentNode.insertBefore(m,p)}(document,"script","https://chimpstatic.com/mcjs-connected/js/users/a6668a84e3a3a8d0563bd3fcc/08a38687e17bc48d8e6fcd0b8.js");</script>
+  
+  <!-- SEO -->
+  <!-- OSTRZEŻENIE: description/OG/twitter opis dodany automatycznie — proszę zweryfikować. -->
+  <meta name="description" content="Ebook Autentyczny Humor w Biznesie — pobierz darmowy e‑book.">
+  <meta name="author" content="Jerzy Zientkowski">
+  <meta property="og:title" content="LP2 — Ebook: Autentyczny Humor w Biznesie">
+  <meta property="og:description" content="Ebook Autentyczny Humor w Biznesie — pobierz darmowy e‑book.">
+  <meta property="og:image" content="https://zientkowski.pl/assets/img/CoverEbookHumorWBiznesie.webp">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://zientkowski.pl/lp/lp2.html">
+  <meta property="og:site_name" content="Jerzy Zientkowski">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="fb:app_id" content="REPLACE_WITH_FACEBOOK_APP_ID">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="LP2 — Ebook: Autentyczny Humor w Biznesie">
+  <meta name="twitter:description" content="Ebook Autentyczny Humor w Biznesie — pobierz darmowy e‑book.">
+  <meta name="twitter:image" content="https://zientkowski.pl/assets/img/CoverEbookHumorWBiznesie.webp">
+  <link rel="canonical" href="https://zientkowski.pl/lp/lp2.html" />
   <style>
     * { font-family: 'Space Grotesk', sans-serif; }
     .bg-light { background-color: #F9F9F9; }
@@ -26,7 +46,10 @@
     .nav-link::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: rgb(4, 3, 39); transition: width 0.3s ease; }
     .nav-link:hover::after { width: 100%; }
   </style>
-</head>
+  <!-- Consent: default denied for analytics/marketing (GCM v2) -->
+  <script>window.dataLayer=window.dataLayer||[];window.dataLayer.push({consent:"default",ad_storage:"denied",analytics_storage:"denied",ad_user_data:"denied",ad_personalization:"denied",functionality_storage:"granted",security_storage:"granted"});</script>
+  <link rel="stylesheet" href="/assets/css/consent.css?v=dev3">
+  <script defer src="/assets/js/consent.js?v=dev3"></script></head>
 
 <body class="bg-light min-h-screen flex flex-col">
   <header class="fixed w-full bg-white z-50 py-4 border-b border-gray-200/50">
@@ -229,7 +252,7 @@
     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
   </button>
 
-  <script defer src="/admin/tracking.js.php"></script>
+  <!-- tracking removed; consent.js will load when granted -->
   <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   <script>document.addEventListener('DOMContentLoaded',function(){ try{ lucide.createIcons(); }catch(e){} });</script>
   <script>
@@ -275,4 +298,6 @@
   </script>
 </body>
 </html>
+
+
 

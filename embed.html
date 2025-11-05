@@ -19,7 +19,10 @@
   <link rel="shortcut icon" href="/assets/img/favicon/favicon.ico" />
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon/apple-touch-icon.png" />
   <link rel="manifest" href="/site.webmanifest" />
-</head>
+  <!-- Consent: default denied for analytics/marketing (GCM v2) -->
+  <script>window.dataLayer=window.dataLayer||[];window.dataLayer.push({consent:"default",ad_storage:"denied",analytics_storage:"denied",ad_user_data:"denied",ad_personalization:"denied",functionality_storage:"granted",security_storage:"granted"});</script>
+  <link rel="stylesheet" href="/assets/css/consent.css?v=dev3">
+  <script defer src="/assets/js/consent.js?v=dev3"></script></head>
 
 <body class="bg-light min-h-screen flex flex-col">
   <header id="siteHeader" class="fixed w-full z-50 py-4 transition-all duration-300 header-solid">
@@ -184,3 +187,4 @@
 </body>
 
 </html>
+

@@ -220,7 +220,10 @@
             }
         }
     </script>
-</head>
+  <!-- Consent: default denied for analytics/marketing (GCM v2) -->
+  <script>window.dataLayer=window.dataLayer||[];window.dataLayer.push({consent:"default",ad_storage:"denied",analytics_storage:"denied",ad_user_data:"denied",ad_personalization:"denied",functionality_storage:"granted",security_storage:"granted"});</script>
+  <link rel="stylesheet" href="/assets/css/consent.css?v=dev3">
+  <script defer src="/assets/js/consent.js?v=dev3"></script></head>
 
 <body class="bg-light">
     <!-- Mobile Menu -->
@@ -1098,19 +1101,10 @@
      <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
      <script defer src=" https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollToPlugin.min.js"></script>
      <script defer src="./assets/js/animations.js"></script> -->
-        <!-- Hotjar Tracking Code for http://zientkowski.pl -->
-        <!-- Hotjar Tracking Code for hardcore -->
-        <script>
-            (function (h, o, t, j, a, r) {
-                h.hj = h.hj || function () { (h.hj.q = h.hj.q || []).push(arguments) };
-                h._hjSettings = { hjid: 5311130, hjsv: 6 };
-                a = o.getElementsByTagName('head')[0];
-                r = o.createElement('script'); r.async = 1;
-                r.src = t + h._hjSettings.hjid + j + h._hjSettings.hjsv;
-                a.appendChild(r);
-            })(window, document, 'https://static.hotjar.com/c/hotjar-', '.js?sv=');
-        </script>
+        <!-- Hotjar removed; consent.js will load when granted -->
   <script defer src="/admin/tracking.js.php"></script>
 </body>
 
 </html>
+
+
