@@ -16,6 +16,10 @@ $client->setAuthConfig(__DIR__ . '/credentials.json');
 $client->setRedirectUri('https://zientkowski.pl/backend/calendar.php');
 $client->addScope(Calendar::CALENDAR);
 $client->setAccessType('offline');
+// Keep scopes across reauth and prefer correct domain account
+$client->setIncludeGrantedScopes(true);
+$client->setHostedDomain('speakerslair.pl');
+$client->setPrompt('select_account consent');
 
 // Handle OAuth callback
 if (isset($_GET['code'])) {
@@ -23,6 +27,31 @@ if (isset($_GET['code'])) {
     if (!isset($token['error'])) {
         file_put_contents($tokenPath, json_encode($token));
         $client->setAccessToken($token);
+        // Validate configured calendar access (writer/owner)
+        $cfgPathCb = dirname(__DIR__) . '/config.json';
+        $calendarIdCfg = null;
+        if (file_exists($cfgPathCb)) {
+            $cfgCb = json_decode(file_get_contents($cfgPathCb), true);
+            if (is_array($cfgCb)) { $calendarIdCfg = $cfgCb['calendarId'] ?? null; }
+        }
+        if (!empty($calendarIdCfg)) {
+            try {
+                $svc = new Calendar($client);
+                $item = $svc->calendarList->get($calendarIdCfg);
+                $role = method_exists($item, 'getAccessRole') ? (string)$item->getAccessRole() : '';
+                if (!in_array($role, ['writer','owner'])) {
+                    @unlink($tokenPath);
+                    $_SESSION['return'] = $_SESSION['return'] ?? '/sesja.html';
+                    header('Location: ' . ($_SESSION['return'] . '?auth=calendar_invalid'));
+                    exit();
+                }
+            } catch (Throwable $e) {
+                @unlink($tokenPath);
+                $_SESSION['return'] = $_SESSION['return'] ?? '/sesja.html';
+                header('Location: ' . ($_SESSION['return'] . '?auth=calendar_invalid'));
+                exit();
+            }
+        }
     }
     $return = $_SESSION['return'] ?? '/sesja.html';
     header('Location: ' . $return);
@@ -31,13 +60,21 @@ if (isset($_GET['code'])) {
 
 // Ensure we have a token
 if (file_exists($tokenPath)) {
-    $client->setAccessToken(json_decode(file_get_contents($tokenPath), true));
+    $stored = json_decode(file_get_contents($tokenPath), true) ?: [];
+    $client->setAccessToken($stored);
     if ($client->isAccessTokenExpired()) {
-        if ($client->getRefreshToken()) {
-            $client->fetchAccessTokenWithRefreshToken($client->getRefreshToken());
-            file_put_contents($tokenPath, json_encode($client->getAccessToken()));
+        $rt = $client->getRefreshToken();
+        if (!$rt && isset($stored['refresh_token'])) { $rt = $stored['refresh_token']; }
+        if ($rt) {
+            $new = $client->fetchAccessTokenWithRefreshToken($rt) ?: [];
+            // Merge to preserve refresh_token which Google often omits in refresh response
+            $merged = array_merge($stored, $new);
+            if (empty($merged['refresh_token'])) { $merged['refresh_token'] = $rt; }
+            $client->setAccessToken($merged);
+            file_put_contents($tokenPath, json_encode($merged));
         } else {
-            unlink($tokenPath);
+            // No refresh token available – require fresh consent
+            @unlink($tokenPath);
         }
     }
 }
@@ -52,11 +89,36 @@ if (!$client->getAccessToken()) {
 }
 
 $service = new Calendar($client);
-$action = $_GET['action'] ?? '';
 
 // Load configuration
 $configPath = dirname(__DIR__) . '/config.json';
 $cfg = file_exists($configPath) ? json_decode(file_get_contents($configPath), true) : [];
+$calendarId = 'primary';
+if (!empty($cfg['calendarId']) && is_string($cfg['calendarId'])) {
+    $calendarId = trim($cfg['calendarId']);
+}
+$action = $_GET['action'] ?? '';
+
+// Validate access to configured calendar before serving requests
+try {
+    $item = $service->calendarList->get($calendarId);
+    $role = method_exists($item, 'getAccessRole') ? (string)$item->getAccessRole() : '';
+    if (!in_array($role, ['writer','owner'])) {
+        $_SESSION['return'] = $_GET['return'] ?? '/sesja.html';
+        $authUrl = $client->createAuthUrl();
+        http_response_code(401);
+        header('Content-Type: application/json');
+        echo json_encode(['authUrl' => $authUrl, 'error' => 'insufficient_calendar_access', 'calendarId' => $calendarId]);
+        exit();
+    }
+} catch (Throwable $e) {
+    $_SESSION['return'] = $_GET['return'] ?? '/sesja.html';
+    $authUrl = $client->createAuthUrl();
+    http_response_code(401);
+    header('Content-Type: application/json');
+    echo json_encode(['authUrl' => $authUrl, 'error' => 'calendar_not_found', 'calendarId' => $calendarId]);
+    exit();
+}
 $meetingTypes = $cfg['meetingTypes'] ?? [];
 $workingHours = $cfg['workingHours'] ?? [];
 
@@ -82,10 +144,16 @@ if ($action === 'busy') {
     $req = new FreeBusyRequest([
         'timeMin' => $timeMin,
         'timeMax' => $timeMax,
-        'items' => [['id' => 'primary']]
+        'items' => [['id' => $calendarId]]
     ]);
     $res = $service->freebusy->query($req);
-    $busy = $res->getCalendars()['primary']->getBusy();
+    $calendars = $res->getCalendars();
+    $busy = [];
+    if (isset($calendars[$calendarId])) {
+        $busy = $calendars[$calendarId]->getBusy();
+    } elseif (isset($calendars['primary'])) {
+        $busy = $calendars['primary']->getBusy();
+    }
     $slots = [];
     foreach ($busy as $b) {
         $start = new DateTime($b->getStart(), new DateTimeZone('UTC'));
@@ -102,7 +170,7 @@ if ($action === 'busy') {
     }
     header('Content-Type: application/json');
     //echo json_encode(['busy' => $slots]);
-    echo json_encode(['busy' => $slots, 'res' => $res]);
+    echo json_encode(['busy' => $slots, 'calendarId' => $calendarId]);
     exit();
 }
 
@@ -139,7 +207,7 @@ if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         }, $attendees));
     }
     // Pass conferenceDataVersion to enable conference creation
-    $created = $service->events->insert('primary', $event, ['conferenceDataVersion' => 1]);
+    $created = $service->events->insert($calendarId, $event, ['conferenceDataVersion' => 1]);
 
     // Extract Google Meet link if available
     $meetLink = '';
@@ -190,7 +258,34 @@ if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     echo json_encode([
         'event' => $created,
         'meetLink' => $meetLink,
+        'calendarId' => $calendarId,
     ]);
+    exit();
+}
+
+// Diagnostics: whoami and calendars
+if ($action === 'whoami') {
+    try {
+        $list = $service->calendarList->listCalendarList();
+        $primary = null; $all = [];
+        foreach ($list->getItems() as $item) {
+            $row = [
+                'id' => $item->getId(),
+                'summary' => $item->getSummary(),
+                'primary' => (bool)$item->getPrimary(),
+                'accessRole' => $item->getAccessRole(),
+                'timeZone' => $item->getTimeZone(),
+            ];
+            if ($item->getPrimary()) { $primary = $row; }
+            $all[] = $row;
+        }
+        header('Content-Type: application/json');
+        echo json_encode(['usingCalendarId' => $calendarId, 'primary' => $primary, 'calendars' => $all]);
+    } catch (Throwable $e) {
+        http_response_code(500);
+        header('Content-Type: application/json');
+        echo json_encode(['error' => 'Failed to list calendars', 'message' => $e->getMessage()]);
+    }
     exit();
 }
 

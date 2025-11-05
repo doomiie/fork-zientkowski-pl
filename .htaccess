@@ -33,6 +33,10 @@ AddDefaultCharset UTF-8
     Deny from all
   </IfModule>
 </FilesMatch>
+# Block access to OAuth token file
+<FilesMatch "^token\.json$">
+  Require all denied
+</FilesMatch>
 
 # 4) Blokada niebezpiecznych metod (TRACE/TRACK)
 <IfModule mod_rewrite.c>
@@ -123,6 +127,7 @@ ErrorDocument 404 /404.php
 ###############################################################################
 # Koniec
 ###############################################################################
+
 
 
 

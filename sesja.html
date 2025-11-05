@@ -367,12 +367,13 @@ const defaultType = meetingTypesCfg['kup sesję'] ? 'kup sesję' : (entries.leng
 //const defaultType = Object.keys(meetingTypesCfg)[0]? meetingTypesCfg['kup sesj?t'] : 'kup sesj?t';
 console.log('Default meeting type:', defaultType);
 console.log('Meeting types config:', meetingTypesCfg);
-if (defaultType) select.value = defaultType;
+            if (defaultType) select.value = defaultType;
+            if (entries.length) select.value = entries[0][0];
             if (desc) {
-                desc.textContent = meetingTypesCfg[defaultType]?.description || '';
+                desc.textContent = meetingTypesCfg[select.value]?.description || '';
             }
             if (durationEl) {
-                const dur = meetingTypesCfg[defaultType]?.duration;
+                const dur = meetingTypesCfg[select.value]?.duration;
                 if (dur) {
                     durationEl.textContent = dur === 'full' ? 'Czas trwania: cały dzień' : `Czas trwania: ${dur} min`;
                 } else {
@@ -380,7 +381,7 @@ if (defaultType) select.value = defaultType;
                 }
             }
             if (priceEl) {
-                const mt = meetingTypesCfg[defaultType] || {};
+                const mt = meetingTypesCfg[select.value] || {};
                 priceEl.textContent = mt.paid ? `Cena: ${mt.amount} PLN` : '';
             }
 
@@ -913,6 +914,8 @@ if (defaultType) select.value = defaultType;
 </body>
 
 </html>
+
+
 
 
 

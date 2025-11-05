@@ -1,0 +1,16 @@
+{
+  "items": [
+    { "label": "O mnie", "href": "#omnie" },
+    {
+      "label": "Usługi",
+      "children": [
+        { "label": "Mentoring", "href": "#mentoring", "icon": "fa-solid fa-user-group" },
+        { "label": "Przemówienia", "href": "#mowy", "icon": "fa-solid fa-microphone" },
+        { "label": "Warsztaty i szkolenia", "href": "#szkolenia", "icon": "fa-solid fa-chalkboard-teacher" }
+      ]
+    },
+    { "label": "Sklep", "href": "#sklep" },
+    { "label": "Rezerwacje", "href": "/sesja.html" }
+  ]
+}
+

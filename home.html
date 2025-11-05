@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jerzy Zientkowski — Strona główna</title>
+  <link rel="preload" as="style" href="/assets/css/app.min.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="/assets/css/app.min.css">
+  </noscript>
+  <!-- Local font: Space Grotesk (subset PL) -->
+  <link rel="preload" as="font" href="/assets/fonts/SpaceGrotesk-PL.woff2" type="font/woff2" crossorigin>
+  <style>
+    @font-face {
+      font-family: 'Space Grotesk';
+      src: url('/assets/fonts/SpaceGrotesk-PL.woff2') format('woff2');
+      font-weight: 300 700;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    * {
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .bg-light {
+      background-color: #F9F9F9;
+    }
+
+    .text-dark {
+      color: rgb(4, 3, 39);
+    }
+
+    .bg-dark {
+      background-color: rgb(4, 3, 39) !important;
+    }
+
+    /* Solid header helper when scrolling (independent of Tailwind build) */
+    .header-solid {
+      background-color: rgba(255, 255, 255, .9) !important;
+      border-bottom: 1px solid rgba(229, 231, 235, 1) !important;
+      backdrop-filter: saturate(180%) blur(10px);
+    }
+    /* Header link color switching */
+    #siteHeader .nav-link { color: #ffffff; }
+    #siteHeader.header-solid .nav-link { color: rgb(4, 3, 39); }
+    #siteHeader .nav-link:hover { color: rgb(234, 179, 8); }
+    /* Mobile burger color switching */
+    #siteHeader #menuToggleHome { color: #ffffff; border-color: rgba(255,255,255,.5); }
+    #siteHeader.header-solid #menuToggleHome { color: rgb(55,65,81); border-color: rgb(209,213,219); }
+  </style>
+  <!-- SEO -->
+  <meta name="description" content="Jerzy Zientkowski — wystąpienia, szkolenia, mentoring i ebooki.">
+  <meta name="author" content="Jerzy Zientkowski">
+  <meta property="og:title" content="Jerzy Zientkowski — Strona główna">
+  <meta property="og:description" content="Wystąpienia, szkolenia, mentoring i ebooki.">
+  <meta property="og:image" content="https://zientkowski.pl/assets/img/wystapienia.webp">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://zientkowski.pl/home.html">
+  <meta property="og:site_name" content="Jerzy Zientkowski">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Jerzy Zientkowski — Strona główna">
+  <meta name="twitter:description" content="Wystąpienia, szkolenia, mentoring i ebooki.">
+  <meta name="twitter:image" content="https://zientkowski.pl/assets/img/wystapienia.webp">
+  <link rel="canonical" href="https://zientkowski.pl/home.html" />
+  <!-- Consent (GCM v2) -->
+  <script>window.dataLayer = window.dataLayer || []; window.dataLayer.push({ consent: "default", ad_storage: "denied", analytics_storage: "denied", ad_user_data: "denied", ad_personalization: "denied", functionality_storage: "granted", security_storage: "granted" });</script>
+  <link rel="stylesheet" href="/assets/css/consent.css?v=dev4">
+  <script defer src="/assets/js/consent.js?v=dev5"></script>
+  <script defer src="/assets/js/menu.js?v=dev2"></script>
+  <!-- Icons/manifest -->
+  <link rel="icon" type="image/png" href="/assets/img/favicon/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon/favicon.svg" />
+  <link rel="shortcut icon" href="/assets/img/favicon/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+</head>
+
+<body class="bg-light min-h-screen flex flex-col">
+  <!-- Header (transparent overlay) -->
+  <header id="siteHeader" class="fixed top-0 left-0 right-0 z-50 py-4 bg-transparent transition-all duration-300">
+    <div class="max-w-[1200px] mx-auto px-6 flex items-center">
+      <a href="/" class="flex items-center gap-3 font-bold">
+        <img id="siteHeaderLogo" src="/assets/img/logo_main.png" alt="Logo" class="max-w-[140px]">
+      </a>
+      <nav id="navDesktop" class="hidden md:flex items-center space-x-8 ml-auto text-white"></nav>
+      <div class="flex items-center ml-auto md:ml-8 md:hidden">
+        <button id="menuToggleHome" aria-label="Menu"
+          class="p-2 rounded-lg border border-gray-300 text-gray-800 hover:bg-gray-50">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <div id="mobileMenuOverlayHome" class="fixed inset-0 bg-black/50 z-[1000] hidden"></div>
+  <aside id="mobileMenuHome"
+    class="fixed inset-y-0 right-0 w-4/5 max-w-sm bg-white z-[1001] shadow-xl transform translate-x-full transition-transform">
+    <div class="p-4 flex items-center justify-between border-b border-gray-200">
+      <span class="font-semibold text-dark">Menu</span>
+      <button id="menuCloseHome" aria-label="Zamknij menu" class="p-2 rounded-lg text-gray-600 hover:bg-gray-50">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+    <nav id="navMobile" class="p-4 space-y-3"></nav>
+  </aside>
+
+  <!-- Hero (copied mechanism from ebookhumor..., without forms) -->
+  <main class="flex-1">
+    <section id="hero" class="relative flex items-center overflow-hidden" style="min-height:80vh">
+      <div class="absolute inset-0">
+        <img src="/assets/img/main_bg.webp" alt="Tło - wystąpienia" class="w-full h-full object-cover"
+          loading="eager" decoding="async" style="object-position:center top !important;" fetchpriority="high">
+        <div class="absolute inset-0 bg-black/50"></div>
+      </div>
+      <div class="relative z-10 w-full">
+        <div class="max-w-[1100px] mx-auto px-6 pt-24 md:pt-28">
+          <div class="max-w-2xl text-white">
+            <h1 class="text-3xl sm:text-5xl md:text-6xl font-extrabold leading-tight">Autentyczny humor w biznesie</h1>
+            <p class="mt-4 text-base sm:text-lg text-white/90">Pobierz darmowy ebook i naucz się korzystać z humoru w
+              pracy bez ryzyka — praktyczne zasady, przykłady i narzędzia.</p>
+            <!-- Formularze i skrypty subskrypcji celowo usunięte w tej wersji -->
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer (lekki, spójny) -->
+  <footer class="mt-auto bg-light py-8 border-t border-gray-200/60">
+    <div class="max-w-[1200px] mx-auto px-6 text-center text-gray-600">
+      <p>&copy; 2011-2025 Jerzy Zientkowski. Wszelkie prawa zastrzeżone.</p>
+    </div>
+  </footer>
+  <script>
+    (function () {
+      // Smooth scroll for in-page anchor links (native where supported)
+      try { document.documentElement.style.scrollBehavior = 'smooth'; } catch (_) { }
+      document.addEventListener('click', function (e) {
+        const a = e.target.closest('a[href^="#"]');
+        if (!a) return;
+        const id = a.getAttribute('href');
+        const target = document.querySelector(id);
+        if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+      });
+      var header = document.getElementById('siteHeader');
+      var logo = document.getElementById('siteHeaderLogo');
+      // enable smooth transitions
+      header.style.transition = 'background-color .95s ease, box-shadow .95s ease, padding .95s ease, transform .95s ease';
+      logo.style.transition = 'filter .95s ease, transform .95s ease, opacity .95s ease';
+
+      let rafId = null;
+      function onScroll() {
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(() => {
+          if (window.scrollY > 10) {
+            header.classList.add('header-solid');
+       
+            header.classList.remove('header-transparent');
+       
+            logo.classList.add('brightness-0');
+          } else {
+            header.classList.add('header-transparent');
+            header.classList.remove('header-solid');
+            logo.classList.remove('brightness-0');
+          }
+        });
+      }
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      //})();
+      onScroll();
+
+      // Mobile menu (overlay + slide-in)
+      const openBtn = document.getElementById('menuToggleHome');
+      const closeBtn = document.getElementById('menuCloseHome');
+      const overlay = document.getElementById('mobileMenuOverlayHome');
+      const menu = document.getElementById('mobileMenuHome');
+      function open() { overlay.classList.remove('hidden'); menu.classList.remove('translate-x-full'); }
+      function close() { overlay.classList.add('hidden'); menu.classList.add('translate-x-full'); }
+      openBtn && openBtn.addEventListener('click', open);
+      closeBtn && closeBtn.addEventListener('click', close);
+      overlay && overlay.addEventListener('click', close);
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); }, { passive: true });
+    })();
+  </script>
+</body>
+
+</html>
+
