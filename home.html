@@ -37,18 +37,26 @@
     }
 
     /* Solid header helper when scrolling (independent of Tailwind build) */
-    .header-solid {
-      background-color: rgba(255, 255, 255, .9) !important;
-      border-bottom: 1px solid rgba(229, 231, 235, 1) !important;
-      backdrop-filter: saturate(180%) blur(10px);
-    }
+    .header-solid { background-color: rgba(255,255,255,.9) !important; border-bottom: 1px solid rgba(229,231,235,1) !important; backdrop-filter: saturate(180%) blur(10px); }
+
     /* Header link color switching */
-    #siteHeader .nav-link { color: #ffffff; }
-    #siteHeader.header-solid .nav-link { color: rgb(4, 3, 39); }
-    #siteHeader .nav-link:hover { color: rgb(234, 179, 8); }
-    /* Mobile burger color switching */
-    #siteHeader #menuToggleHome { color: #ffffff; border-color: rgba(255,255,255,.5); }
-    #siteHeader.header-solid #menuToggleHome { color: rgb(55,65,81); border-color: rgb(209,213,219); }
+    #siteHeader .nav-link {
+      color: #ffffff;
+    }
+
+    #siteHeader.header-solid .nav-link {
+      color: rgb(4, 3, 39);
+    }
+
+    #siteHeader .nav-link:hover { color: rgb(234,179,8); }
+
+    
+    /* Menu icon chip */
+    #siteHeader .ci { display:inline-flex; align-items:center; justify-content:center; border-radius:9999px; width:36px; height:36px; border:1px solid currentColor; margin-right:8px; transition: background-color .2s ease, transform .2s ease, border-color .2s ease; }
+    #siteHeader .nav-link:hover .ci { transform: scale(1.05); }
+    /* Subtle bg on hover depending on header state */
+    #siteHeader:not(.header-solid) .nav-link:hover .ci { background-color: rgba(255,255,255,.18); }
+    #siteHeader.header-solid .nav-link:hover .ci { background-color: rgba(4,3,39,.08); }
   </style>
   <!-- SEO -->
   <meta name="description" content="Jerzy Zientkowski — wystąpienia, szkolenia, mentoring i ebooki.">
@@ -70,7 +78,8 @@
   <script>window.dataLayer = window.dataLayer || []; window.dataLayer.push({ consent: "default", ad_storage: "denied", analytics_storage: "denied", ad_user_data: "denied", ad_personalization: "denied", functionality_storage: "granted", security_storage: "granted" });</script>
   <link rel="stylesheet" href="/assets/css/consent.css?v=dev4">
   <script defer src="/assets/js/consent.js?v=dev5"></script>
-  <script defer src="/assets/js/menu.js?v=dev2"></script>
+  <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script defer src="/assets/js/menu.js?v=dev23"></script>
   <!-- Icons/manifest -->
   <link rel="icon" type="image/png" href="/assets/img/favicon/favicon-96x96.png" sizes="96x96" />
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon/favicon.svg" />
@@ -87,6 +96,18 @@
         <img id="siteHeaderLogo" src="/assets/img/logo_main.png" alt="Logo" class="max-w-[140px]">
       </a>
       <nav id="navDesktop" class="hidden md:flex items-center space-x-8 ml-auto text-white"></nav>
+      <!-- TEST ICON (hard-coded) -->
+      <a href="#bio"
+        class="hidden md:inline-flex nav-link relative hover:text-accent transition-colors duration-300 items-center gap-2 ml-4">
+        <svg aria-hidden="true" class="w-4 h-4 inline-block" viewBox="0 0 24 24" fill="none" width="16" height="16"
+          xmlns="http://www.w3.org/2000/svg" focusable="false">
+          <path d="M12 12a5 5 0 100-10 5 5 0 000 10z" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round"></path>
+          <path d="M4 21a8 8 0 0116 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round"></path>
+        </svg>
+        O mnie (test)
+      </a>
       <div class="flex items-center ml-auto md:ml-8 md:hidden">
         <button id="menuToggleHome" aria-label="Menu"
           class="p-2 rounded-lg border border-gray-300 text-gray-800 hover:bg-gray-50">
@@ -117,8 +138,25 @@
   <main class="flex-1">
     <section id="hero" class="relative flex items-center overflow-hidden" style="min-height:80vh">
       <div class="absolute inset-0">
-        <img src="/assets/img/main_bg.webp" alt="Tło - wystąpienia" class="w-full h-full object-cover"
-          loading="eager" decoding="async" style="object-position:center top !important;" fetchpriority="high">
+        <img src="/assets/img/main_bg.webp" alt="Tło - wystąpienia" class="w-full h-full object-cover" loading="eager"
+          decoding="async" style="object-position:center top !important;" fetchpriority="high">
+        <div class="absolute inset-0 bg-black/50"></div>
+      </div>
+      <div class="relative z-10 w-full">
+        <div class="max-w-[1100px] mx-auto px-6 pt-24 md:pt-28">
+          <div class="max-w-2xl text-white">
+            <h1 class="text-3xl sm:text-5xl md:text-6xl font-extrabold leading-tight">Autentyczny humor w biznesie</h1>
+            <p class="mt-4 text-base sm:text-lg text-white/90">Pobierz darmowy ebook i naucz się korzystać z humoru w
+              pracy bez ryzyka — praktyczne zasady, przykłady i narzędzia.</p>
+            <!-- Formularze i skrypty subskrypcji celowo usunięte w tej wersji -->
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="hero" class="relative flex items-center overflow-hidden" style="min-height:80vh">
+      <div class="absolute inset-0">
+        <img src="/assets/img/main_bg.webp" alt="Tło - wystąpienia" class="w-full h-full object-cover" loading="eager"
+          decoding="async" style="object-position:center top !important;" fetchpriority="high">
         <div class="absolute inset-0 bg-black/50"></div>
       </div>
       <div class="relative z-10 w-full">
@@ -163,9 +201,7 @@
         rafId = requestAnimationFrame(() => {
           if (window.scrollY > 10) {
             header.classList.add('header-solid');
-       
             header.classList.remove('header-transparent');
-       
             logo.classList.add('brightness-0');
           } else {
             header.classList.add('header-transparent');
