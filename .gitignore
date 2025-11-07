@@ -1,4 +1,4 @@
-assets/
+
 vendor/
 backend/credentials.json
 token.json

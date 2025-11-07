@@ -1,0 +1,36 @@
+﻿{
+    "items": [
+        {
+            "label": "O kursie",
+            "href": "#about"
+            
+        },
+        {
+            "label": "Dla kogo",
+            "href": "#mentoring"
+            
+        },
+        {
+            "label": "Korzyści",
+            "href": "#mowy"
+        },
+        {
+            "label": "Jerzy",
+            "href": "#szkolenia"
+        },
+        {
+            "label": "FAQ",
+            "href": "#sklep"
+        },
+        {
+            "label": "KONTAKT",
+            "href": "/sesja.html"
+        },
+        {
+            "label": "KUP TERAZ",
+            "href": "#",
+            "id": "buyNowButton",
+            "type": "button"
+        }
+    ]
+}

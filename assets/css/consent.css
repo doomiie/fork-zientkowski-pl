@@ -1,0 +1,27 @@
+/* Simple, accessible cookie consent banner and settings panel */
+.cc-banner{position:fixed;left:0;right:0;bottom:0;z-index:10000;background:rgba(4,3,39,.98);color:#fff;box-shadow:0 -8px 24px rgba(0,0,0,.25)}
+.cc-wrap{max-width:1100px;margin:0 auto;padding:14px 16px;display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap}
+.cc-text{flex:1 1 auto;font-size:12px;line-height:1.45;color:#e8e8ee}
+.cc-actions{display:flex;gap:10px;flex-wrap:nowrap;flex-direction:row;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.cc-actions .cc-btn{white-space:nowrap}
+.cc-btn{appearance:none;border:1px solid rgba(255,255,255,.35);background:transparent;color:#fff;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}
+.cc-btn.primary{background:linear-gradient(90deg,#8a6a00,#e8b100);border-color:transparent}
+.cc-link{color:#ffef99;text-decoration:underline}
+.cc-hidden{display:none!important}
+
+.cc-panel{position:fixed;inset:0;z-index:10001;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.45)}
+.cc-card{background:#fff;color:#111;border-radius:14px;box-shadow:0 16px 40px rgba(0,0,0,.28);max-width:720px;width:92%;padding:18px;position:relative}
+.cc-card h3{margin:0 0 8px;font-size:20px}
+.cc-row{display:flex;gap:12px;align-items:flex-start;margin:10px 0}
+.cc-row label{font-weight:700}
+.cc-muted{color:#555;font-size:13px}
+.cc-card .cc-actions{justify-content:flex-end;flex-wrap:nowrap}
+
+/* Close button in preferences panel */
+.cc-close{position:absolute;top:10px;right:10px;border:none;background:transparent;color:#333;font-size:22px;line-height:1;cursor:pointer;padding:4px}
+.cc-close:hover{color:#000}
+
+/* Footer link helper */
+.cc-footer-link{cursor:pointer;text-decoration:underline}
+
+.cc-fab{position:fixed;right:16px;bottom:16px;z-index:9999;background:#fff;color:#111;border:1px solid #ddd;border-radius:999px;padding:10px 14px;font-weight:700;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.2)}

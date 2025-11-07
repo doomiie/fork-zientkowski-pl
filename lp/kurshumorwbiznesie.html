@@ -179,9 +179,9 @@
         <span class="hidden 2xl:inline">DEV: 2xl — H1 text-5xl</span>
       </div>
 
-      <nav id="navDesktop" class="hidden lg:flex items-center space-x-8 ml-auto text-white"></nav>
+      <nav id="navDesktop" class="hidden md:flex items-center space-x-8 ml-auto text-white"></nav>
 
-      <div class="flex items-center ml-auto md:ml-8 lg:hidden">
+      <div class="flex items-center ml-auto md:ml-8 md:hidden">
         <button id="menuToggleHome" aria-label="Menu"
           class="p-2 rounded-lg border border-gray-300 text-gray-800 hover:bg-gray-50">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -234,7 +234,19 @@
           </div>
         </div>
       </section>
-
+     <!-- Hero (copied mechanism from ebookhumor..., without forms) -->
+      <section id="about" class="relative flex items-center overflow-hidden snap-section" style="background-color: var(--brand-accent);">
+        
+        <div class="relative z-10 w-full">
+          <div class="max-w-[1100px] mx-auto px-6 pt-24 md:pt-28">
+            <div class="max-w-2xl text-white">
+              <h1 class=" sm:text-5xl md:text-6xl font-extrabold leading-tight">Jerzy Zientkowski</h1>
+              <p class="mt-4 text-lg sm:text-xl text-white/90">Mówca, trener, mentor. Tata :)</p>
+              <!-- Formularze i skrypty subskrypcji celowo usunięte w tej wersji -->
+            </div>
+          </div>
+        </div>
+      </section>
 
       <!-- Hero (copied mechanism from ebookhumor..., without forms) -->
       <section id="hero" class="relative flex items-center overflow-hidden snap-section">
@@ -567,6 +579,7 @@
       </div>
     </div>
   </footer>
+  
   <script>
     (function () {
       // Smooth scroll for in-page anchor links (native where supported)

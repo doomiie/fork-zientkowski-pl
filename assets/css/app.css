@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Tailwind v4 tokens via @theme (brand palette) */
+@theme {
+  --color-primary: #2c3e50; /* primary (headings/nav) */
+  --color-accent:  #3498db; /* links/highlights */
+  --color-warm:    #e77920; /* CTAs */
+  --color-muted:   #aeaeae; /* borders/muted text */
+  --color-alert:   #f03a47; /* errors/danger */
+  --color-bg:      #ffffff; /* page bg */
+  --color-surface: #f7f7f8; /* cards/panels */
+  --color-text:    #0f172a; /* body text fallback */
+}
+
+/* Custom shims mapped to tokens (backwards‑compatible) */
+@layer utilities {
+  .text-dark { color: var(--color-primary) !important; }
+  .text-accent { color: var(--color-accent) !important; }
+  .bg-light { background-color: var(--color-surface) !important; }
+  .bg-dark { background-color: var(--color-primary) !important; }
+  .hover\:bg-dark:hover { background-color: var(--color-primary) !important; }
+  .border-accent { border-color: var(--color-accent) !important; }
+}

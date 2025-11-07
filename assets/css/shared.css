@@ -1,0 +1,323 @@
+/* Shared UI effects: morphing cards and magnetic effect */
+.brand-palette-start {}
+
+:root {
+  /* Brand colors (Coolors palette) */
+  --brand-primary: #2c3e50;
+  /* RGB 44 62 80 | HSV 210 45 31 | CMYK 45 23 0 69 */
+  --brand-accent: #3498db;
+  /* RGB 52 152 219 | HSV 204 76 86 | CMYK 76 31 0 14 */
+  --brand-warm: #e77920;
+  /* RGB 231 121 32 | HSV 27 86 91  | CMYK 0 48 86 9  */
+  --brand-muted: #aeaeae;
+  /* RGB 174 174 174 | HSV 0 0 68   | CMYK 0 0 0 32    */
+  --brand-alert: #f03a47;
+  /* RGB 240 58 71  | HSV 356 76 94 | CMYK 0 76 70 6   */
+
+  /* Derived neutrals */
+  --brand-bg: #ffffff;
+  --brand-surface: #f7f7f8;
+  --brand-text: #0f172a;
+  /* fallback body text */
+}
+
+/* Minimal utility helpers (opt‑in) */
+.text-brand-primary {
+  color: var(--brand-primary) !important;
+}
+
+.text-brand-accent {
+  color: var(--brand-accent) !important;
+}
+
+.text-brand-warm {
+  color: var(--brand-warm) !important;
+}
+
+.text-brand-muted {
+  color: var(--brand-muted) !important;
+}
+
+.text-brand-alert {
+  color: var(--brand-alert) !important;
+}
+
+.bg-brand-surface {
+  background-color: var(--brand-surface) !important;
+}
+
+.bg-brand-primary {
+  background-color: var(--brand-primary) !important;
+}
+
+.bg-brand-accent {
+  background-color: var(--brand-accent) !important;
+}
+
+.bg-brand-warm {
+  background-color: var(--brand-warm) !important;
+}
+
+.bg-brand-muted {
+  background-color: var(--brand-muted) !important;
+}
+
+.bg-brand-alert {
+  background-color: var(--brand-alert) !important;
+}
+
+.border-brand-primary {
+  border-color: var(--brand-primary) !important;
+}
+
+.border-brand-accent {
+  border-color: var(--brand-accent) !important;
+}
+
+.border-brand-warm {
+  border-color: var(--brand-warm) !important;
+}
+
+.border-brand-muted {
+  border-color: var(--brand-muted) !important;
+}
+
+.border-brand-alert {
+  border-color: var(--brand-alert) !important;
+}
+
+.brand-palette-end {}
+
+/* Menu dropdown styling (desktop + mobile) */
+#siteHeader .menu-dd {
+  background-color: var(--brand-surface);
+  border-color: var(--brand-muted);
+}
+
+.menu-dd .dd-row:hover {
+  /* Fallback */
+  background-color: #f0f0f0;
+  /* Prefer brand-mix if supported */
+  background-color: color-mix(in srgb, var(--brand-muted) 22%, transparent);
+}
+
+/* Menu button (JSON type: button) */
+.btn-menu {
+  display: inline-block;
+  background-color: var(--brand-warm);
+  color: var(--brand-primary);
+  border-radius: 12px;
+  padding: 10px 14px;
+  line-height: 1.1;
+  font-weight: 600;
+  border: 1px solid transparent;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.10);
+  transition: background-color .2s ease, color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+.btn-menu:hover {
+  background-color: var(--brand-muted);
+  color: var(--brand-warm);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  transform: translateY(-1px);
+}
+.btn-menu:focus { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+.btn-menu.block { display: block; width: 100%; text-align: center; }
+
+.morphing-card,
+.magnetic-card {
+  background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: 24px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.morphing-card::before,
+.magnetic-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(4, 3, 39, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.morphing-card:hover::before,
+.magnetic-card:hover::before {
+  left: 100%;
+}
+
+.morphing-card:hover,
+.magnetic-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 25px 50px rgba(4, 3, 39, 0.15);
+}
+
+/* Optional helper when needed */
+.magnetic-effect {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Scroll-snap container and sections (home full-screen sections) */
+.snap-container {
+  height: 100vh;
+  overflow-y: auto;
+  scroll-snap-type: y proximity;
+  /* gentler than mandatory */
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  /* ease for programmatic scroll */
+  scroll-padding-top: 80px;
+  /* account for fixed header */
+}
+
+.snap-section {
+  scroll-snap-align: start;
+  height: 100vh;
+  /* scroll-margin-top: 80px; */
+  /* align with header height */
+}
+
+/* BIO text box: fixed height with internal scroll and gradient hint */
+#bio-text {
+  position: relative;
+  height: 50vh;
+  max-height: 50vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  /* background: #ffffff; */
+  border-radius: 0.75rem;
+  /* match cards */
+  /* No top padding – let sticky tools hug the very top */
+  padding-top: 0 !important;
+}
+
+/* Bottom gradient to suggest more content */
+#bio-text::after {
+  content: "";
+  position: sticky;
+  display: block;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 36px;
+  /* background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1)); */
+  pointer-events: none;
+}
+
+/* Custom scrollbar styling */
+#bio-text {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(4, 3, 39, 0.55) transparent;
+  scrollbar-gutter: stable;
+}
+
+#bio-text::-webkit-scrollbar {
+  width: 12px;
+}
+
+#bio-text::-webkit-scrollbar-track {
+  background: linear-gradient(to right, transparent 0, transparent 5px, rgba(4, 3, 39, 0.25) 5px, rgba(4, 3, 39, 0.25) 7px, transparent 7px);
+  border-radius: 9999px;
+}
+
+#bio-text::-webkit-scrollbar-thumb {
+  background-color: rgba(4, 3, 39, 0.9);
+  border-radius: 9999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+#bio-text::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(4, 3, 39, 1);
+}
+
+/* Prefer new BIO content when present */
+#bio-text> :not(.bio-new):not(.bio-tools) {
+  display: none !important;
+}
+
+/* BIO tools (copy button like ChatGPT) */
+#bio-text {
+  position: relative;
+}
+
+#bio-text .bio-tools {
+  position: sticky;
+  top: 3px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  z-index: 3;
+  padding: 6px 0;
+  padding-right: 0rem;
+  /* align to #bio-text pr-6 */
+  padding-left: 1rem;
+  /* align to #bio-text pl-4 */
+  /* background: linear-gradient(to bottom, rgba(255,255,255,0.96) 70%, rgba(255,255,255,0)); */
+}
+
+#bio-text .btn-copy {
+  font-size: 12px;
+  line-height: 1;
+  padding: 6px 10px;
+  border-radius: 9999px;
+  border: none;
+  background: rgba(255, 255, 255, .9);
+  color: rgba(4, 3, 39, 1);
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .06);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#bio-text .btn-copy::before {
+  content: '';
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2' ry='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E") no-repeat center / contain;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2' ry='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E") no-repeat center / contain;
+}
+
+#bio-text .btn-copy {
+  transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.18s ease, background 0.12s ease;
+  will-change: transform;
+}
+
+#bio-text .btn-copy:hover {
+  background: #fff;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(4, 3, 39, 0.12);
+}
+
+#bio-text .copy-done {
+  font-size: 12px;
+  color: #065f46;
+  opacity: 0;
+  transition: opacity .2s ease;
+  align-self: center;
+}
+
+#bio-text .copy-done.show {
+  opacity: 1;
+}
+
+.reveal-text {
+  background: linear-gradient(to right, rgb(4, 3, 39) 0%, rgb(4, 3, 39) 50%, transparent 50%);
+  background-size: 200% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: background-position 0.6s ease;
+}
+
+.reveal-text.revealed {
+  background-position: 0% 0;
+}
