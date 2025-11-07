@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Jerzy Zientkowski — Strona główna</title>
-  <!-- 
+  <!--
   Sugestie:
   1. app.min.css i shared.css prawdopodobnie mogą być połączone w jeden plik CSS
     dla lepszej wydajności ładowania
@@ -14,13 +14,14 @@
     - shared.css powinien też być załadowany asynchronicznie podobnie jak app.min.css
   -->
 
-  <link rel="preload" as="style" href="/assets/css/app.min.css" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/assets/css/app.min.css?v=brand2"
+    onload="this.onload=null;this.rel='stylesheet'">
   <noscript>
-    <link rel="stylesheet" href="/assets/css/app.min.css">
+    <link rel="stylesheet" href="/assets/css/app.min.css?v=brand2">
   </noscript>
-  <link rel="preload" as="style" href="/assets/css/shared.css?v=dev4" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/assets/css/shared.css?v=dev17" onload="this.onload=null;this.rel='stylesheet'">
   <noscript>
-    <link rel="stylesheet" href="/assets/css/shared.css?v=dev4">
+    <link rel="stylesheet" href="/assets/css/shared.css?v=dev17">
   </noscript>
   <!-- Local font: Space Grotesk (subset PL) -->
   <link rel="preload" as="font" href="/assets/fonts/SpaceGrotesk-PL.woff2" type="font/woff2" crossorigin>
@@ -119,6 +120,7 @@
   <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   <script defer src="/assets/js/menu.js?v=dev23"></script>
   <script defer src="/assets/js/magnetic.js?v=dev2"></script>
+  <script defer src="/assets/js/animations.js"></script>
   <!-- Icons/manifest -->
   <link rel="icon" type="image/png" href="/assets/img/favicon/favicon-96x96.png" sizes="96x96" />
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon/favicon.svg" />
@@ -134,19 +136,19 @@
       <a href="/" class="flex items-center gap-3 font-bold">
         <img id="siteHeaderLogo" src="/assets/img/logo_main.png" alt="Logo" class="max-w-[140px]">
       </a>
+
+      <div id="dev-hero-size" class=" mt-1 text-xs text-gray-500 italic">
+        <span class="inline xs:hidden sm:hidden md:hidden lg:hidden xl:hidden 2xl:hidden">DEV: base — H1 text-2xl</span>
+        <span class="hidden xs:inline sm:hidden md:hidden lg:hidden xl:hidden 2xl:hidden">DEV: xs — H1 text-3xl</span>
+        <span class="hidden sm:inline md:hidden lg:hidden xl:hidden 2xl:hidden">DEV: sm — H1 text-4xl</span>
+        <span class="hidden md:inline lg:hidden xl:hidden 2xl:hidden">DEV: md — H1 text-5xl</span>
+        <span class="hidden lg:inline xl:hidden 2xl:hidden">DEV: lg — H1 text-5xl</span>
+        <span class="hidden xl:inline 2xl:hidden">DEV: xl — H1 text-5xl</span>
+        <span class="hidden 2xl:inline">DEV: 2xl — H1 text-5xl</span>
+      </div>
+
       <nav id="navDesktop" class="hidden md:flex items-center space-x-8 ml-auto text-white"></nav>
-      <!-- TEST ICON (hard-coded) -->
-      <a href="#bio"
-        class="hidden md:inline-flex nav-link relative hover:text-accent transition-colors duration-300 items-center gap-2 ml-4">
-        <svg aria-hidden="true" class="w-4 h-4 inline-block" viewBox="0 0 24 24" fill="none" width="16" height="16"
-          xmlns="http://www.w3.org/2000/svg" focusable="false">
-          <path d="M12 12a5 5 0 100-10 5 5 0 000 10z" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-            stroke-linejoin="round"></path>
-          <path d="M4 21a8 8 0 0116 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-            stroke-linejoin="round"></path>
-        </svg>
-        O mnie (test)
-      </a>
+
       <div class="flex items-center ml-auto md:ml-8 md:hidden">
         <button id="menuToggleHome" aria-label="Menu"
           class="p-2 rounded-lg border border-gray-300 text-gray-800 hover:bg-gray-50">
@@ -174,278 +176,335 @@
   </aside>
 
   <!-- Hero (copied mechanism from ebookhumor..., without forms) -->
-  <main class="flex-1">
-    <section id="hero" class="relative flex items-center overflow-hidden" style="min-height:80vh">
-      <div class="absolute inset-0">
-        <img src="/assets/img/main_bg.webp" alt="Tło - wystąpienia" class="w-full h-full object-cover" loading="eager"
-          decoding="async" style="object-position:center top !important;" fetchpriority="high">
-        <div class="absolute inset-0 bg-black/50"></div>
-      </div>
-      <div class="relative z-10 w-full">
-        <div class="max-w-[1100px] mx-auto px-6 pt-24 md:pt-28">
-          <div class="max-w-2xl text-white">
-            <h1 class="text-3xl sm:text-5xl md:text-6xl font-extrabold leading-tight">Jerzy Zientkowski</h1>
-            <p class="mt-4 text-lg sm:text-xl text-white/90">Mówca, trener, mentor. Tata :)</p>
-            <!-- Formularze i skrypty subskrypcji celowo usunięte w tej wersji -->
-          </div>
+  <main class="flex-1 ">
+    <div class="snap-container">
+      <section id="hero" class="relative flex items-center overflow-hidden snap-section">
+        <div class="absolute inset-0">
+          <img src="/assets/img/main_bg.webp" alt="Tło - wystąpienia" class="w-full h-full object-cover" loading="eager"
+            decoding="async" style="object-position:center top !important;" fetchpriority="high">
+          <div class="absolute inset-0 bg-black/50"></div>
         </div>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- Mentoring section -->
-  <section class="py-24 bg-white relative">
-    <div class="max-w-[1400px] mx-auto px-6">
-      <!-- Section Header -->
-      <div class="text-center mb-20">
-        <h2 class="text-4xl md:text-5xl font-bold mb-6">
-          <span class="reveal-text">Mentoring indywidualny</span>
-        </h2>
-        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-          Historia, doświadczenie i pasja, które ukształtowały moje podejście do rozwoju liderów
-        </p>
-      </div>
-
-      <!-- Story Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-24">
-        <div class="space-y-8">
-          <div class="morphing-card p-8">
-            <div class="flex items-start space-x-4">
-              <div class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                <i data-lucide="briefcase" class="w-6 h-6 text-accent"></i>
-              </div>
-              <div>
-                <h3 class="text-xl font-semibold text-accent mb-3">Początki w IT i biznesie</h3>
-                <p class="text-gray-700 leading-relaxed">
-                  Z doświadczeniem w IT, na styku biznesu, sprzedaży i obsługi klienta wypracował
-                  unikatowy zestaw narzędzi komunikacyjnych, pozwalający na współpracę z różnymi
-                  branżami w wielonarodowych środowiskach.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="morphing-card p-8">
-            <div class="flex items-start space-x-4">
-              <div class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                <i data-lucide="mic" class="w-6 h-6 text-accent"></i>
-              </div>
-              <div>
-                <h3 class="text-xl font-semibold text-accent mb-3">Mistrzostwa i konkursy</h3>
-                <p class="text-gray-700 leading-relaxed">
-                  W 2012 dotarł do finałów mistrzostw Europy w przemówieniach humorystycznych,
-                  w latach 2010-2015 został 5-krotnym Mistrzem Polski w konkursach Toastmasters.
-                  W 2019 został Finalistą Sales Angels z oceną 9,14/10.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="morphing-card p-8">
-            <div class="flex items-start space-x-4">
-              <div class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                <i data-lucide="users" class="w-6 h-6 text-accent"></i>
-              </div>
-              <div>
-                <h3 class="text-xl font-semibold text-accent mb-3">Stowarzyszenie Profesjonalnych Mówców
-                </h3>
-                <p class="text-gray-700 leading-relaxed">
-                  Członek SPM w latach 2011-2021, Wiceprezes w latach 2012-2016, odpowiedzialny
-                  za członkostwo, strategię działań i partnerów, organizację konferencji
-                  Festiwal Inspiracji i Spectacular Speaking.
-                </p>
-              </div>
+        <div class="relative z-10 w-full">
+          <div class="max-w-[1100px] mx-auto px-6 pt-24 md:pt-28">
+            <div class="max-w-2xl text-white">
+              <h1 class=" sm:text-5xl md:text-6xl font-extrabold leading-tight">Jerzy Zientkowski</h1>
+              <p class="mt-4 text-lg sm:text-xl text-white/90">Mówca, trener, mentor. Tata :)</p>
+              <!-- Formularze i skrypty subskrypcji celowo usunięte w tej wersji -->
             </div>
           </div>
         </div>
+      </section>
 
-        <div class="relative">
-          <div class="gradient-border rounded-3xl p-1">
-            <img src="./assets/img/JERZY-NA-lp-KURSU-1.jpg" alt="Jerzy Zientkowski podczas szkolenia"
-              class="w-full rounded-3xl object-cover" />
-          </div>
+      <section id="bio" class="pt-16 pb-0 bg-gray-50 snap-section">
+        <!-- New two-column BIO layout -->
+        <div class="max-w-[1400px] mx-auto px-6  flex items-center  ">
+          <div class="flex flex-col md:flex-row gap-8 md:gap-12 items-center md:items-end h-full me-4 mb-4 ">
+            <div class="w-full md:basis-[30%] md:shrink-0 md:mr-6 max-w-3xl mb-20">
+              <h2 class="text-6xl md:text-6xl text-gray-900 mb-4 text-center">BIO</h2>
 
-          <!-- Quote Overlay -->
-          <div class="absolute -bottom-8 -right-8 glass-effect p-6 rounded-2xl max-w-xs">
-            <div class="text-sm text-gray-700 font-medium">
-              "Pozbawia złudzeń, nie pozbawiając marzeń"
+              <a href="/bio"
+                class="lg:hidden block text-center mb-8 text-accent hover:text-accent-dark transition-colors">
+                <span class="inline-flex items-center gap-2 font-medium">
+                  Zobacz pełne BIO
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd"
+                      d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                      clip-rule="evenodd" />
+                  </svg>
+                </span>
+              </a>
+
+              <div id="bio-text" class="p-4 pr-6">
+                <div class="bio-tools ">
+                  <span id="bio-copy-done" class="copy-done" aria-hidden="true">Skopiowano</span>
+                  <button id="bio-copy" type="button" class="btn-copy" aria-label="Kopiuj całość">Kopiuj</button>
+                </div>
+                <div class="bio-new bg-gray-100 p-3">
+
+                  <p class="text-gray-700 leading-relaxed mb-4"><b>Jerzy Zientkowski</b> jest z wykształcenia
+                    informatykiem,
+                    z zawodu mówcą profesjonalnym. Z blisko 30‑letnim dorobkiem w biznesie i współpracą z
+                    najróżniejszymi
+                    branżami i firmami różnej wielkości, posiada doświadczenie i unikatowy punkt patrzenia na
+                    skuteczność
+                    i
+                    efektywność biznesu.</p>
+                  <p class="text-gray-700 leading-relaxed mb-4"><b>Przemawia, szkoli i wspiera, jako mentor i
+                      konsultant</b>
+                    – przy prawie 40 tys. odbiorców jego treści rocznie jest nie tyle celebrytą, ale rozchwytywanym
+                    ekspertem. Pracuje nad komunikacją i prezentacjami dla największych firm na światowym rynku i dla
+                    klientów indywidualnych. Rozmawia ze studentami, pracownikami korporacji, managerami, członkami
+                    zarządów
+                    i właścicielami firm.</p>
+                  <p class="text-gray-700 leading-relaxed mb-4"><b>Spędza na scenie kilkadziesiąt dni rocznie</b>,
+                    nastawiony na skuteczność, jasność i unikalność przekazu dąży do kontaktu z widownią, jako jednego z
+                    najważniejszych narzędzi mówcy publicznego. Prowadzi szkolenia, wykłady, prezentacje i webinary,
+                    wdrażając rentowne działania i poszerzając świadomość klientów.</p>
+                  <p class="text-gray-700 leading-relaxed mb-4"><b>Praktykując to, czego uczy</b>, od 2015 mówi do ponad
+                    40 000 osób rocznie i przemawia podczas tak różnych eventów jak <b>2011 TEDx Wrocław</b> i <b>2025
+                      TEDx
+                      Pabianice</b>, Spectacular Speaking, Nowoczesne Techniki Sprzedaży, Pełna Moc Możliwości, BUCOM
+                    2014,
+                    Toastmasters Leaderhip Institute i Toastmasters District Conference w Bonn i w Cologne, VI Kongres
+                    Business Intelligence, V Forum Dyrektorów Działów Prawnych, Męski Czwartek, WWK, InfoMeet, Expo IT,
+                    Efektywna Sprzedaż, Mocni w Biznesie, Projektownia Liderek, Przyszłość IT, Festiwal Inspiracji w
+                    Warszawie, Edutainment w Krakowie, Katowicach, Łodzi i Poznaniu, GEM CEE i CFO Forum w Pradze i
+                    Bratysławie, Wyzwania IT, Kariera IT i Kariera Programisty, Systemy dla Przedsiębiorstw, Akademia
+                    Mentoringu UAM Poznań, Techworld, Contman Forum i Przyszłość IT i Forum Wsparcia IT, Power Day,
+                    Turbo
+                    Inspiracja, Akademia Zawodowego Mówcy, Invest Cuffs, Brian Tracy International i wielu, wielu
+                    innych.
+                  </p>
+                  <p class="text-gray-700 leading-relaxed mb-4"><b>Mentoruje wybranych managerów wyższego szczebla</b>
+                    zarządzania i właścicieli firm, pomagając w przygotowaniu prezentacji w sytuacjach podbramkowych i
+                    komfortowych. Z doświadczeniem w IT, na styku biznesu, sprzedaży i obsługi klienta wypracował
+                    unikatowy zestaw narzędzi komunikacyjnych, pozwalający na współpracę z różnymi branżami, różnymi
+                    potrzebami klientów, w wielonarodowych środowiskach.
+
+                  </p>
+                  <p class="text-gray-700 leading-relaxed mb-4"><b>Szerokość doświadczeń</b> pozwala mu na
+                    <b>znajdowanie
+                      nietypowych, ale skutecznych rozwiązań</b> dla problemów klientów. W Delta Poznań był
+                    odpowiedzialny
+                    za system telewizji przemysłowej z autorskim oprogramowaniem. W Comarch spędził dwa lata jako
+                    konsultant
+                    w projektach telekomunikacyjnych w Ukrainie i sieciowych w Iranie. Pracował w logistyce w Raben
+                    Polska
+                    jako szef działu IT, odpowiedzialny za funkcjonowanie infrastruktury i wsparcie dla użytkowników. W
+                    Setapp wspierał m.in. sprzedaż symulatorów do nauki jazdy ciężarówkami. W speakerslair Jerzy
+                    Zientkowski
+                    jest odpowiedzialny za komunikację, sprzedaż, marketing
+                    rozsądku.
+                    Na jego platformie można znaleźć takie kursy jak “Matematyczna Pewność Siebie” czy “Autentyczny
+                    Humor
+                    w
+                    Biznesie (i nie tylko)”.</p>
+                  <p class="text-gray-700 leading-relaxed mb-4"><b>Pięciokrotny mistrz Polski</b> w różnych kategoriach
+                    -
+                    mowy
+                    poważne,
+                    humorystyczne, improwizowane i ewaluacyjne, w języku polskim i angielskim. Dotarł w 2012 do finałów
+                    mistrzostw Europy w przemówieniach humorystycznych. W 2011 założyciel klubu Verbal Victory w
+                    Poznaniu
+                    (<b>
+                      3
+                      najlepszy klub na świecie w październiku 2025
+                    </b>), współzałożyciel i mentor wielu innych klubów, Jerzy
+                    rokrocznie staje na scenach Toastmasters Leadership Institute, dzieląc się wiedzą o organizacji - i
+                    przemawianiu.</p>
+                  <p class="text-gray-700 leading-relaxed mb-4"><b>W Sales Angels </b>Jerzy dwukrotnie stawał na scenie
+                    -
+                    <b>w 2019, z
+                      oceną 9.34 dostał się do finałów</b> i występował przed największą społecznością sprzedaży w
+                    Polsce.
+                    W
+                    2023
+                    Jerzy zajął 3 miejsce w Poznaniu podczas Sales Angels All Stars.
+                  </p>
+                  <p class="text-gray-700 leading-relaxed mb-4"><b>Jest członkiem Stowarzyszenia Profesjonalnych Mówców
+                      w
+                      Polsce</b> od
+                    2011 roku. <b>Wiceprezes stowarzyszenia w latach 2012-2016</b>, odpowiedzialny za członkostwo,
+                    strategię
+                    działań i partnerów, organizację konferencji i eventów szkoleniowych. Sześciokrotny organizator
+                    konferencji Festiwal Inspiracji w Opolu, Warszawie i Krakowie.</p>
+                  <p class="text-gray-700 leading-relaxed mb-4"><b>Jerzy współpracował z Mistrzami Świata w
+                      Przemawianiu</b>:
+                    Darren
+                    LaCroix, Ed Tate i Mark Hunter pracowali z nim w speakerslair w Poznaniu przy okazji Spectacular
+                    Speaking i podczas warsztatów w Poznaniu, Krakowie i Warszawie. Mark Brown współpracował z nim
+                    podczas
+                    Spectacular Speaking w Berlinie. Jerzy stał na scenie obok takich mówców, jak Jacek Walkiewicz,
+                    Marek
+                    Skała, Grzegorz Turniak, Szymon Hołownia, prof. Jerzy Bralczyk, Szymon Kudła, Robert Cialdini i
+                    Brian
+                    Tracy. </p>
+                  <p class="text-gray-700 leading-relaxed mb-4">Jerzy pracował w swojej karierze dla <b>ponad 550
+                      podmiotów</b>.
+                    Szkolił
+                    i przemawiał m.in. dla Al Fianco Partners, Allegro, Allianz, Aviva, Aon Hewitt, BGK, Benefit, Bre
+                    Bank,
+                    Bricoman, BZ WBK… a to dopiero początek alfabetu…</p>
+                  <p class="text-gray-700 leading-relaxed mb-4">Pytany o to, co go pcha do przodu, odpowiada, że
+                    najlepszym
+                    odczuciem jest iskra w oczach widowni, kiedy ludzie odkrywają w jego prezentacjach narzędzia,
+                    schematy
+                    albo po prostu perełki wiedzy, które są dla nich wartością. Zwolennik zdrowego rozsądku, lubi mówić
+                    o
+                    sobie, że “Pozbawia złudzeń, nie pozbawiając marzeń”.</p>
+                  <p class="text-gray-700 leading-relaxed mb-4">Prywatnie ojciec trójki synów, zapalony koszykarz (po
+                    ambicji,
+                    nie warunkach), informatyk z
+                    krwi i kości, uwielbia rozwiązywać problemy. Mieszka w Poznaniu, w miejscu bliskim autostradom.
+                  </p>
+
+                </div>
+
+              </div>
+
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <section id="bio" class="pt-16 pb-0 bg-gradient-to-b from-gray-100 to-gray-700 min-h-screen">
-    <!-- New two-column BIO layout -->
-    <div class="max-w-screen mx-auto px-6 min-h-screen flex items-center  ">
-      <div class="flex flex-col md:flex-row gap-8 md:gap-12 items-center md:items-end h-full me-4 mb-4 ">
-        <div class="md:basis-[30%] md:shrink-0 max-w-3xl md:mr-6 mb-20">
-          <h2 class="text-6xl md:text-6xl text-gray-900 mb-4 text-center">BIO</h2>
-          <div id="bio-text" class="p-4 pr-6">
-            <div class="bio-tools">
-              <button id="bio-copy" type="button" class="btn-copy" aria-label="Kopiuj całość">Kopiuj</button>
-              <span id="bio-copy-done" class="copy-done" aria-hidden="true">Skopiowano</span>
-            </div>
-            <div class="bio-new">
-              <p class="text-gray-700 leading-relaxed mb-4"><b>Jerzy Zientkowski</b> jest z wykształcenia informatykiem,
-                z zawodu mówcą profesjonalnym. Z blisko 30‑letnim dorobkiem w biznesie i współpracą z najróżniejszymi
-                branżami i firmami różnej wielkości, posiada doświadczenie i unikatowy punkt patrzenia na skuteczność i
-                efektywność biznesu.</p>
-              <p class="text-gray-700 leading-relaxed mb-4"><b>Przemawia, szkoli i wspiera, jako mentor i konsultant</b>
-                – przy prawie 40 tys. odbiorców jego treści rocznie jest nie tyle celebrytą, ale rozchwytywanym
-                ekspertem. Pracuje nad komunikacją i prezentacjami dla największych firm na światowym rynku i dla
-                klientów indywidualnych. Rozmawia ze studentami, pracownikami korporacji, managerami, członkami zarządów
-                i właścicielami firm.</p>
-              <p class="text-gray-700 leading-relaxed mb-4"><b>Spędza na scenie kilkadziesiąt dni rocznie</b>,
-                nastawiony na skuteczność, jasność i unikalność przekazu dąży do kontaktu z widownią, jako jednego z
-                najważniejszych narzędzi mówcy publicznego. Prowadzi szkolenia, wykłady, prezentacje i webinary,
-                wdrażając rentowne działania i poszerzając świadomość klientów.</p>
-              <p class="text-gray-700 leading-relaxed mb-4"><b>Praktykując to, czego uczy</b>, od 2015 mówi do ponad
-                40 000 osób rocznie i przemawia podczas tak różnych eventów jak <b>2011 TEDx Wrocław</b> i <b>2025 TEDx
-                  Pabianice</b>, Spectacular Speaking, Nowoczesne Techniki Sprzedaży, Pełna Moc Możliwości, BUCOM 2014,
-                Toastmasters Leaderhip Institute i Toastmasters District Conference w Bonn i w Cologne, VI Kongres
-                Business Intelligence, V Forum Dyrektorów Działów Prawnych, Męski Czwartek, WWK, InfoMeet, Expo IT,
-                Efektywna Sprzedaż, Mocni w Biznesie, Projektownia Liderek, Przyszłość IT, Festiwal Inspiracji w
-                Warszawie, Edutainment w Krakowie, Katowicach, Łodzi i Poznaniu, GEM CEE i CFO Forum w Pradze i
-                Bratysławie, Wyzwania IT, Kariera IT i Kariera Programisty, Systemy dla Przedsiębiorstw, Akademia
-                Mentoringu UAM Poznań, Techworld, Contman Forum i Przyszłość IT i Forum Wsparcia IT, Power Day, Turbo
-                Inspiracja, Akademia Zawodowego Mówcy, Invest Cuffs, Brian Tracy International i wielu, wielu innych.
-              </p>
-              <p class="text-gray-700 leading-relaxed mb-4"><b>Mentoruje wybranych managerów wyższego szczebla</b>
-                zarządzania i właścicieli firm, pomagając w przygotowaniu prezentacji w sytuacjach podbramkowych i
-                komfortowych. Z doświadczeniem w IT, na styku biznesu, sprzedaży i obsługi klienta wypracował
-                unikatowy zestaw narzędzi komunikacyjnych, pozwalający na współpracę z różnymi branżami, różnymi
-                potrzebami klientów, w wielonarodowych środowiskach.
-
-              </p>
-              <p class="text-gray-700 leading-relaxed mb-4"><b>Szerokość doświadczeń</b> pozwala mu na <b>znajdowanie
-                  nietypowych, ale skutecznych rozwiązań</b> dla problemów klientów. W Delta Poznań był odpowiedzialny
-                za system telewizji przemysłowej z autorskim oprogramowaniem. W Comarch spędził dwa lata jako konsultant
-                w projektach telekomunikacyjnych w Ukrainie i sieciowych w Iranie. Pracował w logistyce w Raben Polska
-                jako szef działu IT, odpowiedzialny za funkcjonowanie infrastruktury i wsparcie dla użytkowników. W
-                Setapp wspierał m.in. sprzedaż symulatorów do nauki jazdy ciężarówkami. W speakerslair Jerzy Zientkowski
-                jest odpowiedzialny za komunikację, sprzedaż, marketing i optymalizację procesów biznesowych dla
-                klientów z takich branż, jak piwowarska, ubezpieczeniowa, produkcja papieru, produkcja aluminiowych
-                ościeżnic do drzwi, sprzedaż części samochodowych, wdrażanie czujników ciśnienia i przepływu, systemy
-                bezpieczeństwa informatycznego, bankowość, nieruchomości…
-              </p>
-              <p class="text-gray-700 leading-relaxed mb-4"><b>Autor książek</b> o przemawianiu oraz kursów i programów
-                rozwojowych online, prowadzi kilkanaście otwartych webinarów rocznie, podczas których porusza tematykę
-                komunikacji, sprzedaży, prezentacji, efektywności osobistej ale i pewności siebie czy…zdrowego rozsądku.
-                Na jego platformie można znaleźć takie kursy jak “Matematyczna Pewność Siebie” czy “Autentyczny Humor w
-                Biznesie (i nie tylko)”.</p>
-              <p class="text-gray-700 leading-relaxed mb-4">Pięciokrotny mistrz Polski w różnych kategoriach - mowy
-                poważne,
-                humorystyczne, improwizowane i ewaluacyjne, w języku polskim i angielskim. Dotarł w 2012 do finałów
-                mistrzostw Europy w przemówieniach humorystycznych. W 2011 założyciel klubu Verbal Victory w Poznaniu (3
-                najlepszy klub na świecie w październiku 2025), współzałożyciel i mentor wielu innych klubów, Jerzy
-                rokrocznie staje na scenach Toastmasters Leadership Institute, dzieląc się wiedzą o organizacji - i
-                przemawianiu.</p>
-              <p class="text-gray-700 leading-relaxed mb-4"><b>W Sales Angels </b>Jerzy dwukrotnie stawał na scenie -
-                <b>w 2019, z
-                  oceną 9.34 dostał się do finałów</b> i występował przed największą społecznością sprzedaży w Polsce. W
-                2023
-                Jerzy zajął 3 miejsce w Poznaniu podczas Sales Angels All Stars.
-              </p>
-              <p class="text-gray-700 leading-relaxed mb-4"><b>Jest członkiem Stowarzyszenia Profesjonalnych Mówców w
-                  Polsce</b> od
-                2011 roku. <b>Wiceprezes stowarzyszenia w latach 2012-2016</b>, odpowiedzialny za członkostwo, strategię
-                działań i partnerów, organizację konferencji i eventów szkoleniowych. Sześciokrotny organizator
-                konferencji Festiwal Inspiracji w Opolu, Warszawie i Krakowie.</p>
-              <p class="text-gray-700 leading-relaxed"><b>Jerzy współpracował z Mistrzami Świata w Przemawianiu</b>:
-                Darren
-                LaCroix, Ed Tate i Mark Hunter pracowali z nim w speakerslair w Poznaniu przy okazji Spectacular
-                Speaking i podczas warsztatów w Poznaniu, Krakowie i Warszawie. Mark Brown współpracował z nim podczas
-                Spectacular Speaking w Berlinie. Jerzy stał na scenie obok takich mówców, jak Jacek Walkiewicz, Marek
-                Skała, Grzegorz Turniak, Szymon Hołownia, prof. Jerzy Bralczyk, Szymon Kudła, Robert Cialdini i Brian
-                Tracy. </p>
-              <p class="text-gray-700 leading-relaxed mb-4">Jerzy pracował w swojej karierze dla ponad 550 podmiotów.
-                Szkolił
-                i przemawiał m.in. dla Al Fianco Partners, Allegro, Allianz, Aviva, Aon Hewitt, BGK, Benefit, Bre Bank,
-                Bricoman, BZ WBK… a to dopiero początek alfabetu…</p>
-              <p class="text-gray-700 leading-relaxed mb-4">Pytany o to, co go pcha do przodu, odpowiada, że najlepszym
-                odczuciem jest iskra w oczach widowni, kiedy ludzie odkrywają w jego prezentacjach narzędzia, schematy
-                albo po prostu perełki wiedzy, które są dla nich wartością. Zwolennik zdrowego rozsądku, lubi mówić o
-                sobie, że “Pozbawia złudzeń, nie pozbawiając marzeń”.</p>
-              <p class="text-gray-700 leading-relaxed mb-4">Prywatnie ojciec trójki synów, zapalony koszykarz (po
-                ambicji,
-                nie warunkach), informatyk z
-                krwi i kości, uwielbia rozwiązywać problemy. Mieszka w Poznaniu, w miejscu bliskim autostradom.
-              </p>
-            </div>
             
-      </div>
-      
-    </div>
-    </div>
-    <aside class="hidden md:flex md:flex-col md:basis-[70%] md:flex-1 w-full mt-8 md:mt-0 h-full">
-      <img src="/assets/img/wystapienia.webp" alt="Jerzy Zientkowski" class=" block mt-auto" />
-    </aside>
-    </div>
+          </div>
+          <!-- Right column: image (visible from md and up) -->
+          <div class="p-12 hidden lg:block lg:basis-[70%]">
+            <div class="relative floating-slow fast-fade-in" style="animation-delay: 0.6s">
+              <!-- Main Image -->
+              <div class="relative z-10">
+                <img src="/assets/img/Invest-cuffs-5-scaled.jpg" alt="Jerzy Zientkowski"
+                  class="w-full max-w-md mx-auto rounded-3xl object-cover shadow-2xl" />
+              </div>
 
-    </div>
-    <!-- End new BIO layout -->
+              <!-- Floating Elements -->
+              <div class="absolute -top-8 -right-8 w-24 h-24 bg-accent/20 rounded-2xl rotating-slow"></div>
+              <div
+                class="absolute -bottom-6 -left-6 w-32 h-32 bg-gradient-to-br from-accent/10 to-accent/5 rounded-full">
+              </div>
+            </div>
 
-  </section>
+            <a href="/bio" class="block text-center mt-4 text-accent hover:text-accent-dark transition-colors">
+              <span class="inline-flex items-center gap-2 font-medium">
+                Zobacz pełne BIO
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd"
+                    d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                    clip-rule="evenodd" />
+                </svg>
+              </span>
+            </a>
+          </div>
 
-  <section id="mentoring" class="py-16 bg-white">
-    <div class="max-w-[1200px] mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
-      <div>
-        <h2 class="text-3xl md:text-4xl font-extrabold text-dark">Mentoring</h2>
-        <!-- NOTE: Tekst do uzupełnienia treścią z PDF: docs/2026 mentoring v9.pdf -->
-        <p class="mt-4 text-gray-700">
-          Indywidualny mentoring dla liderów, ekspertów i przedsiębiorców. Skupiamy się na realnych celach
-          i mierzalnych rezultatach: od strategii komunikacji, przez przygotowanie wystąpień i ofert,
-          po wdrożenia w sprzedaży i pracy z zespołem.
-        </p>
-        <ul class="mt-6 space-y-2 text-gray-700 list-disc pl-5">
-          <li>Przegląd celów i diagnoza (kick-off)</li>
-          <li>Plan działań i rytm pracy (1:1, warsztat, sesje)</li>
-          <li>Materiały i feedback (na żywo oraz asynchronicznie)</li>
-          <li>Mierniki i podsumowanie efektów</li>
-        </ul>
-        <div class="mt-8 flex flex-wrap gap-3">
-          <a href="/mentoring.html"
-            class="px-5 py-3 rounded-lg bg-dark text-white font-bold shadow hover:opacity-90 transition">Szczegóły
-            mentoringu</a>
-          <a href="/sesja.html"
-            class="px-5 py-3 rounded-lg border border-gray-300 text-dark font-bold hover:bg-gray-50 transition">Umów
-            rozmowę</a>
+          <!-- <aside class="p-12  md:flex md:flex-col md:basis-[70%] md:flex-1 w-full mt-8 md:mt-0 h-full">
+        <img src="/assets/img/wystapienia.webp" alt="Jerzy Zientkowski" class=" block mt-auto" />
+      </aside> -->
         </div>
-        <!-- TODO: Podmienić powyższe akapity i listę na treści z PDF -->
-      </div>
-      <div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-            <div class="text-sm font-semibold text-dark">Zakres</div>
-            <div class="mt-2 text-gray-700 text-sm">Komunikacja, wystąpienia, sprzedaż, leadership, narracje i
-              prezentacje.</div>
+
+
+        <!-- End new BIO layout -->
+
+      </section>
+
+      <!-- Mentoring section -->
+      <section id="mentoring" class="py-24 bg-white relative snap-section">
+        <div class="max-w-[1400px] mx-auto px-6">
+          <!-- Section Header -->
+          <div class="text-center mb-20">
+            <h2 class="text-4xl md:text-5xl font-bold mb-6">
+              <span class="">Mentoring indywidualny</span>
+            </h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+              Współpraca 1x1, która pomoże Ci wyjść na scenę bez stresu, a za to ze skutecznym przekazem.
+            </p>
           </div>
-          <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-            <div class="text-sm font-semibold text-dark">Format</div>
-            <div class="mt-2 text-gray-700 text-sm">Sesje 1:1 online lub na żywo, materiały, zadania, feedback.</div>
-          </div>
-          <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-            <div class="text-sm font-semibold text-dark">Czas</div>
-            <div class="mt-2 text-gray-700 text-sm">Program dopasowany: sprint (4–6 tyg.) lub współpraca długofalowa.
+
+          <!-- Story Grid -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-24">
+            <div class="space-y-8">
+              <div class="morphing-card p-8">
+                <div class="flex items-start space-x-4">
+                  <div class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <i data-lucide="briefcase" class="w-6 h-6 text-accent"></i>
+                  </div>
+                  <div>
+                    <h3 class="text-xl font-semibold text-accent mb-3">Praca w sesjach</h3>
+                    <p class="text-gray-700 leading-relaxed">
+                      Online lub stacjonarnie, 1,3 lub 10 sesji. W zależności od Twoich potrzeb, pracujemy nad konkretną
+                      prezentacją, albo nad skutecznością kompetencji mówcy publicznego.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="morphing-card p-8">
+                <div class="flex items-start space-x-4">
+                  <div class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <i data-lucide="mic" class="w-6 h-6 text-accent"></i>
+                  </div>
+                  <div>
+                    <h3 class="text-xl font-semibold text-accent mb-3">Jak pracujemy</h3>
+                    <p class="text-gray-700 leading-relaxed">
+                      Każda sesja to omówienie oczekiwań i plan działań, odrobina teorii i duuużo praktyki. W 3 sesjach
+                      zazwyczaj przygotowujemy założenia prezentacji, w tym otoczkę biznesową, strukturę i treść, a na
+                      ostatniej ćwiczymy wystąpienie.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="morphing-card p-8">
+                <div class="flex items-start space-x-4">
+                  <div class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <i data-lucide="users" class="w-6 h-6 text-accent"></i>
+                  </div>
+                  <div>
+                    <h3 class="text-xl font-semibold text-accent mb-3">Technikalia?
+                    </h3>
+                    <p class="text-gray-700 leading-relaxed">
+
+                      <li>Zarezerwuj termin <a class="underline" href="/sesja?type=onboarding">onboardingu</a>, żeby
+                        omówić szczegóły techniczne i organizacyjne. Sesje odbywają się online, na platformie Google
+                        Meet (lub teams, lub cokolwiek)</li>
+                      <li>W tym samym miejscu <a class="underline" href="/sesja?type=onboarding">rezerwujesz terminy
+                          sesji do pracy</a>, zgodnie z kontraktem</li>
+                      <li>Po każdej sesji dostajesz nagranie, notatki i, jeśli trzeba - zadanie domowe :)</li>
+
+
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="relative">
+              <div class="gradient-border rounded-3xl p-1">
+                <img src="./assets/img/JERZY-NA-lp-KURSU-1.jpg" alt="Jerzy Zientkowski podczas szkolenia"
+                  class="w-full rounded-3xl object-cover" />
+              </div>
+
+              <!-- Quote Overlay -->
+              <div class="absolute -bottom-8 -right-8 glass-effect p-6 rounded-2xl max-w-xs">
+                <div class="text-sm text-gray-700 font-medium">
+                  "Pozbawia złudzeń, nie pozbawiając marzeń"
+                </div>
+              </div>
             </div>
           </div>
-          <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-            <div class="text-sm font-semibold text-dark">Efekty</div>
-            <div class="mt-2 text-gray-700 text-sm">Gotowe wystąpienia/oferty, pewność w komunikacji, mierzalne wyniki.
-            </div>
-          </div>
         </div>
-      </div>
+      </section>
     </div>
-  </section>
 
+
+
+
+
+    </div>
+  </main>
   <!-- Footer (lekki, spójny) -->
-  <footer class="mt-auto bg-light py-8 border-t border-gray-200/60">
-    <div class="max-w-[1200px] mx-auto px-6 text-center text-gray-600">
-      <p>&copy; 2011-2025 Jerzy Zientkowski. Wszelkie prawa zastrzeżone.</p>
+  <!-- Footer -->
+  <footer class="bg-light py-8 mt-40">
+    <div class="container mx-auto px-4">
+      <div class="flex justify-center space-x-4 mb-6">
+        <a target="_blank" href="https://www.linkedin.com/in/jerzyzientkowski/"
+          class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+          <i data-lucide="linkedin" class="w-5 h-5 text-gray-600 hover:text-accent"></i>
+        </a>
+        <a target="_blank" href="https://www.instagram.com/jerzyzientkowskiofficial/"
+          class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+          <i data-lucide="instagram" class="w-5 h-5 text-gray-600 hover:text-accent"></i>
+        </a>
+        <a target="_blank" href="https://www.facebook.com/jerzy.zientkowski"
+          class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+          <i data-lucide="facebook" class="w-5 h-5 text-gray-600 hover:text-accent"></i>
+        </a>
+      </div>
+      <div class="text-center text-gray-600 pt-6 border-t border-gray-200">
+        <p class="mb-4">&copy; 2011-2012-2025 Jerzy Zientkowski. Wszelkie prawa zastrzeżone</p>
+        <div class="flex justify-center items-center text-sm hidden">
+          <a href="#" class="d-none hover:text-accent transition-colors">Polityka prywatności</a>
+          <span class="mx-2 text-gray-300">|</span>
+          <a href="#" class="d-none hover:text-accent transition-colors">Regulamin</a>
+        </div>
+      </div>
     </div>
   </footer>
   <script>
@@ -499,32 +558,95 @@
     })();
   </script>
   <script>
-    (function(){
-      function copyBio(){
+    (function () {
+      const container = document.querySelector('.snap-container');
+      if (!container) return;
+      const sections = Array.prototype.slice.call(container.querySelectorAll('.snap-section'));
+      if (!sections.length) return;
+
+      let busy = false;
+      const settleMs = 700;
+
+      function currentIndex() {
+        const st = container.scrollTop;
+        let best = 0, min = Infinity;
+        sections.forEach((sec, i) => {
+          const d = Math.abs(sec.offsetTop - st);
+          if (d < min) { min = d; best = i; }
+        });
+        return best;
+      }
+
+      function snapTo(i) {
+        if (i < 0 || i >= sections.length) return;
+        busy = true;
+        sections[i].scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setTimeout(() => { busy = false; }, settleMs);
+      }
+
+      function innerScrollableAllows(e) {
+        const scroller = e.target && (e.target.closest && e.target.closest('#bio-text'));
+        if (!scroller) return false;
+        const atTop = scroller.scrollTop <= 0;
+        const atBottom = (scroller.scrollTop + scroller.clientHeight) >= (scroller.scrollHeight - 1);
+        const dy = e.deltaY || 0;
+        if (dy > 0 && !atBottom) return true; // scrolling down inside
+        if (dy < 0 && !atTop) return true;    // scrolling up inside
+        return false; // at boundary -> allow outer snap
+      }
+
+      container.addEventListener('wheel', (e) => {
+        if (busy) { e.preventDefault(); return; }
+        if (innerScrollableAllows(e)) return; // let #bio-text handle its own scroll
+        const cur = currentIndex();
+        if (e.deltaY > 10 && cur < sections.length - 1) { e.preventDefault(); snapTo(cur + 1); }
+        else if (e.deltaY < -10 && cur > 0) { e.preventDefault(); snapTo(cur - 1); }
+      }, { passive: false });
+
+      document.addEventListener('keydown', (e) => {
+        if (busy) return;
+        // if focus is inside #bio-text and it can scroll further in that direction, do not hijack
+        const inBio = e.target && e.target.closest && e.target.closest('#bio-text');
+        if (inBio) {
+          const scroller = inBio;
+          const atTop = scroller.scrollTop <= 0;
+          const atBottom = (scroller.scrollTop + scroller.clientHeight) >= (scroller.scrollHeight - 1);
+          if ((e.key === 'PageDown' || e.key === 'ArrowDown') && !atBottom) return;
+          if ((e.key === 'PageUp' || e.key === 'ArrowUp') && !atTop) return;
+        }
+        const cur = currentIndex();
+        if (e.key === 'PageDown' || e.key === 'ArrowDown') { e.preventDefault(); if (cur < sections.length - 1) snapTo(cur + 1); }
+        if (e.key === 'PageUp' || e.key === 'ArrowUp') { e.preventDefault(); if (cur > 0) snapTo(cur - 1); }
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      function copyBio() {
         var box = document.querySelector('#bio-text .bio-new');
         if (!box) return;
         var parts = Array.prototype.slice.call(box.querySelectorAll('p'))
-          .map(function(p){ return (p.innerText || '').trim(); })
+          .map(function (p) { return (p.innerText || '').trim(); })
           .filter(Boolean);
         var text = parts.join('\n\n');
-        function onDone(){
+        function onDone() {
           var done = document.getElementById('bio-copy-done');
-          if (done){ done.classList.add('show'); setTimeout(function(){ done.classList.remove('show'); }, 1200); }
+          if (done) { done.classList.add('show'); setTimeout(function () { done.classList.remove('show'); }, 1200); }
         }
-        if (navigator.clipboard && navigator.clipboard.writeText){
-          navigator.clipboard.writeText(text).then(onDone).catch(function(){ fallback(); });
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(onDone).catch(function () { fallback(); });
         } else { fallback(); }
-        function fallback(){
+        function fallback() {
           var ta = document.createElement('textarea');
-          ta.value = text; ta.style.position='fixed'; ta.style.opacity='0'; ta.style.pointerEvents='none';
+          ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; ta.style.pointerEvents = 'none';
           document.body.appendChild(ta); ta.select();
-          try { document.execCommand('copy'); } catch(_){ /* ignore */ }
+          try { document.execCommand('copy'); } catch (_) { /* ignore */ }
           document.body.removeChild(ta); onDone();
         }
       }
       var btn = document.getElementById('bio-copy');
       if (btn) btn.addEventListener('click', copyBio);
-      else document.addEventListener('DOMContentLoaded', function(){
+      else document.addEventListener('DOMContentLoaded', function () {
         var b = document.getElementById('bio-copy'); if (b) b.addEventListener('click', copyBio);
       });
     })();

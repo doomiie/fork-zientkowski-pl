@@ -6,8 +6,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Jerzy Zientkowski — Sesja</title>
-    <link rel="preload" as="style" href="/assets/css/app.min.css" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="/assets/css/app.min.css"></noscript>
+    <link rel="preload" as="style" href="/assets/css/app.min.css?v=brand2" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="/assets/css/app.min.css?v=brand2"></noscript>
     <!-- Google OAuth -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <!-- Local font: Space Grotesk (subset PL) -->
@@ -367,8 +367,22 @@ const defaultType = meetingTypesCfg['kup sesję'] ? 'kup sesję' : (entries.leng
 //const defaultType = Object.keys(meetingTypesCfg)[0]? meetingTypesCfg['kup sesj?t'] : 'kup sesj?t';
 console.log('Default meeting type:', defaultType);
 console.log('Meeting types config:', meetingTypesCfg);
-            if (defaultType) select.value = defaultType;
-            if (entries.length) select.value = entries[0][0];
+            // Override default via ?type=...
+            const params = new URLSearchParams(window.location.search);
+            const typeParam = params.get('type');
+            function normalize(s){ return (s||'').normalize('NFD').replace(/\p{Diacritic}/gu,'').toLowerCase().replace(/[\s_-]+/g,''); }
+            let chosenType = (entries.length ? entries[0][0] : defaultType);
+            if (typeParam){
+              if (meetingTypesCfg[typeParam]) {
+                chosenType = typeParam;
+              } else {
+                const norm = normalize(typeParam);
+                const hit = Object.entries(meetingTypesCfg).find(([key, mt]) => normalize(key)===norm || normalize((mt.name||''))===norm);
+                if (hit) chosenType = hit[0];
+              }
+            }
+            console.log('Default meeting type:', defaultType, 'Chosen:', chosenType);
+            if (chosenType) select.value = chosenType; else if (entries.length) select.value = entries[0][0];
             if (desc) {
                 desc.textContent = meetingTypesCfg[select.value]?.description || '';
             }
@@ -470,7 +484,7 @@ console.log('Meeting types config:', meetingTypesCfg);
                 };
                 closeBtn.addEventListener('click', handler);
             }
-            let meetingType = defaultType; // np. "onboarding", "sesja", "kup"
+            let meetingType = document.getElementById('meeting-type').value; // start from selected (supports ?type=...)
 
 
             let selectedDate = null;
