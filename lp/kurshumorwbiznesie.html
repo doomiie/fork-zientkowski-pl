@@ -13,15 +13,38 @@
     - app.min.css jest załadowany asynchronicznie (dobrze)
     - shared.css powinien też być załadowany asynchronicznie podobnie jak app.min.css
   -->
-<style> #siteHeader{min-height:80px} .snap-container{height:100vh;overflow-y:auto;scroll-snap-type:y proximity} .snap-section{height:100vh;scroll-snap-align:start} </style>
-  <link rel="preload" as="style" href="/assets/css/app.min.css?v=brand2"
-    onload="this.onload=null;this.rel='stylesheet'">
+  <style>
+    #siteHeader {
+      min-height: 80px;
+      background-color: var(--brand-secondary)  !important;
+    }
+
+    .snap-container {
+      height: 100vh;
+      overflow-y: auto;
+      scroll-snap-type: y proximity
+    }
+
+    .snap-section {
+      height: 100vh;
+      scroll-snap-align: start
+    }
+  </style>
+  <!-- Local menu background override for this page (keep default link colors) -->
+  <style>
+    #siteHeader,
+    #siteHeader.header-solid {
+      background-color: var(--brand-muted, #aeaeae) !important;
+    }
+  </style>
+  <!-- <link rel="preload" as="style" href="/assets/css/app.min.css?v=brand2" onload="this.onload=null;this.rel='stylesheet'"> -->
+  <link as="style" href="/assets/css/app.min.css?v=brand3" rel='stylesheet'>
   <noscript>
-    <link rel="stylesheet" href="/assets/css/app.min.css?v=brand2">
+    <link rel="stylesheet" href="/assets/css/app.min.css?v=brand3">
   </noscript>
-  <link rel="preload" as="style" href="/assets/css/shared.css?v=dev18" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/assets/css/shared.css?v=dev21" onload="this.onload=null;this.rel='stylesheet'">
   <noscript>
-    <link rel="stylesheet" href="/assets/css/shared.css?v=dev18">
+    <link rel="stylesheet" href="/assets/css/shared.css?v=dev21">
   </noscript>
   <!-- Local font: Space Grotesk (subset PL) -->
   <link rel="preload" as="font" href="/assets/fonts/SpaceGrotesk-PL.woff2" type="font/woff2" crossorigin>
@@ -52,16 +75,26 @@
 
     /* Solid header helper when scrolling (independent of Tailwind build) */
     .header-solid {
-      background-color: #ffffff !important; /* solid white when scrolled */
-      border-bottom: 1px solid rgba(229, 231, 235, 1) !important;
-      backdrop-filter: saturate(180%) blur(10px);      
+      background-color: var(--brand-muted) !important;
+      /* solid white when scrolled */
+      /* border-bottom: 1px solid rgba(229, 231, 235, 1) !important; */
+      backdrop-filter: saturate(180%) blur(10px);
     }
 
     /* Header link color switching */
-    #siteHeader .nav-link { color: #ffffff; }
-    #siteHeader.header-solid .nav-link { color: var(--brand-primary, rgb(4, 3, 39)); }
+    #siteHeader .nav-link {
+      color: #ffffff;
+    }
+
+    #siteHeader.header-solid .nav-link {
+      color: var(--brand-primary, rgb(4, 3, 39));
+    }
+
     /* Hover: muted from brand palette */
-    #siteHeader .nav-link:hover { color: var(--brand-muted, #aeaeae); }
+    #siteHeader .nav-link:hover {
+      color: var(--brand-muted, #aeaeae);
+    }
+
     /* Active/current menu item */
     #siteHeader .nav-link.active,
     #siteHeader .nav-link[aria-current="page"],
@@ -117,7 +150,7 @@
   <link rel="stylesheet" href="/assets/css/consent.css?v=dev4">
   <script defer src="/assets/js/consent.js?v=dev5"></script>
   <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-  <script defer src="/assets/js/menu.js?v=dev25"></script>
+  <script defer src="/assets/js/menu.js?v=dev27&file=/assets/config/kurshumoruwbiznesie.json"></script>
   <script defer src="/assets/js/magnetic.js?v=dev2"></script>
   <script defer src="/assets/js/animations.js"></script>
   <!-- Icons/manifest -->
@@ -146,9 +179,9 @@
         <span class="hidden 2xl:inline">DEV: 2xl — H1 text-5xl</span>
       </div>
 
-      <nav id="navDesktop" class="hidden md:flex items-center space-x-8 ml-auto text-white"></nav>
+      <nav id="navDesktop" class="hidden lg:flex items-center space-x-8 ml-auto text-white"></nav>
 
-      <div class="flex items-center ml-auto md:ml-8 md:hidden">
+      <div class="flex items-center ml-auto md:ml-8 lg:hidden">
         <button id="menuToggleHome" aria-label="Menu"
           class="p-2 rounded-lg border border-gray-300 text-gray-800 hover:bg-gray-50">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -176,35 +209,33 @@
 
   <main class="flex-1 ">
     <div class="snap-container">
-       <!-- Video section -->
+      <!-- Video section -->
       <section id="video" class="pt-0 pb-0 bg-white snap-section" style="padding-top:80px; scroll-margin-top:80px;">
         <div class="max-w-[1100px] mx-auto px-0">
           <!-- Spacer to keep video below fixed header (inline styles to avoid build dependency) -->
           <div style="height:0" aria-hidden="true"></div>
           <!-- YouTube: touches top, centered, 16:9 -->
-          <div class="w-full" style="aspect-ratio:16/9;">
-            <iframe
-              src="https://www.youtube.com/embed/N4_Yw9-uv08?rel=0&modestbranding=1&color=white"
+          <div class="w-full p-2" style="aspect-ratio:16/9;">
+            <iframe src="https://www.youtube.com/embed/N4_Yw9-uv08?rel=0&modestbranding=1&color=white"
               title="Autentyczny Humor w Biznesie"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowfullscreen
-              style="width:100%;height:100%;border:0;display:block;margin:0 auto;">
+              allowfullscreen style="width:100%;height:100%;border:0;display:block;margin:0 auto;">
             </iframe>
           </div>
 
           <!-- Headings + CTA -->
-          <div class="px-6 py-6 text-center">
-            <h1 class="text-3xl md:text-5xl font-extrabold text-[color:var(--color-primary)]">Autentyczny Humor w Biznesie</h1>
-            <h2 class="mt-3 text-lg md:text-2xl text-[color:var(--color-primary)]/80">Znajdź swój humor dla Twoich klientów, słuchaczy, odbiorców.</h2>
-            <a href="#kup" class="inline-block mt-6 px-6 py-3 rounded-lg text-white font-semibold shadow"
-               style="background-color: var(--color-warm);">
-              Kup teraz
-            </a>
+          <div class="px-6 py-6 text-center ">
+            <h1 class="text-3xl md:text-5xl font-extrabold text-[color:var(--brand-primary)]">Autentyczny Humor w
+              Biznesie</h1>
+            <h2 class="mt-3 text-lg md:text-2xl text-[color:var(--brand-primary)]/80">Znajdź swój humor dla Twoich
+              klientów, słuchaczy, odbiorców.</h2>
+              <h3 class="md:hidden">test</h3>
+              TUTAJ dodaj przycisk ostylowany jak w menu btn-menu, z napisem KUP TERAZ
           </div>
         </div>
       </section>
 
-      
+
       <!-- Hero (copied mechanism from ebookhumor..., without forms) -->
       <section id="hero" class="relative flex items-center overflow-hidden snap-section">
         <div class="absolute inset-0">
@@ -306,7 +337,8 @@
                     Na jego platformie można znaleźć takie kursy jak “Matematyczna Pewność Siebie” czy “Autentyczny
                     Humor
                     w
-                    Biznesie (i nie tylko)”.</p>
+                    Biznesie (i nie tylko)”.
+                  </p>
                   <p class="text-gray-700 leading-relaxed mb-4"><b>Pięciokrotny mistrz Polski</b> w różnych kategoriach
                     -
                     mowy
@@ -372,7 +404,7 @@
 
             </div>
 
-            
+
           </div>
           <!-- Right column: image (visible from md and up) -->
           <div class="p-12 hidden lg:block lg:basis-[70%]">
