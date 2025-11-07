@@ -13,7 +13,7 @@
     - app.min.css jest załadowany asynchronicznie (dobrze)
     - shared.css powinien też być załadowany asynchronicznie podobnie jak app.min.css
   -->
-
+<style> #siteHeader{min-height:80px} .snap-container{height:100vh;overflow-y:auto;scroll-snap-type:y proximity} .snap-section{height:100vh;scroll-snap-align:start} </style>
   <link rel="preload" as="style" href="/assets/css/app.min.css?v=brand2"
     onload="this.onload=null;this.rel='stylesheet'">
   <noscript>
@@ -176,7 +176,34 @@
 
   <main class="flex-1 ">
     <div class="snap-container">
-      
+       <!-- Video section -->
+      <section id="video" class="pt-0 pb-0 bg-white snap-section" style="padding-top:80px; scroll-margin-top:80px;">
+        <div class="max-w-[1100px] mx-auto px-0">
+          <!-- Spacer to keep video below fixed header (inline styles to avoid build dependency) -->
+          <div style="height:0" aria-hidden="true"></div>
+          <!-- YouTube: touches top, centered, 16:9 -->
+          <div class="w-full" style="aspect-ratio:16/9;">
+            <iframe
+              src="https://www.youtube.com/embed/N4_Yw9-uv08?rel=0&modestbranding=1&color=white"
+              title="Autentyczny Humor w Biznesie"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+              style="width:100%;height:100%;border:0;display:block;margin:0 auto;">
+            </iframe>
+          </div>
+
+          <!-- Headings + CTA -->
+          <div class="px-6 py-6 text-center">
+            <h1 class="text-3xl md:text-5xl font-extrabold text-[color:var(--color-primary)]">Autentyczny Humor w Biznesie</h1>
+            <h2 class="mt-3 text-lg md:text-2xl text-[color:var(--color-primary)]/80">Znajdź swój humor dla Twoich klientów, słuchaczy, odbiorców.</h2>
+            <a href="#kup" class="inline-block mt-6 px-6 py-3 rounded-lg text-white font-semibold shadow"
+               style="background-color: var(--color-warm);">
+              Kup teraz
+            </a>
+          </div>
+        </div>
+      </section>
+
       
       <!-- Hero (copied mechanism from ebookhumor..., without forms) -->
       <section id="hero" class="relative flex items-center overflow-hidden snap-section">
