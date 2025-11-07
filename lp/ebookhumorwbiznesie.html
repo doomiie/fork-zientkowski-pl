@@ -124,13 +124,15 @@
           clearError();
           const emailInput = form.querySelector('input[type="email"]');
           const email = (emailInput && emailInput.value ? emailInput.value : '').trim();
+          const from = document.referrer || 'direct'; // jeśli ktoś wszedł bezpośrednio
+
         const ok = (emailInput && typeof emailInput.checkValidity === 'function')
           ? emailInput.checkValidity()
           : /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
           if(!ok){ showError('Podaj poprawny adres e-mail.'); return; }
           try {
           setLoading(true);
-            const res = await fetch('/backend/sheets_subscribe.php', { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ email }) });
+            const res = await fetch('/backend/sheets_subscribe.php', { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ email, from: from }) });
             const data = await res.json().catch(()=>({}));
             if (res.status === 401 && data && data.error === 'auth_required' && data.authUrl) {
               window.open(data.authUrl, '_blank', 'noopener');

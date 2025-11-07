@@ -89,8 +89,10 @@ try {
     exit;
   }
 
+  $from = trim((string)($data['from'] ?? 'direct'));
+
   $service = new Google_Service_Sheets($client);
-  $values = [ [ date('Y-m-d H:i:s'), $email, 'ebookhumorwbiznesie' ] ];
+  $values = [ [ date('Y-m-d H:i:s'), $email, 'ebookhumorwbiznesie', $from ] ];
   $body = new Google_Service_Sheets_ValueRange([ 'values' => $values ]);
   $params = [ 'valueInputOption' => 'RAW' ];
   $appendResp = $service->spreadsheets_values->append($spreadsheetId, $range, $body, $params);
