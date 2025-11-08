@@ -1,733 +1,941 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pl">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jerzy Zientkowski — Strona główna</title>
-  <!--
-  Sugestie:
-  1. app.min.css i shared.css prawdopodobnie mogą być połączone w jeden plik CSS
-    dla lepszej wydajności ładowania
-  2. Jeśli pliki muszą być osobne:
-    - app.min.css jest załadowany asynchronicznie (dobrze)
-    - shared.css powinien też być załadowany asynchronicznie podobnie jak app.min.css
-  -->
-  <style>
-    #siteHeader {
-      min-height: 80px;
-      background-color: var(--brand-secondary)  !important;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autentyczny Humor w Biznesie - Jerzy Zientkowski</title>
+    <link rel="preload" as="style" href="/assets/css/app.min.css?v=brand3" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="/assets/css/app.min.css?v=brand3"></noscript>
+    <link rel="preload" as="style" href="/assets/css/shared.css?v=dev21" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="/assets/css/shared.css?v=dev21"></noscript>
 
-    .snap-container {
-      height: 100vh;
-      overflow-y: auto;
-      scroll-snap-type: y proximity
-    }
+    <!-- Local font: Space Grotesk (subset PL) -->
+    <link rel="preload" as="font" href="/assets/fonts/SpaceGrotesk-PL.woff2" type="font/woff2" crossorigin>
+    <style>
+        @font-face {
+            font-family: 'Space Grotesk';
+            src: url('/assets/fonts/SpaceGrotesk-PL.woff2') format('woff2');
+            font-weight: 300 700;
+            font-style: normal;
+            font-display: swap;
+        }
 
-    .snap-section {
-      height: 100vh;
-      scroll-snap-align: start
-    }
-  </style>
-  <!-- Local menu background override for this page (keep default link colors) -->
-  <style>
-    #siteHeader,
-    #siteHeader.header-solid {
-      background-color: var(--brand-muted, #aeaeae) !important;
-    }
-  </style>
-  <!-- <link rel="preload" as="style" href="/assets/css/app.min.css?v=brand2" onload="this.onload=null;this.rel='stylesheet'"> -->
-  <link as="style" href="/assets/css/app.min.css?v=brand3" rel='stylesheet'>
-  <noscript>
-    <link rel="stylesheet" href="/assets/css/app.min.css?v=brand3">
-  </noscript>
-  <link rel="preload" as="style" href="/assets/css/shared.css?v=dev21" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript>
-    <link rel="stylesheet" href="/assets/css/shared.css?v=dev21">
-  </noscript>
-  <!-- Local font: Space Grotesk (subset PL) -->
-  <link rel="preload" as="font" href="/assets/fonts/SpaceGrotesk-PL.woff2" type="font/woff2" crossorigin>
-  <style>
-    @font-face {
-      font-family: 'Space Grotesk';
-      src: url('/assets/fonts/SpaceGrotesk-PL.woff2') format('woff2');
-      font-weight: 300 700;
-      font-style: normal;
-      font-display: swap;
-    }
+        * {
+            font-family: 'Space Grotesk', sans-serif;
+            scroll-behavior: smooth;
+        }
 
-    * {
-      font-family: 'Space Grotesk', sans-serif;
-    }
+        .gradient-text {
+            background: linear-gradient(135deg, rgb(4, 3, 39) 0%, rgb(4, 3, 39, 0.8) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
 
-    .bg-light {
-      background-color: #F9F9F9;
-    }
+        .morphing-card {
+            background: #ffffff;
+            border: 1px solid rgba(4, 3, 39, 0.08);
+            border-radius: 16px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
 
-    .text-dark {
-      color: rgb(4, 3, 39);
-    }
+        .morphing-card:hover {
+            transform: scale(1.01);
+            box-shadow: 0 8px 16px rgba(4, 3, 39, 0.06);
+        }
 
-    .bg-dark {
-      background-color: rgb(4, 3, 39) !important;
-    }
+        .text-accent {
+            color: rgb(4, 3, 39) !important;
+        }
 
-    /* Solid header helper when scrolling (independent of Tailwind build) */
-    .header-solid {
-      background-color: var(--brand-muted) !important;
-      /* solid white when scrolled */
-      /* border-bottom: 1px solid rgba(229, 231, 235, 1) !important; */
-      backdrop-filter: saturate(180%) blur(10px);
-    }
+        .bg-accent {
+            background-color: rgb(4, 3, 39) !important;
+        }
 
-    /* Header link color switching */
-    #siteHeader .nav-link {
-      color: #ffffff;
-    }
+        .border-accent {
+            border-color: rgb(4, 3, 39) !important;
+        }
 
-    #siteHeader.header-solid .nav-link {
-      color: var(--brand-primary, rgb(4, 3, 39));
-    }
+        .hover\:bg-accent:hover {
+            background-color: rgb(4, 3, 39) !important;
+        }
 
-    /* Hover: muted from brand palette */
-    #siteHeader .nav-link:hover {
-      color: var(--brand-muted, #aeaeae);
-    }
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 2rem;
+            background-color: var(--brand-warm, #e77920);
+            color: white;
+            border-radius: 9999px;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 1.125rem;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
 
-    /* Active/current menu item */
-    #siteHeader .nav-link.active,
-    #siteHeader .nav-link[aria-current="page"],
-    #siteHeader .nav-link[aria-current="true"] {
-      color: var(--brand-warm, #e77920);
-    }
+        .btn-primary:hover {
+            background-color: #d66810;
+            transform: scale(1.03);
+        }
 
+        .video-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/9;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(4, 3, 39, 0.2);
+        }
 
-    /* Menu icon chip */
-    #siteHeader .ci {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 9999px;
-      width: 36px;
-      height: 36px;
-      border: 1px solid currentColor;
-      margin-right: 8px;
-      transition: background-color .2s ease, transform .2s ease, border-color .2s ease;
-    }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
 
-    #siteHeader .nav-link:hover .ci {
-      transform: scale(1.05);
-    }
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(231, 121, 32, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--brand-warm, #e77920);
+            flex-shrink: 0;
+            transition: transform 0.2s ease;
+        }
 
-    /* Subtle bg on hover depending on header state */
-    #siteHeader:not(.header-solid) .nav-link:hover .ci {
-      background-color: rgba(255, 255, 255, .18);
-    }
+        .morphing-card:hover .feature-icon {
+            transform: scale(1.08);
+        }
 
-    #siteHeader.header-solid .nav-link:hover .ci {
-      background-color: rgba(4, 3, 39, .08);
-    }
-  </style>
-  <!-- SEO -->
-  <meta name="description" content="Jerzy Zientkowski — wystąpienia, szkolenia, mentoring i ebooki.">
-  <meta name="author" content="Jerzy Zientkowski">
-  <meta property="og:title" content="Jerzy Zientkowski — Strona główna">
-  <meta property="og:description" content="Wystąpienia, szkolenia, mentoring i ebooki.">
-  <meta property="og:image" content="https://zientkowski.pl/assets/img/wystapienia.webp">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://zientkowski.pl/home.html">
-  <meta property="og:site_name" content="Jerzy Zientkowski">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Jerzy Zientkowski — Strona główna">
-  <meta name="twitter:description" content="Wystąpienia, szkolenia, mentoring i ebooki.">
-  <meta name="twitter:image" content="https://zientkowski.pl/assets/img/wystapienia.webp">
-  <link rel="canonical" href="https://zientkowski.pl/home.html" />
-  <!-- Consent (GCM v2) -->
-  <script>window.dataLayer = window.dataLayer || []; window.dataLayer.push({ consent: "default", ad_storage: "denied", analytics_storage: "denied", ad_user_data: "denied", ad_personalization: "denied", functionality_storage: "granted", security_storage: "granted" });</script>
-  <link rel="stylesheet" href="/assets/css/consent.css?v=dev4">
-  <script defer src="/assets/js/consent.js?v=dev5"></script>
-  <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-  <script defer src="/assets/js/menu.js?v=dev27&file=/assets/config/kurshumoruwbiznesie.json"></script>
-  <script defer src="/assets/js/magnetic.js?v=dev2"></script>
-  <script defer src="/assets/js/animations.js"></script>
-  <!-- Icons/manifest -->
-  <link rel="icon" type="image/png" href="/assets/img/favicon/favicon-96x96.png" sizes="96x96" />
-  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon/favicon.svg" />
-  <link rel="shortcut icon" href="/assets/img/favicon/favicon.ico" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon/apple-touch-icon.png" />
-  <link rel="manifest" href="/site.webmanifest" />
+        .gradient-border {
+            background: #ffffff;
+            border: 2px solid rgba(4, 3, 39, 0.1);
+            position: relative;
+            transition: transform 0.2s ease;
+        }
+
+        .gradient-border:hover {
+            transform: scale(1.01);
+        }
+
+        .faq-item {
+            border-bottom: 1px solid rgba(4, 3, 39, 0.1);
+        }
+
+        .faq-question {
+            width: 100%;
+            text-align: left;
+            padding: 1.5rem 0;
+            font-weight: 600;
+            font-size: 1.125rem;
+            color: rgb(4, 3, 39);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            background: none;
+            border: none;
+        }
+
+        .faq-question:hover {
+            color: var(--brand-warm, #e77920);
+        }
+
+        .faq-question svg {
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.6, 1);
+            flex-shrink: 0;
+        }
+
+        .faq-question.active svg {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.6, 1), opacity 0.4s ease, padding 0.5s ease;
+            opacity: 0;
+            padding: 0;
+        }
+
+        .faq-answer.active {
+            max-height: 800px;
+            opacity: 1;
+            padding-bottom: 1.5rem;
+        }
+
+        .feature-icon:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.02);
+        }
+
+        .gradient-border:hover {
+            transform: scale(1.01);
+        }
+
+        * {
+            transition-property: transform, opacity, color, background-color, border-color, box-shadow;
+            transition-duration: 0.2s;
+            transition-timing-function: ease;
+        }
+    </style>
+
+    <!-- SEO -->
+    <meta name="description" content="Autentyczny Humor w Biznesie - kurs online od Jerzego Zientkowskiego. Naucz się budować autentyczny humor w komunikacji biznesowej.">
+    <meta name="author" content="Jerzy Zientkowski">
+    <meta property="og:title" content="Autentyczny Humor w Biznesie">
+    <meta property="og:description" content="Znajdź swój humor dla Twoich klientów, słuchaczy, odbiorców.">
+    <meta property="og:image" content="https://zientkowski.pl/assets/img/wystapienia.webp">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://zientkowski.pl/lp/kurshumorwbiznesie.html">
+
+    <!-- Icons -->
+    <link rel="icon" type="image/png" href="/assets/img/favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/assets/img/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/assets/img/favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon/apple-touch-icon.png" />
+
+    <!-- Consent (GCM v2) -->
+    <script>window.dataLayer = window.dataLayer || []; window.dataLayer.push({ consent: "default", ad_storage: "denied", analytics_storage: "denied", ad_user_data: "denied", ad_personalization: "denied", functionality_storage: "granted", security_storage: "granted" });</script>
+    <link rel="stylesheet" href="/assets/css/consent.css?v=dev4">
+    <script defer src="/assets/js/consent.js?v=dev5"></script>
+    <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 </head>
 
-<body class="bg-light min-h-screen flex flex-col">
-  <!-- Header (transparent overlay) -->
-  <header id="siteHeader" class="fixed top-0 left-0 right-0 z-50 py-4 bg-transparent transition-all duration-300">
-    <div class="max-w-[1200px] mx-auto px-6 flex items-center">
-      <a href="/" class="flex items-center gap-3 font-bold">
-        <img id="siteHeaderLogo" src="/assets/img/logo_main.png" alt="Logo" class="max-w-[140px]">
-      </a>
-
-      <div id="dev-hero-size" class=" mt-1 text-xs text-gray-500 italic">
-        <span class="inline xs:hidden sm:hidden md:hidden lg:hidden xl:hidden 2xl:hidden">DEV: base — H1 text-2xl</span>
-        <span class="hidden xs:inline sm:hidden md:hidden lg:hidden xl:hidden 2xl:hidden">DEV: xs — H1 text-3xl</span>
-        <span class="hidden sm:inline md:hidden lg:hidden xl:hidden 2xl:hidden">DEV: sm — H1 text-4xl</span>
-        <span class="hidden md:inline lg:hidden xl:hidden 2xl:hidden">DEV: md — H1 text-5xl</span>
-        <span class="hidden lg:inline xl:hidden 2xl:hidden">DEV: lg — H1 text-5xl</span>
-        <span class="hidden xl:inline 2xl:hidden">DEV: xl — H1 text-5xl</span>
-        <span class="hidden 2xl:inline">DEV: 2xl — H1 text-5xl</span>
-      </div>
-
-      <nav id="navDesktop" class="hidden md:flex items-center space-x-8 ml-auto text-white"></nav>
-
-      <div class="flex items-center ml-auto md:ml-8 md:hidden">
-        <button id="menuToggleHome" aria-label="Menu"
-          class="p-2 rounded-lg border border-gray-300 text-gray-800 hover:bg-gray-50">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
-      </div>
-    </div>
-  </header>
-  <div id="mobileMenuOverlayHome" class="fixed inset-0 bg-black/50 z-[1000] hidden"></div>
-  <aside id="mobileMenuHome"
-    class="fixed inset-y-0 right-0 w-4/5 max-w-sm bg-white z-[1001] shadow-xl transform translate-x-full transition-transform">
-    <div class="p-4 flex items-center justify-between border-b border-gray-200">
-      <span class="font-semibold text-dark">Menu</span>
-      <button id="menuCloseHome" aria-label="Zamknij menu" class="p-2 rounded-lg text-gray-600 hover:bg-gray-50">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
-    </div>
-    <nav id="navMobile" class="p-4 space-y-3"></nav>
-  </aside>
-
-  <main class="flex-1 ">
-    <div class="snap-container">
-      <!-- Video section -->
-      <section id="video" class="pt-0 pb-0 bg-white snap-section" style="padding-top:80px; scroll-margin-top:80px;">
-        <div class="max-w-[1100px] mx-auto px-0">
-          <!-- Spacer to keep video below fixed header (inline styles to avoid build dependency) -->
-          <div style="height:0" aria-hidden="true"></div>
-          <!-- YouTube: touches top, centered, 16:9 -->
-          <div class="w-full p-2" style="aspect-ratio:16/9;">
-            <iframe src="https://www.youtube.com/embed/N4_Yw9-uv08?rel=0&modestbranding=1&color=white"
-              title="Autentyczny Humor w Biznesie"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowfullscreen style="width:100%;height:100%;border:0;display:block;margin:0 auto;">
-            </iframe>
-          </div>
-
-          <!-- Headings + CTA -->
-          <div class="px-6 py-6 text-center ">
-            <h1 class="text-3xl md:text-5xl font-extrabold text-[color:var(--brand-primary)]">Autentyczny Humor w
-              Biznesie</h1>
-            <h2 class="mt-3 text-lg md:text-2xl text-[color:var(--brand-primary)]/80">Znajdź swój humor dla Twoich
-              klientów, słuchaczy, odbiorców.</h2>
-              <h3 class="md:hidden">test</h3>
-              TUTAJ dodaj przycisk ostylowany jak w menu btn-menu, z napisem KUP TERAZ
-          </div>
-        </div>
-      </section>
-     <!-- Hero (copied mechanism from ebookhumor..., without forms) -->
-      <section id="about" class="relative flex items-center overflow-hidden snap-section" style="background-color: var(--brand-accent);">
-        
-        <div class="relative z-10 w-full">
-          <div class="max-w-[1100px] mx-auto px-6 pt-24 md:pt-28">
-            <div class="max-w-2xl text-white">
-              <h1 class=" sm:text-5xl md:text-6xl font-extrabold leading-tight">Jerzy Zientkowski</h1>
-              <p class="mt-4 text-lg sm:text-xl text-white/90">Mówca, trener, mentor. Tata :)</p>
-              <!-- Formularze i skrypty subskrypcji celowo usunięte w tej wersji -->
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Hero (copied mechanism from ebookhumor..., without forms) -->
-      <section id="hero" class="relative flex items-center overflow-hidden snap-section">
-        <div class="absolute inset-0">
-          <img src="/assets/img/main_bg.webp" alt="Tło - wystąpienia" class="w-full h-full object-cover" loading="eager"
-            decoding="async" style="object-position:center top !important;" fetchpriority="high">
-          <div class="absolute inset-0 bg-black/50"></div>
-        </div>
-        <div class="relative z-10 w-full">
-          <div class="max-w-[1100px] mx-auto px-6 pt-24 md:pt-28">
-            <div class="max-w-2xl text-white">
-              <h1 class=" sm:text-5xl md:text-6xl font-extrabold leading-tight">Jerzy Zientkowski</h1>
-              <p class="mt-4 text-lg sm:text-xl text-white/90">Mówca, trener, mentor. Tata :)</p>
-              <!-- Formularze i skrypty subskrypcji celowo usunięte w tej wersji -->
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="bio" class="pt-16 pb-0 bg-gray-50 snap-section">
-        <!-- New two-column BIO layout -->
-        <div class="max-w-[1400px] mx-auto px-6  flex items-center  ">
-          <div class="flex flex-col md:flex-row gap-8 md:gap-12 items-center md:items-end h-full me-4 mb-4 ">
-            <div class="w-full md:basis-[30%] md:shrink-0 md:mr-6 max-w-3xl mb-20">
-              <h2 class="text-6xl md:text-6xl text-gray-900 mb-4 text-center">BIO</h2>
-
-              <a href="/bio"
-                class="lg:hidden block text-center mb-8 text-accent hover:text-accent-dark transition-colors">
-                <span class="inline-flex items-center gap-2 font-medium">
-                  Zobacz pełne BIO
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd"
-                      d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                      clip-rule="evenodd" />
-                  </svg>
-                </span>
-              </a>
-
-              <div id="bio-text" class="p-4 pr-6">
-                <div class="bio-tools ">
-                  <span id="bio-copy-done" class="copy-done" aria-hidden="true">Skopiowano</span>
-                  <button id="bio-copy" type="button" class="btn-copy" aria-label="Kopiuj całość">Kopiuj</button>
-                </div>
-                <div class="bio-new bg-gray-100 p-3">
-
-                  <p class="text-gray-700 leading-relaxed mb-4"><b>Jerzy Zientkowski</b> jest z wykształcenia
-                    informatykiem,
-                    z zawodu mówcą profesjonalnym. Z blisko 30‑letnim dorobkiem w biznesie i współpracą z
-                    najróżniejszymi
-                    branżami i firmami różnej wielkości, posiada doświadczenie i unikatowy punkt patrzenia na
-                    skuteczność
-                    i
-                    efektywność biznesu.</p>
-                  <p class="text-gray-700 leading-relaxed mb-4"><b>Przemawia, szkoli i wspiera, jako mentor i
-                      konsultant</b>
-                    – przy prawie 40 tys. odbiorców jego treści rocznie jest nie tyle celebrytą, ale rozchwytywanym
-                    ekspertem. Pracuje nad komunikacją i prezentacjami dla największych firm na światowym rynku i dla
-                    klientów indywidualnych. Rozmawia ze studentami, pracownikami korporacji, managerami, członkami
-                    zarządów
-                    i właścicielami firm.</p>
-                  <p class="text-gray-700 leading-relaxed mb-4"><b>Spędza na scenie kilkadziesiąt dni rocznie</b>,
-                    nastawiony na skuteczność, jasność i unikalność przekazu dąży do kontaktu z widownią, jako jednego z
-                    najważniejszych narzędzi mówcy publicznego. Prowadzi szkolenia, wykłady, prezentacje i webinary,
-                    wdrażając rentowne działania i poszerzając świadomość klientów.</p>
-                  <p class="text-gray-700 leading-relaxed mb-4"><b>Praktykując to, czego uczy</b>, od 2015 mówi do ponad
-                    40 000 osób rocznie i przemawia podczas tak różnych eventów jak <b>2011 TEDx Wrocław</b> i <b>2025
-                      TEDx
-                      Pabianice</b>, Spectacular Speaking, Nowoczesne Techniki Sprzedaży, Pełna Moc Możliwości, BUCOM
-                    2014,
-                    Toastmasters Leaderhip Institute i Toastmasters District Conference w Bonn i w Cologne, VI Kongres
-                    Business Intelligence, V Forum Dyrektorów Działów Prawnych, Męski Czwartek, WWK, InfoMeet, Expo IT,
-                    Efektywna Sprzedaż, Mocni w Biznesie, Projektownia Liderek, Przyszłość IT, Festiwal Inspiracji w
-                    Warszawie, Edutainment w Krakowie, Katowicach, Łodzi i Poznaniu, GEM CEE i CFO Forum w Pradze i
-                    Bratysławie, Wyzwania IT, Kariera IT i Kariera Programisty, Systemy dla Przedsiębiorstw, Akademia
-                    Mentoringu UAM Poznań, Techworld, Contman Forum i Przyszłość IT i Forum Wsparcia IT, Power Day,
-                    Turbo
-                    Inspiracja, Akademia Zawodowego Mówcy, Invest Cuffs, Brian Tracy International i wielu, wielu
-                    innych.
-                  </p>
-                  <p class="text-gray-700 leading-relaxed mb-4"><b>Mentoruje wybranych managerów wyższego szczebla</b>
-                    zarządzania i właścicieli firm, pomagając w przygotowaniu prezentacji w sytuacjach podbramkowych i
-                    komfortowych. Z doświadczeniem w IT, na styku biznesu, sprzedaży i obsługi klienta wypracował
-                    unikatowy zestaw narzędzi komunikacyjnych, pozwalający na współpracę z różnymi branżami, różnymi
-                    potrzebami klientów, w wielonarodowych środowiskach.
-
-                  </p>
-                  <p class="text-gray-700 leading-relaxed mb-4"><b>Szerokość doświadczeń</b> pozwala mu na
-                    <b>znajdowanie
-                      nietypowych, ale skutecznych rozwiązań</b> dla problemów klientów. W Delta Poznań był
-                    odpowiedzialny
-                    za system telewizji przemysłowej z autorskim oprogramowaniem. W Comarch spędził dwa lata jako
-                    konsultant
-                    w projektach telekomunikacyjnych w Ukrainie i sieciowych w Iranie. Pracował w logistyce w Raben
-                    Polska
-                    jako szef działu IT, odpowiedzialny za funkcjonowanie infrastruktury i wsparcie dla użytkowników. W
-                    Setapp wspierał m.in. sprzedaż symulatorów do nauki jazdy ciężarówkami. W speakerslair Jerzy
-                    Zientkowski
-                    jest odpowiedzialny za komunikację, sprzedaż, marketing
-                    rozsądku.
-                    Na jego platformie można znaleźć takie kursy jak “Matematyczna Pewność Siebie” czy “Autentyczny
-                    Humor
-                    w
-                    Biznesie (i nie tylko)”.
-                  </p>
-                  <p class="text-gray-700 leading-relaxed mb-4"><b>Pięciokrotny mistrz Polski</b> w różnych kategoriach
-                    -
-                    mowy
-                    poważne,
-                    humorystyczne, improwizowane i ewaluacyjne, w języku polskim i angielskim. Dotarł w 2012 do finałów
-                    mistrzostw Europy w przemówieniach humorystycznych. W 2011 założyciel klubu Verbal Victory w
-                    Poznaniu
-                    (<b>
-                      3
-                      najlepszy klub na świecie w październiku 2025
-                    </b>), współzałożyciel i mentor wielu innych klubów, Jerzy
-                    rokrocznie staje na scenach Toastmasters Leadership Institute, dzieląc się wiedzą o organizacji - i
-                    przemawianiu.</p>
-                  <p class="text-gray-700 leading-relaxed mb-4"><b>W Sales Angels </b>Jerzy dwukrotnie stawał na scenie
-                    -
-                    <b>w 2019, z
-                      oceną 9.34 dostał się do finałów</b> i występował przed największą społecznością sprzedaży w
-                    Polsce.
-                    W
-                    2023
-                    Jerzy zajął 3 miejsce w Poznaniu podczas Sales Angels All Stars.
-                  </p>
-                  <p class="text-gray-700 leading-relaxed mb-4"><b>Jest członkiem Stowarzyszenia Profesjonalnych Mówców
-                      w
-                      Polsce</b> od
-                    2011 roku. <b>Wiceprezes stowarzyszenia w latach 2012-2016</b>, odpowiedzialny za członkostwo,
-                    strategię
-                    działań i partnerów, organizację konferencji i eventów szkoleniowych. Sześciokrotny organizator
-                    konferencji Festiwal Inspiracji w Opolu, Warszawie i Krakowie.</p>
-                  <p class="text-gray-700 leading-relaxed mb-4"><b>Jerzy współpracował z Mistrzami Świata w
-                      Przemawianiu</b>:
-                    Darren
-                    LaCroix, Ed Tate i Mark Hunter pracowali z nim w speakerslair w Poznaniu przy okazji Spectacular
-                    Speaking i podczas warsztatów w Poznaniu, Krakowie i Warszawie. Mark Brown współpracował z nim
-                    podczas
-                    Spectacular Speaking w Berlinie. Jerzy stał na scenie obok takich mówców, jak Jacek Walkiewicz,
-                    Marek
-                    Skała, Grzegorz Turniak, Szymon Hołownia, prof. Jerzy Bralczyk, Szymon Kudła, Robert Cialdini i
-                    Brian
-                    Tracy. </p>
-                  <p class="text-gray-700 leading-relaxed mb-4">Jerzy pracował w swojej karierze dla <b>ponad 550
-                      podmiotów</b>.
-                    Szkolił
-                    i przemawiał m.in. dla Al Fianco Partners, Allegro, Allianz, Aviva, Aon Hewitt, BGK, Benefit, Bre
-                    Bank,
-                    Bricoman, BZ WBK… a to dopiero początek alfabetu…</p>
-                  <p class="text-gray-700 leading-relaxed mb-4">Pytany o to, co go pcha do przodu, odpowiada, że
-                    najlepszym
-                    odczuciem jest iskra w oczach widowni, kiedy ludzie odkrywają w jego prezentacjach narzędzia,
-                    schematy
-                    albo po prostu perełki wiedzy, które są dla nich wartością. Zwolennik zdrowego rozsądku, lubi mówić
-                    o
-                    sobie, że “Pozbawia złudzeń, nie pozbawiając marzeń”.</p>
-                  <p class="text-gray-700 leading-relaxed mb-4">Prywatnie ojciec trójki synów, zapalony koszykarz (po
-                    ambicji,
-                    nie warunkach), informatyk z
-                    krwi i kości, uwielbia rozwiązywać problemy. Mieszka w Poznaniu, w miejscu bliskim autostradom.
-                  </p>
-
-                </div>
-
-              </div>
-
-            </div>
-
-
-          </div>
-          <!-- Right column: image (visible from md and up) -->
-          <div class="p-12 hidden lg:block lg:basis-[70%]">
-            <div class="relative floating-slow fast-fade-in" style="animation-delay: 0.6s">
-              <!-- Main Image -->
-              <div class="relative z-10">
-                <img src="/assets/img/Invest-cuffs-5-scaled.jpg" alt="Jerzy Zientkowski"
-                  class="w-full max-w-md mx-auto rounded-3xl object-cover shadow-2xl" />
-              </div>
-
-              <!-- Floating Elements -->
-              <div class="absolute -top-8 -right-8 w-24 h-24 bg-accent/20 rounded-2xl rotating-slow"></div>
-              <div
-                class="absolute -bottom-6 -left-6 w-32 h-32 bg-gradient-to-br from-accent/10 to-accent/5 rounded-full">
-              </div>
-            </div>
-
-            <a href="/bio" class="block text-center mt-4 text-accent hover:text-accent-dark transition-colors">
-              <span class="inline-flex items-center gap-2 font-medium">
-                Zobacz pełne BIO
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd"
-                    d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                    clip-rule="evenodd" />
-                </svg>
-              </span>
-            </a>
-          </div>
-
-          <!-- <aside class="p-12  md:flex md:flex-col md:basis-[70%] md:flex-1 w-full mt-8 md:mt-0 h-full">
-        <img src="/assets/img/wystapienia.webp" alt="Jerzy Zientkowski" class=" block mt-auto" />
-      </aside> -->
-        </div>
-
-
-        <!-- End new BIO layout -->
-
-      </section>
-
-      <!-- Mentoring section -->
-      <section id="mentoring" class="py-24 bg-white relative snap-section">
+<body class="bg-white">
+    <!-- Navigation -->
+    <nav class="fixed w-full bg-white/95 backdrop-blur-lg z-50 py-4 transition-all duration-300 border-b border-gray-200/50">
         <div class="max-w-[1400px] mx-auto px-6">
-          <!-- Section Header -->
-          <div class="text-center mb-20">
-            <h2 class="text-4xl md:text-5xl font-bold mb-6">
-              <span class="">Mentoring indywidualny</span>
+            <div class="flex items-center justify-between">
+                <div class="text-2xl font-bold tracking-tight">
+                    <a href="/">
+                        <img class="brightness-0 max-w-[150px]" src="/assets/img/logo_main.png" alt="Jerzy Zientkowski">
+                    </a>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#o-kursie" class="font-medium text-accent hover:text-orange-600 transition-colors">O kursie</a>
+                    <a href="#dla-kogo" class="font-medium text-accent hover:text-orange-600 transition-colors">Dla kogo</a>
+                    <a href="#pakiet" class="font-medium text-accent hover:text-orange-600 transition-colors">Pakiet</a>
+                    <a href="#o-mnie" class="font-medium text-accent hover:text-orange-600 transition-colors">O mnie</a>
+                    <a href="#faq" class="font-medium text-accent hover:text-orange-600 transition-colors">FAQ</a>
+                    <a href="https://zientkowski.pl" class="inline-flex items-center px-4 py-2 rounded-full border border-accent text-accent hover:bg-accent hover:text-white transition-colors">Home</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section with Video -->
+    <section class="pt-28 pb-16 bg-gradient-to-br from-white via-gray-50 to-white">
+        <div class="max-w-[1200px] mx-auto px-6">
+            <!-- Video -->
+            <div class="video-container mb-12">
+                <iframe src="https://www.youtube.com/embed/N4_Yw9-uv08?rel=0&modestbranding=1&color=white"
+                    title="Autentyczny Humor w Biznesie"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen>
+                </iframe>
+            </div>
+
+            <!-- Hero Text -->
+            <div class="text-center max-w-4xl mx-auto">
+                <h1 class="text-4xl md:text-6xl font-extrabold mb-6">
+                    <span class="gradient-text">Autentyczny Humor w Biznesie</span>
+                </h1>
+                <p class="text-xl md:text-2xl text-gray-700 mb-8">
+                    Znajdź swój humor dla Twoich klientów, słuchaczy, odbiorców.
+                </p>
+                <a href="#pakiet" class="btn-primary">
+                    KUP TERAZ
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- O kursie -->
+    <section id="o-kursie" class="py-24 bg-white">
+        <div class="max-w-[1400px] mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 text-accent">
+                    O kursie
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Co zyskasz uczestnicząc w tym kursie
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                <div class="morphing-card p-8">
+                    <div class="flex items-start space-x-4">
+                        <div class="feature-icon">
+                            <i data-lucide="smile" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <p class="text-gray-700 leading-relaxed">
+                                W ciągu miesiąca znajdziesz 7+ anegdot, żartów czy mechanizmów, które rozbawią Twoich słuchaczy
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="morphing-card p-8">
+                    <div class="flex items-start space-x-4">
+                        <div class="feature-icon">
+                            <i data-lucide="lightbulb" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <p class="text-gray-700 leading-relaxed">
+                                Zaprojektujesz swoje własne rozpoczęcia prezentacji, dzięki czemu od razu przykujesz uwagę widowni i klientów
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="morphing-card p-8">
+                    <div class="flex items-start space-x-4">
+                        <div class="feature-icon">
+                            <i data-lucide="message-circle" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <p class="text-gray-700 leading-relaxed">
+                                Nauczysz się budować followupy - a to sprawi, że będziesz bezstresowo reagował na zachowania widowni
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="morphing-card p-8">
+                    <div class="flex items-start space-x-4">
+                        <div class="feature-icon">
+                            <i data-lucide="users" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <p class="text-gray-700 leading-relaxed">
+                                Zobaczysz, jak pracować z widownią za pomocą interakcji i atraktorów - co da Ci lepsze relacje i odbiór Twojej komunikacji (rozmowa, nie monolog!)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="morphing-card p-8">
+                    <div class="flex items-start space-x-4">
+                        <div class="feature-icon">
+                            <i data-lucide="target" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <p class="text-gray-700 leading-relaxed">
+                                Humor pomoże Ci z dotarciem z celem Twojej mowy czy prezentacji - rozluźniony odbiorca chętniej słucha
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="morphing-card p-8">
+                    <div class="flex items-start space-x-4">
+                        <div class="feature-icon">
+                            <i data-lucide="star" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <p class="text-gray-700 leading-relaxed">
+                                Twoja marka osobista dostanie dodatkowy wymiar
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dla kogo -->
+    <section id="dla-kogo" class="py-24 bg-gray-50">
+        <div class="max-w-[1400px] mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 text-accent">
+                    Dla kogo jest ten kurs
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="morphing-card p-8 text-center">
+                    <div class="feature-icon mx-auto mb-4">
+                        <i data-lucide="mic" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-accent mb-3">Dla prelegentów</h3>
+                    <p class="text-gray-700 leading-relaxed">
+                        Jeśli stajesz na scenie regularnie i borykasz się z brakiem reakcji widowni - zapraszam
+                    </p>
+                </div>
+
+                <div class="morphing-card p-8 text-center">
+                    <div class="feature-icon mx-auto mb-4">
+                        <i data-lucide="shopping-cart" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-accent mb-3">Dla sprzedawców</h3>
+                    <p class="text-gray-700 leading-relaxed">
+                        W sprzedaży relacje są super ważne. Pokaż klientom luz i swobodę, bez cwaniactwa i siłowania się ze słowami
+                    </p>
+                </div>
+
+                <div class="morphing-card p-8 text-center">
+                    <div class="feature-icon mx-auto mb-4">
+                        <i data-lucide="briefcase" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-accent mb-3">Dla freelancerów</h3>
+                    <p class="text-gray-700 leading-relaxed">
+                        Budujesz sztywną markę osobistą? Nawet AS Bytom tak nie robi...
+                    </p>
+                </div>
+
+                <div class="morphing-card p-8 text-center">
+                    <div class="feature-icon mx-auto mb-4">
+                        <i data-lucide="award" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-accent mb-3">Dla liderów</h3>
+                    <p class="text-gray-700 leading-relaxed">
+                        Łatwiej jest mówić do ludzi w przyjaznej, radosnej atmosferze. Autentycznej w dodatku, a nie na siłę
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- W pakiecie -->
+    <section id="pakiet" class="py-24 bg-white">
+        <div class="max-w-[1400px] mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 text-accent">
+                    W pakiecie
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Co dokładnie otrzymasz w kursie
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="morphing-card p-6">
+                    <h3 class="text-xl font-semibold text-accent mb-2">Czas video</h3>
+                    <p class="text-gray-700 mb-2">Ponad 160 minut video</p>
+                    <p class="text-sm text-gray-500">Stan na 2025-11-07</p>
+                </div>
+
+                <div class="morphing-card p-6">
+                    <h3 class="text-xl font-semibold text-accent mb-2">Lekcje video</h3>
+                    <p class="text-gray-700 mb-2">51 lekcji. Dobra, z wstępami, ale zawsze</p>
+                    <p class="text-sm text-gray-500">Stan na 2025-11-07</p>
+                </div>
+
+                <div class="morphing-card p-6">
+                    <h3 class="text-xl font-semibold text-accent mb-2">Prezentację w PDF</h3>
+                    <p class="text-gray-700">Cały proces kursu pod ręką</p>
+                </div>
+
+                <div class="morphing-card p-6">
+                    <h3 class="text-xl font-semibold text-accent mb-2">Transkrypcję</h3>
+                    <p class="text-gray-700">Można czytać i słuchać jednocześnie</p>
+                </div>
+
+                <div class="morphing-card p-6">
+                    <h3 class="text-xl font-semibold text-accent mb-2">Pół roku na działanie</h3>
+                    <p class="text-gray-700">Dużo, bo wystarczy żeby wdrożyć. Ale też mało, żeby zmotywować</p>
+                </div>
+
+                <div class="morphing-card p-6">
+                    <h3 class="text-xl font-semibold text-accent mb-2">Gotowe techniki budowania humoru</h3>
+                    <p class="text-gray-700">Rozpisane w postaci materiałów, ale do pracy własnej</p>
+                </div>
+
+                <div class="morphing-card p-6">
+                    <h3 class="text-xl font-semibold text-accent mb-2">Zero gotowców i sucharów</h3>
+                    <p class="text-gray-700">To nie jest kurs 'bądź jak wszyscy', to jest kurs 'zbuduj własny, autentyczny humor'</p>
+                </div>
+
+                <div class="morphing-card p-6">
+                    <h3 class="text-xl font-semibold text-accent mb-2">Konkretne przykłady do technik</h3>
+                    <p class="text-gray-700">Żebyś miał jak pobudzić kreatywność</p>
+                </div>
+
+                <div class="morphing-card p-6">
+                    <h3 class="text-xl font-semibold text-accent mb-2">Przykłady video</h3>
+                    <p class="text-gray-700">Większość omawianych technik ma przykłady video z omówieniem</p>
+                </div>
+
+                <div class="morphing-card p-6">
+                    <h3 class="text-xl font-semibold text-accent mb-2">Unikatowe podejście do tematu</h3>
+                    <p class="text-gray-700">Pierwszy na polskim rynku kurs tego typu (humor w biznesie)</p>
+                </div>
+            </div>
+
+            <div class="text-center mt-16">
+                <a href="#" class="btn-primary">
+                    KUP KURS TERAZ
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dlaczego powstał ten kurs -->
+    <section class="py-16 bg-white">
+        <div class="max-w-[1200px] mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-accent">
+                    Dlaczego powstał ten kurs
+                </h2>
+            </div>
+
+            <div class="max-w-5xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="morphing-card p-6">
+                        <div class="flex items-start space-x-3 mb-3">
+                            <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-orange-600 font-bold text-sm">1</span>
+                            </div>
+                            <div>
+                                <p class="text-gray-700 leading-relaxed">
+                                    Na polskim rynku nie ma jeszcze kursu, który pomagałby <strong>TWORZYĆ własny humor</strong>, a nie tylko opowiadać dowcipy i suchary albo starać się być śmiesznym na siłę.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="morphing-card p-6">
+                        <div class="flex items-start space-x-3 mb-3">
+                            <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-orange-600 font-bold text-sm">2</span>
+                            </div>
+                            <div>
+                                <p class="text-gray-700 leading-relaxed">
+                                    Na polskim rynku nie ma jeszcze kursu, który pomagałby biznesowi operować humorem. Panuje przekonanie, że <strong>biznes powinien być sztywny</strong> i od linijki.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="morphing-card p-6">
+                        <div class="flex items-start space-x-3 mb-3">
+                            <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-orange-600 font-bold text-sm">3</span>
+                            </div>
+                            <div>
+                                <p class="text-gray-700 leading-relaxed">
+                                    Od 17 lat staję na scenach konferencji, eventów i wydarzeń i widuję setki prelegentów, którym stres, ego albo kij w oku przeszkadza w prezentacji. <strong>Humor jest świetną metodą</strong> na dotarcie do słuchaczy.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="morphing-card p-6">
+                        <div class="flex items-start space-x-3 mb-3">
+                            <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-orange-600 font-bold text-sm">4</span>
+                            </div>
+                            <div>
+                                <p class="text-gray-700 leading-relaxed">
+                                    Pewność siebie nie wynika z tego, jaki jestem zajebisty, tylko z <strong>dystansu do siebie</strong> i świadomości tego, co potrafię. Humor pomaga klientom złapać przestrzeń na słuchanie.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="morphing-card p-6">
+                        <div class="flex items-start space-x-3 mb-3">
+                            <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-orange-600 font-bold text-sm">5</span>
+                            </div>
+                            <div>
+                                <p class="text-gray-700 leading-relaxed">
+                                    Kiedy mówię "sprzedaż", mam na myśli <strong>każdą formę komunikacji</strong>. Rekrutacja jest sprzedażą. Egzamin w szkole. Rozmowa kwalifikacyjna, raport miesięczny. Ten kurs pomoże Ci nie tylko w biznesie.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="morphing-card p-6">
+                        <div class="flex items-start space-x-3 mb-3">
+                            <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-orange-600 font-bold text-sm">6</span>
+                            </div>
+                            <div>
+                                <p class="text-gray-700 leading-relaxed">
+                                    Komunikacja może być nie tylko merytoryczna - ale i <strong>ciekawa, fajna, radosna</strong>. Jeśli nigdy nie widziałeś prezentacji, do której chcesz wracać - to czas taką zrobić.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pytania i problemy -->
+    <section class="py-24 bg-gray-50">
+        <div class="max-w-[1200px] mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 text-accent">
+                    Pytania i problemy moich klientów
+                </h2>
+                <p class="text-lg text-gray-600">Czy to Cię też dotyczy?</p>
+            </div>
+
+            <div class="max-w-4xl mx-auto space-y-6">
+                <div class="morphing-card p-6">
+                    <div class="flex items-start space-x-4">
+                        <div class="flex-shrink-0">
+                            <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
+                                <i data-lucide="help-circle" class="w-5 h-5 text-blue-600"></i>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-lg font-semibold text-accent mb-2">Pytanie:</h3>
+                            <ul class="space-y-1 text-gray-700">
+                                <li>• Czy mogę być śmieszny od ręki?</li>
+                                <li>• Jak znaleźć humor, dowcipy, anegdoty?</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="morphing-card p-6">
+                    <div class="flex items-start space-x-4">
+                        <div class="flex-shrink-0">
+                            <div class="w-10 h-10 rounded-lg bg-yellow-50 flex items-center justify-center">
+                                <i data-lucide="alert-circle" class="w-5 h-5 text-yellow-600"></i>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-lg font-semibold text-accent mb-2">Obawa:</h3>
+                            <ul class="space-y-1 text-gray-700">
+                                <li>• Czy ludzie będą się śmiali?</li>
+                                <li>• Ale ja nie jestem śmieszny</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="morphing-card p-6">
+                    <div class="flex items-start space-x-4">
+                        <div class="flex-shrink-0">
+                            <div class="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center">
+                                <i data-lucide="alert-triangle" class="w-5 h-5 text-red-600"></i>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-lg font-semibold text-accent mb-2">Strach:</h3>
+                            <ul class="space-y-1 text-gray-700">
+                                <li>• Czy będą się śmiali ze mnie?</li>
+                                <li>• Nie umiem opowiadać dowcipów</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="morphing-card p-6">
+                    <div class="flex items-start space-x-4">
+                        <div class="flex-shrink-0">
+                            <div class="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center">
+                                <i data-lucide="help-circle" class="w-5 h-5 text-purple-600"></i>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-lg font-semibold text-accent mb-2">Wątpliwość:</h3>
+                            <ul class="space-y-1 text-gray-700">
+                                <li>• Czy humor pomaga?</li>
+                                <li>• Po co mi humor?</li>
+                            </ul>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- O mnie -->
+    <section id="o-mnie" class="py-16 bg-gray-50">
+        <div class="max-w-[1200px] mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-accent">
+                    O mnie
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="space-y-4">
+                    <p class="text-gray-700 leading-relaxed">
+                        <strong>Jerzy Zientkowski</strong> jest z wykształcenia informatykiem, z zawodu mówcą profesjonalnym. Z blisko 30-letnim dorobkiem w biznesie i współpracą z najróżniejszymi branżami i firmami różnej wielkości, posiada doświadczenie i unikatowy punkt patrzenia na skuteczność i efektywność biznesu.
+                    </p>
+
+                    <p class="text-gray-700 leading-relaxed">
+                        <strong>Przemawia, szkoli i wspiera, jako mentor i konsultant</strong> – przy prawie 40 tys. odbiorców jego treści rocznie jest nie tyle celebrytą, ale rozchwytywanym ekspertem.
+                    </p>
+
+                    <p class="text-gray-700 leading-relaxed">
+                        <strong>Pięciokrotny mistrz Polski</strong> w różnych kategoriach - mowy poważne, humorystyczne, improwizowane i ewaluacyjne, w języku polskim i angielskim. Dotarł w 2012 do finałów mistrzostw Europy w przemówieniach humorystycznych.
+                    </p>
+
+                    <div class="text-center lg:text-left mt-6">
+                        <a href="/bio.html" class="inline-flex items-center text-accent hover:text-orange-600 font-semibold">
+                            Zobacz pełne BIO
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="relative max-w-md mx-auto">
+                    <div class="gradient-border rounded-3xl p-1">
+                        <img src="/assets/img/JERZY-NA-lp-KURSU-1.jpg" alt="Jerzy Zientkowski" class="w-full rounded-3xl object-cover" />
+                    </div>
+
+                    <div class="absolute -bottom-6 -right-6 bg-white/90 backdrop-blur-sm p-4 rounded-2xl max-w-xs shadow-xl hidden lg:block">
+                        <p class="text-xs text-gray-700 font-medium italic">
+                            "Pozbawia złudzeń, nie pozbawiając marzeń"
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Referencje -->
+    <section id="referencje" class="py-24 bg-white">
+        <div class="max-w-[1400px] mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 text-accent">Referencje</h2>
+                <p class="text-lg text-gray-600">Wybrane opinie klientów.</p>
+            </div>
+            <div id="bioRefsGrid" data-layout="carousel"></div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="py-24 bg-gray-50">
+        <div class="max-w-[1400px] mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 text-accent">
+                    O co pytali przed zakupem (FAQ)
+                </h2>
+            </div>
+
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white rounded-3xl p-8 shadow-lg">
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFAQ(this)">
+                            <span>Na jakiej platformie jest ten kurs?</span>
+                            <i data-lucide="chevron-down" class="w-6 h-6 transition-transform"></i>
+                        </button>
+                        <div class="faq-answer">
+                            <p class="text-gray-700 leading-relaxed">
+                                Pracujemy na platformie WTL, Web To Learn. Polska platforma, robiona przez Michała Lidzbarskiego. Polecam.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFAQ(this)">
+                            <span>To jest audio kurs? Video? Jak to się je?</span>
+                            <i data-lucide="chevron-down" class="w-6 h-6 transition-transform"></i>
+                        </button>
+                        <div class="faq-answer">
+                            <p class="text-gray-700 leading-relaxed">
+                                W zasadzie to jest kurs audio, ale oglądasz - bo są slajdy. I są też przykłady video z moich przemówień. I są bonusy video :)
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFAQ(this)">
+                            <span>Czy jak mi się nie spodoba, zwracasz kasę?</span>
+                            <i data-lucide="chevron-down" class="w-6 h-6 transition-transform"></i>
+                        </button>
+                        <div class="faq-answer">
+                            <p class="text-gray-700 leading-relaxed">
+                                Tak. Masz 14 dni, żeby powiedzieć mi "nie podoba mi się" i oddaję kasę. Bez pytań. Z prośbą o opinię i informację zwrotną. Jak to zrobić? Piszesz na jerzy+zwrot@zientkowski.pl. Resztę poprowadzimy mailowo.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFAQ(this)">
+                            <span>A masz społeczność?</span>
+                            <i data-lucide="chevron-down" class="w-6 h-6 transition-transform"></i>
+                        </button>
+                        <div class="faq-answer">
+                            <p class="text-gray-700 leading-relaxed">
+                                WTL umożliwia pracę w społeczności. Na razie (2025-11) mamy tablicę opinii, ale nie wykluczam stworzenia większej społeczności naokoło Mówców Profesjonalnych :)
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFAQ(this)">
+                            <span>Dostanę zniżkę? Są kody promocyjne?</span>
+                            <i data-lucide="chevron-down" class="w-6 h-6 transition-transform"></i>
+                        </button>
+                        <div class="faq-answer">
+                            <p class="text-gray-700 leading-relaxed">
+                                Tak. I tak. Ale - żeby dostać kod na zniżkę, zrób coś dla mnie - udostępnij post, z którego tu trafiłeś, napisz na swoich Socialach, że kupujesz - i wyślij mi link do udostępnienia albo postu. I wtedy leci rabacik. Nieduży, ale zawsze możesz negocjować :)
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFAQ(this)">
+                            <span>Czy dostęp do kursu jest na zawsze?</span>
+                            <i data-lucide="chevron-down" class="w-6 h-6 transition-transform"></i>
+                        </button>
+                        <div class="faq-answer">
+                            <p class="text-gray-700 leading-relaxed">
+                                Nie. Na 6 miesięcy. Tak jak pisałem powyżej - wystarczy, żeby wdrożyć, ale też pomaga nie odkładać "na później"
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-24 bg-accent text-white relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-accent to-accent/80"></div>
+        <div class="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -mr-48 -mt-48"></div>
+        <div class="absolute bottom-0 left-0 w-64 h-64 bg-white/10 rounded-full -ml-32 -mb-32"></div>
+
+        <div class="max-w-[1400px] mx-auto px-6 text-center relative z-10">
+            <h2 class="text-4xl md:text-5xl font-bold mb-8">
+                Skontaktuj się
             </h2>
-            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-              Współpraca 1x1, która pomoże Ci wyjść na scenę bez stresu, a za to ze skutecznym przekazem.
+            <p class="text-xl text-white/80 mb-12 max-w-3xl mx-auto">
+                Masz pytania o kurs? Skontaktuj się ze mną
             </p>
-          </div>
 
-          <!-- Story Grid -->
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-24">
-            <div class="space-y-8">
-              <div class="morphing-card p-8">
-                <div class="flex items-start space-x-4">
-                  <div class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <i data-lucide="briefcase" class="w-6 h-6 text-accent"></i>
-                  </div>
-                  <div>
-                    <h3 class="text-xl font-semibold text-accent mb-3">Praca w sesjach</h3>
-                    <p class="text-gray-700 leading-relaxed">
-                      Online lub stacjonarnie, 1,3 lub 10 sesji. W zależności od Twoich potrzeb, pracujemy nad konkretną
-                      prezentacją, albo nad skutecznością kompetencji mówcy publicznego.
-                    </p>
-                  </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="flex items-center justify-center space-x-3">
+                    <i data-lucide="mail" class="w-6 h-6"></i>
+                    <span>jerzy@zientkowski.pl</span>
                 </div>
-              </div>
-
-              <div class="morphing-card p-8">
-                <div class="flex items-start space-x-4">
-                  <div class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <i data-lucide="mic" class="w-6 h-6 text-accent"></i>
-                  </div>
-                  <div>
-                    <h3 class="text-xl font-semibold text-accent mb-3">Jak pracujemy</h3>
-                    <p class="text-gray-700 leading-relaxed">
-                      Każda sesja to omówienie oczekiwań i plan działań, odrobina teorii i duuużo praktyki. W 3 sesjach
-                      zazwyczaj przygotowujemy założenia prezentacji, w tym otoczkę biznesową, strukturę i treść, a na
-                      ostatniej ćwiczymy wystąpienie.
-                    </p>
-                  </div>
+                <div class="flex items-center justify-center space-x-3">
+                    <i data-lucide="phone" class="w-6 h-6"></i>
+                    <span>+48 601 534 576</span>
                 </div>
-              </div>
-
-              <div class="morphing-card p-8">
-                <div class="flex items-start space-x-4">
-                  <div class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <i data-lucide="users" class="w-6 h-6 text-accent"></i>
-                  </div>
-                  <div>
-                    <h3 class="text-xl font-semibold text-accent mb-3">Technikalia?
-                    </h3>
-                    <p class="text-gray-700 leading-relaxed">
-
-                      <li>Zarezerwuj termin <a class="underline" href="/sesja?type=onboarding">onboardingu</a>, żeby
-                        omówić szczegóły techniczne i organizacyjne. Sesje odbywają się online, na platformie Google
-                        Meet (lub teams, lub cokolwiek)</li>
-                      <li>W tym samym miejscu <a class="underline" href="/sesja?type=onboarding">rezerwujesz terminy
-                          sesji do pracy</a>, zgodnie z kontraktem</li>
-                      <li>Po każdej sesji dostajesz nagranie, notatki i, jeśli trzeba - zadanie domowe :)</li>
-
-
-                    </p>
-                  </div>
+                <div class="flex items-center justify-center space-x-3">
+                    <i data-lucide="map-pin" class="w-6 h-6"></i>
+                    <span>Poznań, Polska</span>
                 </div>
-              </div>
             </div>
+        </div>
+    </section>
 
-            <div class="relative">
-              <div class="gradient-border rounded-3xl p-1">
-                <img src="./assets/img/JERZY-NA-lp-KURSU-1.jpg" alt="Jerzy Zientkowski podczas szkolenia"
-                  class="w-full rounded-3xl object-cover" />
-              </div>
-
-              <!-- Quote Overlay -->
-              <div class="absolute -bottom-8 -right-8 glass-effect p-6 rounded-2xl max-w-xs">
-                <div class="text-sm text-gray-700 font-medium">
-                  "Pozbawia złudzeń, nie pozbawiając marzeń"
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-[1400px] mx-auto px-6">
+            <div class="text-center">
+                <div class="flex justify-center space-x-6 mb-8">
+                    <a href="https://www.linkedin.com/in/jerzyzientkowski/" class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
+                        <i data-lucide="linkedin" class="w-6 h-6"></i>
+                    </a>
+                    <a href="https://www.instagram.com/jerzyzientkowskiofficial/" class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
+                        <i data-lucide="instagram" class="w-6 h-6"></i>
+                    </a>
+                    <a href="https://www.facebook.com/jerzy.zientkowski" class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
+                        <i data-lucide="facebook" class="w-6 h-6"></i>
+                    </a>
                 </div>
-              </div>
+
+                <div class="border-t border-white/20 pt-8">
+                    <p class="text-white/60">&copy; 2011-2025 Jerzy Zientkowski. Wszelkie prawa zastrzeżone</p>
+                </div>
             </div>
-          </div>
         </div>
-      </section>
-    </div>
+    </footer>
 
+    <!-- Back to top FAB -->
+    <button id="backToTop" aria-label="Do góry" title="Do góry" class="hidden fixed right-4 sm:right-6 bottom-4 sm:bottom-6 z-[1100] rounded-full bg-accent/90 text-white shadow-lg hover:bg-accent p-2.5 sm:p-3 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
+    </button>
 
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <script src="/skrypty/references.js?v=20251030"></script>
 
+    <script>
+        // Initialize Lucide icons
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
 
+            // Initialize references widget
+            if (typeof ReferencesWidget !== 'undefined') {
+                new ReferencesWidget('#bioRefsGrid', {
+                    layout: 'carousel',
+                    csv: '/assets/txt/referencje.csv',
+                    carousel: {
+                        clampLines: 3,
+                        arrows: true,
+                        counter: true
+                    }
+                }).load();
+            }
 
-    </div>
-  </main>
-  <!-- Footer (lekki, spójny) -->
-  <!-- Footer -->
-  <footer class="bg-light py-8 mt-40">
-    <div class="container mx-auto px-4">
-      <div class="flex justify-center space-x-4 mb-6">
-        <a target="_blank" href="https://www.linkedin.com/in/jerzyzientkowski/"
-          class="p-2 rounded-full hover:bg-gray-100 transition-colors">
-          <i data-lucide="linkedin" class="w-5 h-5 text-gray-600 hover:text-accent"></i>
-        </a>
-        <a target="_blank" href="https://www.instagram.com/jerzyzientkowskiofficial/"
-          class="p-2 rounded-full hover:bg-gray-100 transition-colors">
-          <i data-lucide="instagram" class="w-5 h-5 text-gray-600 hover:text-accent"></i>
-        </a>
-        <a target="_blank" href="https://www.facebook.com/jerzy.zientkowski"
-          class="p-2 rounded-full hover:bg-gray-100 transition-colors">
-          <i data-lucide="facebook" class="w-5 h-5 text-gray-600 hover:text-accent"></i>
-        </a>
-      </div>
-      <div class="text-center text-gray-600 pt-6 border-t border-gray-200">
-        <p class="mb-4">&copy; 2011-2012-2025 Jerzy Zientkowski. Wszelkie prawa zastrzeżone</p>
-        <div class="flex justify-center items-center text-sm hidden">
-          <a href="#" class="d-none hover:text-accent transition-colors">Polityka prywatności</a>
-          <span class="mx-2 text-gray-300">|</span>
-          <a href="#" class="d-none hover:text-accent transition-colors">Regulamin</a>
-        </div>
-      </div>
-    </div>
-  </footer>
-  
-  <script>
-    (function () {
-      // Smooth scroll for in-page anchor links (native where supported)
-      try { document.documentElement.style.scrollBehavior = 'smooth'; } catch (_) { }
-      document.addEventListener('click', function (e) {
-        const a = e.target.closest('a[href^="#"]');
-        if (!a) return;
-        const id = a.getAttribute('href');
-        const target = document.querySelector(id);
-        if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-      });
-      var header = document.getElementById('siteHeader');
-      var logo = document.getElementById('siteHeaderLogo');
-      var snapContainer = document.querySelector('.snap-container');
-      // enable smooth transitions
-      header.style.transition = 'background-color .95s ease, box-shadow .95s ease, padding .95s ease, transform .95s ease';
-      logo.style.transition = 'filter .95s ease, transform .95s ease, opacity .95s ease';
+            // Smooth scroll for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href');
+                    if (targetId === '#' || !targetId) return;
 
-      let rafId = null;
-      function onScroll() {
-        if (rafId) cancelAnimationFrame(rafId);
-        rafId = requestAnimationFrame(() => {
-          var pos = 0;
-          if (snapContainer) pos = snapContainer.scrollTop; else pos = (window.scrollY || document.documentElement.scrollTop || 0);
-          if (pos > 10) {
-            header.classList.add('header-solid');
-            header.classList.remove('header-transparent');
-            logo.classList.add('brightness-0');
-          } else {
-            header.classList.add('header-transparent');
-            header.classList.remove('header-solid');
-            logo.classList.remove('brightness-0');
-          }
+                    const targetSection = document.querySelector(targetId);
+                    if (targetSection) {
+                        window.scrollTo({
+                            top: targetSection.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
         });
-      }
-      onScroll();
-      if (snapContainer) snapContainer.addEventListener('scroll', onScroll, { passive: true });
-      else window.addEventListener('scroll', onScroll, { passive: true });
-      //})();
-      onScroll();
 
-      // Mobile menu (overlay + slide-in)
-      const openBtn = document.getElementById('menuToggleHome');
-      const closeBtn = document.getElementById('menuCloseHome');
-      const overlay = document.getElementById('mobileMenuOverlayHome');
-      const menu = document.getElementById('mobileMenuHome');
-      function open() { overlay.classList.remove('hidden'); menu.classList.remove('translate-x-full'); }
-      function close() { overlay.classList.add('hidden'); menu.classList.add('translate-x-full'); }
-      openBtn && openBtn.addEventListener('click', open);
-      closeBtn && closeBtn.addEventListener('click', close);
-      overlay && overlay.addEventListener('click', close);
-      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); }, { passive: true });
-    })();
-  </script>
-  <script>
-    (function () {
-      const container = document.querySelector('.snap-container');
-      if (!container) return;
-      const sections = Array.prototype.slice.call(container.querySelectorAll('.snap-section'));
-      if (!sections.length) return;
+        // FAQ Toggle Function
+        function toggleFAQ(button) {
+            const answer = button.nextElementSibling;
+            const isActive = answer.classList.contains('active');
 
-      let busy = false;
-      const settleMs = 700;
+            // Close all other FAQs
+            document.querySelectorAll('.faq-answer').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelectorAll('.faq-question').forEach(item => {
+                item.classList.remove('active');
+            });
 
-      function currentIndex() {
-        const st = container.scrollTop;
-        let best = 0, min = Infinity;
-        sections.forEach((sec, i) => {
-          const d = Math.abs(sec.offsetTop - st);
-          if (d < min) { min = d; best = i; }
-        });
-        return best;
-      }
-
-      function snapTo(i) {
-        if (i < 0 || i >= sections.length) return;
-        busy = true;
-        sections[i].scrollIntoView({ behavior: 'smooth', block: 'start' });
-        setTimeout(() => { busy = false; }, settleMs);
-      }
-
-      function innerScrollableAllows(e) {
-        const scroller = e.target && (e.target.closest && e.target.closest('#bio-text'));
-        if (!scroller) return false;
-        const atTop = scroller.scrollTop <= 0;
-        const atBottom = (scroller.scrollTop + scroller.clientHeight) >= (scroller.scrollHeight - 1);
-        const dy = e.deltaY || 0;
-        if (dy > 0 && !atBottom) return true; // scrolling down inside
-        if (dy < 0 && !atTop) return true;    // scrolling up inside
-        return false; // at boundary -> allow outer snap
-      }
-
-      container.addEventListener('wheel', (e) => {
-        if (busy) { e.preventDefault(); return; }
-        if (innerScrollableAllows(e)) return; // let #bio-text handle its own scroll
-        const cur = currentIndex();
-        if (e.deltaY > 10 && cur < sections.length - 1) { e.preventDefault(); snapTo(cur + 1); }
-        else if (e.deltaY < -10 && cur > 0) { e.preventDefault(); snapTo(cur - 1); }
-      }, { passive: false });
-
-      document.addEventListener('keydown', (e) => {
-        if (busy) return;
-        // if focus is inside #bio-text and it can scroll further in that direction, do not hijack
-        const inBio = e.target && e.target.closest && e.target.closest('#bio-text');
-        if (inBio) {
-          const scroller = inBio;
-          const atTop = scroller.scrollTop <= 0;
-          const atBottom = (scroller.scrollTop + scroller.clientHeight) >= (scroller.scrollHeight - 1);
-          if ((e.key === 'PageDown' || e.key === 'ArrowDown') && !atBottom) return;
-          if ((e.key === 'PageUp' || e.key === 'ArrowUp') && !atTop) return;
+            // Toggle current FAQ
+            if (!isActive) {
+                answer.classList.add('active');
+                button.classList.add('active');
+            }
         }
-        const cur = currentIndex();
-        if (e.key === 'PageDown' || e.key === 'ArrowDown') { e.preventDefault(); if (cur < sections.length - 1) snapTo(cur + 1); }
-        if (e.key === 'PageUp' || e.key === 'ArrowUp') { e.preventDefault(); if (cur > 0) snapTo(cur - 1); }
-      });
-    })();
-  </script>
-  <script>
-    (function () {
-      function copyBio() {
-        var box = document.querySelector('#bio-text .bio-new');
-        if (!box) return;
-        var parts = Array.prototype.slice.call(box.querySelectorAll('p'))
-          .map(function (p) { return (p.innerText || '').trim(); })
-          .filter(Boolean);
-        var text = parts.join('\n\n');
-        function onDone() {
-          var done = document.getElementById('bio-copy-done');
-          if (done) { done.classList.add('show'); setTimeout(function () { done.classList.remove('show'); }, 1200); }
-        }
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(text).then(onDone).catch(function () { fallback(); });
-        } else { fallback(); }
-        function fallback() {
-          var ta = document.createElement('textarea');
-          ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; ta.style.pointerEvents = 'none';
-          document.body.appendChild(ta); ta.select();
-          try { document.execCommand('copy'); } catch (_) { /* ignore */ }
-          document.body.removeChild(ta); onDone();
-        }
-      }
-      var btn = document.getElementById('bio-copy');
-      if (btn) btn.addEventListener('click', copyBio);
-      else document.addEventListener('DOMContentLoaded', function () {
-        var b = document.getElementById('bio-copy'); if (b) b.addEventListener('click', copyBio);
-      });
-    })();
-  </script>
+    </script>
+
+    <!-- Back to top button script -->
+    <script>
+        (function(){
+            const btn = document.getElementById('backToTop');
+            function update(){ btn && (window.scrollY > 300 ? btn.classList.remove('hidden') : btn.classList.add('hidden')); }
+            window.addEventListener('scroll', update, { passive: true });
+            update();
+            btn && btn.addEventListener('click', function(e){ e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+        })();
+    </script>
 </body>
 
 </html>
