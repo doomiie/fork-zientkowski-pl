@@ -122,6 +122,35 @@
 
   function buildMobile(items){
     const nav = document.getElementById('navMobile'); if(!nav) return;
+    const theme = (typeof window!=='undefined' && window.__menuTheme) ? window.__menuTheme : {};
+    function applyRowStyles(rowEl, item){
+      if (!rowEl || !item) return;
+      // per-item background/text overrides
+      const itBg = item['bg-color'] || (item.bg && item.bg.color) || null;
+      const itText = item['text-color'] || (item.text && item.text.color) || null;
+      const itBgPic = item['bg-picture'] || (item.bg && (item.bg.picture || item.bg.image)) || null;
+      if (itBg) rowEl.style.backgroundColor = itBg;
+      if (itBgPic) {
+        rowEl.style.backgroundImage = "url('" + itBgPic + "')";
+        rowEl.style.backgroundSize = 'cover';
+        rowEl.style.backgroundPosition = 'center';
+        rowEl.style.backgroundRepeat = 'no-repeat';
+      }
+      if (itText) rowEl.style.color = itText; else if (theme.textColor) rowEl.style.color = theme.textColor;
+      // stretch full width of drawer, compensating nav padding (p-4 ≈ 16px)
+      rowEl.style.display = 'block';
+      rowEl.style.marginLeft = '-16px';
+      rowEl.style.marginRight = '-16px';
+      rowEl.style.marginTop = '0';
+      rowEl.style.padding = '12px 16px';
+      rowEl.style.borderRadius = '0';
+      // separator (1–2px white line)
+      const sepW = theme.separatorWidth || '1px';
+      const sepC = theme.separatorColor || 'rgba(255,255,255,0.8)';
+      rowEl.style.borderBottomWidth = sepW;
+      rowEl.style.borderBottomStyle = 'solid';
+      rowEl.style.borderBottomColor = sepC;
+    }
     items.forEach(item => {
       if (String(item.type||'').toLowerCase() === 'button'){
         const isLink = !!item.href;
@@ -130,6 +159,28 @@
           ? el('a', { href: item.href, id: item.id || '', class: 'btn-menu block' }, [])
           : el('button', { id: item.id || '', class: 'btn-menu block', type: 'button' }, []);
         btn.appendChild(text(item.label || ''));
+        // Per-item button styling
+        const itBg = item['bg-color'] || (item.bg && item.bg.color) || null;
+        const itText = item['text-color'] || (item.text && item.text.color) || null;
+        const itBgPic = item['bg-picture'] || (item.bg && (item.bg.picture || item.bg.image)) || null;
+        if (itBg) btn.style.backgroundColor = itBg;
+        if (itBgPic) {
+          btn.style.backgroundImage = "url('" + itBgPic + "')";
+          btn.style.backgroundSize = 'cover';
+          btn.style.backgroundPosition = 'center';
+          btn.style.backgroundRepeat = 'no-repeat';
+        }
+        if (itText) btn.style.color = itText;
+        // stretch full width and add separator under button
+        btn.style.width = '100%';
+        btn.style.borderRadius = '0';
+        btn.style.marginLeft = '-16px';
+        btn.style.marginRight = '-16px';
+        btn.style.marginTop = '0';
+        btn.style.padding = '12px 16px';
+        const sepWb = theme.separatorWidth || '1px';
+        const sepCb = theme.separatorColor || 'rgba(255,255,255,0.8)';
+        btn.style.borderBottom = sepWb + ' solid ' + sepCb;
         wrap.appendChild(btn);
         nav.appendChild(wrap);
         return;
@@ -142,6 +193,7 @@
         sect.appendChild(header);
         item.children.forEach(ch => {
           const row = el('a',{href: ch.href || '#', class:'dd-row block px-3 py-2 rounded-lg text-brand-primary flex items-center gap-2'});
+          applyRowStyles(row, ch);
           const ic = circleIcon(ch.icon); if (ic) row.appendChild(ic);
           row.appendChild(text(ch.label));
           sect.appendChild(row);
@@ -150,6 +202,7 @@
         nav.appendChild(el('hr',{class:'my-3'}));
       } else {
         const a = el('a',{href: item.href || '#', class:'dd-row block px-3 py-2 rounded-lg text-brand-primary flex items-center gap-2'});
+        applyRowStyles(a, item);
         const ic = circleIcon(item.icon); if (ic) a.appendChild(ic);
         a.appendChild(text(item.label));
         nav.appendChild(a);
@@ -157,7 +210,35 @@
     });
   }
 
-  function init(){ loadMenu().then(data=>{ const items = (data && Array.isArray(data.items)) ? data.items : []; buildDesktop(items); buildMobile(items); try{ if(window.lucide && typeof window.lucide.createIcons==='function'){ window.lucide.createIcons(); } }catch(e){} }); }
+  function applyMobileMenuTheme(conf){
+    try {
+      if (typeof window==='undefined') return;
+      var menu = document.getElementById('mobileMenuHome'); if(!menu) return;
+      var headerCloseBtn = document.getElementById('menuCloseHome');
+      var theme = {};
+      // Accept multiple key shapes
+      var bgColor = (conf && conf.bg && conf.bg.color) || (conf && conf['bg.color']);
+      var textColor = (conf && (conf['text-color'] || (conf.text && conf.text.color)));
+      var bgPicture = (conf && conf.bg && (conf.bg.picture || conf.bg.image)) || (conf && (conf['bg-picture'] || conf['bg.image']));
+      if (bgColor) { menu.style.backgroundColor = bgColor; }
+      if (bgPicture) {
+        menu.style.backgroundImage = "url('"+bgPicture+"')";
+        menu.style.backgroundSize = 'cover';
+        menu.style.backgroundPosition = 'center';
+      }
+      if (textColor) {
+        menu.style.color = textColor;
+        if (headerCloseBtn) headerCloseBtn.style.color = textColor;
+        theme.textColor = textColor;
+      }
+      // default separator white (1px)
+      theme.separatorColor = 'rgba(255,255,255,0.8)';
+      theme.separatorWidth = '1px';
+      window.__menuTheme = theme;
+    } catch(_){}
+  }
+
+  function init(){ loadMenu().then(data=>{ applyMobileMenuTheme(data||{}); const items = (data && Array.isArray(data.items)) ? data.items : []; buildDesktop(items); buildMobile(items); try{ if(window.lucide && typeof window.lucide.createIcons==='function'){ window.lucide.createIcons(); } }catch(e){} }); }
   if (document.readyState==='loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();
 

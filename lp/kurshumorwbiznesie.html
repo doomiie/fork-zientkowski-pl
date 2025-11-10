@@ -236,6 +236,10 @@
             align-items: center;
             justify-content: center;
         }
+
+        .hover\:text-brand-warm:hover {
+            color: var(--brand-warm) !important;
+        }
     </style>
 
     <!-- SEO -->
@@ -258,6 +262,7 @@
     <script>window.dataLayer = window.dataLayer || []; window.dataLayer.push({ consent: "default", ad_storage: "denied", analytics_storage: "denied", ad_user_data: "denied", ad_personalization: "denied", functionality_storage: "granted", security_storage: "granted" });</script>
     <link rel="stylesheet" href="/assets/css/consent.css?v=dev4">
     <script defer src="/assets/js/consent.js?v=dev5"></script>
+    <script defer src="/assets/js/menu.js?v=dev29&file=/lp/menu.kurshumorwbiznesie.json"></script>
     <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 </head>
 
@@ -271,24 +276,65 @@
                     <a href="/">
                         <img class="brightness-0 max-w-[150px]" src="/assets/img/logo_main.png" alt="Jerzy Zientkowski">
                     </a>
+                    <div id="dev-hero-size" class=" mt-1 text-xs text-gray-500 italic">
+                        <span class="inline xs:hidden sm:hidden md:hidden lg:hidden xl:hidden 2xl:hidden">DEV: base — H1
+                            text-2xl</span>
+                        <span class="hidden xs:inline sm:hidden md:hidden lg:hidden xl:hidden 2xl:hidden">DEV: xs — H1
+                            text-3xl</span>
+                        <span class="hidden sm:inline md:hidden lg:hidden xl:hidden 2xl:hidden">DEV: sm — H1
+                            text-4xl</span>
+                        <span class="hidden md:inline lg:hidden xl:hidden 2xl:hidden">DEV: md — H1 text-5xl</span>
+                        <span class="hidden lg:inline xl:hidden 2xl:hidden">DEV: lg — H1 text-5xl</span>
+                        <span class="hidden xl:inline 2xl:hidden">DEV: xl — H1 text-5xl</span>
+                        <span class="hidden 2xl:inline">DEV: 2xl — H1 text-5xl</span>
+                    </div>
                 </div>
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="#o-kursie" class="font-medium text-accent hover:text-orange-600 transition-colors">O
+                    <a href="#o-kursie" class="font-medium text-accent hover:text-brand-warm transition-colors">O
                         kursie</a>
-                    <a href="#dla-kogo" class="font-medium text-accent hover:text-orange-600 transition-colors">Dla
+                    <a href="#dla-kogo" class="font-medium text-accent hover:text-brand-warm transition-colors">Dla
                         kogo</a>
-                    <a href="#pakiet" class="font-medium text-accent hover:text-orange-600 transition-colors">Pakiet</a>
-                    <a href="#o-mnie" class="font-medium text-accent hover:text-orange-600 transition-colors">O mnie</a>
-                    <a href="#faq" class="font-medium text-accent hover:text-orange-600 transition-colors">FAQ</a>
+                    <a href="#pakiet" class="font-medium text-accent hover:text-brand-warm transition-colors">Pakiet</a>
+                    <a href="#o-mnie" class="font-medium text-accent hover:text-brand-warm transition-colors">O mnie</a>
+                    <a href="#faq"
+                        class="font-medium text-accent hover:text-brand-warm transition-colors duration-300">FAQ</a>
+
                     <a href="https://zientkowski.pl"
-                        class="inline-flex items-center px-4 py-2 rounded-full border border-accent text-accent hover:bg-accent hover:text-white transition-colors">Home</a>
+                        class="btn-primary border border-accent hover:bg-accent hover:text-white shadow-lg hover:shadow-xl text-xs px-4 py-2">Kup
+                        kurs</a>
+                </div>
+                <!-- Mobile hamburger (from home.html) -->
+                <div class="flex items-center ml-auto md:ml-8 md:hidden">
+                    <button id="menuToggleHome" aria-label="Menu"
+                        class="p-2 rounded-lg border border-gray-300 text-gray-800 hover:bg-gray-50">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
                 </div>
             </div>
         </div>
     </nav>
 
+    <!-- Mobile menu overlay + drawer (from home.html) -->
+    <div id="mobileMenuOverlayHome" class="fixed inset-0 bg-black/50 z-[1000] hidden"></div>
+    <aside id="mobileMenuHome"
+        class="fixed inset-y-0 right-0 w-4/5 max-w-sm bg-white z-[1001] shadow-xl transform translate-x-full transition-transform">
+        <div class="p-4 flex items-center justify-between border-b border-gray-200">
+            <span class="font-semibold text-dark">Menu</span>
+            <button id="menuCloseHome" aria-label="Zamknij menu" class="p-2 rounded-lg text-gray-600 hover:bg-gray-50">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <nav id="navMobile" class="p-4 space-y-3"></nav>
+    </aside>
+
     <!-- Hero Section with Video -->
-    <section class="pt-28 pb-16 bg-gradient-to-br from-white via-gray-50 to-white">
+    <section class="pt-16 md:pt-28 pb-16 bg-white">
         <div class="max-w-[1200px] mx-auto px-6">
             <!-- Video -->
             <div class="video-container mb-12">
@@ -300,25 +346,27 @@
             </div>
 
             <!-- Hero Text -->
-            <div class="text-center max-w-4xl mx-auto">
-                <h1 class="text-4xl md:text-6xl font-extrabold mb-6">
-                    <span class="gradient-text">Autentyczny Humor w Biznesie</span>
+            <div class="text-center max-w-4xl">
+                <h1 class="text-2xl md:text-6xl font-extrabold mb-6 sm:mb-2">
+                    <span class="gradient-text">Autentyczny Humor w&nbsp;Biznesie</span>
                 </h1>
-                <p class="text-xl md:text-2xl text-gray-700 mb-8">
+                <p class="text-sm md:text-2xl text-gray-700 mb-8">
                     Znajdź swój humor dla Twoich klientów, słuchaczy, odbiorców.
                 </p>
-                <a href="#pakiet" class="btn-primary">
+                <a href="#pakiet"
+                    class="btn-primary border border-accent hover:bg-accent hover:text-white shadow-lg hover:shadow-xl text-sm px-4 py-2">
                     KUP TERAZ
                 </a>
             </div>
         </div>
     </section>
 
+
     <!-- O kursie -->
-    <section id="o-kursie" class="py-24 bg-white">
+    <section id="o-kursie" class="py-24 bg-gray-200">
         <div class="max-w-[1400px] mx-auto px-6">
             <div class="text-center mb-16">
-                <h2 class="text-4xl md:text-5xl mb-6 text-accent">
+                <h2 class="text-2xl md:text-5xl mb-6 text-accent">
                     Naucz się tworzyć i wykorzystywać autentyczny humor w biznesie
                 </h2>
                 <p class="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -327,13 +375,15 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-1 gap-2 max-w-5xl mx-auto">
-                <div class="card-course-a p-8 rounded-2xl border border-accent shadow-sm transition-transform hover:shadow-md">
-                    <div class="flex items-start space-x-4">
-                        <div class="feature-icon">                            
-                            <i data-lucide="smile" class="w-6 h-6" aria-hidden="true"></i>
+
+                <div
+                    class="card-course-a p-8 sm:p-8 p-6 rounded-2xl border border-accent shadow-sm transition-transform hover:shadow-md">
+                    <div class="flex flex-col sm:flex-row items-start gap-5 space-y-4 sm:space-y-0">
+                        <div class="feature-icon mx-auto sm:mx-0 ">
+                            <i data-lucide="smile" class="w-6 h-6 sm:w-6 sm:h-6 w-5 h-5" aria-hidden="true"></i>
                         </div>
-                        <div>                            
-                            <p class="text-gray-700 leading-relaxed" style="font-size:0.98rem;">
+                        <div class="w-full">
+                            <p class="text-gray-700 leading-relaxed break-words text-[0.95rem] sm:text-[0.98rem] ml-2">
                                 W ciągu miesiąca znajdziesz 7+ własnych, autentycznych anegdot, żartów i mechanizmów,
                                 które rozbawią Twoich słuchaczy — przygotowane pod Twoją branżę i styl komunikacji.
                             </p>
@@ -341,13 +391,16 @@
                     </div>
                 </div>
 
-                <div class="card-course-a p-8 rounded-2xl border border-accent shadow-sm transition-transform hover:shadow-md">
-                    <div class="flex items-start space-x-4">
-                        <div class="feature-icon">
+
+
+                <div
+                    class="card-course-a p-8 sm:p-8 p-6 rounded-2xl border border-accent shadow-sm transition-transform hover:shadow-md">
+                    <div class="flex flex-col sm:flex-row items-start gap-5 space-y-4 sm:space-y-0">
+                        <div class="feature-icon mx-auto sm:mx-0 ">
                             <i data-lucide="lightbulb" class="w-6 h-6"></i>
                         </div>
                         <div>
-                            <p class="text-gray-700 leading-relaxed">
+                            <p class="text-gray-700 leading-relaxed break-words text-[0.95rem] sm:text-[0.98rem] ml-2">
                                 Zaprojektujesz swoje własne rozpoczęcia prezentacji, dzięki czemu od razu przykujesz
                                 uwagę widowni i klientów
                             </p>
@@ -355,13 +408,14 @@
                     </div>
                 </div>
 
-                <div class="card-course-a p-8 rounded-2xl border border-accent shadow-sm transition-transform hover:shadow-md">
-                    <div class="flex items-start space-x-4">
-                        <div class="feature-icon">
+                <div
+                    class="card-course-a p-8 sm:p-8 p-6 rounded-2xl border border-accent shadow-sm transition-transform hover:shadow-md">
+                    <div class="flex flex-col sm:flex-row items-start gap-5 space-y-4 sm:space-y-0">
+                        <div class="feature-icon mx-auto sm:mx-0 ">
                             <i data-lucide="message-circle" class="w-6 h-6"></i>
                         </div>
                         <div>
-                            <p class="text-gray-700 leading-relaxed">
+                            <p class="text-gray-700 leading-relaxed break-words text-[0.95rem] sm:text-[0.98rem] ml-2">
                                 Nauczysz się budować followupy - a to sprawi, że będziesz bezstresowo reagował na
                                 zachowania widowni
                             </p>
@@ -369,13 +423,14 @@
                     </div>
                 </div>
 
-                <div class="card-course-a p-8 rounded-2xl border border-accent shadow-sm transition-transform hover:shadow-md">
-                    <div class="flex items-start space-x-4">
-                        <div class="feature-icon">
+                <div
+                    class="card-course-a p-8 sm:p-8 p-6 rounded-2xl border border-accent shadow-sm transition-transform hover:shadow-md">
+                    <div class="flex flex-col sm:flex-row items-start gap-5 space-y-4 sm:space-y-0">
+                        <div class="feature-icon mx-auto sm:mx-0 ">
                             <i data-lucide="users" class="w-6 h-6"></i>
                         </div>
                         <div>
-                            <p class="text-gray-700 leading-relaxed">
+                            <p class="text-gray-700 leading-relaxed break-words text-[0.95rem] sm:text-[0.98rem] ml-2">
                                 Zobaczysz, jak pracować z widownią za pomocą interakcji i atraktorów - co da Ci lepsze
                                 relacje i odbiór Twojej komunikacji (rozmowa, nie monolog!)
                             </p>
@@ -383,13 +438,14 @@
                     </div>
                 </div>
 
-                <div class="card-course-a p-8 rounded-2xl border border-accent shadow-sm transition-transform hover:shadow-md">
-                    <div class="flex items-start space-x-4">
-                        <div class="feature-icon">
+                <div
+                    class="card-course-a p-8 sm:p-8 p-6 rounded-2xl border border-accent shadow-sm transition-transform hover:shadow-md">
+                    <div class="flex flex-col sm:flex-row items-start gap-5 space-y-4 sm:space-y-0">
+                        <div class="feature-icon mx-auto sm:mx-0 ">
                             <i data-lucide="target" class="w-6 h-6"></i>
                         </div>
                         <div>
-                            <p class="text-gray-700 leading-relaxed">
+                            <p class="text-gray-700 leading-relaxed break-words text-[0.95rem] sm:text-[0.98rem] ml-2">
                                 Humor pomoże Ci z dotarciem z celem Twojej mowy czy prezentacji - rozluźniony odbiorca
                                 chętniej słucha
                             </p>
@@ -397,13 +453,14 @@
                     </div>
                 </div>
 
-                <div class="card-course-a p-8 rounded-2xl border border-accent shadow-sm transition-transform hover:shadow-md">
-                    <div class="flex items-start space-x-4">
-                        <div class="feature-icon">
+                <div
+                    class="card-course-a p-8 sm:p-8 p-6 rounded-2xl border border-accent shadow-sm transition-transform hover:shadow-md">
+                    <div class="flex flex-col sm:flex-row items-start gap-5 space-y-4 sm:space-y-0">
+                        <div class="feature-icon mx-auto sm:mx-0 ">
                             <i data-lucide="star" class="w-6 h-6"></i>
                         </div>
                         <div>
-                            <p class="text-gray-700 leading-relaxed">
+                            <p class="text-gray-700 leading-relaxed break-words text-[0.95rem] sm:text-[0.98rem] ml-2">
                                 Twoja marka osobista dostanie dodatkowy wymiar
                             </p>
                         </div>
@@ -414,10 +471,10 @@
     </section>
 
     <!-- Dla kogo -->
-    <section id="dla-kogo" class="py-24 bg-gray-50">
+    <section id="dla-kogo" class="py-24 bg-brand-accent">
         <div class="max-w-[1400px] mx-auto px-6">
             <div class="text-center mb-16">
-                <h2 class="text-4xl md:text-5xl font-bold mb-6 text-accent">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 text-white">
                     Dla kogo jest ten kurs
                 </h2>
             </div>
@@ -427,7 +484,7 @@
                     <div class="feature-icon mx-auto mb-4">
                         <i data-lucide="mic" class="w-6 h-6" aria-hidden="true"></i>
                     </div>
-                   
+
                     <h3 class="text-xl font-semibold text-accent mb-3">Dla prelegentów</h3>
                     <p class="text-gray-700 leading-relaxed">
                         Jeśli stajesz na scenie regularnie i borykasz się z brakiem reakcji widowni - zapraszam
@@ -589,7 +646,7 @@
                         <div class="flex items-start space-x-3 mb-3">
                             <div
                                 class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <span class="text-orange-600 font-bold text-sm">1</span>
+                                <span class="text-brand-warm font-bold text-lg">1</span>
                             </div>
                             <div>
                                 <p class="text-gray-700 leading-relaxed">
@@ -605,7 +662,7 @@
                         <div class="flex items-start space-x-3 mb-3">
                             <div
                                 class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <span class="text-orange-600 font-bold text-sm">2</span>
+                                <span class="text-brand-accent font-bold text-lg">2</span>
                             </div>
                             <div>
                                 <p class="text-gray-700 leading-relaxed">
@@ -620,7 +677,7 @@
                         <div class="flex items-start space-x-3 mb-3">
                             <div
                                 class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <span class="text-orange-600 font-bold text-sm">3</span>
+                                <span class="text-brand-warm font-bold text-lg">3</span>
                             </div>
                             <div>
                                 <p class="text-gray-700 leading-relaxed">
@@ -636,7 +693,7 @@
                         <div class="flex items-start space-x-3 mb-3">
                             <div
                                 class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <span class="text-orange-600 font-bold text-sm">4</span>
+                                <span class="text-brand-accent font-bold text-lg">4</span>
                             </div>
                             <div>
                                 <p class="text-gray-700 leading-relaxed">
@@ -652,7 +709,7 @@
                         <div class="flex items-start space-x-3 mb-3">
                             <div
                                 class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <span class="text-orange-600 font-bold text-sm">5</span>
+                                <span class="text-brand-warm font-bold text-lg">5</span>
                             </div>
                             <div>
                                 <p class="text-gray-700 leading-relaxed">
@@ -668,7 +725,7 @@
                         <div class="flex items-start space-x-3 mb-3">
                             <div
                                 class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <span class="text-orange-600 font-bold text-sm">6</span>
+                                <span class="text-brand-accent font-bold text-lg">6</span>
                             </div>
                             <div>
                                 <p class="text-gray-700 leading-relaxed">
@@ -691,7 +748,8 @@
                 <h2 class="text-4xl md:text-5xl font-bold mb-6 text-accent">
                     Pytania i problemy moich klientów
                 </h2>
-                <p class="text-lg text-brand-accent">To są najczęstsze pytania od klientów, którzy przychodzą do mnie uczyć się prezentacji i zaczynamy rozmawiać o...humorze</p>
+                <p class="text-lg text-brand-accent">To są najczęstsze pytania od klientów, którzy przychodzą do mnie
+                    uczyć się prezentacji i zaczynamy rozmawiać o...humorze</p>
             </div>
 
             <div class="max-w-4xl mx-auto space-y-6">
@@ -763,6 +821,116 @@
                     </div>
                 </div>
             </div>
+    </section>
+
+    <!-- Program kursu -->
+    <section class="py-16 bg-white">
+        <div class="max-w-[1200px] mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-accent">
+                    Program kursu
+                </h2>
+            </div>
+
+            <div class="max-w-5xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-1 gap-6">
+                    <div class="morphing-card p-6">
+                        <div class="flex items-start space-x-3 mb-3">
+                            <div
+                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-brand-warm font-bold text-lg">1</span>
+                            </div>
+                            <div>
+                                <p class="text-gray-700 leading-relaxed">
+                                    Na polskim rynku nie ma jeszcze kursu, który pomagałby <strong>TWORZYĆ własny
+                                        humor</strong>, a nie tylko opowiadać dowcipy i suchary albo starać się być
+                                    śmiesznym na siłę.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="morphing-card p-6">
+                        <div class="flex items-start space-x-3 mb-3">
+                            <div
+                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-brand-accent font-bold text-lg">2</span>
+                            </div>
+                            <div>
+                                <p class="text-gray-700 leading-relaxed">
+                                    Na polskim rynku nie ma jeszcze kursu, który pomagałby biznesowi operować humorem.
+                                    Panuje przekonanie, że <strong>biznes powinien być sztywny</strong> i od linijki.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="morphing-card p-6">
+                        <div class="flex items-start space-x-3 mb-3">
+                            <div
+                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-brand-warm font-bold text-lg">3</span>
+                            </div>
+                            <div>
+                                <p class="text-gray-700 leading-relaxed">
+                                    Od 17 lat staję na scenach konferencji, eventów i wydarzeń i widuję setki
+                                    prelegentów, którym stres, ego albo kij w oku przeszkadza w prezentacji.
+                                    <strong>Humor jest świetną metodą</strong> na dotarcie do słuchaczy.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="morphing-card p-6">
+                        <div class="flex items-start space-x-3 mb-3">
+                            <div
+                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-brand-accent font-bold text-lg">4</span>
+                            </div>
+                            <div>
+                                <p class="text-gray-700 leading-relaxed">
+                                    Pewność siebie nie wynika z tego, jaki jestem zajebisty, tylko z <strong>dystansu do
+                                        siebie</strong> i świadomości tego, co potrafię. Humor pomaga klientom złapać
+                                    przestrzeń na słuchanie.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="morphing-card p-6">
+                        <div class="flex items-start space-x-3 mb-3">
+                            <div
+                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-brand-warm font-bold text-lg">5</span>
+                            </div>
+                            <div>
+                                <p class="text-gray-700 leading-relaxed">
+                                    Kiedy mówię "sprzedaż", mam na myśli <strong>każdą formę komunikacji</strong>.
+                                    Rekrutacja jest sprzedażą. Egzamin w szkole. Rozmowa kwalifikacyjna, raport
+                                    miesięczny. Ten kurs pomoże Ci nie tylko w biznesie.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="morphing-card p-6">
+                        <div class="flex items-start space-x-3 mb-3">
+                            <div
+                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-brand-accent font-bold text-lg">6</span>
+                            </div>
+                            <div>
+                                <p class="text-gray-700 leading-relaxed">
+                                    Komunikacja może być nie tylko merytoryczna - ale i <strong>ciekawa, fajna,
+                                        radosna</strong>. Jeśli nigdy nie widziałeś prezentacji, do której chcesz wracać
+                                    - to czas taką zrobić.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 
     <!-- O mnie -->
@@ -990,7 +1158,7 @@
 
     <!-- Back to top FAB -->
     <button id="backToTop" aria-label="Do góry" title="Do góry"
-        class="hidden fixed right-4 sm:right-6 bottom-4 sm:bottom-6 z-[1100] rounded-full bg-accent/90 text-white shadow-lg hover:bg-accent p-2.5 sm:p-3 transition">
+        class="hidden fixed right-4 sm:right-6 bottom-4 sm:bottom-6 z-[1100] rounded-full bg-accent/90 text-white shadow-lg bg-brand-primary p-2.5 sm:p-3 transition hover:-translate-y-1 hover:text-brand-warm">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
@@ -1014,11 +1182,11 @@
                     layout: 'grid',
                     csv: '/assets/txt/referencje2.csv',
                     //keywords: [ 'Grzegorz Turniak', 'Piotr Achtelik', "Szymon Lach", "Piotr Szybiak"],
-                     carousel: {
-                         clampLines: 7,
-                         arrows: true,
-                         counter: true
-                     }
+                    carousel: {
+                        clampLines: 7,
+                        arrows: true,
+                        counter: true
+                    }
                 }).load();
             }
 
@@ -1069,6 +1237,21 @@
             window.addEventListener('scroll', update, { passive: true });
             update();
             btn && btn.addEventListener('click', function (e) { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+        })();
+    </script>
+    <!-- Mobile menu open/close (from home.html) -->
+    <script>
+        (function () {
+            const openBtn = document.getElementById('menuToggleHome');
+            const closeBtn = document.getElementById('menuCloseHome');
+            const overlay = document.getElementById('mobileMenuOverlayHome');
+            const menu = document.getElementById('mobileMenuHome');
+            function open() { overlay && overlay.classList.remove('hidden'); menu && menu.classList.remove('translate-x-full'); }
+            function close() { overlay && overlay.classList.add('hidden'); menu && menu.classList.add('translate-x-full'); }
+            openBtn && openBtn.addEventListener('click', open);
+            closeBtn && closeBtn.addEventListener('click', close);
+            overlay && overlay.addEventListener('click', close);
+            document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); }, { passive: true });
         })();
     </script>
 </body>
