@@ -5,10 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Autentyczny Humor w Biznesie - Jerzy Zientkowski</title>
-    <link rel="preload" as="style" href="/assets/css/app.min.css?v=brand3" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="/assets/css/app.min.css?v=brand3"></noscript>
-    <link rel="preload" as="style" href="/assets/css/shared.css?v=dev21" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="/assets/css/shared.css?v=dev21"></noscript>
+    <link rel="preload" as="style" href="/assets/css/app.min.css?v=brand3"
+        onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="/assets/css/app.min.css?v=brand3">
+    </noscript>
+    <link rel="preload" as="style" href="/assets/css/shared.css?v=dev21"
+        onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="/assets/css/shared.css?v=dev21">
+    </noscript>
 
     <!-- Local font: Space Grotesk (subset PL) -->
     <link rel="preload" as="font" href="/assets/fonts/SpaceGrotesk-PL.woff2" type="font/woff2" crossorigin>
@@ -115,6 +121,10 @@
             transition: transform 0.2s ease;
         }
 
+        .feature-icon.bg-white {
+            background: white !important;
+        }
+
         .morphing-card:hover .feature-icon {
             transform: scale(1.08);
         }
@@ -200,9 +210,37 @@
             font-size: 20px !important;
         }
     </style>
+    <style>
+        .card-course-a {
+            @apply card p-8 rounded-2xl border border-accent shadow-sm transition-transform hover:shadow-md;
+            background: linear-gradient(180deg, rgba(231, 121, 32, 0.06), rgba(4, 3, 39, 0.02));
+        }
+
+        .card-course-a h4 {
+            font-size: 1.05rem;
+            line-height: 1.15;
+        }
+
+        .card-course-a p {
+            font-size: 0.98rem;
+        }
+
+        .card-course-a .feature-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--brand-warm, #e77920), #ffb77a);
+            color: #fff;
+            box-shadow: 0 8px 20px rgba(231, 121, 32, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
 
     <!-- SEO -->
-    <meta name="description" content="Autentyczny Humor w Biznesie - kurs online od Jerzego Zientkowskiego. Naucz się budować autentyczny humor w komunikacji biznesowej.">
+    <meta name="description"
+        content="Autentyczny Humor w Biznesie - kurs online od Jerzego Zientkowskiego. Naucz się budować autentyczny humor w komunikacji biznesowej.">
     <meta name="author" content="Jerzy Zientkowski">
     <meta property="og:title" content="Autentyczny Humor w Biznesie">
     <meta property="og:description" content="Znajdź swój humor dla Twoich klientów, słuchaczy, odbiorców.">
@@ -225,7 +263,8 @@
 
 <body class="bg-white">
     <!-- Navigation -->
-    <nav class="fixed w-full bg-white/95 backdrop-blur-lg z-50 py-4 transition-all duration-300 border-b border-gray-200/50">
+    <nav
+        class="fixed w-full bg-white/95 backdrop-blur-lg z-50 py-4 transition-all duration-300 border-b border-gray-200/50">
         <div class="max-w-[1400px] mx-auto px-6">
             <div class="flex items-center justify-between">
                 <div class="text-2xl font-bold tracking-tight">
@@ -234,12 +273,15 @@
                     </a>
                 </div>
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="#o-kursie" class="font-medium text-accent hover:text-orange-600 transition-colors">O kursie</a>
-                    <a href="#dla-kogo" class="font-medium text-accent hover:text-orange-600 transition-colors">Dla kogo</a>
+                    <a href="#o-kursie" class="font-medium text-accent hover:text-orange-600 transition-colors">O
+                        kursie</a>
+                    <a href="#dla-kogo" class="font-medium text-accent hover:text-orange-600 transition-colors">Dla
+                        kogo</a>
                     <a href="#pakiet" class="font-medium text-accent hover:text-orange-600 transition-colors">Pakiet</a>
                     <a href="#o-mnie" class="font-medium text-accent hover:text-orange-600 transition-colors">O mnie</a>
                     <a href="#faq" class="font-medium text-accent hover:text-orange-600 transition-colors">FAQ</a>
-                    <a href="https://zientkowski.pl" class="inline-flex items-center px-4 py-2 rounded-full border border-accent text-accent hover:bg-accent hover:text-white transition-colors">Home</a>
+                    <a href="https://zientkowski.pl"
+                        class="inline-flex items-center px-4 py-2 rounded-full border border-accent text-accent hover:bg-accent hover:text-white transition-colors">Home</a>
                 </div>
             </div>
         </div>
@@ -276,81 +318,86 @@
     <section id="o-kursie" class="py-24 bg-white">
         <div class="max-w-[1400px] mx-auto px-6">
             <div class="text-center mb-16">
-                <h2 class="text-4xl md:text-5xl font-bold mb-6 text-accent">
-                    O kursie
+                <h2 class="text-4xl md:text-5xl mb-6 text-accent">
+                    Naucz się tworzyć i wykorzystywać autentyczny humor w biznesie
                 </h2>
                 <p class="text-xl text-gray-600 max-w-3xl mx-auto">
                     Co zyskasz uczestnicząc w tym kursie
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-                <div class="morphing-card p-8">
+            <div class="grid grid-cols-1 md:grid-cols-1 gap-2 max-w-5xl mx-auto">
+                <div class="card-course-a p-8 rounded-2xl border border-accent shadow-sm transition-transform hover:shadow-md">
                     <div class="flex items-start space-x-4">
-                        <div class="feature-icon">
-                            <i data-lucide="smile" class="w-6 h-6"></i>
+                        <div class="feature-icon">                            
+                            <i data-lucide="smile" class="w-6 h-6" aria-hidden="true"></i>
                         </div>
-                        <div>
-                            <p class="text-gray-700 leading-relaxed">
-                                W ciągu miesiąca znajdziesz 7+ anegdot, żartów czy mechanizmów, które rozbawią Twoich słuchaczy
+                        <div>                            
+                            <p class="text-gray-700 leading-relaxed" style="font-size:0.98rem;">
+                                W ciągu miesiąca znajdziesz 7+ własnych, autentycznych anegdot, żartów i mechanizmów,
+                                które rozbawią Twoich słuchaczy — przygotowane pod Twoją branżę i styl komunikacji.
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <div class="morphing-card p-8">
+                <div class="card-course-a p-8 rounded-2xl border border-accent shadow-sm transition-transform hover:shadow-md">
                     <div class="flex items-start space-x-4">
                         <div class="feature-icon">
                             <i data-lucide="lightbulb" class="w-6 h-6"></i>
                         </div>
                         <div>
                             <p class="text-gray-700 leading-relaxed">
-                                Zaprojektujesz swoje własne rozpoczęcia prezentacji, dzięki czemu od razu przykujesz uwagę widowni i klientów
+                                Zaprojektujesz swoje własne rozpoczęcia prezentacji, dzięki czemu od razu przykujesz
+                                uwagę widowni i klientów
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <div class="morphing-card p-8">
+                <div class="card-course-a p-8 rounded-2xl border border-accent shadow-sm transition-transform hover:shadow-md">
                     <div class="flex items-start space-x-4">
                         <div class="feature-icon">
                             <i data-lucide="message-circle" class="w-6 h-6"></i>
                         </div>
                         <div>
                             <p class="text-gray-700 leading-relaxed">
-                                Nauczysz się budować followupy - a to sprawi, że będziesz bezstresowo reagował na zachowania widowni
+                                Nauczysz się budować followupy - a to sprawi, że będziesz bezstresowo reagował na
+                                zachowania widowni
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <div class="morphing-card p-8">
+                <div class="card-course-a p-8 rounded-2xl border border-accent shadow-sm transition-transform hover:shadow-md">
                     <div class="flex items-start space-x-4">
                         <div class="feature-icon">
                             <i data-lucide="users" class="w-6 h-6"></i>
                         </div>
                         <div>
                             <p class="text-gray-700 leading-relaxed">
-                                Zobaczysz, jak pracować z widownią za pomocą interakcji i atraktorów - co da Ci lepsze relacje i odbiór Twojej komunikacji (rozmowa, nie monolog!)
+                                Zobaczysz, jak pracować z widownią za pomocą interakcji i atraktorów - co da Ci lepsze
+                                relacje i odbiór Twojej komunikacji (rozmowa, nie monolog!)
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <div class="morphing-card p-8">
+                <div class="card-course-a p-8 rounded-2xl border border-accent shadow-sm transition-transform hover:shadow-md">
                     <div class="flex items-start space-x-4">
                         <div class="feature-icon">
                             <i data-lucide="target" class="w-6 h-6"></i>
                         </div>
                         <div>
                             <p class="text-gray-700 leading-relaxed">
-                                Humor pomoże Ci z dotarciem z celem Twojej mowy czy prezentacji - rozluźniony odbiorca chętniej słucha
+                                Humor pomoże Ci z dotarciem z celem Twojej mowy czy prezentacji - rozluźniony odbiorca
+                                chętniej słucha
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <div class="morphing-card p-8">
+                <div class="card-course-a p-8 rounded-2xl border border-accent shadow-sm transition-transform hover:shadow-md">
                     <div class="flex items-start space-x-4">
                         <div class="feature-icon">
                             <i data-lucide="star" class="w-6 h-6"></i>
@@ -378,8 +425,9 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <div class="morphing-card p-8 text-center">
                     <div class="feature-icon mx-auto mb-4">
-                        <i data-lucide="mic" class="w-6 h-6"></i>
+                        <i data-lucide="mic" class="w-6 h-6" aria-hidden="true"></i>
                     </div>
+                   
                     <h3 class="text-xl font-semibold text-accent mb-3">Dla prelegentów</h3>
                     <p class="text-gray-700 leading-relaxed">
                         Jeśli stajesz na scenie regularnie i borykasz się z brakiem reakcji widowni - zapraszam
@@ -392,7 +440,8 @@
                     </div>
                     <h3 class="text-xl font-semibold text-accent mb-3">Dla sprzedawców</h3>
                     <p class="text-gray-700 leading-relaxed">
-                        W sprzedaży relacje są super ważne. Pokaż klientom luz i swobodę, bez cwaniactwa i siłowania się ze słowami
+                        W sprzedaży relacje są super ważne. Pokaż klientom luz i swobodę, bez cwaniactwa i siłowania się
+                        ze słowami
                     </p>
                 </div>
 
@@ -412,7 +461,8 @@
                     </div>
                     <h3 class="text-xl font-semibold text-accent mb-3">Dla liderów</h3>
                     <p class="text-gray-700 leading-relaxed">
-                        Łatwiej jest mówić do ludzi w przyjaznej, radosnej atmosferze. Autentycznej w dodatku, a nie na siłę
+                        Łatwiej jest mówić do ludzi w przyjaznej, radosnej atmosferze. Autentycznej w dodatku, a nie na
+                        siłę
                     </p>
                 </div>
             </div>
@@ -433,53 +483,84 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <div class="morphing-card p-6">
+                    <div class="feature-icon bg-white mx-auto mb-4">
+                        <i data-lucide="clock" class="w-6 h-6" aria-hidden="true"></i>
+                    </div>
                     <h3 class="text-xl font-semibold text-accent mb-2">Czas video</h3>
                     <p class="text-gray-700 mb-2">Ponad 160 minut video</p>
                     <p class="text-sm text-gray-500">Stan na 2025-11-07</p>
                 </div>
 
                 <div class="morphing-card p-6">
+                    <div class="feature-icon  bg-white mx-auto mb-4">
+                        <i data-lucide="play-circle" class="w-6 h-6" aria-hidden="true"></i>
+                    </div>
                     <h3 class="text-xl font-semibold text-accent mb-2">Lekcje video</h3>
                     <p class="text-gray-700 mb-2">51 lekcji. Dobra, z wstępami, ale zawsze</p>
                     <p class="text-sm text-gray-500">Stan na 2025-11-07</p>
                 </div>
 
                 <div class="morphing-card p-6">
+                    <div class="feature-icon  bg-white mx-auto mb-4">
+                        <i data-lucide="file-text" class="w-6 h-6" aria-hidden="true"></i>
+                    </div>
                     <h3 class="text-xl font-semibold text-accent mb-2">Prezentację w PDF</h3>
                     <p class="text-gray-700">Cały proces kursu pod ręką</p>
                 </div>
 
                 <div class="morphing-card p-6">
+                    <div class="feature-icon  bg-white mx-auto mb-4">
+                        <i data-lucide="book-open" class="w-6 h-6" aria-hidden="true"></i>
+                    </div>
                     <h3 class="text-xl font-semibold text-accent mb-2">Transkrypcję</h3>
                     <p class="text-gray-700">Można czytać i słuchać jednocześnie</p>
                 </div>
 
                 <div class="morphing-card p-6">
+                    <div class="feature-icon  bg-white mx-auto mb-4">
+                        <i data-lucide="calendar" class="w-6 h-6" aria-hidden="true"></i>
+                    </div>
                     <h3 class="text-xl font-semibold text-accent mb-2">Pół roku na działanie</h3>
                     <p class="text-gray-700">Dużo, bo wystarczy żeby wdrożyć. Ale też mało, żeby zmotywować</p>
                 </div>
 
                 <div class="morphing-card p-6">
+                    <div class="feature-icon  bg-white mx-auto mb-4">
+                        <i data-lucide="settings" class="w-6 h-6" aria-hidden="true"></i>
+                    </div>
                     <h3 class="text-xl font-semibold text-accent mb-2">Gotowe techniki budowania humoru</h3>
                     <p class="text-gray-700">Rozpisane w postaci materiałów, ale do pracy własnej</p>
                 </div>
 
                 <div class="morphing-card p-6">
+                    <div class="feature-icon  bg-white mx-auto mb-4">
+                        <i data-lucide="feather" class="w-6 h-6" aria-hidden="true"></i>
+                    </div>
                     <h3 class="text-xl font-semibold text-accent mb-2">Zero gotowców i sucharów</h3>
-                    <p class="text-gray-700">To nie jest kurs 'bądź jak wszyscy', to jest kurs 'zbuduj własny, autentyczny humor'</p>
+                    <p class="text-gray-700">To nie jest kurs 'bądź jak wszyscy', to jest kurs 'zbuduj własny,
+                        autentyczny humor'</p>
                 </div>
 
                 <div class="morphing-card p-6">
+                    <div class="feature-icon  bg-white mx-auto mb-4">
+                        <i data-lucide="list" class="w-6 h-6" aria-hidden="true"></i>
+                    </div>
                     <h3 class="text-xl font-semibold text-accent mb-2">Konkretne przykłady do technik</h3>
                     <p class="text-gray-700">Żebyś miał jak pobudzić kreatywność</p>
                 </div>
 
                 <div class="morphing-card p-6">
+                    <div class="feature-icon  bg-white mx-auto mb-4">
+                        <i data-lucide="film" class="w-6 h-6" aria-hidden="true"></i>
+                    </div>
                     <h3 class="text-xl font-semibold text-accent mb-2">Przykłady video</h3>
                     <p class="text-gray-700">Większość omawianych technik ma przykłady video z omówieniem</p>
                 </div>
 
                 <div class="morphing-card p-6">
+                    <div class="feature-icon  bg-white mx-auto mb-4">
+                        <i data-lucide="award" class="w-6 h-6" aria-hidden="true"></i>
+                    </div>
                     <h3 class="text-xl font-semibold text-accent mb-2">Unikatowe podejście do tematu</h3>
                     <p class="text-gray-700">Pierwszy na polskim rynku kurs tego typu (humor w biznesie)</p>
                 </div>
@@ -503,15 +584,18 @@
             </div>
 
             <div class="max-w-5xl mx-auto">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-1 gap-6">
                     <div class="morphing-card p-6">
                         <div class="flex items-start space-x-3 mb-3">
-                            <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
+                            <div
+                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
                                 <span class="text-orange-600 font-bold text-sm">1</span>
                             </div>
                             <div>
                                 <p class="text-gray-700 leading-relaxed">
-                                    Na polskim rynku nie ma jeszcze kursu, który pomagałby <strong>TWORZYĆ własny humor</strong>, a nie tylko opowiadać dowcipy i suchary albo starać się być śmiesznym na siłę.
+                                    Na polskim rynku nie ma jeszcze kursu, który pomagałby <strong>TWORZYĆ własny
+                                        humor</strong>, a nie tylko opowiadać dowcipy i suchary albo starać się być
+                                    śmiesznym na siłę.
                                 </p>
                             </div>
                         </div>
@@ -519,12 +603,14 @@
 
                     <div class="morphing-card p-6">
                         <div class="flex items-start space-x-3 mb-3">
-                            <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
+                            <div
+                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
                                 <span class="text-orange-600 font-bold text-sm">2</span>
                             </div>
                             <div>
                                 <p class="text-gray-700 leading-relaxed">
-                                    Na polskim rynku nie ma jeszcze kursu, który pomagałby biznesowi operować humorem. Panuje przekonanie, że <strong>biznes powinien być sztywny</strong> i od linijki.
+                                    Na polskim rynku nie ma jeszcze kursu, który pomagałby biznesowi operować humorem.
+                                    Panuje przekonanie, że <strong>biznes powinien być sztywny</strong> i od linijki.
                                 </p>
                             </div>
                         </div>
@@ -532,12 +618,15 @@
 
                     <div class="morphing-card p-6">
                         <div class="flex items-start space-x-3 mb-3">
-                            <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
+                            <div
+                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
                                 <span class="text-orange-600 font-bold text-sm">3</span>
                             </div>
                             <div>
                                 <p class="text-gray-700 leading-relaxed">
-                                    Od 17 lat staję na scenach konferencji, eventów i wydarzeń i widuję setki prelegentów, którym stres, ego albo kij w oku przeszkadza w prezentacji. <strong>Humor jest świetną metodą</strong> na dotarcie do słuchaczy.
+                                    Od 17 lat staję na scenach konferencji, eventów i wydarzeń i widuję setki
+                                    prelegentów, którym stres, ego albo kij w oku przeszkadza w prezentacji.
+                                    <strong>Humor jest świetną metodą</strong> na dotarcie do słuchaczy.
                                 </p>
                             </div>
                         </div>
@@ -545,12 +634,15 @@
 
                     <div class="morphing-card p-6">
                         <div class="flex items-start space-x-3 mb-3">
-                            <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
+                            <div
+                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
                                 <span class="text-orange-600 font-bold text-sm">4</span>
                             </div>
                             <div>
                                 <p class="text-gray-700 leading-relaxed">
-                                    Pewność siebie nie wynika z tego, jaki jestem zajebisty, tylko z <strong>dystansu do siebie</strong> i świadomości tego, co potrafię. Humor pomaga klientom złapać przestrzeń na słuchanie.
+                                    Pewność siebie nie wynika z tego, jaki jestem zajebisty, tylko z <strong>dystansu do
+                                        siebie</strong> i świadomości tego, co potrafię. Humor pomaga klientom złapać
+                                    przestrzeń na słuchanie.
                                 </p>
                             </div>
                         </div>
@@ -558,12 +650,15 @@
 
                     <div class="morphing-card p-6">
                         <div class="flex items-start space-x-3 mb-3">
-                            <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
+                            <div
+                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
                                 <span class="text-orange-600 font-bold text-sm">5</span>
                             </div>
                             <div>
                                 <p class="text-gray-700 leading-relaxed">
-                                    Kiedy mówię "sprzedaż", mam na myśli <strong>każdą formę komunikacji</strong>. Rekrutacja jest sprzedażą. Egzamin w szkole. Rozmowa kwalifikacyjna, raport miesięczny. Ten kurs pomoże Ci nie tylko w biznesie.
+                                    Kiedy mówię "sprzedaż", mam na myśli <strong>każdą formę komunikacji</strong>.
+                                    Rekrutacja jest sprzedażą. Egzamin w szkole. Rozmowa kwalifikacyjna, raport
+                                    miesięczny. Ten kurs pomoże Ci nie tylko w biznesie.
                                 </p>
                             </div>
                         </div>
@@ -571,12 +666,15 @@
 
                     <div class="morphing-card p-6">
                         <div class="flex items-start space-x-3 mb-3">
-                            <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
+                            <div
+                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
                                 <span class="text-orange-600 font-bold text-sm">6</span>
                             </div>
                             <div>
                                 <p class="text-gray-700 leading-relaxed">
-                                    Komunikacja może być nie tylko merytoryczna - ale i <strong>ciekawa, fajna, radosna</strong>. Jeśli nigdy nie widziałeś prezentacji, do której chcesz wracać - to czas taką zrobić.
+                                    Komunikacja może być nie tylko merytoryczna - ale i <strong>ciekawa, fajna,
+                                        radosna</strong>. Jeśli nigdy nie widziałeś prezentacji, do której chcesz wracać
+                                    - to czas taką zrobić.
                                 </p>
                             </div>
                         </div>
@@ -593,7 +691,7 @@
                 <h2 class="text-4xl md:text-5xl font-bold mb-6 text-accent">
                     Pytania i problemy moich klientów
                 </h2>
-                <p class="text-lg text-gray-600">Czy to Cię też dotyczy?</p>
+                <p class="text-lg text-brand-accent">To są najczęstsze pytania od klientów, którzy przychodzą do mnie uczyć się prezentacji i zaczynamy rozmawiać o...humorze</p>
             </div>
 
             <div class="max-w-4xl mx-auto space-y-6">
@@ -634,7 +732,7 @@
                 <div class="morphing-card p-6">
                     <div class="flex items-start space-x-4">
                         <div class="flex-shrink-0">
-                            <div class="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center">
+                            <div class="w-10 h-10 rounded-lg  flex items-center justify-center">
                                 <i data-lucide="alert-triangle" class="w-5 h-5 text-red-600"></i>
                             </div>
                         </div>
@@ -663,8 +761,8 @@
                             </ul>
                         </div>
                     </div>
+                </div>
             </div>
-        </div>
     </section>
 
     <!-- O mnie -->
@@ -679,22 +777,32 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div class="space-y-4">
                     <p class="text-gray-700 leading-relaxed">
-                        <strong>Jerzy Zientkowski</strong> jest z wykształcenia informatykiem, z zawodu mówcą profesjonalnym. Z blisko 30-letnim dorobkiem w biznesie i współpracą z najróżniejszymi branżami i firmami różnej wielkości, posiada doświadczenie i unikatowy punkt patrzenia na skuteczność i efektywność biznesu.
+                        <strong>Jerzy Zientkowski</strong> jest z wykształcenia informatykiem, z zawodu mówcą
+                        profesjonalnym. Z blisko 30-letnim dorobkiem w biznesie i współpracą z najróżniejszymi branżami
+                        i firmami różnej wielkości, posiada doświadczenie i unikatowy punkt patrzenia na skuteczność i
+                        efektywność biznesu.
                     </p>
 
                     <p class="text-gray-700 leading-relaxed">
-                        <strong>Przemawia, szkoli i wspiera, jako mentor i konsultant</strong> – przy prawie 40 tys. odbiorców jego treści rocznie jest nie tyle celebrytą, ale rozchwytywanym ekspertem.
+                        <strong>Przemawia, szkoli i wspiera, jako mentor i konsultant</strong> – przy prawie 40 tys.
+                        odbiorców jego treści rocznie jest nie tyle celebrytą, ale rozchwytywanym ekspertem.
                     </p>
 
                     <p class="text-gray-700 leading-relaxed">
-                        <strong>Pięciokrotny mistrz Polski</strong> w różnych kategoriach - mowy poważne, humorystyczne, improwizowane i ewaluacyjne, w języku polskim i angielskim. Dotarł w 2012 do finałów mistrzostw Europy w przemówieniach humorystycznych.
+                        <strong>Pięciokrotny mistrz Polski</strong> w różnych kategoriach - mowy poważne, humorystyczne,
+                        improwizowane i ewaluacyjne, w języku polskim i angielskim. Dotarł w 2012 do finałów mistrzostw
+                        Europy w przemówieniach humorystycznych.
                     </p>
 
                     <div class="text-center lg:text-left mt-6">
-                        <a href="/bio.html" class="inline-flex items-center text-accent hover:text-orange-600 font-semibold">
+                        <a href="/bio.html"
+                            class="inline-flex items-center text-accent hover:text-orange-600 font-semibold">
                             Zobacz pełne BIO
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                                    clip-rule="evenodd" />
                             </svg>
                         </a>
                     </div>
@@ -702,10 +810,12 @@
 
                 <div class="relative max-w-md mx-auto">
                     <div class="gradient-border rounded-3xl p-1">
-                        <img src="/assets/img/JERZY-NA-lp-KURSU-1.jpg" alt="Jerzy Zientkowski" class="w-full rounded-3xl object-cover" />
+                        <img src="/assets/img/JERZY-NA-lp-KURSU-1.jpg" alt="Jerzy Zientkowski"
+                            class="w-full rounded-3xl object-cover" />
                     </div>
 
-                    <div class="absolute -bottom-6 -right-6 bg-white/90 backdrop-blur-sm p-4 rounded-2xl max-w-xs shadow-xl hidden lg:block">
+                    <div
+                        class="absolute -bottom-6 -right-6 bg-white/90 backdrop-blur-sm p-4 rounded-2xl max-w-xs shadow-xl hidden lg:block">
                         <p class="text-xs text-gray-700 font-medium italic">
                             "Pozbawia złudzeń, nie pozbawiając marzeń"
                         </p>
@@ -722,7 +832,7 @@
                 <h2 class="text-4xl md:text-5xl font-bold mb-6 text-accent">Referencje</h2>
                 <p class="text-lg text-gray-600">Wybrane opinie klientów.</p>
             </div>
-            <div id="bioRefsGrid" data-layout="carousel"></div>
+            <div id="bioRefsGrid"></div>
         </div>
     </section>
 
@@ -744,7 +854,8 @@
                         </button>
                         <div class="faq-answer">
                             <p class="text-gray-700 leading-relaxed">
-                                Pracujemy na platformie WTL, Web To Learn. Polska platforma, robiona przez Michała Lidzbarskiego. Polecam.
+                                Pracujemy na platformie WTL, Web To Learn. Polska platforma, robiona przez Michała
+                                Lidzbarskiego. Polecam.
                             </p>
                         </div>
                     </div>
@@ -756,7 +867,8 @@
                         </button>
                         <div class="faq-answer">
                             <p class="text-gray-700 leading-relaxed">
-                                W zasadzie to jest kurs audio, ale oglądasz - bo są slajdy. I są też przykłady video z moich przemówień. I są bonusy video :)
+                                W zasadzie to jest kurs audio, ale oglądasz - bo są slajdy. I są też przykłady video z
+                                moich przemówień. I są bonusy video :)
                             </p>
                         </div>
                     </div>
@@ -768,7 +880,9 @@
                         </button>
                         <div class="faq-answer">
                             <p class="text-gray-700 leading-relaxed">
-                                Tak. Masz 14 dni, żeby powiedzieć mi "nie podoba mi się" i oddaję kasę. Bez pytań. Z prośbą o opinię i informację zwrotną. Jak to zrobić? Piszesz na jerzy+zwrot@zientkowski.pl. Resztę poprowadzimy mailowo.
+                                Tak. Masz 14 dni, żeby powiedzieć mi "nie podoba mi się" i oddaję kasę. Bez pytań. Z
+                                prośbą o opinię i informację zwrotną. Jak to zrobić? Piszesz na
+                                jerzy+zwrot@zientkowski.pl. Resztę poprowadzimy mailowo.
                             </p>
                         </div>
                     </div>
@@ -780,7 +894,8 @@
                         </button>
                         <div class="faq-answer">
                             <p class="text-gray-700 leading-relaxed">
-                                WTL umożliwia pracę w społeczności. Na razie (2025-11) mamy tablicę opinii, ale nie wykluczam stworzenia większej społeczności naokoło Mówców Profesjonalnych :)
+                                WTL umożliwia pracę w społeczności. Na razie (2025-11) mamy tablicę opinii, ale nie
+                                wykluczam stworzenia większej społeczności naokoło Mówców Profesjonalnych :)
                             </p>
                         </div>
                     </div>
@@ -792,7 +907,9 @@
                         </button>
                         <div class="faq-answer">
                             <p class="text-gray-700 leading-relaxed">
-                                Tak. I tak. Ale - żeby dostać kod na zniżkę, zrób coś dla mnie - udostępnij post, z którego tu trafiłeś, napisz na swoich Socialach, że kupujesz - i wyślij mi link do udostępnienia albo postu. I wtedy leci rabacik. Nieduży, ale zawsze możesz negocjować :)
+                                Tak. I tak. Ale - żeby dostać kod na zniżkę, zrób coś dla mnie - udostępnij post, z
+                                którego tu trafiłeś, napisz na swoich Socialach, że kupujesz - i wyślij mi link do
+                                udostępnienia albo postu. I wtedy leci rabacik. Nieduży, ale zawsze możesz negocjować :)
                             </p>
                         </div>
                     </div>
@@ -804,7 +921,8 @@
                         </button>
                         <div class="faq-answer">
                             <p class="text-gray-700 leading-relaxed">
-                                Nie. Na 6 miesięcy. Tak jak pisałem powyżej - wystarczy, żeby wdrożyć, ale też pomaga nie odkładać "na później"
+                                Nie. Na 6 miesięcy. Tak jak pisałem powyżej - wystarczy, żeby wdrożyć, ale też pomaga
+                                nie odkładać "na później"
                             </p>
                         </div>
                     </div>
@@ -849,13 +967,16 @@
         <div class="max-w-[1400px] mx-auto px-6">
             <div class="text-center">
                 <div class="flex justify-center space-x-6 mb-8">
-                    <a href="https://www.linkedin.com/in/jerzyzientkowski/" class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
+                    <a href="https://www.linkedin.com/in/jerzyzientkowski/"
+                        class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
                         <i data-lucide="linkedin" class="w-6 h-6"></i>
                     </a>
-                    <a href="https://www.instagram.com/jerzyzientkowskiofficial/" class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
+                    <a href="https://www.instagram.com/jerzyzientkowskiofficial/"
+                        class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
                         <i data-lucide="instagram" class="w-6 h-6"></i>
                     </a>
-                    <a href="https://www.facebook.com/jerzy.zientkowski" class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
+                    <a href="https://www.facebook.com/jerzy.zientkowski"
+                        class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
                         <i data-lucide="facebook" class="w-6 h-6"></i>
                     </a>
                 </div>
@@ -868,13 +989,17 @@
     </footer>
 
     <!-- Back to top FAB -->
-    <button id="backToTop" aria-label="Do góry" title="Do góry" class="hidden fixed right-4 sm:right-6 bottom-4 sm:bottom-6 z-[1100] rounded-full bg-accent/90 text-white shadow-lg hover:bg-accent p-2.5 sm:p-3 transition">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
+    <button id="backToTop" aria-label="Do góry" title="Do góry"
+        class="hidden fixed right-4 sm:right-6 bottom-4 sm:bottom-6 z-[1100] rounded-full bg-accent/90 text-white shadow-lg hover:bg-accent p-2.5 sm:p-3 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+        </svg>
     </button>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-    <script src="/skrypty/references.js?v=20251030"></script>
+    <script src="/skrypty/references.js?v=202511106"></script>
 
     <script>
         // Initialize Lucide icons
@@ -886,13 +1011,14 @@
             // Initialize references widget
             if (typeof ReferencesWidget !== 'undefined') {
                 new ReferencesWidget('#bioRefsGrid', {
-                    layout: 'carousel',
-                    csv: '/assets/txt/referencje.csv',
-                    carousel: {
-                        clampLines: 3,
-                        arrows: true,
-                        counter: true
-                    }
+                    layout: 'grid',
+                    csv: '/assets/txt/referencje2.csv',
+                    //keywords: [ 'Grzegorz Turniak', 'Piotr Achtelik', "Szymon Lach", "Piotr Szybiak"],
+                     carousel: {
+                         clampLines: 7,
+                         arrows: true,
+                         counter: true
+                     }
                 }).load();
             }
 
@@ -937,12 +1063,12 @@
 
     <!-- Back to top button script -->
     <script>
-        (function(){
+        (function () {
             const btn = document.getElementById('backToTop');
-            function update(){ btn && (window.scrollY > 300 ? btn.classList.remove('hidden') : btn.classList.add('hidden')); }
+            function update() { btn && (window.scrollY > 300 ? btn.classList.remove('hidden') : btn.classList.add('hidden')); }
             window.addEventListener('scroll', update, { passive: true });
             update();
-            btn && btn.addEventListener('click', function(e){ e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+            btn && btn.addEventListener('click', function (e) { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
         })();
     </script>
 </body>

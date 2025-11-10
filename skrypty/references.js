@@ -46,9 +46,10 @@
   }
 
   function ReferencesWidget(target, options){
+    console.log("Initializing ReferencesWidget on", target, "with options", options);
     this.root = (typeof target==='string') ? document.querySelector(target) : target;
     if (!this.root) throw new Error('ReferencesWidget target not found');
-    this.opts = merge(options, { csv:'./assets/txt/referencje.csv', layout:'grid', shuffle:true, fields:{ imie:true, rola:true, event:true, opinia:true, data:true, source:true, avatar:true }, grid:{ pageSize:6 }, timeline:{ pageSize:6 }, carousel:{ clampLines:6, arrows:true, counter:true }, keywords:'' });
+    this.opts = merge(options, { csv:'/assets/txt/referencje2.csv', layout:'grid', shuffle:true, fields:{ imie:true, rola:true, event:true, opinia:true, data:true, source:true, avatar:true }, grid:{ pageSize:6 }, timeline:{ pageSize:6 }, carousel:{ clampLines:6, arrows:true, counter:true }, keywords:'' });
     var kw = (this.opts.keywords||'').toString().split(/[;,\s]+/).map(function(x){return x.trim();}).filter(Boolean);
     this._kw = kw;
   }
@@ -80,6 +81,7 @@
   };
 
   ReferencesWidget.prototype.render = function(){
+    console.log("Rendering layout:", this.opts.layout);
     var l=this.opts.layout;
     if (l==='grid') return this.renderGrid();
     if (l==='timeline') return this.renderTimeline();
@@ -275,6 +277,7 @@
     }
 
     function cardTemplate(item, idx){
+      console.log("renderuję itemkę,", item);
       var name = (item['Imie, nazwisko'] || pick(item, ['imi','nazw']) || '').trim();
       var role = (item['Rola'] || '').trim();
       var opinia = (item['Opinia'] || '').trim();
@@ -293,7 +296,7 @@
             '</div>'+
             (data?'<div class="ml-auto text-xs text-gray-500">'+escapeHTML(data)+'</div>':'')+
           '</div>'+
-          (opinia?'<div class="ref-summary mt-3 text-sm text-gray-700 '+clampClass+'">'+boldTokensKeepingTags(toHtmlWithBreaks(opinia), self._kw)+'</div>':'')+
+          (opinia?'<div class="ref-summary mt-3 text-xs text-gray-700 '+clampClass+'">'+boldTokensKeepingTags(toHtmlWithBreaks(opinia), self._kw)+'</div>':'')+
           '<div class="ref-caret-wrap mt-2 flex items-center justify-center">'+
             '<span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-indigo-50 text-indigo-700">'+
               '<svg class="ref-caret h-4 w-4 transition-transform" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd"/></svg>'+
