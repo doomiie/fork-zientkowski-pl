@@ -1,0 +1,18 @@
+# robots.txt for https://zientkowski.pl
+
+User-agent: *
+
+# Allow rendering assets
+Allow: /assets/
+
+# Allow homepage explicitly
+Allow: /$
+
+# Block non-public or legacy areas
+Disallow: /disabled/
+Disallow: /docs/mail/
+Disallow: /skrypty/
+
+# Sitemap
+Sitemap: https://zientkowski.pl/sitemap.xml
+

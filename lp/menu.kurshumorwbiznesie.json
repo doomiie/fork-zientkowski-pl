@@ -1,7 +1,7 @@
 {
   "items": [
-    { "label": "O kursie", "href": "#o-kursie", "text-color": "white","bg-picture": "/assets/img/main_bg.webp" },
-    { "label": "Dla kogo", "href": "#dla-kogo", "bg-color": "red", "text-color": "white" },
+    { "label": "O kursie", "href": "#o-kursie", "text-color": "white","bg-picture": "" },
+    { "label": "Dla kogo", "href": "#dla-kogo", "bg-color": "white", "text-color": "text-brand-warm" },
     { "label": "Pakiet", "href": "#pakiet" },
     { "label": "O mnie", "href": "#o-mnie" },
     { "label": "FAQ", "href": "#faq" },

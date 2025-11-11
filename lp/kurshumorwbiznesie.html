@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pl">
 
 <head>
@@ -205,9 +205,33 @@
             transition-timing-function: ease;
         }
 
-        .text-xs,
+        /* .text-xs,
         .text-sm {
             font-size: 20px !important;
+        } */
+
+        /* Mobile header compact sizing */
+        @media (max-width: 767px) {
+            #lpHeaderLogo {
+                height: px !important;
+                width: auto;
+                max-width: 120px;
+            }
+
+            #menuToggleHome svg {
+                width: 32px;
+                height: 32px;
+            }
+
+            #menuToggleHome {
+                padding: 4px 6px;
+            }
+        }
+        @media (max-width: 767px) {
+            /* Dlaczego powstał: numer w lewym górnym rogu, tekst pod spodem */
+            .morphing-card .flex.items-start.space-x-3 { display: block; }
+            .morphing-card .flex.items-start.space-x-3 > :not([hidden]) ~ :not([hidden]) { margin-left: 0 !important; }
+            .morphing-card .flex.items-start.space-x-3 > div:first-child { margin-bottom: 0.5rem; }
         }
     </style>
     <style>
@@ -237,9 +261,18 @@
             justify-content: center;
         }
 
-        .hover\:text-brand-warm:hover {
-            color: var(--brand-warm) !important;
+        @media (min-width: 768px) {
+
+            /* O kursie: wyłącz centrowanie ikony i zostaw tekst obok (ml-2 już jest) */
+            .card-course-a .feature-icon {
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+            }
         }
+
+            .hover\:text-brand-warm:hover {
+                color: var(--brand-warm) !important;
+            }
     </style>
 
     <!-- SEO -->
@@ -274,9 +307,9 @@
             <div class="flex items-center justify-between">
                 <div class="text-2xl font-bold tracking-tight">
                     <a href="/">
-                        <img class="brightness-0 max-w-[150px]" src="/assets/img/logo_main.png" alt="Jerzy Zientkowski">
+                        <img id="lpHeaderLogo" class="brightness-0" src="/assets/img/logo_main.png" alt="Jerzy Zientkowski">
                     </a>
-                    <div id="dev-hero-size" class=" mt-1 text-xs text-gray-500 italic">
+                    <div id="dev-hero-size" class=" mt-1 text-xs text-gray-500 italic hidden ">
                         <span class="inline xs:hidden sm:hidden md:hidden lg:hidden xl:hidden 2xl:hidden">DEV: base — H1
                             text-2xl</span>
                         <span class="hidden xs:inline sm:hidden md:hidden lg:hidden xl:hidden 2xl:hidden">DEV: xs — H1
@@ -646,10 +679,10 @@
                         <div class="flex items-start space-x-3 mb-3">
                             <div
                                 class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <span class="text-brand-warm font-bold text-lg">1</span>
+                                <span class="text-brand-warm font-bold text-2xl">1</span>
                             </div>
                             <div>
-                                <p class="text-gray-700 leading-relaxed">
+                                <p class="text-gray-700 leading-relaxed text-xs md:text-base ">
                                     Na polskim rynku nie ma jeszcze kursu, który pomagałby <strong>TWORZYĆ własny
                                         humor</strong>, a nie tylko opowiadać dowcipy i suchary albo starać się być
                                     śmiesznym na siłę.
@@ -662,13 +695,17 @@
                         <div class="flex items-start space-x-3 mb-3">
                             <div
                                 class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <span class="text-brand-accent font-bold text-lg">2</span>
+                                <span class="text-brand-accent font-bold text-2xl">2</span>
                             </div>
-                            <div>
-                                <p class="text-gray-700 leading-relaxed">
-                                    Na polskim rynku nie ma jeszcze kursu, który pomagałby biznesowi operować humorem.
-                                    Panuje przekonanie, że <strong>biznes powinien być sztywny</strong> i od linijki.
-                                </p>
+                            <div class="flex items-stretch">
+                                <div class="flex-1">
+                                    <p class="text-gray-700 leading-relaxed text-xs md:text-base">
+                                        Na polskim rynku nie ma jeszcze kursu, który pomagałby biznesowi operować humorem.
+                                        Panuje przekonanie, że <strong>biznes powinien być sztywny</strong> i od linijki.
+                                    </p>
+                                </div>
+                                <img src="/assets/img/Invest cuffs-2.webp" class="rounded-2xl" alt="smile emoji" loading="lazy"
+                                     style="width:30%; height:100%; object-fit:contain; margin-left:0.5rem; display:block; flex-shrink:0;">
                             </div>
                         </div>
                     </div>
@@ -677,10 +714,10 @@
                         <div class="flex items-start space-x-3 mb-3">
                             <div
                                 class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <span class="text-brand-warm font-bold text-lg">3</span>
+                                <span class="text-brand-warm font-bold text-2xl">3</span>
                             </div>
                             <div>
-                                <p class="text-gray-700 leading-relaxed">
+                                <p class="text-gray-700 leading-relaxed text-xs md:text-base ">
                                     Od 17 lat staję na scenach konferencji, eventów i wydarzeń i widuję setki
                                     prelegentów, którym stres, ego albo kij w oku przeszkadza w prezentacji.
                                     <strong>Humor jest świetną metodą</strong> na dotarcie do słuchaczy.
@@ -693,10 +730,10 @@
                         <div class="flex items-start space-x-3 mb-3">
                             <div
                                 class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <span class="text-brand-accent font-bold text-lg">4</span>
+                                <span class="text-brand-accent font-bold text-2xl">4</span>
                             </div>
                             <div>
-                                <p class="text-gray-700 leading-relaxed">
+                                <p class="text-gray-700 leading-relaxed text-xs md:text-base ">
                                     Pewność siebie nie wynika z tego, jaki jestem zajebisty, tylko z <strong>dystansu do
                                         siebie</strong> i świadomości tego, co potrafię. Humor pomaga klientom złapać
                                     przestrzeń na słuchanie.
@@ -709,10 +746,10 @@
                         <div class="flex items-start space-x-3 mb-3">
                             <div
                                 class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <span class="text-brand-warm font-bold text-lg">5</span>
+                                <span class="text-brand-warm font-bold text-2xl">5</span>
                             </div>
                             <div>
-                                <p class="text-gray-700 leading-relaxed">
+                                <p class="text-gray-700 leading-relaxed text-xs md:text-base ">
                                     Kiedy mówię "sprzedaż", mam na myśli <strong>każdą formę komunikacji</strong>.
                                     Rekrutacja jest sprzedażą. Egzamin w szkole. Rozmowa kwalifikacyjna, raport
                                     miesięczny. Ten kurs pomoże Ci nie tylko w biznesie.
@@ -725,10 +762,10 @@
                         <div class="flex items-start space-x-3 mb-3">
                             <div
                                 class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <span class="text-brand-accent font-bold text-lg">6</span>
+                                <span class="text-brand-accent font-bold text-2xl">6</span>
                             </div>
                             <div>
-                                <p class="text-gray-700 leading-relaxed">
+                                <p class="text-gray-700 leading-relaxed text-xs md:text-base ">
                                     Komunikacja może być nie tylko merytoryczna - ale i <strong>ciekawa, fajna,
                                         radosna</strong>. Jeśli nigdy nie widziałeś prezentacji, do której chcesz wracać
                                     - to czas taką zrobić.
@@ -1179,7 +1216,7 @@
             // Initialize references widget
             if (typeof ReferencesWidget !== 'undefined') {
                 new ReferencesWidget('#bioRefsGrid', {
-                    layout: 'grid',
+                    layout: 'carousel',
                     csv: '/assets/txt/referencje2.csv',
                     //keywords: [ 'Grzegorz Turniak', 'Piotr Achtelik', "Szymon Lach", "Piotr Szybiak"],
                     carousel: {
