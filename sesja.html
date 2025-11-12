@@ -410,6 +410,7 @@ console.log('Meeting types config:', meetingTypesCfg);
             }
 
             function logDebug(msg) {
+                try { console.log('[sesja]', msg); } catch(_) {}
                 if (!debugVisible) return;
                 const line = document.createElement("div");
                 line.textContent = msg;
@@ -565,15 +566,12 @@ console.log('Meeting types config:', meetingTypesCfg);
                         }
 
                         const busySlots = await fetchBusySlots(dateStr, minMeetingDuration);
-                        const toMinutes = t => {
-                            const [hh, mm] = t.split(':').map(Number);
-                            return hh * 60 + mm;
-                        };
-                        const busyMinutes = busySlots.map(toMinutes);
+                        const toMinutes = t => { const [hh, mm] = t.split(':').map(Number); return hh * 60 + mm; };
                         const freeSlots = slots.filter(time => {
                             const startMin = toMinutes(time);
                             const endMin = startMin + minMeetingDuration;
-                            return !busyMinutes.some(bm => bm >= startMin && bm < endMin);
+                            // treat busySlots as windows [{startMin,endMin}]
+                            return !busySlots.some(w => (startMin < w.endMin && endMin > w.startMin));
                         });
                         isFullyBooked = freeSlots.length === 0;
                         isAllFree = busySlots.length === 0;
@@ -648,16 +646,52 @@ console.log('Meeting types config:', meetingTypesCfg);
 
             async function fetchBusySlots(date, duration, fullDay = false) {
                 const fullParam = fullDay ? '&fullDay=1' : '';
+                console.groupCollapsed('[sesja] fetchBusy (interval mode)', { date, duration, fullDay });
                 const data = await apiRequest(`/backend/calendar.php?action=busy&date=${date}&duration=${duration}${fullParam}&return=/sesja.html`);
-                const busy = data ? data.busy : [];
-                console.log(data);
-                const result = new Set();
-                busy.forEach(time => {
-                    const dt = new Date(`${date}T${time}:00`);
-                    dt.setMinutes(Math.floor(dt.getMinutes() / duration) * duration, 0, 0);
-                    result.add(dt.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit', hour12: false }));
-                });
-                return Array.from(result);
+                console.log('[sesja] raw busy payload:', data);
+                function toMinutesFrom(dateStr, input) {
+                    if (!input) return null;
+                    if (typeof input === 'number') return input;
+                    if (typeof input === 'string') {
+                        const m = input.match(/^(\d{1,2}):(\d{2})/);
+                        if (m) return parseInt(m[1], 10) * 60 + parseInt(m[2], 10);
+                        const d = new Date(input);
+                        if (!isNaN(d.getTime())) return d.getHours() * 60 + d.getMinutes();
+                        try { const d2 = new Date(`${dateStr}T${input}`); if (!isNaN(d2.getTime())) return d2.getHours() * 60 + d2.getMinutes(); } catch {}
+                        return null;
+                    }
+                    if (input instanceof Date) return input.getHours() * 60 + input.getMinutes();
+                    return null;
+                }
+                const windows = [];
+                if (data && Array.isArray(data.events)) {
+                    data.events.forEach(ev => {
+                        const s = toMinutesFrom(date, ev.start);
+                        const e = toMinutesFrom(date, ev.end);
+                        if (s != null && e != null && e > s) windows.push({ startMin: s, endMin: e, source: 'events' });
+                    });
+                } else if (data && Array.isArray(data.busyIntervals)) {
+                    data.busyIntervals.forEach(ev => {
+                        const s = toMinutesFrom(date, ev.start);
+                        const e = toMinutesFrom(date, ev.end);
+                        if (s != null && e != null && e > s) windows.push({ startMin: s, endMin: e, source: 'busyIntervals' });
+                    });
+                } else {
+                    const busy = data ? (data.busy || []) : [];
+                    busy.forEach(item => {
+                        if (item && typeof item === 'object' && (item.start || item.end)) {
+                            const s = toMinutesFrom(date, item.start);
+                            const e = toMinutesFrom(date, item.end) ?? (s != null ? s + duration : null);
+                            if (s != null && e != null && e > s) windows.push({ startMin: s, endMin: e, source: 'busy(obj)' });
+                        } else if (typeof item === 'string') {
+                            const s = toMinutesFrom(date, item);
+                            if (s != null) windows.push({ startMin: s, endMin: s + duration, source: 'busy(str)+dur' });
+                        }
+                    });
+                }
+                console.table(windows.map(w => ({ start: w.startMin, end: w.endMin, source: w.source })));
+                console.groupEnd();
+                return windows;
             }
 
             async function showTimes() {
@@ -676,7 +710,7 @@ console.log('Meeting types config:', meetingTypesCfg);
 
                 const mtConf = meetingTypesCfg[meetingType] || {};
                 const duration = mtConf.duration === 'full' ? 60 : parseInt(mtConf.duration || '60', 10);
-                const busySlots = await fetchBusySlots(selectedDate, duration, mtConf.duration === 'full');
+                const busySlots = await fetchBusySlots(selectedDate, duration, mtConf.duration === 'full'); // now returns windows [{startMin,endMin}]
 
                 const elapsed = Date.now() - start;
                 if (elapsed < 300) {
@@ -691,6 +725,7 @@ console.log('Meeting types config:', meetingTypesCfg);
                 const whDay = workingHoursCfg[dayKey] || {};
                 const whStart = whDay.start || '09:00';
                 const whEnd = whDay.end || '17:00';
+                console.log('[sesja] working hours', { dayKey, whStart, whEnd, duration });
 
                 if (mtConf.duration === 'full') {
                     timeLabel.textContent = `Sprawdź dostępność (${dateLabel})`;
@@ -724,12 +759,16 @@ console.log('Meeting types config:', meetingTypesCfg);
                     slots.push(time);
                     cursor.setMinutes(cursor.getMinutes() + duration);
                 }
+                console.log('[sesja] generated slots:', slots);
 
                 const toMinutes = t => {
                     const [hh, mm] = t.split(':').map(Number);
                     return hh * 60 + mm;
                 };
-                const busyMinutes = busySlots.map(toMinutes).sort((a, b) => a - b);
+                const busyMinutes = busySlots
+                    .flatMap(w => { const arr = []; for (let m = w.startMin; m < w.endMin; m++) arr.push(m); return arr; })
+                    .sort((a, b) => a - b);
+                console.log('[sesja] busy minutes (expanded):', busyMinutes, 'from windows', busySlots);
 
                 slots.forEach(time => {
                     const btn = document.createElement("button");
@@ -739,7 +778,9 @@ console.log('Meeting types config:', meetingTypesCfg);
 
                     const startMin = toMinutes(time);
                     const endMin = startMin + duration;
-                    const isBusy = busyMinutes.some(bm => bm >= startMin && bm < endMin);
+                    const matches = busySlots.filter(w => (startMin < w.endMin && endMin > w.startMin));
+                    const isBusy = matches.length > 0;
+                    console.log(`[sesja] slot ${time} window [${startMin},${endMin})`, { matches });
 
                     btn.className =
                         "border rounded px-3 py-2 text-sm transition " +

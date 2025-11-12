@@ -10,10 +10,10 @@
     <noscript>
         <link rel="stylesheet" href="/assets/css/app.min.css?v=brand3">
     </noscript>
-    <link rel="preload" as="style" href="/assets/css/shared.css?v=dev21"
+    <link rel="preload" as="style" href="/assets/css/shared.css?v=dev22"
         onload="this.onload=null;this.rel='stylesheet'">
     <noscript>
-        <link rel="stylesheet" href="/assets/css/shared.css?v=dev21">
+        <link rel="stylesheet" href="/assets/css/shared.css?v=dev22">
     </noscript>
 
     <!-- Local font: Space Grotesk (subset PL) -->
@@ -227,14 +227,25 @@
                 padding: 4px 6px;
             }
         }
+
         @media (max-width: 767px) {
+
             /* Dlaczego powstał: numer w lewym górnym rogu, tekst pod spodem */
-            .morphing-card .flex.items-start.space-x-3 { display: block; }
-            .morphing-card .flex.items-start.space-x-3 > :not([hidden]) ~ :not([hidden]) { margin-left: 0 !important; }
-            .morphing-card .flex.items-start.space-x-3 > div:first-child { margin-bottom: 0.5rem; }
+            .morphing-card .flex.items-start.space-x-3 {
+                display: block;
+            }
+
+            .morphing-card .flex.items-start.space-x-3> :not([hidden])~ :not([hidden]) {
+                margin-left: 0 !important;
+            }
+
+            .morphing-card .flex.items-start.space-x-3>div:first-child {
+                margin-bottom: 0.5rem;
+            }
         }
     </style>
     <style>
+        /* Shared here */
         .card-course-a {
             @apply card p-8 rounded-2xl border border-accent shadow-sm transition-transform hover:shadow-md;
             background: linear-gradient(180deg, rgba(231, 121, 32, 0.06), rgba(4, 3, 39, 0.02));
@@ -270,9 +281,25 @@
             }
         }
 
-            .hover\:text-brand-warm:hover {
-                color: var(--brand-warm) !important;
+        .hover\:text-brand-warm:hover {
+            color: var(--brand-warm) !important;
+        }
+
+        /* Utility: image block aligned right within flex row, hidden on < md */
+        .img-block-right {
+            display: none;
+        }
+
+        @media (min-width:768px) {
+            .img-block-right {
+                display: block;
+                width: 30%;
+                height: 100%;
+                object-fit: contain;
+                margin-left: 0.5rem;
+                flex-shrink: 0;
             }
+        }
     </style>
 
     <!-- SEO -->
@@ -307,7 +334,8 @@
             <div class="flex items-center justify-between">
                 <div class="text-2xl font-bold tracking-tight">
                     <a href="/">
-                        <img id="lpHeaderLogo" class="brightness-0" src="/assets/img/logo_main.png" alt="Jerzy Zientkowski">
+                        <img id="lpHeaderLogo" class="brightness-0" src="/assets/img/logo_main.png"
+                            alt="Jerzy Zientkowski">
                     </a>
                     <div id="dev-hero-size" class=" mt-1 text-xs text-gray-500 italic hidden ">
                         <span class="inline xs:hidden sm:hidden md:hidden lg:hidden xl:hidden 2xl:hidden">DEV: base — H1
@@ -700,12 +728,15 @@
                             <div class="flex items-stretch">
                                 <div class="flex-1">
                                     <p class="text-gray-700 leading-relaxed text-xs md:text-base">
-                                        Na polskim rynku nie ma jeszcze kursu, który pomagałby biznesowi operować humorem.
-                                        Panuje przekonanie, że <strong>biznes powinien być sztywny</strong> i od linijki.
+                                        Na polskim rynku nie ma jeszcze kursu, który pomagałby biznesowi operować
+                                        humorem.
+                                        Panuje przekonanie, że <strong>biznes powinien być sztywny</strong> i od
+                                        linijki.
                                     </p>
                                 </div>
-                                <img src="/assets/img/Invest cuffs-2.webp" class="rounded-2xl" alt="smile emoji" loading="lazy"
-                                     style="width:30%; height:100%; object-fit:contain; margin-left:0.5rem; display:block; flex-shrink:0;">
+                                
+                                <img src="/assets/img/Invest cuffs-2.webp" class="rounded-2xl img-block-right"
+                                    alt="smile emoji" loading="lazy">
                             </div>
                         </div>
                     </div>
@@ -861,14 +892,66 @@
     </section>
 
     <!-- Program kursu -->
-    <section class="py-16 bg-white">
+    <section id="program" class="py-16 bg-white">
         <div class="max-w-[1200px] mx-auto px-6">
             <div class="text-center mb-12">
                 <h2 class="text-3xl md:text-4xl font-bold mb-4 text-accent">
                     Program kursu
                 </h2>
             </div>
+            <script>
+                // Expand/collapse for morphing cards: hide [data-collapsible] by default
+                document.addEventListener('DOMContentLoaded', function () {
+                    var cards = document.querySelectorAll('.morphing-card');
+                    for (var i = 0; i < cards.length; i++) {
+                        (function () {
+                            var card = cards[i];
+                            var extra = card.querySelector('[data-collapsible]');
+                            if (!extra) return;
 
+                            // Hide extra content by default
+                            if (!extra.classList.contains('hidden')) extra.classList.add('hidden');
+
+                            // Make the card obviously interactive and ensure positioning works
+                            if (!card.classList.contains('cursor-pointer')) card.classList.add('cursor-pointer');
+                            if (!card.classList.contains('relative')) card.classList.add('relative');
+
+                            var toggle = card.querySelector('.chevron-toggle');
+
+                            function updateChevronState() {
+                                if (!toggle) return;
+                                var isHidden = extra.classList.contains('hidden');
+                                toggle.setAttribute('aria-expanded', String(!isHidden));
+                                if (isHidden) {
+                                    toggle.classList.remove('rotate-180');
+                                } else {
+                                    toggle.classList.add('rotate-180');
+                                }
+                            }
+
+                            updateChevronState();
+
+                            if (toggle) {
+                                toggle.addEventListener('click', function (e) {
+                                    e.stopPropagation();
+                                    extra.classList.toggle('hidden');
+                                    updateChevronState();
+                                });
+                            }
+
+                            // Toggle on card click (ignore interactive elements)
+                            card.addEventListener('click', function (e) {
+                                if (e.target.closest('a,button,svg,path,input,textarea,select,[data-no-toggle]')) return;
+                                var section = this.querySelector('[data-collapsible]');
+                                if (section) {
+                                    section.classList.toggle('hidden');
+                                    updateChevronState();
+                                }
+                            });
+                        })();
+                    }
+                });
+            </script>
             <div class="max-w-5xl mx-auto">
                 <div class="grid grid-cols-1 md:grid-cols-1 gap-6">
                     <div class="morphing-card p-6">
@@ -878,12 +961,24 @@
                                 <span class="text-brand-warm font-bold text-lg">1</span>
                             </div>
                             <div>
-                                <p class="text-gray-700 leading-relaxed">
-                                    Na polskim rynku nie ma jeszcze kursu, który pomagałby <strong>TWORZYĆ własny
-                                        humor</strong>, a nie tylko opowiadać dowcipy i suchary albo starać się być
-                                    śmiesznym na siłę.
+                                <p class="text-brand-primary leading-relaxed">
+                                   Wprowadzenie do kursu
                                 </p>
                             </div>
+                        </div>
+                        <button type="button" class="chevron-toggle absolute top-4 right-4 text-gray-400 hover:text-accent transform transition-transform duration-200" aria-label="Rozwiń/Zwiń" title="Rozwiń/Zwiń">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                        <div data-collapsible class="mt-4 text-gray-600">
+                                                           
+                                <ul  class="mt-1 space-y-1 list-disc pl-6 ml-2">
+                                    <li>Lorem ipsum dolor sit amet.</li>
+                                    <li>Consectetur adipiscing elit.</li>
+                                    <li>Sed do eiusmod tempor incididunt.</li>
+                                </ul>
+                            
                         </div>
                     </div>
 
@@ -899,6 +994,18 @@
                                     Panuje przekonanie, że <strong>biznes powinien być sztywny</strong> i od linijki.
                                 </p>
                             </div>
+                        </div>
+                        <button type="button" class="chevron-toggle absolute top-4 right-4 text-gray-400 hover:text-accent transform transition-transform duration-200" aria-label="Rozwiń/Zwiń" title="Rozwiń/Zwiń">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                        <div data-collapsible class="mt-4 text-gray-600">
+                            <ul class="mt-1 space-y-1 list-disc pl-6 ml-2">
+                                <li>Lorem ipsum dolor sit amet.</li>
+                                <li>Consectetur adipiscing elit.</li>
+                                <li>Sed do eiusmod tempor incididunt.</li>
+                            </ul>
                         </div>
                     </div>
 
@@ -916,6 +1023,18 @@
                                 </p>
                             </div>
                         </div>
+                        <button type="button" class="chevron-toggle absolute top-4 right-4 text-gray-400 hover:text-accent transform transition-transform duration-200" aria-label="Rozwiń/Zwiń" title="Rozwiń/Zwiń">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                        <div data-collapsible class="mt-4 text-gray-600">
+                            <ul class="mt-1 space-y-1 list-disc pl-6 ml-2">
+                                <li>Lorem ipsum dolor sit amet.</li>
+                                <li>Consectetur adipiscing elit.</li>
+                                <li>Sed do eiusmod tempor incididunt.</li>
+                            </ul>
+                        </div>
                     </div>
 
                     <div class="morphing-card p-6">
@@ -931,6 +1050,18 @@
                                     przestrzeń na słuchanie.
                                 </p>
                             </div>
+                        </div>
+                        <button type="button" class="chevron-toggle absolute top-4 right-4 text-gray-400 hover:text-accent transform transition-transform duration-200" aria-label="Rozwiń/Zwiń" title="Rozwiń/Zwiń">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                        <div data-collapsible class="mt-4 text-gray-600">
+                            <ul class="mt-1 space-y-1 list-disc pl-6 ml-2">
+                                <li>Lorem ipsum dolor sit amet.</li>
+                                <li>Consectetur adipiscing elit.</li>
+                                <li>Sed do eiusmod tempor incididunt.</li>
+                            </ul>
                         </div>
                     </div>
 
@@ -948,6 +1079,18 @@
                                 </p>
                             </div>
                         </div>
+                        <button type="button" class="chevron-toggle absolute top-4 right-4 text-gray-400 hover:text-accent transform transition-transform duration-200" aria-label="Rozwiń/Zwiń" title="Rozwiń/Zwiń">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                        <div data-collapsible class="mt-4 text-gray-600">
+                            <ul class="mt-1 space-y-1 list-disc pl-6 ml-2">
+                                <li>Lorem ipsum dolor sit amet.</li>
+                                <li>Consectetur adipiscing elit.</li>
+                                <li>Sed do eiusmod tempor incididunt.</li>
+                            </ul>
+                        </div>
                     </div>
 
                     <div class="morphing-card p-6">
@@ -963,6 +1106,18 @@
                                     - to czas taką zrobić.
                                 </p>
                             </div>
+                        </div>
+                        <button type="button" class="chevron-toggle absolute top-4 right-4 text-gray-400 hover:text-accent transform transition-transform duration-200" aria-label="Rozwiń/Zwiń" title="Rozwiń/Zwiń">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                        <div data-collapsible class="mt-4 text-gray-600">
+                            <ul class="mt-1 space-y-1 list-disc pl-6 ml-2">
+                                <li>Lorem ipsum dolor sit amet.</li>
+                                <li>Consectetur adipiscing elit.</li>
+                                <li>Sed do eiusmod tempor incididunt.</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -1265,6 +1420,7 @@
             }
         }
     </script>
+    
 
     <!-- Back to top button script -->
     <script>
