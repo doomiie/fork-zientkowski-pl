@@ -322,4 +322,18 @@
   background-position: 0% 0;
 }
 
+/* Program szczegoly: make old ordered lists look like bullet lists and hide descriptions */
+#program-szczegoly [data-collapsible] { color: #fff; }
+#program-szczegoly [data-collapsible] ol { list-style-type: disc; padding-left: 1.5rem; }
+#program-szczegoly [data-collapsible] ol > li > div { display: none; }
+/* Remove frames and add white separators only inside the details section */
+#program-szczegoly .collapsible-card,
+#program-szczegoly .morphing-card { border: 0; background: transparent; border-radius: 0; padding: 0.5rem !important; }
+#program-szczegoly .collapsible-card + .collapsible-card,
+#program-szczegoly .morphing-card + .collapsible-card,
+#program-szczegoly .collapsible-card + .morphing-card,
+#program-szczegoly .morphing-card + .morphing-card { border-top: 1px solid rgba(255,255,255,.4); }
 
+/* Align number bubble with the title text */
+#program-szczegoly .flex.items-start { align-items: center; }
+#program-szczegoly .flex.items-start > div:first-child { margin-top: 0 !important; }
