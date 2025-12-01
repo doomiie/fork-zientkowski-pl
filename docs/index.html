@@ -51,8 +51,9 @@
         if (!items.length) { empty.classList.remove('hidden'); return; }
         empty.classList.add('hidden');
         items.forEach(it => {
+          const downloadHref = it.download_url || it.file_path;
           const card = document.createElement('a');
-          card.href = it.file_path;
+          card.href = downloadHref || '#';
           card.className = 'block rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition p-5';
           card.target = '_blank';
           card.rel = 'noopener';
