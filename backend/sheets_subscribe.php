@@ -90,12 +90,35 @@ try {
   }
 
   $from = trim((string)($data['from'] ?? 'direct'));
+  $sheetParam = '';
+  if (isset($data['sheet'])) {
+    $sheetParam = (string)$data['sheet'];
+  } elseif (isset($_POST['sheet'])) {
+    $sheetParam = (string)$_POST['sheet'];
+  }
+  $sheetParam = trim($sheetParam);
+  if ($sheetParam !== '') {
+    $sheetParam = preg_replace('/[^A-Za-z0-9_.-]+/', '', $sheetParam) ?: '';
+  }
+
+  $targetRange = $range;
+  $rangeColumns = null;
+  if (strpos($range, '!') !== false) {
+    $parts = explode('!', $range, 2);
+    if (isset($parts[1]) && $parts[1] !== '') {
+      $rangeColumns = $parts[1];
+    }
+  }
+  if ($sheetParam !== '') {
+    $targetRange = $rangeColumns ? ($sheetParam . '!' . $rangeColumns) : $sheetParam;
+  }
+  $campaignLabel = $sheetParam !== '' ? $sheetParam : 'ebookhumorwbiznesie';
 
   $service = new Google_Service_Sheets($client);
-  $values = [ [ date('Y-m-d H:i:s'), $email, 'ebookhumorwbiznesie', $from ] ];
+  $values = [ [ date('Y-m-d H:i:s'), $email, $campaignLabel, $from ] ];
   $body = new Google_Service_Sheets_ValueRange([ 'values' => $values ]);
   $params = [ 'valueInputOption' => 'RAW' ];
-  $appendResp = $service->spreadsheets_values->append($spreadsheetId, $range, $body, $params);
+  $appendResp = $service->spreadsheets_values->append($spreadsheetId, $targetRange, $body, $params);
   $updatedRange = method_exists($appendResp, 'getUpdates') && $appendResp->getUpdates() ? $appendResp->getUpdates()->getUpdatedRange() : null;
   $updatedRows  = method_exists($appendResp, 'getUpdates') && $appendResp->getUpdates() ? $appendResp->getUpdates()->getUpdatedRows()  : null;
 
@@ -174,7 +197,7 @@ try {
   } catch (Throwable $e) {
     $mailError = $e->getMessage();
   }
-  $resp = ['ok' => true, 'range' => $range, 'updatedRange' => $updatedRange, 'updatedRows' => $updatedRows, 'mail' => $mail];
+  $resp = ['ok' => true, 'range' => $targetRange, 'updatedRange' => $updatedRange, 'updatedRows' => $updatedRows, 'mail' => $mail];
   if (!$mail) { $resp['mailError'] = $mailError; }
   echo json_encode($resp);
 } catch (Throwable $e) {
