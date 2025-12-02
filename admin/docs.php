@@ -333,6 +333,9 @@ unset($row);
     .status-chip { display:inline-flex; align-items:center; gap:6px; padding:4px 8px; border-radius:999px; font-size:12px; font-weight:600; background:#e5e7eb; color:#111827; }
     .status-chip--off { background:#fee2e2; color:#7f1d1d; }
     .status-chip--expired { background:#fef3c7; color:#92400e; }
+    .card-table { padding: 0; }
+    .card-table .table-wrap { overflow-x:auto; padding:20px; }
+    .text-break { word-break:break-word; }
   </style>
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self';">
   <meta name="robots" content="noindex,nofollow">
@@ -434,7 +437,8 @@ unset($row);
       </div>
     <?php endif; ?>
 
-    <div class="card">
+    <div class="card card-table">
+      <div class="table-wrap">
       <h2>Ostatnio dodane</h2>
       <table>
         <thead>
@@ -472,7 +476,7 @@ unset($row);
               <td>
                 <a href="<?php echo htmlspecialchars($downloadUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" target="_blank" rel="noopener">pobierz</a>
                 <?php if (!empty($r['share_url'])): ?>
-                  <div class="muted" style="margin-top:4px;"><?php echo htmlspecialchars((string)$r['share_url'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></div>
+                  <div class="muted text-break" style="margin-top:4px;"><?php echo htmlspecialchars((string)$r['share_url'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></div>
                 <?php endif; ?>
               </td>
               <td>
@@ -485,9 +489,9 @@ unset($row);
                   <?php endif; ?>
                 </span>
               </td>
-              <td>
+              <td class="text-break">
                 <?php if (!empty($r['fallback_url'])): ?>
-                  <a href="<?php echo htmlspecialchars((string)$r['fallback_url'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" target="_blank" rel="noopener"><?php echo htmlspecialchars((string)$r['fallback_url'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></a>
+                  <a class="text-break" href="<?php echo htmlspecialchars((string)$r['fallback_url'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" target="_blank" rel="noopener"><?php echo htmlspecialchars((string)$r['fallback_url'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></a>
                 <?php else: ?>
                   <span class="muted">brak</span>
                 <?php endif; ?>
@@ -502,6 +506,7 @@ unset($row);
           <?php endforeach; ?>
         </tbody>
       </table>
+      </div>
     </div>
   </main>
   <script defer src="docs.js"></script>
