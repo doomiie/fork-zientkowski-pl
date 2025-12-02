@@ -1,0 +1,3 @@
+ALTER TABLE doc_files
+  ADD COLUMN download_count BIGINT UNSIGNED NOT NULL DEFAULT 0 AFTER share_hash;
+

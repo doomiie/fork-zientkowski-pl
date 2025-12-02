@@ -48,7 +48,16 @@ AddDefaultCharset UTF-8
   RewriteCond %{HTTP:X-Forwarded-Proto} !https
   RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 
+  # Hashed document downloads (/docs/downloadHASH[/plik])
+  RewriteRule ^docs/download/([A-Za-z0-9_-]+)/([^/]+)$ admin/docs_download.php?hash=$1&name=$2 [L,QSA,B]
+  RewriteRule ^docs/download/([A-Za-z0-9_-]+)/?$ admin/docs_download.php?hash=$1 [L,QSA,B]
+
+  # Allow everything else under /docs to bypass further rewrites
+  RewriteCond %{REQUEST_URI} ^/docs/ [NC]
+  RewriteRule ^ - [L]
+
   # Nie przepisywać żądań do statycznych zasobów (serwuj bezpośrednio)
+  RewriteCond %{REQUEST_URI} !^/docs/ [NC]
   RewriteCond %{REQUEST_URI} \.(?:css|js|mjs|map|png|jpe?g|gif|svg|webp|ico|bmp|avif|woff2?|ttf|otf|eot|mp3|wav|mp4|webm|ogv|json|xml|pdf|txt|csv)$ [NC]
   RewriteRule ^ - [L]
 
@@ -63,13 +72,15 @@ AddDefaultCharset UTF-8
   # Root "/" serwuj jako index.html (wewnętrznie, bez zewnętrznego redirectu)
  RewriteRule ^$ index.html [L]
 
-  # Czyste adresy bez rozszerzeń → odpowiednie pliki .html
+  # Czyste adresy bez rozszerzeń -> odpowiednie pliki .html
   # Działa dla /index -> /index.html oraz /maska -> /maska.html
+  RewriteCond %{REQUEST_URI} !^/docs/ [NC]
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME}.html -f
   RewriteRule ^(.+)$ $1.html [L]
-  # 3) Jeśli nie istnieje ani plik/katalog, ani odpowiedni .html → przekaż do resolvera przekierowań
+  # 3) Jeśli nie istnieje ani plik/katalog, ani odpowiedni .html -> przekaż do resolvera przekierowań
+  RewriteCond %{REQUEST_URI} !^/docs/ [NC]
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME}.html !-f

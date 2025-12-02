@@ -13,16 +13,25 @@ $targetDir = dirname(__DIR__) . '/docs/files';
 if (!is_dir($targetDir)) {
     @mkdir($targetDir, 0775, true);
 }
+$sharePrefix = '/docs/download/';
 
-$normalizeExpires = static function (?string $value): ?string {
+$normalizeDate = static function (?string $value, string $defaultTime): ?string {
     $trimmed = trim((string)$value);
     if ($trimmed === '') {
         return null;
     }
     if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $trimmed)) {
-        return $trimmed . ' 23:59:59';
+        return $trimmed . $defaultTime;
     }
     return $trimmed;
+};
+
+$normalizeExpires = static function (?string $value) use ($normalizeDate): ?string {
+    return $normalizeDate($value, ' 23:59:59');
+};
+
+$normalizeAvailableFrom = static function (?string $value) use ($normalizeDate): ?string {
+    return $normalizeDate($value, ' 00:00:00');
 };
 
 $normalizeFallback = static function (?string $value): array {
@@ -58,10 +67,63 @@ $processUpload = static function (array $file, string $targetDir): array {
     ];
 };
 
-$fetchDoc = static function (PDO $pdo, int $id): ?array {
-    $stmt = $pdo->prepare('SELECT id, display_name, file_path, original_name, mime_type, file_size, expires_at, created_at, is_enabled, fallback_url FROM doc_files WHERE id = ? LIMIT 1');
+$generateShareHash = static function (PDO $pdo): string {
+    while (true) {
+        $candidate = rtrim(strtr(base64_encode(random_bytes(12)), '+/', '-_'), '=');
+        $stmt = $pdo->prepare('SELECT COUNT(*) FROM doc_files WHERE share_hash = ?');
+        $stmt->execute([$candidate]);
+        if ((int)$stmt->fetchColumn() === 0) {
+            return $candidate;
+        }
+    }
+};
+
+$ensureShareHash = static function (PDO $pdo, array &$doc) use ($generateShareHash): void {
+    if (!empty($doc['share_hash'])) {
+        return;
+    }
+    $hash = $generateShareHash($pdo);
+    $stmt = $pdo->prepare('UPDATE doc_files SET share_hash = ? WHERE id = ?');
+    $stmt->execute([$hash, (int)$doc['id']]);
+    $doc['share_hash'] = $hash;
+};
+
+$shareUrlFromHash = static function (?string $hash) use ($sharePrefix): string {
+    $hash = trim((string)$hash);
+    if ($hash === '') {
+        return '';
+    }
+    return rtrim($sharePrefix, '/') . '/' . rawurlencode($hash);
+};
+
+$resolveDownloadName = static function (array $doc): string {
+    $name = trim((string)($doc['original_name'] ?? ''));
+    if ($name !== '') {
+        return $name;
+    }
+    $fallback = basename((string)($doc['file_path'] ?? ''));
+    if ($fallback !== '' && $fallback !== '.' && $fallback !== '..') {
+        return $fallback;
+    }
+    return 'dokument-' . (int)($doc['id'] ?? 0);
+};
+
+$buildDownloadUrl = static function (array $doc) use ($resolveDownloadName, $shareUrlFromHash): string {
+    $base = $shareUrlFromHash($doc['share_hash'] ?? '');
+    if ($base === '') {
+        return '';
+    }
+    $filePart = rawurlencode($resolveDownloadName($doc));
+    return rtrim($base, '/') . '/' . $filePart;
+};
+
+$fetchDoc = static function (PDO $pdo, int $id) use ($ensureShareHash): ?array {
+    $stmt = $pdo->prepare('SELECT id, display_name, file_path, original_name, mime_type, file_size, expires_at, available_from, created_at, is_enabled, fallback_url, share_hash, download_count FROM doc_files WHERE id = ? LIMIT 1');
     $stmt->execute([$id]);
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($row) {
+        $ensureShareHash($pdo, $row);
+    }
     return $row ?: null;
 };
 
@@ -99,11 +161,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $requestedEditId = $docId;
                     $display = trim((string)($_POST['display_name'] ?? ''));
                     $expiresAt = $normalizeExpires($_POST['expires_at'] ?? '');
+                    $availableFrom = $normalizeAvailableFrom($_POST['available_from'] ?? '');
                     [$fallbackUrl, $fallbackError] = $normalizeFallback($_POST['fallback_url'] ?? '');
                     $isEnabled = (int)($_POST['is_enabled'] ?? 1) === 1 ? 1 : 0;
                     $editDoc = $current;
                     $editDoc['display_name'] = $display;
                     $editDoc['expires_at'] = $expiresAt;
+                    $editDoc['available_from'] = $availableFrom;
                     $editDoc['is_enabled'] = $isEnabled;
                     $editDoc['fallback_url'] = $fallbackUrl !== '' ? $fallbackUrl : null;
                     if ($display === '') {
@@ -125,7 +189,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             }
                         }
                         if (!$error) {
-                            $stmt = $pdo->prepare('UPDATE doc_files SET display_name = ?, file_path = ?, original_name = ?, mime_type = ?, file_size = ?, expires_at = ?, is_enabled = ?, fallback_url = ? WHERE id = ?');
+                            $stmt = $pdo->prepare('UPDATE doc_files SET display_name = ?, file_path = ?, original_name = ?, mime_type = ?, file_size = ?, expires_at = ?, available_from = ?, is_enabled = ?, fallback_url = ? WHERE id = ?');
                             $stmt->execute([
                                 $display,
                                 $meta['file_path'],
@@ -133,6 +197,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 $meta['mime_type'],
                                 $meta['file_size'],
                                 $expiresAt,
+                                $availableFrom,
                                 $isEnabled,
                                 $fallbackUrl !== '' ? $fallbackUrl : null,
                                 $docId,
@@ -145,8 +210,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 'mime_type' => $meta['mime_type'],
                                 'file_size' => $meta['file_size'],
                                 'expires_at' => $expiresAt,
+                                'available_from' => $availableFrom,
                                 'is_enabled' => $isEnabled,
                                 'fallback_url' => $fallbackUrl !== '' ? $fallbackUrl : null,
+                                'download_count' => (int)($current['download_count'] ?? 0),
                             ]);
                         }
                     }
@@ -155,6 +222,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $display = trim((string)($_POST['display_name'] ?? ''));
             $expiresAt = $normalizeExpires($_POST['expires_at'] ?? '');
+            $availableFrom = $normalizeAvailableFrom($_POST['available_from'] ?? '');
             [$fallbackUrl, $fallbackError] = $normalizeFallback($_POST['fallback_url'] ?? '');
             $isEnabled = (int)($_POST['is_enabled'] ?? 1) === 1 ? 1 : 0;
             if ($display === '') {
@@ -175,7 +243,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 try {
                     $meta = $processUpload($_FILES['file'], $targetDir);
-                    $stmt = $pdo->prepare('INSERT INTO doc_files (display_name, file_path, original_name, mime_type, file_size, expires_at, is_enabled, fallback_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
+                    $shareHash = $generateShareHash($pdo);
+                    $stmt = $pdo->prepare('INSERT INTO doc_files (display_name, file_path, original_name, mime_type, file_size, expires_at, available_from, is_enabled, fallback_url, share_hash, download_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
                     $stmt->execute([
                         $display,
                         $meta['file_path'],
@@ -183,19 +252,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $meta['mime_type'],
                         $meta['file_size'],
                         $expiresAt,
+                        $availableFrom,
                         $isEnabled,
                         $fallbackUrl !== '' ? $fallbackUrl : null,
+                        $shareHash,
+                        0,
                     ]);
                     $newId = (int)$pdo->lastInsertId();
                     $ok = 'Dodano plik.';
                     if (isset($_POST['ajax'])) {
+                        $shareUrl = $shareUrlFromHash($shareHash);
+                        $downloadName = $resolveDownloadName([
+                            'original_name' => $meta['original_name'],
+                            'file_path' => $meta['file_path'],
+                            'id' => $newId,
+                            'share_hash' => $shareHash,
+                        ]);
+                        $downloadUrl = $shareUrl ? $shareUrl . '/' . rawurlencode($downloadName) : '';
                         header('Content-Type: application/json; charset=UTF-8');
                         echo json_encode([
                             'ok' => true,
                             'id' => $newId,
                             'display_name' => $display,
                             'file_path' => $meta['file_path'],
-                            'download_url' => '/backend/doc_redirect.php?id=' . $newId,
+                            'share_url' => $shareUrl,
+                            'download_url' => $downloadUrl,
+                            'available_from' => $availableFrom,
+                            'download_count' => 0,
                         ], JSON_UNESCAPED_UNICODE);
                         exit;
                     }
@@ -214,10 +297,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 try {
-    $rows = $pdo->query('SELECT id, display_name, file_path, original_name, file_size, expires_at, created_at, is_enabled, fallback_url FROM doc_files ORDER BY created_at DESC LIMIT 200')->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    $rows = $pdo->query('SELECT id, display_name, file_path, original_name, file_size, expires_at, available_from, created_at, is_enabled, fallback_url, share_hash, download_count FROM doc_files ORDER BY created_at DESC LIMIT 200')->fetchAll(PDO::FETCH_ASSOC) ?: [];
 } catch (Throwable $e) {
     $rows = [];
 }
+foreach ($rows as &$row) {
+    $ensureShareHash($pdo, $row);
+    $row['share_url'] = $shareUrlFromHash($row['share_hash'] ?? '');
+    $row['download_url'] = $buildDownloadUrl($row);
+    $row['available_from'] = $row['available_from'] ?? null;
+    $row['download_count'] = (int)($row['download_count'] ?? 0);
+}
+unset($row);
 ?>
 <!DOCTYPE html>
 <html lang="pl">
@@ -258,7 +349,7 @@ try {
     </div>
   </header>
   <main>
-    <div class="card">
+    <div class="card" style="max-width: 1440px;">
       <h1>Dokumenty do pobrania</h1>
       <?php if ($error): ?><div class="error"><?php echo $error; ?></div><?php endif; ?>
       <?php if ($ok): ?><div class="ok"><?php echo $ok; ?></div><?php endif; ?>
@@ -272,6 +363,9 @@ try {
         <input type="file" id="file" name="file" required>
         <label for="expires_at">Wygasa (opcjonalnie)</label>
         <input type="date" id="expires_at" name="expires_at" placeholder="YYYY-MM-DD">
+        <label for="available_from">Dostępny od (opcjonalnie)</label>
+        <input type="date" id="available_from" name="available_from" placeholder="YYYY-MM-DD">
+        <div class="muted" style="margin-top:4px;">Jeśli ustawisz przyszłą datę, dokument będzie dostępny dopiero od tego dnia.</div>
         <label for="is_enabled">Status linku</label>
         <select id="is_enabled" name="is_enabled">
           <option value="1" selected>Wlaczony</option>
@@ -298,7 +392,13 @@ try {
         if (!empty($editDoc['expires_at'])) {
             $editExpiresValue = substr((string)$editDoc['expires_at'], 0, 10);
         }
+        $editAvailableValue = '';
+        if (!empty($editDoc['available_from'])) {
+            $editAvailableValue = substr((string)$editDoc['available_from'], 0, 10);
+        }
         $editEnabled = (int)($editDoc['is_enabled'] ?? 0) === 1;
+        $editShareUrl = $shareUrlFromHash($editDoc['share_hash'] ?? '');
+        $editDownloadUrl = $buildDownloadUrl($editDoc);
       ?>
       <div class="card">
         <h2>Edytuj dokument: <?php echo htmlspecialchars((string)$editDoc['display_name'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></h2>
@@ -310,9 +410,15 @@ try {
           <input type="text" id="edit_display_name" name="display_name" value="<?php echo htmlspecialchars((string)$editDoc['display_name'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>">
           <label for="edit_file">Nowy plik (opcjonalnie)</label>
           <input type="file" id="edit_file" name="file">
-          <div class="muted" style="margin-top:4px;">Aktualny link: <a href="/backend/doc_redirect.php?id=<?php echo (int)$editDoc['id']; ?>" target="_blank" rel="noopener">/backend/doc_redirect.php?id=<?php echo (int)$editDoc['id']; ?></a></div>
+          <div class="muted" style="margin-top:4px;">Link udostępniania: <a href="<?php echo htmlspecialchars($editShareUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" target="_blank" rel="noopener"><?php echo htmlspecialchars($editShareUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></a></div>
+          <?php if ($editDownloadUrl): ?>
+          <div class="muted" style="margin-top:4px;">Link bezpośredni: <a href="<?php echo htmlspecialchars($editDownloadUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" target="_blank" rel="noopener"><?php echo htmlspecialchars($editDownloadUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></a></div>
+          <?php endif; ?>
+          <div class="muted" style="margin-top:4px;">Łącznie pobrań: <?php echo (int)($editDoc['download_count'] ?? 0); ?></div>
           <label for="edit_expires_at">Wygasa</label>
           <input type="date" id="edit_expires_at" name="expires_at" value="<?php echo htmlspecialchars($editExpiresValue, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>">
+          <label for="edit_available_from">Dostępny od</label>
+          <input type="date" id="edit_available_from" name="available_from" value="<?php echo htmlspecialchars($editAvailableValue, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>">
           <label for="edit_is_enabled">Status linku</label>
           <select id="edit_is_enabled" name="is_enabled">
             <option value="1" <?php echo $editEnabled ? 'selected' : ''; ?>>Wlaczony</option>
@@ -337,8 +443,10 @@ try {
             <th>Plik</th>
             <th>Status</th>
             <th>Fallback</th>
-            <th>Rozmiar</th>
+            <th>Dostępny od</th>
             <th>Wygasa</th>
+            <th>Pobrań</th>
+            <th>Rozmiar</th>
             <th>Dodano</th>
             <th>Akcje</th>
           </tr>
@@ -346,22 +454,34 @@ try {
         <tbody>
           <?php foreach ($rows as $r): ?>
             <?php
-              $downloadUrl = '/backend/doc_redirect.php?id=' . (int)$r['id'];
+              $downloadUrl = (string)($r['download_url'] ?? ($r['share_url'] ?? ('/backend/doc_redirect.php?id=' . (int)$r['id'])));
               $isEnabledRow = (int)($r['is_enabled'] ?? 0) === 1;
               $isExpiredRow = false;
               if (!empty($r['expires_at'])) {
                   $expiresTs = strtotime((string)$r['expires_at']);
                   $isExpiredRow = $expiresTs !== false && $expiresTs <= time();
               }
+              $isUpcomingRow = false;
+              if (!empty($r['available_from'])) {
+                  $availableTs = strtotime((string)$r['available_from']);
+                  $isUpcomingRow = $availableTs !== false && $availableTs > time();
+              }
             ?>
             <tr>
               <td><?php echo htmlspecialchars((string)$r['display_name'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></td>
-              <td><a href="<?php echo htmlspecialchars($downloadUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" target="_blank" rel="noopener">pobierz</a></td>
               <td>
-                <span class="status-chip <?php echo !$isEnabledRow ? 'status-chip--off' : ($isExpiredRow ? 'status-chip--expired' : ''); ?>">
+                <a href="<?php echo htmlspecialchars($downloadUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" target="_blank" rel="noopener">pobierz</a>
+                <?php if (!empty($r['share_url'])): ?>
+                  <div class="muted" style="margin-top:4px;"><?php echo htmlspecialchars((string)$r['share_url'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></div>
+                <?php endif; ?>
+              </td>
+              <td>
+                <span class="status-chip <?php echo (!$isEnabledRow || $isUpcomingRow) ? 'status-chip--off' : ($isExpiredRow ? 'status-chip--expired' : ''); ?>">
                   <?php echo $isEnabledRow ? 'Wlaczony' : 'Wylaczony'; ?>
                   <?php if ($isExpiredRow): ?>
                     <span>(Wygasl)</span>
+                  <?php elseif ($isUpcomingRow): ?>
+                    <span>(Start od <?php echo htmlspecialchars(substr((string)$r['available_from'], 0, 10), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>)</span>
                   <?php endif; ?>
                 </span>
               </td>
@@ -372,8 +492,10 @@ try {
                   <span class="muted">brak</span>
                 <?php endif; ?>
               </td>
-              <td><?php echo htmlspecialchars(number_format((int)$r['file_size'] ?: 0, 0, ',', ' ') . ' B', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></td>
+              <td><?php echo htmlspecialchars((string)($r['available_from'] ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></td>
               <td><?php echo htmlspecialchars((string)($r['expires_at'] ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></td>
+              <td><?php echo htmlspecialchars((string)$r['download_count'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></td>
+              <td><?php echo htmlspecialchars(number_format((int)$r['file_size'] ?: 0, 0, ',', ' ') . ' B', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></td>
               <td><?php echo htmlspecialchars((string)$r['created_at'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></td>
               <td><a class="btn" href="docs.php?edit=<?php echo (int)$r['id']; ?>">Edytuj</a></td>
             </tr>
