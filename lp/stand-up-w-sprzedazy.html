@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pl">
 
 <head>
@@ -15,11 +15,11 @@
 
     <meta name="author" content="Jerzy Zientkowski" />
     <meta name="robots" content="index, follow" />
-    <meta property="article:published_time" content="2025-02-15T09:00:00+01:00">
-    <meta property="article:modified_time" content="2025-02-15T09:00:00+01:00">
+    <meta property="article:published_time" content="2025-02-01T09:00:00+01:00">
+    <meta property="article:modified_time" content="2025-02-01T09:00:00+01:00">
 
     <!-- Open Graph -->
-    <meta property="og:title" content="Stand Up w Sprzedaży - Humor, sprzedaż i wpływ | Jerzy Zientkowski">
+    <meta property="og:title" content="Stand Up w Sprzedaży | Jerzy Zientkowski">
     <meta property="og:description"
         content="Interaktywny wykład w formule eleganckiego Stand Up, pełen humoru i praktycznych narzędzi sprzedażowych - idealny na event firmowy lub spotkanie dla klientów.">
     <meta property="og:type" content="website">
@@ -29,7 +29,7 @@
 
     <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Stand Up w Sprzedaży - Humor, sprzedaż i wpływ | Jerzy Zientkowski">
+    <meta name="twitter:title" content="Stand Up w Sprzedaży | Jerzy Zientkowski">
     <meta name="twitter:description"
         content="Interaktywny wykład w formule eleganckiego Stand Up, pełen humoru i praktycznych narzędzi sprzedażowych - idealny na event firmowy lub spotkanie dla klientów.">
     <meta name="twitter:image" content="https://zientkowski.pl/assets/img/stand-up-w-sprzedazy-cover.jpg">
@@ -40,7 +40,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="canonical" href="https://zientkowski.pl/stand-up-w-sprzedazy" />
-    <!-- Schema.org � EVENT z cen� -->
+    <!-- Schema.org – EVENT z ceną -->
     <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -71,12 +71,12 @@
     "price": "9500",
     "priceCurrency": "PLN",
     "availability": "https://schema.org/InStock",
-    "url": "https://zientkowski.pl/stand-up-w-sprzedazy"\n  }
+    "url": "https://zientkowski.pl/stand-up-w-sprzedazy"  }
 }
 </script>
 
 
-    <!-- Schema.org � SERVICE z cen� -->
+    <!-- Schema.org – SERVICE z ceną -->
     <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -95,7 +95,7 @@
     "price": "9500",
     "priceCurrency": "PLN",
     "url": "https://zientkowski.pl/stand-up-w-sprzedazy",
-    "availability": "https://schema.org/InStock"\n  }
+    "availability": "https://schema.org/InStock"  }
 }
 </script>
 
@@ -417,14 +417,14 @@
     <!-- Navigation -->
     <nav
         class="fixed w-full bg-white/95 backdrop-blur-lg z-50 py-4 transition-all duration-300 border-b border-gray-200/50">
-        <div class="max-w-[1400px] mx-auto px-6">
+        <div class="max-w-[1400px] mx-auto px-6 ">
             <div class="flex items-center justify-between">
                 <div class="text-2xl font-bold tracking-tight">
                     <a href="/">
                         <img id="lpHeaderLogo" class="brightness-0" src="/assets/img/logo_main.png"
                             alt="Jerzy Zientkowski">
                     </a>
-                    <div id="dev-hero-size" class=" mt-1 text-xs text-gray-500 italic hidden ">
+                    <div id="dev-hero-size" class=" mt-1 text-xs text-gray-500 italic  ">
                         <span class="inline xs:hidden sm:hidden md:hidden lg:hidden xl:hidden 2xl:hidden">DEV: base - H1
                             text-2xl</span>
                         <span class="hidden xs:inline sm:hidden md:hidden lg:hidden xl:hidden 2xl:hidden">DEV: xs - H1
@@ -470,25 +470,32 @@
 
     <!-- Hero Section with Video -->
     <section class="pt-16 md:pt-28 pb-16 bg-white">
-        <div class="w-full px-0">
+        <div class="w-full px-0  ml-8 mr-8">
             <!-- Video and Text Container -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-0 h-screen md:h-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap gap-5 h-screen md:h-auto  ">
                 <!-- Video -->
-                <div class="video-container mb-0 md:mb-12 h-full md:h-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 mx-auto">
-                    <iframe src="https://www.youtube.com/embed/N4_Yw9-uv08?rel=0&modestbranding=1&color=white"
-                        title="Autentyczny Humor w Biznesie"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowfullscreen>
-                    </iframe>
+                <!-- <div class="video-container mb-0 md:mb-12 h-full md:h-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 mx-auto"> -->
+                <div class="p-8 h-full flex items-center justify-center">
+                    <div class="video-container w-full max-w-2xl">
+
+                        <iframe src="https://www.youtube.com/embed/m8lllx-xLIc?rel=0&modestbranding=1&color=white"
+                            title="Autentyczny Humor w Biznesie"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen>
+                        </iframe>
+
+                    </div>
                 </div>
 
                 <!-- Hero Text -->
-                <div class="text-center md:text-left max-w-none flex flex-col justify-center px-6 md:px-12 py-12 md:py-0">
+                <div
+                    class="text-center md:text-left max-w-none flex flex-col justify-center px-6 md:px-12 py-12 md:py-0">
                     <h1 class="text-3xl md:text-6xl font-extrabold mb-6 sm:mb-4">
                         <span class="gradient-text">Stand Up w&nbsp;Sprzedaży</span>
                     </h1>
                     <p class="text-base md:text-2xl text-gray-700 mb-8">
-                        Interaktywny wykład w formule eleganckiego Stand Up, pełen humoru i praktycznych narzędzi sprzedażowych - idealny na event firmowy lub spotkanie dla klientów.
+                        Interaktywny wykład w formule eleganckiego Stand Up, pełen humoru i praktycznych narzędzi
+                        sprzedażowych - idealny na event firmowy lub spotkanie dla klientów.
                     </p>
                     <a href="#pakiet"
                         class="btn-primary border border-accent hover:bg-accent hover:text-white shadow-lg hover:shadow-xl text-sm px-4 py-2 self-center md:self-start">
@@ -503,29 +510,49 @@
 
 
     <!-- O kursie -->
-    <section id="o-kursie" class="py-24 bg-gray-200">
-        <div class="max-w-[1400px] mx-auto px-6">
+    <section id="o-kursie" class="py-24 bg-gray-200"
+        style="background-image: linear-gradient(rgba(229,231,235,0.65), rgba(229,231,235,0.85)), url('/assets/img/1jerzy_look.png'); background-repeat: no-repeat; background-position: left bottom; background-size: contain;">
+        <div class="max-w-[1400px] mx-auto px-1 sm:px-6">
             <div class="text-center mb-16">
                 <h2 class="text-2xl md:text-5xl mb-6 text-accent">
-                    Naucz się tworzyć i wykorzystywać autentyczny humor w biznesie
+                    Wszystko już było
                 </h2>
-                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-                    Co zyskasz uczestnicząc w tym kursie
-                </p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-1 gap-2 max-w-5xl mx-auto">
 
-                <div
-                    class="card-course-a p-8 sm:p-8 p-6 rounded-2xl border border-accent shadow-sm transition-transform hover:shadow-md">
+                <div class="p-8 sm:p-2 rounded-2xl ">
                     <div class="flex flex-col sm:flex-row items-start gap-5 space-y-4 sm:space-y-0">
-                        <div class="feature-icon mx-auto sm:mx-0 ">
-                            <i data-lucide="smile" class="w-6 h-6 sm:w-6 sm:h-6 w-5 h-5" aria-hidden="true"></i>
-                        </div>
+
                         <div class="w-full">
-                            <p class="text-gray-700 leading-relaxed break-words text-[0.95rem] sm:text-[0.98rem] ml-2">
-                                W ci�gu miesi�ca znajdziesz 7+ w�asnych, autentycznych anegdot, �art�w i mechanizm�w,
-                                kt�re rozbawi� Twoich s�uchaczy � przygotowane pod Twoj� bran�� i styl komunikacji.
+                            <p
+                                class="text-gray-700 leading-relaxed break-words text-[0.95rem] sm:text-[0.98rem] ml-2 mb-4">
+                                Ile razy można na imprezach firmowych grać w paintballa, układać wieżę ze słomek, mieć
+                                warsztaty produktowe czy oglądać pokaz magika. Nawet celebryci czy stand up mogą się
+                                przejeść.
+                            </p>
+                            <p
+                                class="text-gray-700 leading-relaxed break-words text-[0.95rem] sm:text-[0.98rem] ml-2 mb-4">
+
+                                A i tak potem trzeba wrócić do biurka, na magazyn czy do klientów i poważnie podejść do
+                                pracy.
+                            </p>
+                            <p
+                                class="text-gray-700 leading-relaxed break-words text-[0.95rem] sm:text-[0.98rem] ml-2 mb-4">
+
+                                A gdyby tak warsztatowo podejść do tematu humoru w sprzedaży? A gdyby tak zaprosić
+                                kogoś, kto w formule Stand Up opowie o tym, jak skutecznie(j) sprzedawać? Kogoś, kto w
+                                asyście salw śmiechu i interakcji przemyci zarówno solidne podstawy pracy z klientem,
+                                jak i nowoczesne metody budowania zaufania?
+                            </p>
+                            <p
+                                class="text-gray-700 leading-relaxed break-words text-[0.95rem] sm:text-[0.98rem] ml-2 mb-4">
+
+                                Program “Stand Up w SprzedaŻy” adresuje ten problem w najlepszy możliwy (i sprawdzony w
+                                2025!) sposób. Interaktywny, inspirujący wykład o tym, jak sprzedawać lepiej, mądrzej,
+                                ciekawiej i łatwiej, pozwala nie tylko odstresować się na widowni, ale i popisać się na
+                                scenie, a potem przemyśleć zdobytą wiedzę w praktyce.
+
                             </p>
                         </div>
                     </div>
@@ -533,79 +560,8 @@
 
 
 
-                <div
-                    class="card-course-a p-8 sm:p-8 p-6 rounded-2xl border border-accent shadow-sm transition-transform hover:shadow-md">
-                    <div class="flex flex-col sm:flex-row items-start gap-5 space-y-4 sm:space-y-0">
-                        <div class="feature-icon mx-auto sm:mx-0 ">
-                            <i data-lucide="lightbulb" class="w-6 h-6"></i>
-                        </div>
-                        <div>
-                            <p class="text-gray-700 leading-relaxed break-words text-[0.95rem] sm:text-[0.98rem] ml-2">
-                                Zaprojektujesz swoje w�asne rozpocz�cia prezentacji, dzi�ki czemu od razu przykujesz
-                                uwag� widowni i klient�w
-                            </p>
-                        </div>
-                    </div>
-                </div>
 
-                <div
-                    class="card-course-a p-8 sm:p-8 p-6 rounded-2xl border border-accent shadow-sm transition-transform hover:shadow-md">
-                    <div class="flex flex-col sm:flex-row items-start gap-5 space-y-4 sm:space-y-0">
-                        <div class="feature-icon mx-auto sm:mx-0 ">
-                            <i data-lucide="message-circle" class="w-6 h-6"></i>
-                        </div>
-                        <div>
-                            <p class="text-gray-700 leading-relaxed break-words text-[0.95rem] sm:text-[0.98rem] ml-2">
-                                Nauczysz si� budowa� followupy - a to sprawi, �e b�dziesz bezstresowo reagowa� na
-                                zachowania widowni
-                            </p>
-                        </div>
-                    </div>
-                </div>
 
-                <div
-                    class="card-course-a p-8 sm:p-8 p-6 rounded-2xl border border-accent shadow-sm transition-transform hover:shadow-md">
-                    <div class="flex flex-col sm:flex-row items-start gap-5 space-y-4 sm:space-y-0">
-                        <div class="feature-icon mx-auto sm:mx-0 ">
-                            <i data-lucide="users" class="w-6 h-6"></i>
-                        </div>
-                        <div>
-                            <p class="text-gray-700 leading-relaxed break-words text-[0.95rem] sm:text-[0.98rem] ml-2">
-                                Zobaczysz, jak pracowa� z widowni� za pomoc� interakcji i atraktor�w - co da Ci lepsze
-                                relacje i odbi�r Twojej komunikacji (rozmowa, nie monolog!)
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <div
-                    class="card-course-a p-8 sm:p-8 p-6 rounded-2xl border border-accent shadow-sm transition-transform hover:shadow-md">
-                    <div class="flex flex-col sm:flex-row items-start gap-5 space-y-4 sm:space-y-0">
-                        <div class="feature-icon mx-auto sm:mx-0 ">
-                            <i data-lucide="target" class="w-6 h-6"></i>
-                        </div>
-                        <div>
-                            <p class="text-gray-700 leading-relaxed break-words text-[0.95rem] sm:text-[0.98rem] ml-2">
-                                Humor pomo�e Ci z dotarciem z celem Twojej mowy czy prezentacji - rozlu�niony odbiorca
-                                ch�tniej s�ucha
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <div
-                    class="card-course-a p-8 sm:p-8 p-6 rounded-2xl border border-accent shadow-sm transition-transform hover:shadow-md">
-                    <div class="flex flex-col sm:flex-row items-start gap-5 space-y-4 sm:space-y-0">
-                        <div class="feature-icon mx-auto sm:mx-0 ">
-                            <i data-lucide="star" class="w-6 h-6"></i>
-                        </div>
-                        <div>
-                            <p class="text-gray-700 leading-relaxed break-words text-[0.95rem] sm:text-[0.98rem] ml-2">
-                                Twoja marka osobista dostanie dodatkowy wymiar
-                            </p>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
@@ -615,53 +571,79 @@
         <div class="max-w-[1400px] mx-auto px-6">
             <div class="text-center mb-16">
                 <h2 class="text-4xl md:text-5xl font-bold mb-6 text-white">
-                    Dla kogo jest ten kurs
+                    U kogo był już Stand Up w Sprzedaży?
                 </h2>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8">
                 <div class="morphing-card p-8 text-center">
                     <div class="feature-icon mx-auto mb-4">
-                        <i data-lucide="mic" class="w-6 h-6" aria-hidden="true"></i>
+                        <i data-lucide="landmark" class="w-6 h-6" aria-hidden="true"></i>
                     </div>
-
-                    <h3 class="text-xl font-semibold text-accent mb-3">Dla prelegent�w</h3>
+                    <h3 class="text-xl font-semibold text-accent mb-3">Branża finansowa</h3>
                     <p class="text-gray-700 leading-relaxed">
-                        Je�li stajesz na scenie regularnie i borykasz si� z brakiem reakcji widowni - zapraszam
+                    <ul>
+                        <li class="flex items-start gap-3"><i data-lucide="check-circle"
+                                class="w-5 h-5 text-emerald-600 mt-0.5"></i><span>Duży polski Bank w 2025</span></li>
+                        <li class="flex items-start gap-3"><i data-lucide="check-circle"
+                                class="w-5 h-5 text-emerald-600 mt-0.5"></i><span>6 wystąpień dla innej firmy
+                                ubezpieczeniowej w 2024.</span></li>
+                    </ul>
                     </p>
                 </div>
 
                 <div class="morphing-card p-8 text-center">
                     <div class="feature-icon mx-auto mb-4">
-                        <i data-lucide="shopping-cart" class="w-6 h-6"></i>
+                        <i data-lucide="megaphone" class="w-6 h-6" aria-hidden="true"></i>
                     </div>
-                    <h3 class="text-xl font-semibold text-accent mb-3">Dla sprzedawc�w</h3>
+                    <h3 class="text-xl font-semibold text-accent mb-3">Branża reklamowa</h3>
                     <p class="text-gray-700 leading-relaxed">
-                        W sprzeda�y relacje s� super wa�ne. Poka� klientom luz i swobod�, bez cwaniactwa i si�owania si�
-                        ze s�owami
+                    <ul>
+                        <li class="flex items-start gap-3"><i data-lucide="check-circle"
+                                class="w-5 h-5 text-emerald-600 mt-0.5"></i><span>Znana marka w branży outdoor</span>
+                        </li>
+                        <li class="flex items-start gap-3"><i data-lucide="check-circle"
+                                class="w-5 h-5 text-emerald-600 mt-0.5"></i><span>Firma zajmująca się pozycjonowaniem w
+                                google.</span></li>
+                    </ul>
+                    </p>
+                </div>
+                <div class="morphing-card p-8 text-center">
+                    <div class="feature-icon mx-auto mb-4">
+                        <i data-lucide="building" class="w-6 h-6" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-accent mb-3">Korporacje</h3>
+                    <p class="text-gray-700 leading-relaxed">
+                    <ul>
+                        <li class="flex items-start gap-3"><i data-lucide="check-circle"
+                                class="w-5 h-5 text-emerald-600 mt-0.5"></i><span>Dostawca energii. Duży taki
+                                dosyć.</span>
+                        </li>
+                        <li class="flex items-start gap-3"><i data-lucide="check-circle"
+                                class="w-5 h-5 text-emerald-600 mt-0.5"></i><span>Producent w branży chłodniczej.</span>
+                        </li>
+                    </ul>
+                    </p>
+                </div>
+                <div class="morphing-card p-8 text-center">
+                    <div class="feature-icon mx-auto mb-4">
+                        <i data-lucide="calendar" class="w-6 h-6" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-accent mb-3">Wydarzenia otwarte i w ogóle</h3>
+                    <p class="text-gray-700 leading-relaxed">
+                    <ul>
+                        <li class="flex items-start gap-3"><i data-lucide="check-circle"
+                                class="w-5 h-5 text-emerald-600 mt-0.5"></i><span>Power Day 2025. Dla
+                                sprzedawców.</span>
+                        </li>
+                        <li class="flex items-start gap-3"><i data-lucide="check-circle"
+                                class="w-5 h-5 text-emerald-600 mt-0.5"></i><span>Seria wydarzeń inspiracyjnych dla
+                                młodzieży.</span></li>
+                    </ul>
                     </p>
                 </div>
 
-                <div class="morphing-card p-8 text-center">
-                    <div class="feature-icon mx-auto mb-4">
-                        <i data-lucide="briefcase" class="w-6 h-6"></i>
-                    </div>
-                    <h3 class="text-xl font-semibold text-accent mb-3">Dla freelancer�w</h3>
-                    <p class="text-gray-700 leading-relaxed">
-                        Budujesz sztywn� mark� osobist�? Nawet AS Bytom tak nie robi...
-                    </p>
-                </div>
 
-                <div class="morphing-card p-8 text-center">
-                    <div class="feature-icon mx-auto mb-4">
-                        <i data-lucide="award" class="w-6 h-6"></i>
-                    </div>
-                    <h3 class="text-xl font-semibold text-accent mb-3">Dla lider�w</h3>
-                    <p class="text-gray-700 leading-relaxed">
-                        �atwiej jest m�wi� do ludzi w przyjaznej, radosnej atmosferze. Autentycznej w dodatku, a nie na
-                        si��
-                    </p>
-                </div>
             </div>
         </div>
     </section>
@@ -674,7 +656,7 @@
                     W pakiecie
                 </h2>
                 <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-                    Co dok�adnie otrzymasz w kursie
+                    Jak to wygląda od kuchni?
                 </p>
             </div>
 
@@ -683,1096 +665,311 @@
                     <div class="feature-icon bg-white mx-auto mb-4">
                         <i data-lucide="clock" class="w-6 h-6" aria-hidden="true"></i>
                     </div>
-                    <h3 class="text-xl font-semibold text-accent mb-2">Czas video</h3>
-                    <p class="text-gray-700 mb-2">Ponad 160 minut video</p>
-                    <p class="text-sm text-gray-500">Stan na 2025-11-07</p>
+                    <h3 class="text-xl font-semibold text-accent mb-2">Czas spotkań</h3>
+                    <p class="text-gray-700 mb-2">Najkrótsza wersja to 18 minut - Power Speech</p>
+                    <p class="text-gray-700 mb-2">Najczęściej kupowany pakiet to 45-90 minut</p>
+                    <p class="text-gray-700 mb-2">Warsztatowo możemy popracować nawet i 4h netto</p>
+                    <p class="text-gray-700 mb-2 text-brand-muted">Szkoleniowo (czyli bez interakcji, samo gadanie) to
+                        2,5h maksymalnie</p>
                 </div>
 
                 <div class="morphing-card p-6">
                     <div class="feature-icon  bg-white mx-auto mb-4">
                         <i data-lucide="play-circle" class="w-6 h-6" aria-hidden="true"></i>
                     </div>
-                    <h3 class="text-xl font-semibold text-accent mb-2">Lekcje video</h3>
-                    <p class="text-gray-700 mb-2">51 lekcji. Dobra, z wst�pami, ale zawsze</p>
-                    <p class="text-sm text-gray-500">Stan na 2025-11-07</p>
+                    <h3 class="text-xl font-semibold text-accent mb-2">Nagranie?</h3>
+                    <p class="text-gray-700 mb-2">Na życzenie klienta</p>
+                    <p class="text-gray-700 mb-2 text-sm text-brand-muted">Nagranie dostępne na platformie WTL
+                        (cokolwiek to jest, trzeba się zalogować)</p>
                 </div>
 
                 <div class="morphing-card p-6">
                     <div class="feature-icon  bg-white mx-auto mb-4">
                         <i data-lucide="file-text" class="w-6 h-6" aria-hidden="true"></i>
                     </div>
-                    <h3 class="text-xl font-semibold text-accent mb-2">Prezentacj� w PDF</h3>
-                    <p class="text-gray-700">Ca�y proces kursu pod r�k�</p>
+                    <h3 class="text-xl font-semibold text-accent mb-2">Materiały w PDF w PDF</h3>
+                    <p class="text-gray-700">Są różne. Do ustalenia. W cenie.</p>
                 </div>
 
                 <div class="morphing-card p-6">
                     <div class="feature-icon  bg-white mx-auto mb-4">
                         <i data-lucide="book-open" class="w-6 h-6" aria-hidden="true"></i>
                     </div>
-                    <h3 class="text-xl font-semibold text-accent mb-2">Transkrypcj�</h3>
-                    <p class="text-gray-700">Mo�na czyta� i s�ucha� jednocze�nie</p>
+                    <h3 class="text-xl font-semibold text-accent mb-2">Transkrypcja</h3>
+                    <p class="text-gray-700">Wraz z nagraniem video Jerzy udostępnia tekst :)</p>
                 </div>
 
                 <div class="morphing-card p-6">
-                    <div class="feature-icon  bg-white mx-auto mb-4">
-                        <i data-lucide="calendar" class="w-6 h-6" aria-hidden="true"></i>
-                    </div>
-                    <h3 class="text-xl font-semibold text-accent mb-2">P� roku na dzia�anie</h3>
-                    <p class="text-gray-700">Du�o, bo wystarczy �eby wdro�y�. Ale te� ma�o, �eby zmotywowa�</p>
+                    <a class="" target="_blank"
+                        href="https://zientkowski.pl/sesja?from=stand-up-w-sprzedazy&type=fullday">
+                        <div class="feature-icon  bg-white mx-auto mb-4">
+                            <i data-lucide="calendar" class="w-6 h-6" aria-hidden="true"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-accent mb-2">Terminy?</h3>
+                        <p class="text-gray-700">Dostępne tutaj </p>
+                        <p class="text-gray-700 mb-2 text-sm text-brand-muted">Po kliknięciu trafisz na stronę z moim
+                            kalendarzem, zielone kółko oznacza wolny dzień. Możesz od razu zarezerwować! :)</p>
+                    </a>
                 </div>
+
+                <a class="button" target="_blank"
+                    href="https://zientkowski.pl/sesja?from=stand-up-w-sprzedazy&type=onboarding">
+                    <div class="morphing-card p-6">
+                        <div class="feature-icon  bg-white mx-auto mb-4">
+                            <i data-lucide="film" class="w-6 h-6" aria-hidden="true"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-accent mb-2">Gdzie mogę zobaczyć, jak to wygląda?</h3>
+                        <p class="text-gray-700">Na YT jest dużo filmików z Jerzym. Ale - z oczywistych względów -
+                            produktu na sprzedaż nie ma za darmo na YT.</p>
+                        <p class="text-gray-700 mb-2 text-sm text-brand-muted">Możesz natomiast umówić rozmowę ze mną,
+                            żeby zobaczyć, czy pasujemy. Kliknij i umów się na onboarding - 15 minut online na omówienie
+                            Twoich potrzeb.</p>
+                    </div>
+                </a>
 
                 <div class="morphing-card p-6">
                     <div class="feature-icon  bg-white mx-auto mb-4">
                         <i data-lucide="settings" class="w-6 h-6" aria-hidden="true"></i>
                     </div>
-                    <h3 class="text-xl font-semibold text-accent mb-2">Gotowe techniki budowania humoru</h3>
-                    <p class="text-gray-700">Rozpisane w postaci materia��w, ale do pracy w�asnej</p>
+                    <h3 class="text-xl font-semibold text-accent mb-2">Ile to kosztuje?</h3>
+                    <p class="text-gray-700">Cena jest stała:</p>
+                    <p class="text-gray-700">Cena 2025: 11 000zł netto</p>
+                    <p class="text-gray-700">Cena 2026: 13 000zł netto</p>
+                    <p class="text-gray-700 mb-2 text-sm text-brand-muted">Cena nie zależy od długości wystąpienia</p>
                 </div>
-
+                  
                 <div class="morphing-card p-6">
                     <div class="feature-icon  bg-white mx-auto mb-4">
-                        <i data-lucide="feather" class="w-6 h-6" aria-hidden="true"></i>
+                        <i data-lucide="check-circle" class="w-6 h-6" aria-hidden="true"></i>
                     </div>
-                    <h3 class="text-xl font-semibold text-accent mb-2">Zero gotowc�w i suchar�w</h3>
-                    <p class="text-gray-700">To nie jest kurs 'b�d� jak wszyscy', to jest kurs 'zbuduj w�asny,
-                        autentyczny humor'</p>
+                    <h3 class="text-xl font-semibold text-accent mb-2">Co zawiera cena?</h3>
+                    <p class="text-gray-700 flex items-start gap-2"><i data-lucide="check-circle"
+                            class="w-5 h-5 text-emerald-600 mt-0.5"></i>Dojazd na miejsce</p>
+                    <p class="text-gray-700 flex items-start gap-2"><i data-lucide="check-circle"
+                            class="w-5 h-5 text-emerald-600 mt-0.5"></i>Wystąpienie Jerzego</p>
+                    <p class="text-gray-700 mb-2 text-sm text-brand-muted flex items-start gap-2"><i data-lucide="check-circle"
+                            class="w-5 h-5 text-emerald-600 mt-0.5"></i>Dodatkowe elementy wynegocjowane w trakcie
+                        negocjacji. Jeśli dojdzie do negocjacji. </p>
                 </div>
-
+              
                 <div class="morphing-card p-6">
                     <div class="feature-icon  bg-white mx-auto mb-4">
-                        <i data-lucide="list" class="w-6 h-6" aria-hidden="true"></i>
+                        <i data-lucide="x-circle" class="w-6 h-6" aria-hidden="true"></i>
                     </div>
-                    <h3 class="text-xl font-semibold text-accent mb-2">Konkretne przyk�ady do technik</h3>
-                    <p class="text-gray-700">�eby� mia� jak pobudzi� kreatywno��</p>
+                    <h3 class="text-xl font-semibold text-accent mb-2">Czego nie zawiera cena?</h3>
+                    <ul class="text-gray-700 mt-3 space-y-3">
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="x-circle" class="w-5 h-5 text-brand-alert mt-0.5 flex-shrink-0" aria-hidden="true"></i>
+                            <span>Innej logistyki (hotele, wyżywienie)</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="x-circle" class="w-5 h-5 text-brand-alert mt-0.5 flex-shrink-0" aria-hidden="true"></i>
+                            <span>Nagrania wystąpienia, dostępu do nagrania na platformie WTL</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="x-circle" class="w-5 h-5 text-brand-alert mt-0.5 flex-shrink-0  " aria-hidden="true"></i>
+                            <span>Kosztów opracowania specjalnego materiału, na prośbę klienta (np. dostosowanie wystąpienia do specyfiki firmy)</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="x-circle" class="w-5 h-5 text-brand-alert mt-0.5 flex-shrink-0" aria-hidden="true"></i>
+                            <span>Książek i materiałów prezentowych (np. Jerzy napisał 2 książki o przemawianiu, które mogą być prezentem dla uczestników)</span>
+                        </li>
+                    </ul>
                 </div>
 
-                <div class="morphing-card p-6">
-                    <div class="feature-icon  bg-white mx-auto mb-4">
-                        <i data-lucide="film" class="w-6 h-6" aria-hidden="true"></i>
-                    </div>
-                    <h3 class="text-xl font-semibold text-accent mb-2">Przyk�ady video</h3>
-                    <p class="text-gray-700">Wi�kszo�� omawianych technik ma przyk�ady video z om�wieniem</p>
-                </div>
 
-                <div class="morphing-card p-6">
-                    <div class="feature-icon  bg-white mx-auto mb-4">
-                        <i data-lucide="award" class="w-6 h-6" aria-hidden="true"></i>
-                    </div>
-                    <h3 class="text-xl font-semibold text-accent mb-2">Unikatowe podej�cie do tematu</h3>
-                    <p class="text-gray-700">Pierwszy na polskim rynku kurs tego typu (humor w biznesie)</p>
-                </div>
+
+                
             </div>
-
             <div class="text-center mt-16">
-                <a href="#" class="btn-primary">
-                    KUP KURS TERAZ
-                </a>
-            </div>
-        </div>
+                    <a href="#" class="btn-primary">
+                        ZAMÓW TERAZ
+                    </a>
+                </div>
     </section>
 
-    <!-- Dlaczego powsta� ten kurs -->
-    <section class="py-16 bg-white">
-        <div class="max-w-[1200px] mx-auto px-6">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-accent">
-                    Dlaczego powsta� ten kurs
-                </h2>
-            </div>
-
-            <div class="max-w-5xl mx-auto">
-                <div class="grid grid-cols-1 md:grid-cols-1 gap-6">
-                    <div class="morphing-card p-6">
-                        <div class="flex items-start space-x-3 mb-3">
-                            <div
-                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <span class="text-brand-warm font-bold text-2xl">1</span>
-                            </div>
-                            <div>
-                                <p class="text-gray-700 leading-relaxed text-xs md:text-base ">
-                                    Na polskim rynku nie ma jeszcze kursu, kt�ry pomaga�by <strong>TWORZY� w�asny
-                                        humor</strong>, a nie tylko opowiada� dowcipy i suchary albo stara� si� by�
-                                    �miesznym na si��.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
 
 
 
-                    <div class="morphing-card p-6">
-                        <div class="flex items-start space-x-3 mb-3">
-                            <div
-                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <span class="text-brand-accent font-bold text-2xl">2</span>
-                            </div>
-                            <div class="flex items-stretch">
-                                <div class="flex-1">
-                                    <p class="text-gray-700 leading-relaxed text-xs md:text-base">
-                                        Na polskim rynku nie ma jeszcze kursu, kt�ry pomaga�by biznesowi operowa�
-                                        humorem.
-                                        Panuje przekonanie, �e <strong>biznes powinien by� sztywny</strong> i od
-                                        linijki.
-                                    </p>
-                                </div>
 
-                                <img src="/assets/img/Invest cuffs-2.webp" class="rounded-2xl img-block-right"
-                                    alt="smile emoji" loading="lazy">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="morphing-card p-6">
-                        <div class="flex items-start space-x-3 mb-3">
-                            <div
-                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <span class="text-brand-warm font-bold text-2xl">3</span>
-                            </div>
-                            <div>
-                                <p class="text-gray-700 leading-relaxed text-xs md:text-base ">
-                                    Od 17 lat staj� na scenach konferencji, event�w i wydarze� i widuj� setki
-                                    prelegent�w, kt�rym stres, ego albo kij w oku przeszkadza w prezentacji.
-                                    <strong>Humor jest �wietn� metod�</strong> na dotarcie do s�uchaczy.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="morphing-card p-6">
-                        <div class="flex items-start space-x-3 mb-3">
-                            <div
-                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <span class="text-brand-accent font-bold text-2xl">4</span>
-                            </div>
-                            <div>
-                                <p class="text-gray-700 leading-relaxed text-xs md:text-base ">
-                                    Pewno�� siebie nie wynika z tego, jaki jestem zajebisty, tylko z <strong>dystansu do
-                                        siebie</strong> i �wiadomo�ci tego, co potrafi�. Humor pomaga klientom z�apa�
-                                    przestrze� na s�uchanie.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="morphing-card p-6">
-                        <div class="flex items-start space-x-3 mb-3">
-                            <div
-                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <span class="text-brand-warm font-bold text-2xl">5</span>
-                            </div>
-                            <div>
-                                <p class="text-gray-700 leading-relaxed text-xs md:text-base ">
-                                    Kiedy m�wi� "sprzeda�", mam na my�li <strong>ka�d� form� komunikacji</strong>.
-                                    Rekrutacja jest sprzeda��. Egzamin w szkole. Rozmowa kwalifikacyjna, raport
-                                    miesi�czny. Ten kurs pomo�e Ci nie tylko w biznesie.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="morphing-card p-6">
-                        <div class="flex items-start space-x-3 mb-3">
-                            <div
-                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <span class="text-brand-accent font-bold text-2xl">6</span>
-                            </div>
-                            <div>
-                                <p class="text-gray-700 leading-relaxed text-xs md:text-base ">
-                                    Komunikacja mo�e by� nie tylko merytoryczna - ale i <strong>ciekawa, fajna,
-                                        radosna</strong>. Je�li nigdy nie widzia�e� prezentacji, do kt�rej chcesz wraca�
-                                    - to czas tak� zrobi�.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Pytania i problemy -->
-    <section class="py-24 bg-gray-50">
-        <div class="max-w-[1200px] mx-auto px-6">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl md:text-5xl font-bold mb-6 text-accent">
-                    Pytania i problemy moich klient�w
-                </h2>
-                <p class="text-lg text-brand-accent">To s� najcz�stsze pytania od klient�w, kt�rzy przychodz� do mnie
-                    uczy� si� prezentacji i zaczynamy rozmawia� o...humorze</p>
-            </div>
-
-            <div class="max-w-4xl mx-auto space-y-6">
-                <div class="morphing-card p-6">
-                    <div class="flex items-start space-x-4">
-                        <div class="flex-shrink-0">
-                            <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
-                                <i data-lucide="help-circle" class="w-5 h-5 text-blue-600"></i>
-                            </div>
-                        </div>
-                        <div class="flex-1">
-                            <h3 class="text-lg font-semibold text-accent mb-2">Pytanie:</h3>
-                            <ul class="space-y-1 text-gray-700">
-                                <li>� Czy mog� by� �mieszny od r�ki?</li>
-                                <li>� Jak znale�� humor, dowcipy, anegdoty?</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="morphing-card p-6">
-                    <div class="flex items-start space-x-4">
-                        <div class="flex-shrink-0">
-                            <div class="w-10 h-10 rounded-lg bg-yellow-50 flex items-center justify-center">
-                                <i data-lucide="alert-circle" class="w-5 h-5 text-yellow-600"></i>
-                            </div>
-                        </div>
-                        <div class="flex-1">
-                            <h3 class="text-lg font-semibold text-accent mb-2">Obawa:</h3>
-                            <ul class="space-y-1 text-gray-700">
-                                <li>� Czy ludzie b�d� si� �miali?</li>
-                                <li>� Ale ja nie jestem �mieszny</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="morphing-card p-6">
-                    <div class="flex items-start space-x-4">
-                        <div class="flex-shrink-0">
-                            <div class="w-10 h-10 rounded-lg  flex items-center justify-center">
-                                <i data-lucide="alert-triangle" class="w-5 h-5 text-red-600"></i>
-                            </div>
-                        </div>
-                        <div class="flex-1">
-                            <h3 class="text-lg font-semibold text-accent mb-2">Strach:</h3>
-                            <ul class="space-y-1 text-gray-700">
-                                <li>� Czy b�d� si� �miali ze mnie?</li>
-                                <li>� Nie umiem opowiada� dowcip�w</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="morphing-card p-6">
-                    <div class="flex items-start space-x-4">
-                        <div class="flex-shrink-0">
-                            <div class="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center">
-                                <i data-lucide="help-circle" class="w-5 h-5 text-purple-600"></i>
-                            </div>
-                        </div>
-                        <div class="flex-1">
-                            <h3 class="text-lg font-semibold text-accent mb-2">W�tpliwo��:</h3>
-                            <ul class="space-y-1 text-gray-700">
-                                <li>� Czy humor pomaga?</li>
-                                <li>� Po co mi humor?</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-    </section>
-
-    <!-- Program kursu (szczeg�y) -->
+    <!-- Program kursu (szczegóły) -->
     <section id="program" class="py-24 bg-brand-accent text-white">
         <div class="max-w-[1200px] mx-auto px-6">
             <div class="text-center mb-12">
                 <h2 class="text-3xl md:text-4xl font-bold mb-4 text-white">
-                    Program kursu � szczeg�y
+                    O CZYM
                 </h2>
-                <p class="text-lg text-white/80">Lekcje oznaczone <span class="text-brand-warm font-bold">tym
-                        kolorem</span> nie s� jeszcze dost�pne (2025-11-12).</p>
+                <p class="text-lg text-white/80">Jerzy porusza w swoim występie rozmaite aspekty komunikacji z
+                    klientami. W programie między innymi: </p>
 
             </div>
 
             <div class="max-w-5xl mx-auto">
-                <div class="grid grid-cols-1 md:grid-cols-1">
-                    <!-- 01 Powitanie -->
-                    <div class="collapsible-card relative p-6 border border-white/20 rounded-xl">
+                <div class="grid grid-cols-1 md:grid-cols-1 gap-y-6">
+                    <div class="morphing-card  bg-brand-accent p-6 border border-white/20 rounded-xl">
                         <div class="flex items-start space-x-3 mb-3">
                             <div
                                 class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
                                 <span class="text-brand-warm font-bold text-lg">01</span>
                             </div>
                             <div>
-                                <p class="leading-relaxed">Powitanie</p>
+                                <p class="leading-relaxed"><b>jak robić dobre pierwsze wrażenie</b>, w oparciu o modele
+                                    ewolucyjne i intelektualne, a co za tym idzie - jak skutecznie przykuć uwagę
+                                    słuchających</p>
                             </div>
                         </div>
-                        <button type="button"
-                            class="chevron-toggle absolute top-4 right-4 text-white/70 hover:text-white transform transition-transform duration-200"
-                            aria-label="Rozwi�/Zwi�" title="Rozwi�/Zwi�">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </button>
-                        <div data-collapsible class="mt-4 text-gray-700">
-                            <ol class="list-decimal pl-6 space-y-2">
-                                <li>
-                                    <span class="font-semibold text-brand-warm">Intro - Cze��, Jestem Jerzy</span>
-                                </li>
-                                <li>
-                                    <span class="font-semibold">Zamiast wst�pu, ale o humorze</span>
-                                </li>
-                                <li>
-                                    <span class="font-semibold">Jak u�ywa� kursu, o technikaliach</span>
-                                </li>
-                                <li>
-                                    <span class="font-semibold text-brand-warm">A macie spo�eczno��? A gdzie?</span>
-                                </li>
-                                <li>
-                                    <span class="font-semibold text-brand-warm">Autor, czyli troch� wi�cej o
-                                        Jerzym</span>
-                                </li>
-                            </ol>
-                        </div>
+
                     </div>
 
-                    <!-- 02 Zasady w humorze -->
-                    <div class="collapsible-card relative p-6 border border-white/20 rounded-xl">
+                    <div class="morphing-card  bg-brand-accent p-6 border border-white/20 rounded-xl">
                         <div class="flex items-start space-x-3 mb-3">
                             <div
-                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <span class="text-brand-alert font-bold text-lg">02</span>
+                                class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-white font-bold text-lg">02</span>
                             </div>
                             <div>
-                                <p class="leading-relaxed">Zasady w humorze</p>
+                                <p class="leading-relaxed"><b>jak rozpoczynać spotkanie sprzedażowe</b>, co sprawi, że
+                                    klienci zamienią uważność na zainteresowanie i przestaną postrzegać sprzedawcę</p>
                             </div>
                         </div>
-                        <button type="button"
-                            class="chevron-toggle absolute top-4 right-4 text-white/70 hover:text-white transform transition-transform duration-200"
-                            aria-label="Rozwi�/Zwi�" title="Rozwi�/Zwi�">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </button>
-                        <div data-collapsible class="mt-4 text-gray-700">
-                            <ol class="list-decimal pl-6 space-y-2">
-                                <li>
-                                    <span class="font-semibold">Zasada Jacka Vincenta</span>
-                                    <p class="text-gray-300 font-light text-sm">Jak przyku� uwag� w pierwszych 5
-                                        sekundach i utrzyma� j�
-                                        dzi�ki humorowi w kluczowych momentach prezentacji.</p>
-                                </li>
-                                <li>
-                                    <span class="font-semibold">Humor dodaje skrzyde�</span>
-                                    <p class="text-gray-300 font-light text-sm">Humor ma budowa�, a nie podcina� �
-                                        zasady tworzenia
-                                        �art�w wspieraj�cych relacje i wizerunek.</p>
-                                </li>
-                                <li>
-                                    <span class="font-semibold">Humor nie ma by� dygresj�</span>
-                                    <p class="text-gray-300 font-light text-sm   ">U�ywaj humoru celowo: jak wple��
-                                        �art w temat, by
-                                        wspiera� przekaz zamiast rozprasza�.</p>
-                                </li>
-                                <li>
-                                    <span class="font-semibold">Problem a rozwi�zanie</span>
-                                    <p class="text-gray-300 font-light text-sm">Pokazywanie problem�w z humorem, by
-                                        przyci�gn�� uwag� i
-                                        przygotowa� odbiorc�w na powa�ne rozwi�zania.</p>
-                                </li>
-                                <li>
-                                    <span class="font-semibold">Na co zwraca� uwag�</span>
-                                    <p class="text-gray-300 font-light text-sm">Jakich temat�w i form �art�w unika� w
-                                        biznesie, by
-                                        pozosta� profesjonalnym i skutecznym.</p>
-                                </li>
-                                <li>
-                                    <span class="font-semibold">Z�e praktyki</span>
-                                    <p class="text-gray-300 font-light text-sm">Jak nie przesadzi� z �artami i unika�
-                                        dygresji, kt�re
-                                        odci�gaj� uwag� od celu prezentacji.</p>
-                                </li>
-                                <li>
-                                    <span class="font-semibold">Typy �miechu</span>
-                                    <p class="text-gray-300 font-light text-sm">Dlaczego chcesz rozr�nia�, JAK
-                                        �mieje si� Twoja widownia.</p>
-                                </li>
-                            </ol>
-                        </div>
+
                     </div>
 
-                    <!-- 03 Humor - cytaty -->
-                    <div class="collapsible-card relative p-6 border border-white/20 rounded-xl">
+                    <div class="morphing-card  bg-brand-accent p-6 border border-white/20 rounded-xl">
                         <div class="flex items-start space-x-3 mb-3">
                             <div
                                 class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
                                 <span class="text-brand-warm font-bold text-lg">03</span>
                             </div>
                             <div>
-                                <p class="leading-relaxed">Humor - cytaty</p>
+                                <p class="leading-relaxed"><b>jak dobrze kontraktować spotkanie</b>, co da klientom
+                                    poczucie bezpieczeństwa i wyeliminuje dystraktory</p>
                             </div>
                         </div>
-                        <button type="button"
-                            class="chevron-toggle absolute top-4 right-4 text-white/70 hover:text-white transform transition-transform duration-200"
-                            aria-label="Rozwi�/Zwi�" title="Rozwi�/Zwi�">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </button>
-                        <div data-collapsible class="mt-4 text-gray-700">
-                            <ol class="list-decimal pl-6 space-y-2">
-                                <li><span class="font-semibold text-brand-warm">John Dewey</span></li>
-                                <li><span class="font-semibold text-brand-warm">Charlie Chaplin</span></li>
-                                <li><span class="font-semibold text-brand-warm">Will Rogers</span></li>
-                                <li><span class="font-semibold text-brand-warm">Bill Hicks</span></li>
-                                <li><span class="font-semibold text-brand-warm">E.B. White</span></li>
-                            </ol>
-                        </div>
-                    </div>
-                    <!-- 04 Po co humor -->
-                    <div class="collapsible-card relative p-6 border border-white/20 rounded-xl">
-                        <div class="flex items-start space-x-3 mb-3">
-                            <div
-                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <span class="text-brand-alert font-bold text-lg">04</span>
-                            </div>
-                            <div>
-                                <p class="leading-relaxed">Po co humor</p>
-                            </div>
-                        </div>
-                        <button type="button"
-                            class="chevron-toggle absolute top-4 right-4 text-white/70 hover:text-white transform transition-transform duration-200"
-                            aria-label="Rozwi�/Zwi�" title="Rozwi�/Zwi�">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </button>
-                        <div data-collapsible class="mt-4">
-                            <ul class="list-disc pl-6 space-y-2">
-                                <li><span class="font-semibold">Skupienie</span>
-                                    <p class="text-gray-300 font-light text-sm">Twoja widownia lepiej s�ucha.</p>
-                                </li>
-                                <li><span class="font-semibold">Relacje</span>
-                                    <p class="text-gray-300 font-light text-sm">Twoja widownia lubi Ciebie bardziej.</p>
-                                </li>
-                                <li><span class="font-semibold">Zmiana emocji</span>
-                                    <p class="text-gray-300 font-light text-sm">Twoja widownia si� nie rozprasza
-                                        emocjonalnie.</p>
-                                </li>
-                                <li><span class="font-semibold">Rozbrajanie logiki</span>
-                                    <p class="text-gray-300 font-light text-sm">Twoja widownia s�ucha, zamiast
-                                        kombinowa� :).</p>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <!-- 15 Narz�dzia -->
-                    <div class="collapsible-card relative p-6 border border-white/20 rounded-xl">
-                        <div class="flex items-start space-x-3 mb-3">
-                            <div
-                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <span class="text-brand-warm font-bold text-lg">15</span>
-                            </div>
-                            <div>
-                                <p class="leading-relaxed">Narz�dzia</p>
-                            </div>
-                        </div>
-                        <button type="button"
-                            class="chevron-toggle absolute top-4 right-4 text-white/70 hover:text-white transform transition-transform duration-200"
-                            aria-label="Rozwi�/Zwi�" title="Rozwi�/Zwi�">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </button>
-                        <div data-collapsible class="mt-4">
-                            <ul class="list-disc pl-6 space-y-2">
-                                <li><span class="font-semibold">Kopiowanie</span></li>
-                                <li><span class="font-semibold text-brand-warm">Wymy�lanie (celowe, improwizacja)</span>
-                                </li>
-                                <li><span class="font-semibold ">Humor nieintencjonalny -> intencjonalny</span></li>
-                                <li><span class="font-semibold text-brand-warm">Budowanie followup</span></li>
-                                <li><span class="font-semibold text-brand-warm">Kreatywno�� (np lista s��w)</span></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- 07 Humorem w siebie -->
-                    <div class="collapsible-card relative p-6 border border-white/20 rounded-xl">
-                        <div class="flex items-start space-x-3 mb-3">
-                            <div
-                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <span class="text-brand-alert font-bold text-lg">07</span>
-                            </div>
-                            <div>
-                                <p class="leading-relaxed">Humorem w siebie</p>
-                            </div>
-                        </div>
-                        <button type="button"
-                            class="chevron-toggle absolute top-4 right-4 text-white/70 hover:text-white transform transition-transform duration-200"
-                            aria-label="Rozwi�/Zwi�" title="Rozwi�/Zwi�">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </button>
-                        <div data-collapsible class="mt-4">
-                            <ul class="list-disc pl-6 space-y-2">
-                                <li>
-                                    <span class="font-semibold">Humor graficzny</span>
-                                    <ul class="list-disc pl-6 mt-1 space-y-1">
-                                        <li><span>Zdj�cia z przesz�o�ci</span></li>
-                                        <li><span>Przypadkowe zaniedbanie</span>
-                                        </li>
-                                        <li><span>Niepowa�no��</span></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <span class="font-semibold">Po prostu informacje</span>
-                                    <ul class="list-disc pl-6 mt-1 space-y-1">
-                                        <li><span>Przyk�ad: Zarobki</span></li>
-                                        <li><span>Przyk�ad: SMS</span></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- 08 Interakcje -->
-                    <div class="collapsible-card relative p-6 border border-white/20 rounded-xl">
-                        <div class="flex items-start space-x-3 mb-3">
-                            <div
-                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <span class="text-brand-warm font-bold text-lg">08</span>
-                            </div>
-                            <div>
-                                <p class="leading-relaxed">Interakcje</p>
-                            </div>
-                        </div>
-                        <button type="button"
-                            class="chevron-toggle absolute top-4 right-4 text-white/70 hover:text-white transform transition-transform duration-200"
-                            aria-label="Rozwi�/Zwi�" title="Rozwi�/Zwi�">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </button>
-                        <div data-collapsible class="mt-4">
-                            <ul class="list-disc pl-6 space-y-2">
-                                <li>
-                                    <span class="font-semibold">Omini�cie celu - jak rozmawia� z widowni�</span>
-                                    <ul class="list-disc pl-6 mt-1 space-y-1">
-                                        <li><span>Przyk�ad: Wy, nie oni</span></li>
-                                        <li><span>Przyk�ad: Fotowoltaika</span></li>
-                                        <li><span>Przyk�ad: Nie zepsujcie mi tego</span></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <span class="font-semibold">Wyczekanie, czyli sztuka pauzy</span>
-                                    <ul class="list-disc pl-6 mt-1 space-y-1">
-                                        <li><span>Przyk�ad: Zapomnia�em</span></li>
-                                        <li><span>Przyk�ad: Przej�zyczenie intencjonalne</span></li>
-                                        <li><span>Przyk�ad: Przej�zyczenie z parmezanem</span></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <span class="font-semibold">Interakcja z widowni� - zadania</span>
-                                    <ul class="list-disc pl-6 mt-1 space-y-1">
-                                        <li><span>Przyk�ad: Ochotnik</span></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <span class="font-semibold">Technikalia, czyli nie merytoryka</span>
-                                    <ul class="list-disc pl-6 mt-1 space-y-1">
-                                        <li><span>Przyk�ad: Pi�tka z przytulasem</span></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- 09 Storytelling -->
-                    <div class="collapsible-card relative p-6 border border-white/20 rounded-xl">
-                        <div class="flex items-start space-x-3 mb-3">
-                            <div
-                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <span class="text-brand-alert font-bold text-lg">09</span>
-                            </div>
-                            <div>
-                                <p class="leading-relaxed">Storytelling</p>
-                            </div>
-                        </div>
-                        <button type="button"
-                            class="chevron-toggle absolute top-4 right-4 text-white/70 hover:text-white transform transition-transform duration-200"
-                            aria-label="Rozwi�/Zwi�" title="Rozwi�/Zwi�">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </button>
-                        <div data-collapsible class="mt-4">
-                            <ul class="list-disc pl-6 space-y-2">
-                                <li>
-                                    <span class="font-semibold">Historie to budowanie obraz�w</span>
-                                    <ul class="list-disc pl-6 mt-1 space-y-1">
-                                        <li><span>Przyk�ad: Facet, kt�rego nie ma</span></li>
-                                        <li><span>Przyk�ad: Braciszek</span></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- 10 Redefiniowanie s��w -->
-                    <div class="collapsible-card relative p-6 border border-white/20 rounded-xl">
-                        <div class="flex items-start space-x-3 mb-3">
-                            <div
-                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <span class="text-brand-warm font-bold text-lg">10</span>
-                            </div>
-                            <div>
-                                <p class="leading-relaxed">Redefiniowanie s��w</p>
-                            </div>
-                        </div>
-                        <button type="button"
-                            class="chevron-toggle absolute top-4 right-4 text-white/70 hover:text-white transform transition-transform duration-200"
-                            aria-label="Rozwi�/Zwi�" title="Rozwi�/Zwi�">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </button>
-                        <div data-collapsible class="mt-4">
-                            <ul class="list-disc pl-6 space-y-2">
-                                <li><span class="font-semibold">Przyk�ad: Marzenia</span></li>
-                                <li><span class="font-semibold">Przyk�ad: Faktura</span></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- 13 Co dalej -->
-                    <div class="collapsible-card relative p-6 border border-white/20 rounded-xl">
-                        <div class="flex items-start space-x-3 mb-3">
-                            <div
-                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <span class="text-brand-alert font-bold text-lg">13</span>
-                            </div>
-                            <div>
-                                <p class="leading-relaxed">Co dalej</p>
-                            </div>
-                        </div>
-                        <button type="button"
-                            class="chevron-toggle absolute top-4 right-4 text-white/70 hover:text-white transform transition-transform duration-200"
-                            aria-label="Rozwi�/Zwi�" title="Rozwi�/Zwi�">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </button>
-                        <div data-collapsible class="mt-4">
-                            <ul class="list-disc pl-6 space-y-2">
-                                <li><span class="font-semibold">Dalsze kroki samodzielnie</span></li>
-                                <li><span class="font-semibold">Mentoring indywidualny</span></li>
-                                <li><span class="font-semibold text-brand-warm">Warsztaty dla Twojej firmy</span></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="text-center mb-12">
-                        <p class="text-lg text-white/80">Modu�y w przygotowaniu.</p>
 
                     </div>
 
-                    <!-- 13 Co dalej -->
-                    <div class="collapsible-card relative p-6 border border-white/20 rounded-xl">
+                    <div class="morphing-card  bg-brand-accent p-6 border border-white/20 rounded-xl">
                         <div class="flex items-start space-x-3 mb-3">
                             <div
-                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <span class="text-brand-alert font-bold text-lg">11</span>
+                                class="w-8 h-8 rounded-full bg-white flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-accent font-bold text-lg">04</span>
                             </div>
                             <div>
-                                <p class="leading-relaxed">Absurd, czyli z przegi�ciem, ale taktownie</p>
+                                <p class="leading-relaxed"><b>jak słuchać klienta</b>, ze świetnym ćwiczenie na
+                                    słuchanie, które to ćwiczenie jasno pokazuje, że… wolimy gadać niż słuchać. Ale o
+                                    tym nie rozmawiajmy przed spotkaniem z Jerzym, bo zepsujemy niespodziankę</p>
                             </div>
                         </div>
-                        <button type="button"
-                            class="chevron-toggle absolute top-4 right-4 text-white/70 hover:text-white transform transition-transform duration-200"
-                            aria-label="Rozwi�/Zwi�" title="Rozwi�/Zwi�">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </button>
-                        <div data-collapsible class="mt-4">
-                            <ul class="list-disc pl-6 space-y-2">
-                                <li><span class="font-semibold">Przyk�ad: l�dowanie w Indiach</span></li>
-                                <li><span class="font-semibold">Przyk�ad: widz� Was</span></li>
-                            </ul>
-                        </div>
+
                     </div>
 
-                    <!-- 13 Co dalej -->
-                    <div class="collapsible-card relative p-6 border border-white/20 rounded-xl">
+                    <div class="morphing-card  bg-brand-accent p-6 border border-white/20 rounded-xl">
                         <div class="flex items-start space-x-3 mb-3">
                             <div
                                 class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <span class="text-brand-alert font-bold text-lg">12</span>
+                                <span class="text-brand-warm font-bold text-lg">05</span>
                             </div>
                             <div>
-                                <p class="leading-relaxed">Klasyka humoru, czyli taktownie, ale nadal �miesznie</p>
+                                <p class="leading-relaxed"><b>jak unikać efektu słonia i ślepców</b>, co wyróżni
+                                    sprzedawcę spośród wszystkich innych - a Jerzy wie, co mówi, bo przez sześć lat
+                                    zajmował się zakupami</p>
                             </div>
                         </div>
-                        <button type="button"
-                            class="chevron-toggle absolute top-4 right-4 text-white/70 hover:text-white transform transition-transform duration-200"
-                            aria-label="Rozwi�/Zwi�" title="Rozwi�/Zwi�">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </button>
-                        <div data-collapsible class="mt-4">
-                            <ul class="list-disc pl-6 space-y-2">
-                                <li><span class="font-semibold">Przyk�ad: lewo, lewo, prawo</span></li>
-                                <li><span class="font-semibold">Przyk�ad: timing, czyli sztuka trafienia w czas</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div> <!-- 05 Humor s�owem -->
-                    <div class="collapsible-card relative p-6 border border-white/20 rounded-xl">
-                        <div class="flex items-start space-x-3 mb-3">
-                            <div
-                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <span class="text-brand-alert font-bold text-lg">05</span>
-                            </div>
-                            <div>
-                                <p class="leading-relaxed">Humor s�owny</p>
-                            </div>
-                        </div>
-                        <button type="button"
-                            class="chevron-toggle absolute top-4 right-4 text-white/70 hover:text-white transform transition-transform duration-200"
-                            aria-label="Rozwi�/Zwi�" title="Rozwi�/Zwi�">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </button>
-                        <div data-collapsible class="mt-4">
-                            <ul class="list-disc pl-6 space-y-2">
-                                <li><span class="font-semibold">Przyk�ad: w komunikacji</span></li>
-                                <li><span class="font-semibold">Przyk�ad: zmiana znaczenia s��w</span>
-                                <li><span class="font-semibold">Przyk�ad: podnoszenie s��w</span>
-                                </li>
-                            </ul>
-                        </div>
+
                     </div>
-                    <!-- 05 Humor graficzny -->
-                    <div class="collapsible-card relative p-6 border border-white/20 rounded-xl">
+
+                    <div class="morphing-card  bg-brand-accent p-6 border border-white/20 rounded-xl">
+                        <div class="flex items-start space-x-3 mb-3">
+                            <div
+                                class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-white font-bold text-lg">06</span>
+                            </div>
+                            <div>
+                                <p class="leading-relaxed"><b>jak rozbrajać obiekcje</b>, gdzie nauczysz się pracy z
+                                    pytaniami i odpowiedziami na poziomie merytorycznym, ale i intuicyjnym. I to nie to,
+                                    co myślisz.</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="morphing-card  bg-brand-accent p-6 border border-white/20 rounded-xl">
                         <div class="flex items-start space-x-3 mb-3">
                             <div
                                 class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <span class="text-brand-alert font-bold text-lg">06</span>
+                                <span class="text-brand-warm font-bold text-lg">07</span>
                             </div>
                             <div>
-                                <p class="leading-relaxed">Jeden obraz jest wart wi�cej ni� tysi�c z�otych</p>
+                                <p class="leading-relaxed"><b>jak negocjować</b>, jeśli w ogóle dojdzie do negocjacji;
+                                    co więcej - jak odróżniać negocjacje od targowania się. A skoro już jesteśmy przy
+                                    negocjacjach, to…</p>
                             </div>
                         </div>
-                        <button type="button"
-                            class="chevron-toggle absolute top-4 right-4 text-white/70 hover:text-white transform transition-transform duration-200"
-                            aria-label="Rozwi�/Zwi�" title="Rozwi�/Zwi�">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </button>
-                        <div data-collapsible class="mt-4">
-                            <ul class="list-disc pl-6 space-y-2">
-                                <li><span class="font-semibold">Przyk�ad: zapo�yczenia</span></li>
-                                <li><span class="font-semibold">Przyk�ad: definicje</span>
-                                </li>
-                            </ul>
+
+                    </div>
+
+                    <div class="morphing-card  bg-brand-accent p-6 border border-white/20 rounded-xl">
+                        <div class="flex items-start space-x-3 mb-3">
+                            <div
+                                class="w-8 h-8 rounded-full bg-white flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-accent font-bold text-lg">08</span>
+                            </div>
+                            <div>
+                                <p class="leading-relaxed"><b>jak bronić ceny</b>, w modelu zarówno emocjonalnym - z
+                                    elementami storytellingu - jak i w modelu logicznym, z mocnymi elementami excela</p>
+                            </div>
                         </div>
+
+                    </div>
+
+                    <div class="morphing-card  bg-brand-accent p-6 border border-white/20 rounded-xl">
+                        <div class="flex items-start space-x-3 mb-3">
+                            <div
+                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-brand-warm font-bold text-lg">09</span>
+                            </div>
+                            <div>
+                                <p class="leading-relaxed"><b>jak zamykać spotkanie</b>, w taki sposób, żeby klient miał
+                                    poczucie bezpieczeństwa, ciągłości biznesu z nami i chęci na kontynuację</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="morphing-card  bg-brand-accent p-6 border border-white/20 rounded-xl">
+                        <div class="flex items-start space-x-3 mb-3">
+                            <div
+                                class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-white font-bold text-lg">10</span>
+                            </div>
+                            <div>
+                                <p class="leading-relaxed"><b>jak budować followupy</b>, które z kolei budują zaufanie.
+                                    I super prosty wzór na budowanie zaufania. Super prosty. Banalny w zasadzie. Nie
+                                    wiem, czy jest sens go pokazywać, tak oczywisty.</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="morphing-card  bg-brand-accent p-6 border border-white/20 rounded-xl">
+                        <div class="flex items-start space-x-3 mb-3">
+                            <div
+                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-brand-warm font-bold text-lg">11</span>
+                            </div>
+                            <div>
+                                <p class="leading-relaxed"><b>jak budować markę firmy i sprzedawcy</b>, czyli odpowiedź
+                                    na pytanie, kiedy naprawdę zaczyna się komunikacja z klientem.</p>
+                            </div>
+                        </div>
+
                     </div>
 
                 </div>
             </div>
-        </div>
     </section>
-    <!-- Program kursu -->
-    <section id="program" class="py-16 bg-white hidden">
-        <div class="max-w-[1200px] mx-auto px-6">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-accent">
-                    Program kursu
-                </h2>
-            </div>
-            <script>
-                // Expand/collapse for morphing cards: hide [data-collapsible] by default
-                document.addEventListener('DOMContentLoaded', function () {
-                    var cards = document.querySelectorAll('.morphing-card, .collapsible-card');
-                    for (var i = 0; i < cards.length; i++) {
-                        (function () {
-                            var card = cards[i];
-                            var extra = card.querySelector('[data-collapsible]');
-                            if (!extra) return;
 
-                            // Hide extra content by default
-                            if (!extra.classList.contains('hidden')) extra.classList.add('hidden');
-
-                            // Make the card obviously interactive and ensure positioning works
-                            if (!card.classList.contains('cursor-pointer')) card.classList.add('cursor-pointer');
-                            if (!card.classList.contains('relative')) card.classList.add('relative');
-
-                            var toggle = card.querySelector('.chevron-toggle');
-
-                            function updateChevronState() {
-                                if (!toggle) return;
-                                var isHidden = extra.classList.contains('hidden');
-                                toggle.setAttribute('aria-expanded', String(!isHidden));
-                                if (isHidden) {
-                                    toggle.classList.remove('rotate-180');
-                                } else {
-                                    toggle.classList.add('rotate-180');
-                                }
-                            }
-
-                            updateChevronState();
-
-                            if (toggle) {
-                                toggle.addEventListener('click', function (e) {
-                                    e.stopPropagation();
-                                    var wasHidden = extra.classList.contains('hidden');
-                                    extra.classList.toggle('hidden');
-                                    updateChevronState();
-                                    if (wasHidden) {
-                                        var container = card.closest('#program-szczegoly');
-                                        if (container) {
-                                            var others = container.querySelectorAll('.morphing-card [data-collapsible], .collapsible-card [data-collapsible]');
-                                            for (var k = 0; k < others.length; k++) {
-                                                var o = others[k];
-                                                if (o === extra) continue;
-                                                if (!o.classList.contains('hidden')) {
-                                                    o.classList.add('hidden');
-                                                    var ot = o.closest('.morphing-card, .collapsible-card').querySelector('.chevron-toggle');
-                                                    if (ot) { ot.classList.remove('rotate-180'); ot.setAttribute('aria-expanded', 'false'); }
-                                                }
-                                            }
-                                        }
-                                    }
-                                });
-                            }
-
-                            // Toggle on card click (ignore interactive elements)
-                            card.addEventListener('click', function (e) {
-                                if (e.target.closest('a,button,svg,path,input,textarea,select,[data-no-toggle]')) return;
-                                var section = this.querySelector('[data-collapsible]');
-                                if (section) {
-                                    var wasHidden = section.classList.contains('hidden');
-                                    section.classList.toggle('hidden');
-                                    updateChevronState();
-                                    if (wasHidden) {
-                                        var container = this.closest('#program-szczegoly');
-                                        if (container) {
-                                            var others = container.querySelectorAll('.morphing-card [data-collapsible], .collapsible-card [data-collapsible]');
-                                            for (var k = 0; k < others.length; k++) {
-                                                var o = others[k];
-                                                if (o === section) continue;
-                                                if (!o.classList.contains('hidden')) {
-                                                    o.classList.add('hidden');
-                                                    var ot = o.closest('.morphing-card, .collapsible-card').querySelector('.chevron-toggle');
-                                                    if (ot) { ot.classList.remove('rotate-180'); ot.setAttribute('aria-expanded', 'false'); }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            });
-                        })();
-                    }
-                });
-            </script>
-            <div class="max-w-5xl mx-auto">
-                <div class="grid grid-cols-1 md:grid-cols-1 gap-2">
-                    <div class="morphing-card p-6">
-                        <div class="flex items-start space-x-3 mb-3">
-                            <div
-                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <span class="text-brand-warm font-bold text-lg">1</span>
-                            </div>
-                            <div>
-                                <p class="text-brand-primary leading-relaxed">
-                                    Wprowadzenie do kursu
-                                </p>
-                            </div>
-                        </div>
-                        <button type="button"
-                            class="chevron-toggle absolute top-4 right-4 text-white/70 hover:text-white transform transition-transform duration-200"
-                            aria-label="Rozwi�/Zwi�" title="Rozwi�/Zwi�">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </button>
-                        <div data-collapsible class="mt-4 text-gray-600">
-
-                            <ul class="mt-1 space-y-1 list-disc pl-6 ml-2">
-                                <li>Lorem ipsum dolor sit amet.</li>
-                                <li>Consectetur adipiscing elit.</li>
-                                <li>Sed do eiusmod tempor incididunt.</li>
-                            </ul>
-
-                        </div>
-                    </div>
-
-                    <div class="morphing-card p-6">
-                        <div class="flex items-start space-x-3 mb-3">
-                            <div
-                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <span class="text-brand-accent font-bold text-lg">2</span>
-                            </div>
-                            <div>
-                                <p class="text-gray-700 leading-relaxed">
-                                    Na polskim rynku nie ma jeszcze kursu, kt�ry pomaga�by biznesowi operowa� humorem.
-                                    Panuje przekonanie, �e <strong>biznes powinien by� sztywny</strong> i od linijki.
-                                </p>
-                            </div>
-                        </div>
-                        <button type="button"
-                            class="chevron-toggle absolute top-4 right-4 text-white/70 hover:text-white transform transition-transform duration-200"
-                            aria-label="Rozwi�/Zwi�" title="Rozwi�/Zwi�">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </button>
-                        <div data-collapsible class="mt-4 text-gray-600">
-                            <ul class="mt-1 space-y-1 list-disc pl-6 ml-2">
-                                <li>Lorem ipsum dolor sit amet.</li>
-                                <li>Consectetur adipiscing elit.</li>
-                                <li>Sed do eiusmod tempor incididunt.</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="morphing-card p-6">
-                        <div class="flex items-start space-x-3 mb-3">
-                            <div
-                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <span class="text-brand-warm font-bold text-lg">3</span>
-                            </div>
-                            <div>
-                                <p class="text-gray-700 leading-relaxed">
-                                    Od 17 lat staj� na scenach konferencji, event�w i wydarze� i widuj� setki
-                                    prelegent�w, kt�rym stres, ego albo kij w oku przeszkadza w prezentacji.
-                                    <strong>Humor jest �wietn� metod�</strong> na dotarcie do s�uchaczy.
-                                </p>
-                            </div>
-                        </div>
-                        <button type="button"
-                            class="chevron-toggle absolute top-4 right-4 text-white/70 hover:text-white transform transition-transform duration-200"
-                            aria-label="Rozwi�/Zwi�" title="Rozwi�/Zwi�">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </button>
-                        <div data-collapsible class="mt-4 text-gray-600">
-                            <ul class="mt-1 space-y-1 list-disc pl-6 ml-2">
-                                <li>Lorem ipsum dolor sit amet.</li>
-                                <li>Consectetur adipiscing elit.</li>
-                                <li>Sed do eiusmod tempor incididunt.</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="morphing-card p-6">
-                        <div class="flex items-start space-x-3 mb-3">
-                            <div
-                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <span class="text-brand-accent font-bold text-lg">4</span>
-                            </div>
-                            <div>
-                                <p class="text-gray-700 leading-relaxed">
-                                    Pewno�� siebie nie wynika z tego, jaki jestem zajebisty, tylko z <strong>dystansu do
-                                        siebie</strong> i �wiadomo�ci tego, co potrafi�. Humor pomaga klientom z�apa�
-                                    przestrze� na s�uchanie.
-                                </p>
-                            </div>
-                        </div>
-                        <button type="button"
-                            class="chevron-toggle absolute top-4 right-4 text-white/70 hover:text-white transform transition-transform duration-200"
-                            aria-label="Rozwi�/Zwi�" title="Rozwi�/Zwi�">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </button>
-                        <div data-collapsible class="mt-4 text-gray-600">
-                            <ul class="mt-1 space-y-1 list-disc pl-6 ml-2">
-                                <li>Lorem ipsum dolor sit amet.</li>
-                                <li>Consectetur adipiscing elit.</li>
-                                <li>Sed do eiusmod tempor incididunt.</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="morphing-card p-6">
-                        <div class="flex items-start space-x-3 mb-3">
-                            <div
-                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <span class="text-brand-warm font-bold text-lg">5</span>
-                            </div>
-                            <div>
-                                <p class="text-gray-700 leading-relaxed">
-                                    Kiedy m�wi� "sprzeda�", mam na my�li <strong>ka�d� form� komunikacji</strong>.
-                                    Rekrutacja jest sprzeda��. Egzamin w szkole. Rozmowa kwalifikacyjna, raport
-                                    miesi�czny. Ten kurs pomo�e Ci nie tylko w biznesie.
-                                </p>
-                            </div>
-                        </div>
-                        <button type="button"
-                            class="chevron-toggle absolute top-4 right-4 text-white/70 hover:text-white transform transition-transform duration-200"
-                            aria-label="Rozwi�/Zwi�" title="Rozwi�/Zwi�">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </button>
-                        <div data-collapsible class="mt-4 text-gray-600">
-                            <ul class="mt-1 space-y-1 list-disc pl-6 ml-2">
-                                <li>Lorem ipsum dolor sit amet.</li>
-                                <li>Consectetur adipiscing elit.</li>
-                                <li>Sed do eiusmod tempor incididunt.</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="morphing-card p-6">
-                        <div class="flex items-start space-x-3 mb-3">
-                            <div
-                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <span class="text-brand-accent font-bold text-lg">6</span>
-                            </div>
-                            <div>
-                                <p class="text-gray-700 leading-relaxed">
-                                    Komunikacja mo�e by� nie tylko merytoryczna - ale i <strong>ciekawa, fajna,
-                                        radosna</strong>. Je�li nigdy nie widzia�e� prezentacji, do kt�rej chcesz wraca�
-                                    - to czas tak� zrobi�.
-                                </p>
-                            </div>
-                        </div>
-                        <button type="button"
-                            class="chevron-toggle absolute top-4 right-4 text-white/70 hover:text-white transform transition-transform duration-200"
-                            aria-label="Rozwi�/Zwi�" title="Rozwi�/Zwi�">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </button>
-                        <div data-collapsible class="mt-4 text-gray-600">
-                            <ul class="mt-1 space-y-1 list-disc pl-6 ml-2">
-                                <li>Lorem ipsum dolor sit amet.</li>
-                                <li>Consectetur adipiscing elit.</li>
-                                <li>Sed do eiusmod tempor incididunt.</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- O mnie -->
     <section id="o-mnie" class="py-16 bg-gray-50">
@@ -1786,27 +983,27 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div class="space-y-4">
                     <p class="text-gray-700 leading-relaxed">
-                        <strong>Jerzy Zientkowski</strong> jest z wykszta�cenia informatykiem, z zawodu m�wc�
-                        profesjonalnym. Z blisko 30-letnim dorobkiem w biznesie i wsp�prac� z najr�niejszymi bran�ami
-                        i firmami r�nej wielko�ci, posiada do�wiadczenie i unikatowy punkt patrzenia na skuteczno�� i
-                        efektywno�� biznesu.
+                        <strong>Jerzy Zientkowski</strong> jest z wykształcenia informatykiem, z zawodu mówcą
+                        profesjonalnym. Z blisko 30-letnim dorobkiem w biznesie i współpracą z najróżniejszymi branżami
+                        i firmami różnej wielkości, posiada doświadczenie i unikatowy punkt patrzenia na skuteczność i
+                        efektywność biznesu.
                     </p>
 
                     <p class="text-gray-700 leading-relaxed">
-                        <strong>Przemawia, szkoli i wspiera, jako mentor i konsultant</strong> � przy prawie 40 tys.
-                        odbiorc�w jego tre�ci rocznie jest nie tyle celebryt�, ale rozchwytywanym ekspertem.
+                        <strong>Przemawia, szkoli i wspiera, jako mentor i konsultant</strong> – przy prawie 40 tys.
+                        odbiorców jego treści rocznie jest nie tyle celebrytą, ale rozchwytywanym ekspertem.
                     </p>
 
                     <p class="text-gray-700 leading-relaxed">
-                        <strong>Pi�ciokrotny mistrz Polski</strong> w r�nych kategoriach - mowy powa�ne, humorystyczne,
-                        improwizowane i ewaluacyjne, w j�zyku polskim i angielskim. Dotar� w 2012 do fina��w mistrzostw
-                        Europy w przem�wieniach humorystycznych.
+                        <strong>Pięciokrotny mistrz Polski</strong> w różnych kategoriach - mowy poważne, humorystyczne,
+                        improwizowane i ewaluacyjne, w języku polskim i angielskim. Dotarł w 2012 do finałów mistrzostw
+                        Europy w przemówieniach humorystycznych.
                     </p>
 
                     <div class="text-center lg:text-left mt-6">
                         <a href="/bio.html"
                             class="inline-flex items-center text-accent hover:text-orange-600 font-semibold">
-                            Zobacz pe�ne BIO
+                            Zobacz pełne BIO
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20"
                                 fill="currentColor">
                                 <path fill-rule="evenodd"
@@ -1826,7 +1023,7 @@
                     <div
                         class="absolute -bottom-6 -right-6 bg-white/90 backdrop-blur-sm p-4 rounded-2xl max-w-xs shadow-xl hidden lg:block">
                         <p class="text-xs text-gray-700 font-medium italic">
-                            "Pozbawia z�udze�, nie pozbawiaj�c marze�"
+                            "Pozbawia złudzeń, nie pozbawiając marzeń"
                         </p>
                     </div>
                 </div>
@@ -1839,7 +1036,7 @@
         <div class="max-w-[1400px] mx-auto px-6">
             <div class="text-center mb-16">
                 <h2 class="text-4xl md:text-5xl font-bold mb-6 text-accent">Referencje</h2>
-                <p class="text-lg text-gray-600">Wybrane opinie klient�w.</p>
+                <p class="text-lg text-gray-600">Wybrane opinie klientów.</p>
             </div>
             <div id="bioRefsGrid"></div>
         </div>
@@ -1856,82 +1053,70 @@
 
             <div class="max-w-4xl mx-auto">
                 <div class="bg-white rounded-3xl p-8 shadow-lg">
-                    <div class="faq-item">
-                        <button class="faq-question" onclick="toggleFAQ(this)">
-                            <span>Na jakiej platformie jest ten kurs?</span>
-                            <i data-lucide="chevron-down" class="w-6 h-6 transition-transform"></i>
-                        </button>
-                        <div class="faq-answer">
-                            <p class="text-gray-700 leading-relaxed">
-                                Pracujemy na platformie WTL, Web To Learn. Polska platforma, robiona przez Micha�a
-                                Lidzbarskiego. Polecam.
-                            </p>
-                        </div>
-                    </div>
+
 
                     <div class="faq-item">
                         <button class="faq-question" onclick="toggleFAQ(this)">
-                            <span>To jest audio kurs? Video? Jak to si� je?</span>
+                            <span>Czy Jerzy przekracza granice dobrego smaku?</span>
                             <i data-lucide="chevron-down" class="w-6 h-6 transition-transform"></i>
                         </button>
                         <div class="faq-answer">
                             <p class="text-gray-700 leading-relaxed">
-                                W zasadzie to jest kurs audio, ale ogl�dasz - bo s� slajdy. I s� te� przyk�ady video z
-                                moich przem�wie�. I s� bonusy video :)
+                                Tak, ale tylko za dopłatą.
                             </p>
                         </div>
                     </div>
-
                     <div class="faq-item">
                         <button class="faq-question" onclick="toggleFAQ(this)">
-                            <span>Czy jak mi si� nie spodoba, zwracasz kas�?</span>
+                            <span>Czy Jerzy przeklina na scenie?</span>
                             <i data-lucide="chevron-down" class="w-6 h-6 transition-transform"></i>
                         </button>
                         <div class="faq-answer">
                             <p class="text-gray-700 leading-relaxed">
-                                Tak. Masz 14 dni, �eby powiedzie� mi "nie podoba mi si�" i oddaj� kas�. Bez pyta�. Z
-                                pro�b� o opini� i informacj� zwrotn�. Jak to zrobi�? Piszesz na
-                                jerzy+zwrot@zientkowski.pl. Reszt� poprowadzimy mailowo.
+                                Jeśli jest na to zgoda widowni (i Klienta Płacącego).
                             </p>
                         </div>
                     </div>
-
                     <div class="faq-item">
                         <button class="faq-question" onclick="toggleFAQ(this)">
-                            <span>A masz spo�eczno��?</span>
+                            <span>Ile może trwać spotkanie z Jerzym?</span>
                             <i data-lucide="chevron-down" class="w-6 h-6 transition-transform"></i>
                         </button>
                         <div class="faq-answer">
                             <p class="text-gray-700 leading-relaxed">
-                                WTL umo�liwia prac� w spo�eczno�ci. Na razie (2025-11) mamy tablic� opinii, ale nie
-                                wykluczam stworzenia wi�kszej spo�eczno�ci naoko�o M�wc�w Profesjonalnych :)
+                                Od 18 minut (forma Power Speech) przez każdą inną formę aż do 2,5h materiału. Jeżeli
+                                jest potrzeba dłuższego spotkania, Jerzy ma nadal 2,5h materiału, ale może pracować z
+                                widownią w formie warsztatowej - np do 4h.
                             </p>
                         </div>
                     </div>
-
                     <div class="faq-item">
                         <button class="faq-question" onclick="toggleFAQ(this)">
-                            <span>Dostan� zni�k�? S� kody promocyjne?</span>
+                            <span>Ile osób może być na sali?</span>
                             <i data-lucide="chevron-down" class="w-6 h-6 transition-transform"></i>
                         </button>
                         <div class="faq-answer">
                             <p class="text-gray-700 leading-relaxed">
-                                Tak. I tak. Ale - �eby dosta� kod na zni�k�, zr�b co� dla mnie - udost�pnij post, z
-                                kt�rego tu trafi�e�, napisz na swoich Socialach, �e kupujesz - i wy�lij mi link do
-                                udost�pnienia albo postu. I wtedy leci rabacik. Niedu�y, ale zawsze mo�esz negocjowa� :)
+                                <li>Im więcej, tym bardziej szkoleniowo czy wykładowo pracujemy. </li>
+                                <li>Optymalną liczbą słuchaczy do intensywnej pracy warsztatowej jest 20-50 osób. </li>
+                                <li>Standardowo na wykładach Jerzego pojawia się 80–300 osób</li>
+                                <li>Ale jeśli masz na widowni 1000+ słuchaczy - z takimi widowniami Jerzy też pracował.
+                                </li>
                             </p>
                         </div>
                     </div>
-
                     <div class="faq-item">
                         <button class="faq-question" onclick="toggleFAQ(this)">
-                            <span>Czy dost�p do kursu jest na zawsze?</span>
+                            <span>Czego potrzeba, żeby przeprowadzić spotkanie z Jerzym?</span>
                             <i data-lucide="chevron-down" class="w-6 h-6 transition-transform"></i>
                         </button>
                         <div class="faq-answer">
                             <p class="text-gray-700 leading-relaxed">
-                                Nie. Na 6 miesi�cy. Tak jak pisa�em powy�ej - wystarczy, �eby wdro�y�, ale te� pomaga
-                                nie odk�ada� "na p�niej"
+                                <li>Sali. </li>
+                                <li>Krzeseł. </li>
+                                <li>Nagłośnienia, najlepiej z mikrofonem nagłownym. </li>
+                                <li>Rzutnika, który daje dobry obraz, ale nie świeci na mówcę. </li>
+                                <li>Dobrego światła na widowni.</li>
                             </p>
                         </div>
                     </div>
@@ -1948,59 +1133,56 @@
 
         <div class="max-w-[1400px] mx-auto px-6 text-center relative z-10">
             <h2 class="text-4xl md:text-5xl font-bold mb-8">
-                Skontaktuj si�
+                Zaczynamy?
             </h2>
             <p class="text-xl text-white/80 mb-12 max-w-3xl mx-auto">
-                Masz pytania o kurs? Skontaktuj si� ze mn�
+                To proste. Wyślij mi mail, albo zadzwoń, a ustalimy szczegóły.
             </p>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="flex items-center justify-center space-x-3">
                     <i data-lucide="mail" class="w-6 h-6"></i>
-                    <span>jerzy@zientkowski.pl</span>
+                    <span><a target="_blank" href="mailto:jerzy@zientkowski.pl?subject=Porozmawiajmy o Stand Up w Sprzedaży&body=Cześć, Jerzy. Umówmy się na rozmowę o StandUpie :)">jerzy@zientkowski.pl</a></span>
                 </div>
                 <div class="flex items-center justify-center space-x-3">
                     <i data-lucide="phone" class="w-6 h-6"></i>
-                    <span>+48 601 534 576</span>
+                    <span><a href="tel:+48601534576">+48 601 534 576</a></span>
                 </div>
-                <div class="flex items-center justify-center space-x-3">
-                    <i data-lucide="map-pin" class="w-6 h-6"></i>
-                    <span>Pozna�, Polska</span>
-                </div>
+               
             </div>
         </div>
     </section>
 
-    
+
 
     <!-- Footer -->
     <footer class="bg-gray-900 text-white py-12">
         <div class="max-w-[1400px] mx-auto px-6">
             <div class="text-center">
                 <div class="flex justify-center space-x-6 mb-8">
-                    <a href="https://www.linkedin.com/in/jerzyzientkowski/"
+                    <a target="_blank" href="https://www.linkedin.com/in/jerzyzientkowski/"
                         class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
                         <i data-lucide="linkedin" class="w-6 h-6"></i>
                     </a>
-                    <a href="https://www.instagram.com/jerzyzientkowskiofficial/"
+                    <a target="_blank" href="https://www.instagram.com/jerzyzientkowskiofficial/"
                         class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
                         <i data-lucide="instagram" class="w-6 h-6"></i>
                     </a>
-                    <a href="https://www.facebook.com/jerzy.zientkowski"
+                    <a target="_blank" href="https://www.facebook.com/jerzy.zientkowski"
                         class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
                         <i data-lucide="facebook" class="w-6 h-6"></i>
                     </a>
                 </div>
 
                 <div class="border-t border-white/20 pt-8">
-                    <p class="text-white/60">&copy; 2011-2025 Jerzy Zientkowski. Wszelkie prawa zastrze�one</p>
+                    <p class="text-white/60">&copy; 2011-2025 Jerzy Zientkowski. Wszelkie prawa zastrzeżone</p>
                 </div>
             </div>
         </div>
     </footer>
 
     <!-- Back to top FAB -->
-    <button id="backToTop" aria-label="Do g�ry" title="Do g�ry"
+    <button id="backToTop" aria-label="Do góry" title="Do góry"
         class="hidden fixed right-4 sm:right-6 bottom-4 sm:bottom-6 z-[1100] rounded-full bg-accent/90 text-white shadow-lg bg-brand-primary p-2.5 sm:p-3 transition hover:-translate-y-1 hover:text-brand-warm">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="2">
@@ -2101,5 +1283,3 @@
 </body>
 
 </html>
-
-

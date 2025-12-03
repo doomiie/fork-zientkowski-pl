@@ -1,0 +1,11 @@
+{
+  "items": [
+    
+    { "label": "Dla kogo", "href": "#dla-kogo", "bg-color": "white", "text-color": "text-brand-warm" },
+    { "label": "Pakiet", "href": "#pakiet" },
+    { "label": "O czym", "href": "#program" },
+    { "label": "O mnie", "href": "#o-mnie" },
+    { "label": "FAQ", "href": "#faq" },
+    { "type": "button", "label": "Zamów", "href": "https://zientkowski.pl" }
+  ]
+}

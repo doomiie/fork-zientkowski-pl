@@ -106,6 +106,21 @@
     </section>
   </main>
 
+  <script defer src="/assets/js/popup-counter.js?v=dev1"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      // console.log('DOM fully loaded and parsed');
+      if (typeof window.DisplayPopupCounter === 'function') {
+        // console.log('Initializing DisplayPopupCounter');
+        window.DisplayPopupCounter({
+          template: 'Plik "{display_name}" pobrano {download_count} razy.',
+          params: { last_download_date: '' },
+          doc: { shareHash: '1eWgyBp2vSAKLaGf' },
+          trigger: { type: 'time', delaySeconds: 5, durationSeconds: 10 }
+        });
+      }
+    });
+  </script>
   <script>
     (function () {
       const form = document.getElementById('heroForm');
