@@ -6,6 +6,6 @@
     { "label": "O czym", "href": "#program" },
     { "label": "O mnie", "href": "#o-mnie" },
     { "label": "FAQ", "href": "#faq" },
-    { "type": "button", "label": "Zamów", "href": "https://zientkowski.pl" }
+    { "type": "button", "label": "Zamów", "href": "#kontakt" }
   ]
 }

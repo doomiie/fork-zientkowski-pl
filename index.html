@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html lang="pl">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jerzy Zientkowski</title>
-  <link rel="preload" as="style" href="/assets/css/app.min.css?v=brand2" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="/assets/css/app.min.css?v=brand2"></noscript>
+  <title>Jerzy Zientkowski — mówca, mentor, konsultant, tata. Od wystąpień publicznych, przez mentoring biznesowy, po warsztaty biznesowe.</title>
+  <link rel="preload" as="style" href="/assets/css/app.min.css?v=brand2"
+    onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="/assets/css/app.min.css?v=brand2">
+  </noscript>
   <!-- Local font: Space Grotesk (subset PL) -->
   <link rel="preload" as="font" href="/assets/fonts/SpaceGrotesk-PL.woff2" type="font/woff2" crossorigin>
   <style>
@@ -18,55 +22,121 @@
     }
   </style>
   <style>
-    * { font-family: 'Space Grotesk', sans-serif; }
-    .nav-link { position: relative; padding-bottom: 4px; }
-    .nav-link::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: rgb(4, 3, 39); transition: width 0.3s ease; }
-    .nav-link:hover::after { width: 100%; }
-    .bg-light { background-color: #F9F9F9; }
+    * {
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .nav-link {
+      position: relative;
+      padding-bottom: 4px;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: rgb(4, 3, 39);
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    .bg-light {
+      background-color: #F9F9F9;
+    }
   </style>
   <!-- SEO -->
-  <!-- OSTRZEŻENIE: description/OG/twitter opis dodany automatycznie — proszę zweryfikować. -->
-  <meta name="description" content="Strona Jerzego Zientkowskiego — bio, sesja i najważniejsze linki.">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Jerzy Zientkowski",
+  "alternateName": "Jerzy Zientkowski — mówca, mentor, konsultant, tata. Od wystąpień publicznych, przez mentoring biznesowy, po warsztaty biznesowe.",
+  "description": "Od blisko 30 lat w biznesie, jeden z najlepszych mówców profesjonalnych w Polsce. Pomagam firmom i liderom rozwijać sprzedaż, przywództwo i kompetencje miękkie.",
+  "url": "https://zientkowski.pl/",
+  "image": "https://zientkowski.pl/assets/img/wystapienia.webp",
+  "jobTitle": "Mówca, trener, mentor",
+  "worksFor": {
+    "@type": "Jerzy Zientkowski - marka osobista",
+    "name": "Jerzy Zientkowski",
+    "url": "https://zientkowski.pl/"
+  },
+  "sameAs": [
+    "https://www.linkedin.com/in/jerzyzientkowski/",
+    "https://www.facebook.com/jerzy.zientkowski",
+    "https://www.youtube.com/@speakerslair",
+    "https://www.instagram.com/jerzyzientkowskiofficial/"
+  ],
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "PL"
+  },
+  "knowsAbout": [
+    "wystąpienia publiczne",
+    "mentoring",
+    "mentoring biznesowy",
+    "rowzój biznesu",
+    "rowzój osobisty",
+    "sprzedaż",
+    "przywództwo"
+  ]
+}
+</script>
+
+
+  <meta name="description" content="Strona Jerzego Zientkowskiego — mówca, mentor, konsultant, tata. Od wystąpień publicznych, przez mentoring biznesowy, po warsztaty biznesowe.">
   <meta name="author" content="Jerzy Zientkowski">
-  <meta property="og:title" content="Jerzy Zientkowski">
-  <meta property="og:description" content="Strona Jerzego Zientkowskiego — bio, sesja i najważniejsze linki.">
+  <meta property="og:title" content="Jerzy Zientkowski — mówca, mentor, konsultant, tata. Od wystąpień publicznych, przez mentoring biznesowy, po warsztaty biznesowe.">
+  <meta property="og:description" content="Strona Jerzego Zientkowskiego — mówca, mentor, konsultant, tata. Od wystąpień publicznych, przez mentoring biznesowy, po warsztaty biznesowe.">
   <meta property="og:image" content="https://zientkowski.pl/assets/img/wystapienia.webp">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://zientkowski.pl/">
   <meta property="og:site_name" content="Jerzy Zientkowski">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="fb:app_id" content="REPLACE_WITH_FACEBOOK_APP_ID">
+
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Jerzy Zientkowski">
-  <meta name="twitter:description" content="Strona Jerzego Zientkowskiego — bio, sesja i najważniejsze linki.">
+  <meta name="twitter:title" content="Jerzy Zientkowski — mówca, mentor, konsultant, tata. Od wystąpień publicznych, przez mentoring biznesowy, po warsztaty biznesowe.">
+  <meta name="twitter:description" content="Strona Jerzego Zientkowskiego — mówca, mentor, konsultant, tata. Od wystąpień publicznych, przez mentoring biznesowy, po warsztaty biznesowe.">
   <meta name="twitter:image" content="https://zientkowski.pl/assets/img/wystapienia.webp">
-  <link rel="canonical" href="https://zientkowski.pl/index.html" />
+  <link rel="canonical" href="https://zientkowski.pl/" />
   <link rel="icon" type="image/png" href="/assets/img/favicon/favicon-96x96.png" sizes="96x96" />
-<link rel="icon" type="image/svg+xml" href="/assets/img/favicon/favicon.svg" />
-<link rel="shortcut icon" href="/assets/img/favicon/favicon.ico" />
-<link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon/apple-touch-icon.png" />
-<link rel="manifest" href="/site.webmanifest" />
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon/favicon.svg" />
+  <link rel="shortcut icon" href="/assets/img/favicon/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
 
   <!-- Consent: default denied for analytics/marketing (GCM v2) -->
-  <script>window.dataLayer=window.dataLayer||[];window.dataLayer.push({consent:"default",ad_storage:"denied",analytics_storage:"denied",ad_user_data:"denied",ad_personalization:"denied",functionality_storage:"granted",security_storage:"granted"});</script>
+  <script>window.dataLayer = window.dataLayer || []; window.dataLayer.push({ consent: "default", ad_storage: "denied", analytics_storage: "denied", ad_user_data: "denied", ad_personalization: "denied", functionality_storage: "granted", security_storage: "granted" });</script>
   <link rel="stylesheet" href="/assets/css/consent.css?v=dev3">
   <script defer src="/assets/js/consent.js?v=dev3"></script>
 </head>
+
 <body class="bg-light min-h-screen flex flex-col">
-  <nav class="fixed w-full bg-light/90 backdrop-blur-lg z-50 py-4 transition-all duration-300 border-b border-gray-200/50">
+  <nav
+    class="fixed w-full bg-light/90 backdrop-blur-lg z-50 py-4 transition-all duration-300 border-b border-gray-200/50">
     <div class="max-w-[1400px] mx-auto px-6">
       <div class="flex justify-between items-center">
         <a href="index.html" class="text-2xl font-bold tracking-tight flex items-center gap-3">
-          <img class="brightness-0 max-w-[150px]" src="./assets/img/logo_main.png" alt="Logo">
+          <img class="brightness-0 max-w-[150px]" src="./assets/img/logo_main.png"
+            alt="Logo Strony Jerzego Zientkowskiego">
         </a>
         <div class="hidden">
           <a href="#" class="nav-link text-dark hover:text-accent transition-colors duration-300">Start</a>
           <a href="#" class="nav-link text-dark hover:text-accent transition-colors duration-300">Oferta</a>
           <a href="#" class="nav-link text-dark hover:text-accent transition-colors duration-300">Kontakt</a>
         </div>
-        <button id="menuToggle" aria-label="Menu" class="hidden md:hidden inline-flex items-center justify-center p-2 rounded-lg border border-gray-300 text-dark hover:bg-gray-50">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        <button id="menuToggle" aria-label="Menu"
+          class="hidden md:hidden inline-flex items-center justify-center p-2 rounded-lg border border-gray-300 text-dark hover:bg-gray-50">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
         </button>
       </div>
     </div>
@@ -84,11 +154,13 @@
     <!-- Kafelki z linkami -->
     <section class="pb-20">
       <div class="max-w-[1100px] mx-auto px-6">
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6" id="linksGrid">
           <!-- BIO -->
-          <a href="bio" class="group block rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          <a href="bio"
+            class="group block rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-indigo-500">
             <div class="p-6 flex items-start gap-4">
-              <div class="shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-500 text-white flex items-center justify-center">
+              <div
+                class="shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-500 text-white flex items-center justify-center">
                 <i data-lucide="user" class="w-6 h-6"></i>
               </div>
               <div>
@@ -99,9 +171,11 @@
           </a>
 
           <!-- SESJA -->
-          <a href="sesja" class="group block rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          <a href="sesja"
+            class="group block rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-indigo-500">
             <div class="p-6 flex items-start gap-4">
-              <div class="shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-500 text-white flex items-center justify-center">
+              <div
+                class="shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-500 text-white flex items-center justify-center">
                 <i data-lucide="mic" class="w-6 h-6"></i>
               </div>
               <div>
@@ -112,14 +186,31 @@
           </a>
 
           <!-- LINKI -->
-          <a href="linki" class="group block rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          <a href="linki"
+            class="group block rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-indigo-500">
             <div class="p-6 flex items-start gap-4">
-              <div class="shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-amber-600 to-yellow-500 text-white flex items-center justify-center">
+              <div
+                class="shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-amber-600 to-yellow-500 text-white flex items-center justify-center">
                 <i data-lucide="link" class="w-6 h-6"></i>
               </div>
               <div>
                 <h2 class="text-lg font-semibold text-dark">Linki</h2>
                 <p class="mt-1 text-gray-600 text-sm">Szybkie odnośniki do najważniejszych materiałów.</p>
+              </div>
+            </div>
+          </a>
+
+          <!-- SwB -->
+          <a href="lp/stand-up-w-sprzedazy.html"
+            class="group block rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <div class="p-6 flex items-start gap-4">
+              <div
+                class="shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-amber-600 to-yellow-500 text-white flex items-center justify-center">
+                <i data-lucide="megaphone" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <h2 class="text-lg font-semibold text-dark">StandUp</h2>
+                <p class="mt-1 text-gray-600 text-sm">Stand Up w Sprzedaży - zobacz nowy program!.</p>
               </div>
             </div>
           </a>
@@ -134,13 +225,10 @@
         <p>&copy; 2011-2025 Jerzy Zientkowski. Wszelkie prawa zastrzeżone.</p>
       </div>
     </div>
-</footer>
+  </footer>
   <!-- tracking removed; consent.js will load when granted -->
   <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-  <script>document.addEventListener('DOMContentLoaded',function(){ try{ lucide.createIcons(); }catch(e){} });</script>
+  <script>document.addEventListener('DOMContentLoaded', function () { try { lucide.createIcons(); } catch (e) { } });</script>
 </body>
+
 </html>
-
-
-
-

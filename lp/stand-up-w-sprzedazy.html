@@ -23,7 +23,7 @@
     <meta property="og:description"
         content="Interaktywny wykład w formule eleganckiego Stand Up, pełen humoru i praktycznych narzędzi sprzedażowych - idealny na event firmowy lub spotkanie dla klientów.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://zientkowski.pl/stand-up-w-sprzedazy">
+    <meta property="og:url" content="https://zientkowski.pl/lp/stand-up-w-sprzedazy.html">
     <meta property="og:image" content="https://zientkowski.pl/assets/img/stand-up-w-sprzedazy-cover.jpg">
     <meta property="og:site_name" content="Jerzy Zientkowski">
 
@@ -39,7 +39,7 @@
     <link rel="shortcut icon" href="/assets/img/favicon/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
-    <link rel="canonical" href="https://zientkowski.pl/stand-up-w-sprzedazy" />
+    <link rel="canonical" href="https://zientkowski.pl/lp/stand-up-w-sprzedazy.html" />
     <!-- Schema.org – EVENT z ceną -->
     <script type="application/ld+json">
 {
@@ -71,7 +71,7 @@
     "price": "9500",
     "priceCurrency": "PLN",
     "availability": "https://schema.org/InStock",
-    "url": "https://zientkowski.pl/stand-up-w-sprzedazy"  }
+    "url": "https://zientkowski.pl/stand-up-w-sprzedazy.html"  }
 }
 </script>
 
@@ -94,7 +94,7 @@
     "@type": "Offer",
     "price": "9500",
     "priceCurrency": "PLN",
-    "url": "https://zientkowski.pl/stand-up-w-sprzedazy",
+    "url": "https://zientkowski.pl/stand-up-w-sprzedazy.html",
     "availability": "https://schema.org/InStock"  }
 }
 </script>
@@ -385,6 +385,24 @@
             display: none;
         }
 
+        /* Header shrink on scroll */
+        #lpHeaderLogo {
+            max-height: 64px;
+            transition: max-height 0.25s ease, transform 0.25s ease, filter 0.25s ease;
+        }
+
+        nav.nav-compact {
+            padding-top: 0.5rem !important;
+            padding-bottom: 0.5rem !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+        }
+
+        nav.nav-compact #lpHeaderLogo {
+            max-height: 46px;
+            transform: translateY(-2px);
+            filter: brightness(0.1);
+        }
+
         @media (min-width:768px) {
             .img-block-right {
                 display: block;
@@ -424,7 +442,7 @@
                         <img id="lpHeaderLogo" class="brightness-0" src="/assets/img/logo_main.png"
                             alt="Jerzy Zientkowski">
                     </a>
-                    <div id="dev-hero-size" class=" mt-1 text-xs text-gray-500 italic  ">
+                    <div id="dev-hero-size" class=" mt-1 text-xs text-gray-500 italic hidden ">
                         <span class="inline xs:hidden sm:hidden md:hidden lg:hidden xl:hidden 2xl:hidden">DEV: base - H1
                             text-2xl</span>
                         <span class="hidden xs:inline sm:hidden md:hidden lg:hidden xl:hidden 2xl:hidden">DEV: xs - H1
@@ -497,9 +515,9 @@
                         Interaktywny wykład w formule eleganckiego Stand Up, pełen humoru i praktycznych narzędzi
                         sprzedażowych - idealny na event firmowy lub spotkanie dla klientów.
                     </p>
-                    <a href="#pakiet"
+                    <a href="#kontakt"
                         class="btn-primary border border-accent hover:bg-accent hover:text-white shadow-lg hover:shadow-xl text-sm px-4 py-2 self-center md:self-start">
-                        KUP TERAZ
+                        Zaczynamy?
                     </a>
                 </div>
             </div>
@@ -584,9 +602,9 @@
                     <p class="text-gray-700 leading-relaxed">
                     <ul>
                         <li class="flex items-start gap-3"><i data-lucide="check-circle"
-                                class="w-5 h-5 text-emerald-600 mt-0.5"></i><span>Duży polski Bank w 2025</span></li>
+                                class="w-5 h-5 text-emerald-600 mt-0.5 flex-shrink-0"></i><span>Duży polski Bank w 2025</span></li>
                         <li class="flex items-start gap-3"><i data-lucide="check-circle"
-                                class="w-5 h-5 text-emerald-600 mt-0.5"></i><span>6 wystąpień dla innej firmy
+                                class="w-5 h-5 text-emerald-600 mt-0.5 flex-shrink-0"></i><span>6 wystąpień dla innej firmy
                                 ubezpieczeniowej w 2024.</span></li>
                     </ul>
                     </p>
@@ -600,10 +618,10 @@
                     <p class="text-gray-700 leading-relaxed">
                     <ul>
                         <li class="flex items-start gap-3"><i data-lucide="check-circle"
-                                class="w-5 h-5 text-emerald-600 mt-0.5"></i><span>Znana marka w branży outdoor</span>
+                                class="w-5 h-5 text-emerald-600 mt-0.5 flex-shrink-0"></i><span>Znana marka w branży outdoor</span>
                         </li>
                         <li class="flex items-start gap-3"><i data-lucide="check-circle"
-                                class="w-5 h-5 text-emerald-600 mt-0.5"></i><span>Firma zajmująca się pozycjonowaniem w
+                                class="w-5 h-5 text-emerald-600 mt-0.5 flex-shrink-0"></i><span>Firma zajmująca się pozycjonowaniem w
                                 google.</span></li>
                     </ul>
                     </p>
@@ -616,11 +634,11 @@
                     <p class="text-gray-700 leading-relaxed">
                     <ul>
                         <li class="flex items-start gap-3"><i data-lucide="check-circle"
-                                class="w-5 h-5 text-emerald-600 mt-0.5"></i><span>Dostawca energii. Duży taki
+                                class="w-5 h-5 text-emerald-600 mt-0.5 flex-shrink-0"></i><span>Dostawca energii. Duży taki
                                 dosyć.</span>
                         </li>
                         <li class="flex items-start gap-3"><i data-lucide="check-circle"
-                                class="w-5 h-5 text-emerald-600 mt-0.5"></i><span>Producent w branży chłodniczej.</span>
+                                class="w-5 h-5 text-emerald-600 mt-0.5 flex-shrink-0"></i><span>Producent w branży chłodniczej.</span>
                         </li>
                     </ul>
                     </p>
@@ -633,11 +651,11 @@
                     <p class="text-gray-700 leading-relaxed">
                     <ul>
                         <li class="flex items-start gap-3"><i data-lucide="check-circle"
-                                class="w-5 h-5 text-emerald-600 mt-0.5"></i><span>Power Day 2025. Dla
+                                class="w-5 h-5 text-emerald-600 mt-0.5 flex-shrink-0"></i><span>Power Day 2025. Dla
                                 sprzedawców.</span>
                         </li>
                         <li class="flex items-start gap-3"><i data-lucide="check-circle"
-                                class="w-5 h-5 text-emerald-600 mt-0.5"></i><span>Seria wydarzeń inspiracyjnych dla
+                                class="w-5 h-5 text-emerald-600 mt-0.5 flex-shrink-0"></i><span>Seria wydarzeń inspiracyjnych dla
                                 młodzieży.</span></li>
                     </ul>
                     </p>
@@ -782,7 +800,7 @@
                 
             </div>
             <div class="text-center mt-16">
-                    <a href="#" class="btn-primary">
+                    <a href="#kontakt" class="btn-primary">
                         ZAMÓW TERAZ
                     </a>
                 </div>
@@ -1126,8 +1144,9 @@
     </section>
 
     <!-- CTA -->
-    <section class="py-24 bg-accent text-white relative overflow-hidden">
-        <div class="absolute inset-0 bg-gradient-to-br from-accent to-accent/80"></div>
+    <section id="kontakt" class="py-24 min-h-screen relative overflow-hidden text-white"
+        style="background-image: linear-gradient(rgba(4, 3, 39, 0.35), rgba(4, 3, 39, 0.95)), url('/assets/img/standupwsprzedazykontaktbg.png');  background-position: center bottom; background-repeat: no-repeat; background-size: cover;">
+        <div class="absolute inset-0 bg-gradient-to-br from-accent to-accent/60"></div>
         <div class="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -mr-48 -mt-48"></div>
         <div class="absolute bottom-0 left-0 w-64 h-64 bg-white/10 rounded-full -ml-32 -mb-32"></div>
 
@@ -1231,6 +1250,22 @@
                     }
                 });
             });
+
+            // Compact header on scroll
+            (function () {
+                const nav = document.querySelector('nav');
+                const logo = document.getElementById('lpHeaderLogo');
+                if (!nav) return;
+                function updateNav() {
+                    const compact = window.scrollY > 20;
+                    nav.classList.toggle('nav-compact', compact);
+                    if (logo) {
+                        logo.classList.toggle('nav-logo-compact', compact);
+                    }
+                }
+                window.addEventListener('scroll', updateNav, { passive: true });
+                updateNav();
+            })();
         });
 
         // FAQ Toggle Function
