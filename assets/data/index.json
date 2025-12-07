@@ -1,0 +1,45 @@
+{
+  "blocks": [
+    {
+      "title": "Bio",
+      "href": "bio",
+      "type": "informacje",
+      "description": "Kilka słów o mnie i doświadczeniu.",
+      "icon": "user"    },
+    {
+      "title": "Sesja",
+      "href": "sesja",
+      "type": "produkty",
+      "description": "Informacje o sesjach, współpracy i terminach.",
+      "icon": "mic"
+    },
+    {
+      "title": "Linki",
+      "href": "linki",
+      "type": "informacje",
+      "description": "Szybkie odnośniki do najważniejszych materiałów.",
+      "icon": "link"
+    },
+    {
+      "title": "Stand Up w sprzedaży",
+      "href": "lp/stand-up-w-sprzedazy.html",
+      "type": "mowy",
+      "description": "Zobacz nowy program i szczegóły oferty.",
+      "icon": "megaphone"
+    },
+    {
+      "title": "Dokumenty do pobrania",
+      "href": "docs/",
+      "type": "dokumenty",
+      "description": "Zobacz i pobierz dostępne materiały.",
+      "icon": "megaphone"
+    }
+  ],
+  "colors":[
+  { "type": "dokumenty",   "color": "from-amber-600 to-yellow-500" },
+  { "type": "informacje",  "color": "from-sky-500 to-cyan-500" },
+  { "type": "mowy", "color": "from-orange-500 to-red-500" },
+  { "type": "warsztaty",   "color": "from-emerald-500 to-teal-600" },
+  { "type": "produkty",    "color": "from-amber-600 to-yellow-500" }
+]
+}

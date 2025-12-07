@@ -5,10 +5,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Jerzy Zientkowski — mówca, mentor, konsultant, tata. Od wystąpień publicznych, przez mentoring biznesowy, po warsztaty biznesowe.</title>
-  <link rel="preload" as="style" href="/assets/css/app.min.css?v=brand2"
+  <link rel="preload" as="style" href="/assets/css/app.min.css?v=brand6"
     onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="stylesheet" href="/assets/css/app.min.css?v=brand6">
   <noscript>
-    <link rel="stylesheet" href="/assets/css/app.min.css?v=brand2">
+    <link rel="stylesheet" href="/assets/css/app.min.css?v=brand6">
   </noscript>
   <!-- Local font: Space Grotesk (subset PL) -->
   <link rel="preload" as="font" href="/assets/fonts/SpaceGrotesk-PL.woff2" type="font/woff2" crossorigin>
@@ -155,65 +156,7 @@
     <section class="pb-20">
       <div class="max-w-[1100px] mx-auto px-6">
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6" id="linksGrid">
-          <!-- BIO -->
-          <a href="bio"
-            class="group block rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-            <div class="p-6 flex items-start gap-4">
-              <div
-                class="shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-500 text-white flex items-center justify-center">
-                <i data-lucide="user" class="w-6 h-6"></i>
-              </div>
-              <div>
-                <h2 class="text-lg font-semibold text-dark">Bio</h2>
-                <p class="mt-1 text-gray-600 text-sm">Kilka słów o mnie i doświadczeniu.</p>
-              </div>
-            </div>
-          </a>
-
-          <!-- SESJA -->
-          <a href="sesja"
-            class="group block rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-            <div class="p-6 flex items-start gap-4">
-              <div
-                class="shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-500 text-white flex items-center justify-center">
-                <i data-lucide="mic" class="w-6 h-6"></i>
-              </div>
-              <div>
-                <h2 class="text-lg font-semibold text-dark">Sesja</h2>
-                <p class="mt-1 text-gray-600 text-sm">Informacje o sesjach, współpracy i terminach.</p>
-              </div>
-            </div>
-          </a>
-
-          <!-- LINKI -->
-          <a href="linki"
-            class="group block rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-            <div class="p-6 flex items-start gap-4">
-              <div
-                class="shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-amber-600 to-yellow-500 text-white flex items-center justify-center">
-                <i data-lucide="link" class="w-6 h-6"></i>
-              </div>
-              <div>
-                <h2 class="text-lg font-semibold text-dark">Linki</h2>
-                <p class="mt-1 text-gray-600 text-sm">Szybkie odnośniki do najważniejszych materiałów.</p>
-              </div>
-            </div>
-          </a>
-
-          <!-- SwB -->
-          <a href="lp/stand-up-w-sprzedazy.html"
-            class="group block rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-            <div class="p-6 flex items-start gap-4">
-              <div
-                class="shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-amber-600 to-yellow-500 text-white flex items-center justify-center">
-                <i data-lucide="megaphone" class="w-6 h-6"></i>
-              </div>
-              <div>
-                <h2 class="text-lg font-semibold text-dark">StandUp</h2>
-                <p class="mt-1 text-gray-600 text-sm">Stand Up w Sprzedaży - zobacz nowy program!.</p>
-              </div>
-            </div>
-          </a>
+       
         </div>
       </div>
     </section>
@@ -228,7 +171,72 @@
   </footer>
   <!-- tracking removed; consent.js will load when granted -->
   <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-  <script>document.addEventListener('DOMContentLoaded', function () { try { lucide.createIcons(); } catch (e) { } });</script>
+  <script>
+    async function addBlocks(parentDIV, fileName) {
+      const container = document.getElementById(parentDIV);
+      if (!container) return;
+
+      try {
+        const res = await fetch(fileName, { cache: 'no-store' });
+        if (!res.ok) throw new Error('Brak danych');
+        const data = await res.json();
+        const blocks = Array.isArray(data) ? data : data.blocks;
+        const colors = Array.isArray(data) ? [] : data.colors;
+        const palette = Array.isArray(colors)
+          ? colors.reduce((acc, curr) => {
+            if (curr && curr.type && curr.color) acc[curr.type] = curr.color;
+            return acc;
+          }, {})
+          : {};
+        if (!Array.isArray(blocks) || !blocks.length) return;
+
+        const fragment = document.createDocumentFragment();
+        blocks.forEach((item) => {
+          const link = document.createElement('a');
+          link.href = item.href || '#';
+          link.className = 'group block rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-indigo-500';
+
+          const wrapper = document.createElement('div');
+          wrapper.className = 'p-6 flex items-start gap-4';
+
+          const iconWrap = document.createElement('div');
+          iconWrap.className = 'shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br text-white flex items-center justify-center';
+          const gradient = palette[item.type] || item.gradient || 'from-indigo-600 to-violet-500';
+          gradient.split(' ').forEach((cls) => iconWrap.classList.add(cls));
+
+          const icon = document.createElement('i');
+          icon.dataset.lucide = item.icon || 'circle';
+          icon.className = 'w-6 h-6';
+          iconWrap.appendChild(icon);
+
+          const textWrap = document.createElement('div');
+          const title = document.createElement('h2');
+          title.className = 'text-lg font-semibold text-dark';
+          title.textContent = item.title || '';
+          const desc = document.createElement('p');
+          desc.className = 'mt-1 text-gray-600 text-sm';
+          desc.textContent = item.description || '';
+          textWrap.appendChild(title);
+          textWrap.appendChild(desc);
+
+          wrapper.appendChild(iconWrap);
+          wrapper.appendChild(textWrap);
+          link.appendChild(wrapper);
+          fragment.appendChild(link);
+        });
+
+        container.replaceChildren(fragment);
+        if (window.lucide) lucide.createIcons();
+      } catch (error) {
+        console.warn('Nie udało się wczytać bloków z pliku', fileName, error);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      try { lucide.createIcons(); } catch (e) { }
+      addBlocks('linksGrid', '/assets/data/index.json');
+    });
+  </script>
 </body>
 
 </html>
