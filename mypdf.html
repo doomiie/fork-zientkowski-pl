@@ -60,8 +60,8 @@
     }
 
     .pdf-book-shell {
-      height: calc(100vh - 7rem);
-      max-width: 1100px;
+      /* height: calc(100vh - 7rem); */
+      /* max-width: 1100px; */
       margin: 0 auto;
       padding: 1.5rem;
       display: flex;
@@ -151,8 +151,8 @@
   <script defer src="/assets/js/consent.js?v=dev3"></script>
 </head>
 
-<body class="bg-light min-h-screen flex flex-col">
-  <nav
+<body class="bg-white min-h-screen flex flex-col">
+  <!-- <nav
     class="fixed w-full bg-light/90 backdrop-blur-lg z-50 py-4 transition-all duration-300 border-b border-gray-200/50">
     <div class="max-w-[1400px] mx-auto px-6">
       <div class="flex justify-between items-center">
@@ -163,95 +163,33 @@
         
       </div>
     </div>
-  </nav>
+  </nav> -->
 
-  <main class="flex-1 pt-24">
-    <section id="pdf-book" class="pdf-book-section">
-      <div class="pdf-book-shell">
-        <div class="flex items-start justify-between gap-3">
-          <div>
-            <p class="text-sm opacity-80">Podgląd dokumentu PDF</p>
-            <h1 class="text-2xl font-semibold">2026 mentoring v9.pdf</h1>
-          </div>
-          <a href="/docs/2026 mentoring v9.pdf" class="text-sm text-blue-200 underline hover:text-blue-100" target="_blank" rel="noopener">Otwórz w nowej karcie</a>
-        </div>
-        <div data-book-target class="pdf-book-canvas"></div>
-        <div class="pdf-book-status" data-book-status>Ładowanie książki…</div>
-      </div>
-    </section>
+  <main class="flex-1 bg-white">
+    <section id="pdf-book" class="pdf-book-section"></section>
   </main>
 
-  <footer class="mt-auto bg-light py-8 border-t border-gray-200/60">
+  <!-- <footer class="mt-auto bg-light py-8 border-t border-gray-200/60">
     <div class="container mx-auto px-6">
       <div class="text-center text-gray-600">
         <p>&copy; 2011-2025 Jerzy Zientkowski. Wszelkie prawa zastrzeżone.</p>
       </div>
     </div>
-  </footer>
-  <!-- tracking removed; consent.js will load when granted -->
+  </footer> -->
+    <!-- tracking removed; consent.js will load when granted -->
   <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.min.js"></script>
-  <script>
-    // Initializes a flipbook in a given section using pdf.js + PageFlip
-    async function initPdfFlipbook(sectionId, pdfPath) {
-      const section = document.getElementById(sectionId);
-      if (!section) return;
-      const viewer = section.querySelector('[data-book-target]');
-      const status = section.querySelector('[data-book-status]');
-      if (!viewer) return;
-
-      const safePath = encodeURI(pdfPath);
-      const pdfjs = window.pdfjsLib;
-      if (!pdfjs) {
-        if (status) status.textContent = 'Brak biblioteki pdf.js (pdfjsLib).';
-        return;
-      }
-      if (pdfjs.GlobalWorkerOptions) {
-        pdfjs.GlobalWorkerOptions.workerSrc = 'assets/js/pdf.worker.min.mjs';
-      }
-
-      try {
-        if (status) status.textContent = 'Ładowanie stron…';
-        const doc = await pdfjs.getDocument({ url: safePath }).promise;
-        const images = [];
-        for (let i = 1; i <= doc.numPages; i++) {
-          const page = await doc.getPage(i);
-          const viewport = page.getViewport({ scale: 1.3 });
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
-          canvas.width = viewport.width;
-          canvas.height = viewport.height;
-          await page.render({ canvasContext: ctx, viewport }).promise;
-          images.push(canvas.toDataURL('image/jpeg', 0.92));
-        }
-
-        if (status) status.textContent = 'Inicjalizacja podglądu…';
-        const flip = new St.PageFlip(viewer, {
-          width: 900,
-          height: 1200,
-          size: 'stretch',
-          minWidth: 315,
-          minHeight: 400,
-          maxShadowOpacity: 0.5,
-          showCover: false,
-          drawShadow: true,
-          flippingTime: 800,
-          usePortrait: true,
-          mobileScrollSupport: true,
-        });
-        flip.loadFromImages(images);
-        if (status) status.textContent = '';
-      } catch (err) {
-        console.error(err);
-        if (status) status.textContent = 'Nie udało się załadować PDF.';
-      }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      initPdfFlipbook('pdf-book', '/docs/2026 mentoring v9.pdf');
+  <script type="module" src="/assets/js/pdf-book.js"></script>
+  <script type="module">
+    import { openBook } from '/assets/js/pdf-book.js?v=brand15';
+    document.addEventListener("DOMContentLoaded", () => {
+      openBook('LW Bogdanka prezentacja.pdf?v=1', 'pdf-book');
     });
   </script>
 
 </body>
 
 </html>
+
+
+
