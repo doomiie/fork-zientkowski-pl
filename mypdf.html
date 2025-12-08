@@ -1,0 +1,257 @@
+﻿<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jerzy Zientkowski — mówca, mentor, konsultant, tata. Od wystąpień publicznych, przez mentoring biznesowy, po warsztaty biznesowe.</title>
+  <link rel="preload" as="style" href="/assets/css/app.min.css?v=brand12"
+    onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="stylesheet" href="/assets/css/app.min.css?v=brand12">
+  <noscript>
+    <link rel="stylesheet" href="/assets/css/app.min.css?v=brand12">
+  </noscript>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/css/page-flip.min.css">
+  <!-- Local font: Space Grotesk (subset PL) -->
+  <link rel="preload" as="font" href="/assets/fonts/SpaceGrotesk-PL.woff2" type="font/woff2" crossorigin>
+  <style>
+    @font-face {
+      font-family: 'Space Grotesk';
+      src: url('/assets/fonts/SpaceGrotesk-PL.woff2') format('woff2');
+      font-weight: 300 700;
+      font-style: normal;
+      font-display: swap;
+    }
+  </style>
+  <style>
+    * {
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .nav-link {
+      position: relative;
+      padding-bottom: 4px;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: rgb(4, 3, 39);
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    .bg-light {
+      background-color: #F9F9F9;
+    }
+
+    /* PDF flipbook */
+    .pdf-book-section {
+      min-height: 100vh;
+      background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.08), transparent 35%), radial-gradient(circle at 80% 0, rgba(255, 255, 255, 0.06), transparent 40%), #0f172a;
+      color: #e5e7eb;
+    }
+
+    .pdf-book-shell {
+      height: calc(100vh - 7rem);
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .pdf-book-canvas {
+      flex: 1;
+      min-height: 70vh;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+      overflow: hidden;
+    }
+
+    .pdf-book-status {
+      color: #cbd5e1;
+      font-size: 0.95rem;
+    }
+  </style>
+  <!-- SEO -->
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Jerzy Zientkowski",
+  "alternateName": "Jerzy Zientkowski — mówca, mentor, konsultant, tata. Od wystąpień publicznych, przez mentoring biznesowy, po warsztaty biznesowe.",
+  "description": "Od blisko 30 lat w biznesie, jeden z najlepszych mówców profesjonalnych w Polsce. Pomagam firmom i liderom rozwijać sprzedaż, przywództwo i kompetencje miękkie.",
+  "url": "https://zientkowski.pl/",
+  "image": "https://zientkowski.pl/assets/img/wystapienia.webp",
+  "jobTitle": "Mówca, trener, mentor",
+  "worksFor": {
+    "@type": "Jerzy Zientkowski - marka osobista",
+    "name": "Jerzy Zientkowski",
+    "url": "https://zientkowski.pl/"
+  },
+  "sameAs": [
+    "https://www.linkedin.com/in/jerzyzientkowski/",
+    "https://www.facebook.com/jerzy.zientkowski",
+    "https://www.youtube.com/@speakerslair",
+    "https://www.instagram.com/jerzyzientkowskiofficial/"
+  ],
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "PL"
+  },
+  "knowsAbout": [
+    "wystąpienia publiczne",
+    "mentoring",
+    "mentoring biznesowy",
+    "rowzój biznesu",
+    "rowzój osobisty",
+    "sprzedaż",
+    "przywództwo"
+  ]
+}
+</script>
+
+
+  <meta name="description" content="Strona Jerzego Zientkowskiego — mówca, mentor, konsultant, tata. Od wystąpień publicznych, przez mentoring biznesowy, po warsztaty biznesowe.">
+  <meta name="author" content="Jerzy Zientkowski">
+  <meta property="og:title" content="Jerzy Zientkowski — mówca, mentor, konsultant, tata. Od wystąpień publicznych, przez mentoring biznesowy, po warsztaty biznesowe.">
+  <meta property="og:description" content="Strona Jerzego Zientkowskiego — mówca, mentor, konsultant, tata. Od wystąpień publicznych, przez mentoring biznesowy, po warsztaty biznesowe.">
+  <meta property="og:image" content="https://zientkowski.pl/assets/img/wystapienia.webp">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://zientkowski.pl/">
+  <meta property="og:site_name" content="Jerzy Zientkowski">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Jerzy Zientkowski — mówca, mentor, konsultant, tata. Od wystąpień publicznych, przez mentoring biznesowy, po warsztaty biznesowe.">
+  <meta name="twitter:description" content="Strona Jerzego Zientkowskiego — mówca, mentor, konsultant, tata. Od wystąpień publicznych, przez mentoring biznesowy, po warsztaty biznesowe.">
+  <meta name="twitter:image" content="https://zientkowski.pl/assets/img/wystapienia.webp">
+  <link rel="canonical" href="https://zientkowski.pl/" />
+  <link rel="icon" type="image/png" href="/assets/img/favicon/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon/favicon.svg" />
+  <link rel="shortcut icon" href="/assets/img/favicon/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+
+  <!-- Consent: default denied for analytics/marketing (GCM v2) -->
+  <script>window.dataLayer = window.dataLayer || []; window.dataLayer.push({ consent: "default", ad_storage: "denied", analytics_storage: "denied", ad_user_data: "denied", ad_personalization: "denied", functionality_storage: "granted", security_storage: "granted" });</script>
+  <link rel="stylesheet" href="/assets/css/consent.css?v=dev3">
+  <script defer src="/assets/js/consent.js?v=dev3"></script>
+</head>
+
+<body class="bg-light min-h-screen flex flex-col">
+  <nav
+    class="fixed w-full bg-light/90 backdrop-blur-lg z-50 py-4 transition-all duration-300 border-b border-gray-200/50">
+    <div class="max-w-[1400px] mx-auto px-6">
+      <div class="flex justify-between items-center">
+        <a href="index.html" class="text-2xl font-bold tracking-tight flex items-center gap-3">
+          <img class="brightness-0 max-w-[150px]" src="./assets/img/logo_main.png"
+            alt="Logo Strony Jerzego Zientkowskiego">
+        </a>
+        
+      </div>
+    </div>
+  </nav>
+
+  <main class="flex-1 pt-24">
+    <section id="pdf-book" class="pdf-book-section">
+      <div class="pdf-book-shell">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <p class="text-sm opacity-80">Podgląd dokumentu PDF</p>
+            <h1 class="text-2xl font-semibold">2026 mentoring v9.pdf</h1>
+          </div>
+          <a href="/docs/2026 mentoring v9.pdf" class="text-sm text-blue-200 underline hover:text-blue-100" target="_blank" rel="noopener">Otwórz w nowej karcie</a>
+        </div>
+        <div data-book-target class="pdf-book-canvas"></div>
+        <div class="pdf-book-status" data-book-status>Ładowanie książki…</div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="mt-auto bg-light py-8 border-t border-gray-200/60">
+    <div class="container mx-auto px-6">
+      <div class="text-center text-gray-600">
+        <p>&copy; 2011-2025 Jerzy Zientkowski. Wszelkie prawa zastrzeżone.</p>
+      </div>
+    </div>
+  </footer>
+  <!-- tracking removed; consent.js will load when granted -->
+  <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.min.js"></script>
+  <script>
+    // Initializes a flipbook in a given section using pdf.js + PageFlip
+    async function initPdfFlipbook(sectionId, pdfPath) {
+      const section = document.getElementById(sectionId);
+      if (!section) return;
+      const viewer = section.querySelector('[data-book-target]');
+      const status = section.querySelector('[data-book-status]');
+      if (!viewer) return;
+
+      const safePath = encodeURI(pdfPath);
+      const pdfjs = window.pdfjsLib;
+      if (!pdfjs) {
+        if (status) status.textContent = 'Brak biblioteki pdf.js (pdfjsLib).';
+        return;
+      }
+      if (pdfjs.GlobalWorkerOptions) {
+        pdfjs.GlobalWorkerOptions.workerSrc = 'assets/js/pdf.worker.min.mjs';
+      }
+
+      try {
+        if (status) status.textContent = 'Ładowanie stron…';
+        const doc = await pdfjs.getDocument({ url: safePath }).promise;
+        const images = [];
+        for (let i = 1; i <= doc.numPages; i++) {
+          const page = await doc.getPage(i);
+          const viewport = page.getViewport({ scale: 1.3 });
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+          await page.render({ canvasContext: ctx, viewport }).promise;
+          images.push(canvas.toDataURL('image/jpeg', 0.92));
+        }
+
+        if (status) status.textContent = 'Inicjalizacja podglądu…';
+        const flip = new St.PageFlip(viewer, {
+          width: 900,
+          height: 1200,
+          size: 'stretch',
+          minWidth: 315,
+          minHeight: 400,
+          maxShadowOpacity: 0.5,
+          showCover: false,
+          drawShadow: true,
+          flippingTime: 800,
+          usePortrait: true,
+          mobileScrollSupport: true,
+        });
+        flip.loadFromImages(images);
+        if (status) status.textContent = '';
+      } catch (err) {
+        console.error(err);
+        if (status) status.textContent = 'Nie udało się załadować PDF.';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initPdfFlipbook('pdf-book', '/docs/2026 mentoring v9.pdf');
+    });
+  </script>
+
+</body>
+
+</html>

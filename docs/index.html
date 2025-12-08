@@ -52,9 +52,11 @@
         empty.classList.add('hidden');
         items.forEach(it => {
           const downloadHref = it.download_url || it.share_url || it.file_path;
+          const rawCount = typeof it.download_count === 'number' ? it.download_count : parseInt(it.download_count, 10);
+          const downloadCount = Number.isFinite(rawCount) ? rawCount : 0;
           const card = document.createElement('a');
           card.href = downloadHref || '#';
-          card.className = 'block rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition p-5';
+          card.className = 'block rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition p-5 h-full flex flex-col';
           card.target = '_blank';
           card.rel = 'noopener';
           card.innerHTML = `
@@ -66,7 +68,8 @@
                 <h3 class="text-lg font-semibold text-dark">${(it.display_name||it.original_name||'Plik')}</h3>
                 <p class="mt-1 text-gray-600 text-sm">${(it.original_name||'')}</p>
               </div>
-            </div>`;
+            </div>
+            <p class="mt-4 pt-4 text-sm text-gray-600 mt-auto">Dokument pobrano ${downloadCount.toLocaleString('pl-PL')} razy</p>`;
           wrap.appendChild(card);
         });
       } catch (e) {
@@ -76,4 +79,3 @@
   </script>
 </body>
 </html>
-
