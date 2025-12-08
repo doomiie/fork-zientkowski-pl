@@ -5,11 +5,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Jerzy Zientkowski — mówca, mentor, konsultant, tata. Od wystąpień publicznych, przez mentoring biznesowy, po warsztaty biznesowe.</title>
-  <link rel="preload" as="style" href="/assets/css/app.min.css?v=brand6"
+  <link rel="preload" as="style" href="/assets/css/app.min.css?v=brand12"
     onload="this.onload=null;this.rel='stylesheet'">
-  <link rel="stylesheet" href="/assets/css/app.min.css?v=brand6">
+  <link rel="stylesheet" href="/assets/css/app.min.css?v=brand12">
   <noscript>
-    <link rel="stylesheet" href="/assets/css/app.min.css?v=brand6">
+    <link rel="stylesheet" href="/assets/css/app.min.css?v=brand12">
   </noscript>
   <!-- Local font: Space Grotesk (subset PL) -->
   <link rel="preload" as="font" href="/assets/fonts/SpaceGrotesk-PL.woff2" type="font/woff2" crossorigin>
@@ -155,9 +155,7 @@
     <!-- Kafelki z linkami -->
     <section class="pb-20">
       <div class="max-w-[1100px] mx-auto px-6">
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6" id="linksGrid">
-       
-        </div>
+        <div id="linksGrid" class="space-y-12"></div>
       </div>
     </section>
   </main>
@@ -184,45 +182,91 @@
         const colors = Array.isArray(data) ? [] : data.colors;
         const palette = Array.isArray(colors)
           ? colors.reduce((acc, curr) => {
-            if (curr && curr.type && curr.color) acc[curr.type] = curr.color;
+            if (curr && curr.type) acc[curr.type] = curr;
             return acc;
           }, {})
           : {};
         if (!Array.isArray(blocks) || !blocks.length) return;
 
+        const groups = blocks.reduce((acc, item) => {
+          const t = item.type || 'inne';
+          if (!acc[t]) acc[t] = [];
+          acc[t].push(item);
+          return acc;
+        }, {});
+
         const fragment = document.createDocumentFragment();
-        blocks.forEach((item) => {
-          const link = document.createElement('a');
-          link.href = item.href || '#';
-          link.className = 'group block rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-indigo-500';
 
-          const wrapper = document.createElement('div');
-          wrapper.className = 'p-6 flex items-start gap-4';
+        Object.entries(groups).forEach(([type, items]) => {
+          if (!items.length) return;
+          const meta = palette[type] || {};
+          const groupTitle = meta.title || type;
 
-          const iconWrap = document.createElement('div');
-          iconWrap.className = 'shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br text-white flex items-center justify-center';
-          const gradient = palette[item.type] || item.gradient || 'from-indigo-600 to-violet-500';
-          gradient.split(' ').forEach((cls) => iconWrap.classList.add(cls));
+          const section = document.createElement('div');
+          section.className = 'space-y-4';
 
-          const icon = document.createElement('i');
-          icon.dataset.lucide = item.icon || 'circle';
-          icon.className = 'w-6 h-6';
-          iconWrap.appendChild(icon);
+          const header = document.createElement('div');
+          header.className = 'space-y-2';
+          const h2 = document.createElement('h2');
+          h2.className = 'text-xl font-bold text-dark';
+          h2.textContent = groupTitle;
+          header.appendChild(h2);
+          if (meta.description) {
+            const p = document.createElement('p');
+            p.className = 'text-gray-600';
+            p.textContent = meta.description;
+            header.appendChild(p);
+          }
+          section.appendChild(header);
 
-          const textWrap = document.createElement('div');
-          const title = document.createElement('h2');
-          title.className = 'text-lg font-semibold text-dark';
-          title.textContent = item.title || '';
-          const desc = document.createElement('p');
-          desc.className = 'mt-1 text-gray-600 text-sm';
-          desc.textContent = item.description || '';
-          textWrap.appendChild(title);
-          textWrap.appendChild(desc);
+          const grid = document.createElement('div');
+          grid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6';
 
-          wrapper.appendChild(iconWrap);
-          wrapper.appendChild(textWrap);
-          link.appendChild(wrapper);
-          fragment.appendChild(link);
+          items.forEach((item) => {
+            const link = document.createElement('a');
+            link.href = item.href || '#';
+            link.className = 'group block rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-indigo-500';
+            if (item.pin) {
+              link.addEventListener('click', (ev) => {
+                const input = prompt('Podaj PIN, aby otworzyć zawartość:');
+                if (input !== item.pin) {
+                  ev.preventDefault();
+                  alert('Niepoprawny PIN');
+                }
+              });
+            }
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'p-6 flex items-start gap-4';
+
+            const iconWrap = document.createElement('div');
+            iconWrap.className = 'shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br text-white flex items-center justify-center';
+            const gradient = (meta.color) || item.gradient || 'from-indigo-600 to-violet-500';
+            gradient.split(' ').forEach((cls) => iconWrap.classList.add(cls));
+
+            const icon = document.createElement('i');
+            icon.dataset.lucide = item.icon || 'circle';
+            icon.className = 'w-6 h-6';
+            iconWrap.appendChild(icon);
+
+            const textWrap = document.createElement('div');
+            const title = document.createElement('h3');
+            title.className = 'text-lg font-semibold text-dark';
+            title.textContent = item.title || '';
+            const desc = document.createElement('p');
+            desc.className = 'mt-1 text-gray-600 text-sm';
+            desc.textContent = item.description || '';
+            textWrap.appendChild(title);
+            textWrap.appendChild(desc);
+
+            wrapper.appendChild(iconWrap);
+            wrapper.appendChild(textWrap);
+            link.appendChild(wrapper);
+            grid.appendChild(link);
+          });
+
+          section.appendChild(grid);
+          fragment.appendChild(section);
         });
 
         container.replaceChildren(fragment);

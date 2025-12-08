@@ -1,30 +1,44 @@
 {
   "blocks": [
     {
+      "title": "Stand Up w sprzedaży",
+      "href": "lp/stand-up-w-sprzedazy.html",
+      "type": "mowy",
+      "description": "Zobacz nowy program i szczegóły oferty.",
+      "icon": "megaphone"
+    },
+    {
       "title": "Bio",
       "href": "bio",
       "type": "informacje",
-      "description": "Kilka słów o mnie i doświadczeniu.",
-      "icon": "user"    },
+      "description": "Kim jest Jerzy Zientkowski?.",
+      "icon": "user"
+    },
     {
       "title": "Sesja",
       "href": "sesja",
       "type": "produkty",
       "description": "Informacje o sesjach, współpracy i terminach.",
       "icon": "mic"
+    }, {
+      "title": "Mentoring",
+      "href": "mentoring",
+      "type": "produkty",
+      "description": "Mentoring - przygotowanie do prezentacji i wystąpień.",
+      "icon": "mic"
     },
     {
       "title": "Linki",
       "href": "linki",
       "type": "informacje",
-      "description": "Szybkie odnośniki do najważniejszych materiałów.",
+      "description": "Szybkie odnośniki do najważniejszych materiałów i SM.",
       "icon": "link"
     },
     {
-      "title": "Stand Up w sprzedaży",
-      "href": "lp/stand-up-w-sprzedazy.html",
-      "type": "mowy",
-      "description": "Zobacz nowy program i szczegóły oferty.",
+      "title": "Dokumenty do pobrania",
+      "href": "docs/",
+      "type": "dokumenty",
+      "description": "Zobacz i pobierz dostępne materiały.",
       "icon": "megaphone"
     },
     {
@@ -35,11 +49,36 @@
       "icon": "megaphone"
     }
   ],
-  "colors":[
-  { "type": "dokumenty",   "color": "from-amber-600 to-yellow-500" },
-  { "type": "informacje",  "color": "from-sky-500 to-cyan-500" },
-  { "type": "mowy", "color": "from-orange-500 to-red-500" },
-  { "type": "warsztaty",   "color": "from-emerald-500 to-teal-600" },
-  { "type": "produkty",    "color": "from-amber-600 to-yellow-500" }
-]
+  "colors": [
+    {
+      "type": "dokumenty",
+      "title": "Dokumenty do pobrania",
+      "description": "Materiały i dokumenty dostępne do pobrania.",
+      "color": "from-amber-600 to-yellow-500"
+    },
+    {
+      "type": "informacje",
+      "title": "Informacje, odnośniki i bio",
+      "description": "Informacje o Jerzym Zientkowskim i jego działalności.",
+      "color": "from-sky-500 to-cyan-500"
+    },
+    {
+      "type": "mowy",
+      "title": "Mowy biznesowe i wystąpienia",
+      "description": "Przemówienia i wystąpienia publiczne Jerzego, do kupienia od ręki.",
+      "color": "from-orange-500 to-red-500"
+    },
+    {
+      "type": "warsztaty",
+      "title": "Warsztaty i szkolenia",
+      "description": "Warsztaty i szkolenia z wystąpień publicznych oraz komunikacji biznesowej.",
+      "color": "from-emerald-500 to-teal-600"
+    },
+    {
+      "type": "produkty",
+      "title": "Produkty i usługi",
+      "description": "Usługi i produkty Jerzego Zientkowskiego dostępne dla klientów.",
+      "color": "from-emerald-500 to-white-500"
+    }
+  ]
 }
