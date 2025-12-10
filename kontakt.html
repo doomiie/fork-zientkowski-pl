@@ -22,13 +22,25 @@
     .contact-grid .card-row { display: flex; align-items: flex-start; gap: 1rem; flex: 1 1 auto; }
     .contact-grid .card-row > div:nth-child(2) { display: flex; flex-direction: column; flex: 1 1 auto; }
     .contact-grid .cta, .contact-grid .copy-hint { margin-top: auto; padding-top: 1rem; }
-    /* Grouped sections with vertical labels */
-    .contact-group { display: grid; grid-template-columns: 56px 1fr; gap: 1rem; align-items: stretch; }
-    @media (min-width: 768px) { .contact-group { grid-template-columns: 72px 1fr; gap: 1.25rem; } }
-    .contact-label { display: flex; align-items: center; justify-content: center; }
-    .contact-label-text { writing-mode: vertical-rl; transform: rotate(180deg); font-weight: 800; line-height: 1; letter-spacing: 0.02em; }
-    /* Wider tiles: use auto-fit with a higher min width so headings fit one line */
-    .contact-grid { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+    /* Grouped sections: stacked headings on mobile, vertical labels on desktop */
+    .contact-group { display: flex; flex-direction: column; gap: 0.75rem; align-items: stretch; }
+    .contact-label { display: flex; align-items: flex-start; justify-content: flex-start; }
+    .contact-label-text { writing-mode: horizontal-tb; transform: none; font-weight: 800; line-height: 1; letter-spacing: 0.02em; }
+    /* Wider tiles: single column on mobile, wider fit on larger screens */
+    .contact-grid { grid-template-columns: 1fr; }
+    @media (min-width: 640px) { .contact-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); } }
+    @media (min-width: 768px) {
+      .contact-group { display: grid; grid-template-columns: 72px 1fr; gap: 1.25rem; align-items: stretch; }
+      .contact-label { align-items: center; justify-content: center; }
+      .contact-label-text { writing-mode: vertical-rl; transform: rotate(180deg); }
+    }
+    /* Header: switchable transparent/solid states for readability on scroll */
+    #siteHeader { transition: background-color .6s ease, border-color .6s ease, box-shadow .6s ease, padding .6s ease; }
+    #siteHeaderLogo { transition: filter .6s ease, opacity .6s ease, transform .6s ease; }
+    #siteHeader.header-solid { background:#fff; border-bottom:1px solid rgba(229,231,235,.6); box-shadow:0 10px 30px rgba(0,0,0,.08); }
+    #siteHeader.header-solid .logo-main { filter:brightness(0); }
+    #siteHeader.header-transparent { background:transparent; border-bottom-color:transparent; }
+    #siteHeader.header-transparent .logo-main { filter:brightness(0) invert(1); }
   </style>
   <!-- Consent: default denied for analytics/marketing (GCM v2) -->
   <script>window.dataLayer=window.dataLayer||[];window.dataLayer.push({consent:"default",ad_storage:"denied",analytics_storage:"denied",ad_user_data:"denied",ad_personalization:"denied",functionality_storage:"granted",security_storage:"granted"});</script>
@@ -37,10 +49,10 @@
 <body class="bg-light min-h-screen flex flex-col">
   <!-- Header: fixed + transparent so hero image sits underneath -->
   <!-- UX: przezroczysty nagłówek daje wrażenie przestrzeni i skraca drogę do treści -->
-  <header id="siteHeader" class="fixed top-0 left-0 right-0 z-50 py-4 bg-transparent transition-all duration-300">
+  <header id="siteHeader" class="fixed top-0 left-0 right-0 z-50 py-4 bg-transparent transition-all duration-300 border-b border-transparent header-transparent">
     <div class="max-w-[1200px] mx-auto px-6 flex items-center">
       <a href="/" class="flex items-center gap-3 font-bold">
-        <img id="siteHeaderLogo" src="/assets/img/logo_main.png" alt="Logo" class="max-w-[140px]">
+        <img id="siteHeaderLogo" src="/assets/img/logo_main.png" alt="Logo Jerzy Zientkowski" class="max-w-[140px] logo-main">
       </a>
     </div>
   </header>
@@ -282,6 +294,32 @@
             .catch(function(){ if (hint){ hint.textContent = 'Nie udało się skopiować'; hint.className = 'copy-hint mt-3 text-sm text-red-700'; } });
         });
       });
+    })();
+  </script>
+  <script>
+    // Header state switch: solid background + dark logo after scroll for contrast
+    (function(){
+      var header = document.getElementById('siteHeader');
+      var logo = document.getElementById('siteHeaderLogo');
+      if (!header || !logo) return;
+
+      function apply(pos){
+        if (pos > 10) {
+          header.classList.add('header-solid');
+          header.classList.remove('header-transparent');
+        } else {
+          header.classList.add('header-transparent');
+          header.classList.remove('header-solid');
+        }
+      }
+      function onScroll(){
+        window.requestAnimationFrame(function(){
+          var pos = window.scrollY || document.documentElement.scrollTop || 0;
+          apply(pos);
+        });
+      }
+      apply(window.scrollY || document.documentElement.scrollTop || 0);
+      window.addEventListener('scroll', onScroll, { passive: true });
     })();
   </script>
 </body>
