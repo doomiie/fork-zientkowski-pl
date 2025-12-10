@@ -82,7 +82,7 @@ if (isset($pdo) && $pdo instanceof PDO) {
             <a class="btn primary" href="/">Strona główna</a>
             <a class="btn" href="/bio.html#bio">BIO</a>
             <a class="btn" href="/bio.html#referencje">Referencje</a>
-            <a class="btn" href="/index.html#kontakt">Kontakt</a>
+            <a class="btn" href="/kontakt">Kontakt</a>
           </div>
         </div>
         <div class="panel">
