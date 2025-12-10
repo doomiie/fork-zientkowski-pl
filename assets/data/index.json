@@ -42,10 +42,10 @@
       "icon": "megaphone"
     },
     {
-      "title": "Dokumenty do pobrania",
-      "href": "docs/",
+      "title": "Prezentacja Zasady Komunikacji",
+      "href": "lp/book.html?source=/docs/LW Bogdanka prezentacja.pdf?v=14",
       "type": "dokumenty",
-      "description": "Zobacz i pobierz dostępne materiały.",
+      "description": "Prezentacja na spotkanie 2025-12-11/12.",
       "icon": "megaphone"
     }
   ],
