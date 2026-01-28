@@ -527,6 +527,9 @@ console.log('Meeting types config:', meetingTypesCfg);
                     const workingDays = getWorkingDaysFromMonth(monthOffset, 30);
                     const firstDay = workingDays[0];
                     const monthName = firstDay.toLocaleDateString("pl-PL", { month: "long", year: "numeric" });
+                    const firstDayStr = firstDay.toLocaleDateString("sv-SE");
+                    const lastDayStr = workingDays[workingDays.length - 1].toLocaleDateString("sv-SE");
+                    const busyMap = await fetchBusyRange(firstDayStr, lastDayStr);
 
                     calendarMonth.textContent = monthName;
                     calendarGrid.innerHTML = "";
@@ -565,7 +568,7 @@ console.log('Meeting types config:', meetingTypesCfg);
                             cursor.setMinutes(cursor.getMinutes() + minMeetingDuration);
                         }
 
-                        const busySlots = await fetchBusySlots(dateStr, minMeetingDuration);
+                        const busySlots = busyMap.get(dateStr) || [];
                         const toMinutes = t => { const [hh, mm] = t.split(':').map(Number); return hh * 60 + mm; };
                         const freeSlots = slots.filter(time => {
                             const startMin = toMinutes(time);
@@ -694,6 +697,59 @@ console.log('Meeting types config:', meetingTypesCfg);
                 return windows;
             }
 
+            let busyRangeCache = null;
+
+            function buildBusyMap(intervals) {
+                const map = new Map();
+                if (!Array.isArray(intervals)) return map;
+
+                intervals.forEach(({ start, end }) => {
+                    const startDt = new Date(start);
+                    const endDt = new Date(end);
+                    if (isNaN(startDt) || isNaN(endDt) || endDt <= startDt) return;
+
+                    let cursor = new Date(startDt);
+                    cursor.setHours(0, 0, 0, 0);
+                    const endDay = new Date(endDt);
+                    endDay.setHours(0, 0, 0, 0);
+
+                    while (cursor <= endDay) {
+                        const dayStart = new Date(cursor);
+                        const dayEnd = new Date(cursor);
+                        dayEnd.setHours(23, 59, 59, 999);
+                        const overlapStart = startDt > dayStart ? startDt : dayStart;
+                        const overlapEnd = endDt < dayEnd ? endDt : dayEnd;
+                        if (overlapEnd > overlapStart) {
+                            const dateKey = dayStart.toLocaleDateString('sv-SE');
+                            const startMin = overlapStart.getHours() * 60 + overlapStart.getMinutes();
+                            const endMin = overlapEnd.getHours() * 60 + overlapEnd.getMinutes();
+                            if (!map.has(dateKey)) map.set(dateKey, []);
+                            map.get(dateKey).push({ startMin, endMin });
+                        }
+                        cursor.setDate(cursor.getDate() + 1);
+                    }
+                });
+
+                map.forEach(list => list.sort((a, b) => a.startMin - b.startMin));
+                return map;
+            }
+
+            function getBusyWindowsFromCache(dateStr) {
+                if (!busyRangeCache || !busyRangeCache.map) return null;
+                if (dateStr < busyRangeCache.start || dateStr > busyRangeCache.end) return null;
+                return busyRangeCache.map.get(dateStr) || [];
+            }
+
+            async function fetchBusyRange(startDate, endDate) {
+                if (busyRangeCache && busyRangeCache.start === startDate && busyRangeCache.end === endDate) {
+                    return busyRangeCache.map;
+                }
+                const data = await apiRequest(`/backend/calendar.php?action=busy_range&start=${startDate}&end=${endDate}&return=/sesja.html`);
+                const map = buildBusyMap(data?.busyIntervals || []);
+                busyRangeCache = { start: startDate, end: endDate, map };
+                return map;
+            }
+
             async function showTimes() {
                 timeButtons.innerHTML = "";
                 timePicker.classList.remove("hidden");
@@ -710,7 +766,10 @@ console.log('Meeting types config:', meetingTypesCfg);
 
                 const mtConf = meetingTypesCfg[meetingType] || {};
                 const duration = mtConf.duration === 'full' ? 60 : parseInt(mtConf.duration || '60', 10);
-                const busySlots = await fetchBusySlots(selectedDate, duration, mtConf.duration === 'full'); // now returns windows [{startMin,endMin}]
+                let busySlots = getBusyWindowsFromCache(selectedDate);
+                if (!busySlots) {
+                    busySlots = await fetchBusySlots(selectedDate, duration, mtConf.duration === 'full'); // fallback for uncached dates
+                }
 
                 const elapsed = Date.now() - start;
                 if (elapsed < 300) {
@@ -969,9 +1028,6 @@ console.log('Meeting types config:', meetingTypesCfg);
 </body>
 
 </html>
-
-
-
 
 
 

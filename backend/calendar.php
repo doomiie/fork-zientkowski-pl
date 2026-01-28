@@ -174,6 +174,57 @@ if ($action === 'busy') {
     exit();
 }
 
+if ($action === 'busy_range') {
+    $startDate = $_GET['start'] ?? '';
+    $endDate = $_GET['end'] ?? '';
+    if (!$startDate || !$endDate) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Missing start or end']);
+        exit();
+    }
+
+    $tzPl = new DateTimeZone('Europe/Warsaw');
+    $tzUtc = new DateTimeZone('UTC');
+
+    $startDt = new DateTime($startDate, $tzPl);
+    $startDt->setTime(0, 0, 0);
+    $endDt = new DateTime($endDate, $tzPl);
+    $endDt->setTime(23, 59, 59);
+
+    $timeMin = (clone $startDt)->setTimezone($tzUtc)->format('Y-m-d\TH:i:s\Z');
+    $timeMax = (clone $endDt)->setTimezone($tzUtc)->format('Y-m-d\TH:i:s\Z');
+
+    $req = new FreeBusyRequest([
+        'timeMin' => $timeMin,
+        'timeMax' => $timeMax,
+        'items' => [['id' => $calendarId]]
+    ]);
+    $res = $service->freebusy->query($req);
+    $calendars = $res->getCalendars();
+    $busy = [];
+    if (isset($calendars[$calendarId])) {
+        $busy = $calendars[$calendarId]->getBusy();
+    } elseif (isset($calendars['primary'])) {
+        $busy = $calendars['primary']->getBusy();
+    }
+
+    $intervals = [];
+    foreach ($busy as $b) {
+        $start = new DateTime($b->getStart(), $tzUtc);
+        $start->setTimezone($tzPl);
+        $end = new DateTime($b->getEnd(), $tzUtc);
+        $end->setTimezone($tzPl);
+        $intervals[] = [
+            'start' => $start->format(DateTime::RFC3339),
+            'end' => $end->format(DateTime::RFC3339),
+        ];
+    }
+
+    header('Content-Type: application/json');
+    echo json_encode(['busyIntervals' => $intervals, 'calendarId' => $calendarId]);
+    exit();
+}
+
 if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
     $meetingType = $data['meetingType'] ?? $data['summary'] ?? 'spotkanie';
