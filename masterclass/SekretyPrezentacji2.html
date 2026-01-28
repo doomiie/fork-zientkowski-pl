@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sekrety Prezentacji | Jerzy Zientkowski</title>
+
+    <link rel="icon" type="image/png" href="/assets/img/favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/assets/img/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/assets/img/favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <link rel="preload" as="style" href="/assets/css/app.min.css?v=brand3"
+        onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="/assets/css/app.min.css?v=brand3">
+    </noscript>
+    <link rel="preload" as="style" href="/assets/css/shared.css?v=dev26"
+        onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="/assets/css/shared.css?v=dev26">
+    </noscript>
+
+    <!-- Local font: Space Grotesk (subset PL) -->
+    <link rel="preload" as="font" href="/assets/fonts/SpaceGrotesk-PL.woff2" type="font/woff2" crossorigin>
+    <style>
+        @font-face {
+            font-family: 'Space Grotesk';
+            src: url('/assets/fonts/SpaceGrotesk-PL.woff2') format('woff2');
+            font-weight: 300 700;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        html {
+            font-size: 20px;
+        }
+
+        * {
+            font-family: 'Space Grotesk', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, rgb(4, 3, 39) 0%, rgb(4, 3, 39, 0.8) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .morphing-card {
+            background: #ffffff;
+            border: 1px solid rgba(4, 3, 39, 0.08);
+            border-radius: 16px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .morphing-card:hover {
+            transform: scale(1.01);
+            box-shadow: 0 8px 16px rgba(4, 3, 39, 0.06);
+        }
+
+        .text-accent {
+            color: rgb(4, 3, 39) !important;
+        }
+
+        .bg-accent {
+            background-color: rgb(4, 3, 39) !important;
+        }
+
+        .border-accent {
+            border-color: rgb(4, 3, 39) !important;
+        }
+
+        .hover\:bg-accent:hover {
+            background-color: rgb(4, 3, 39) !important;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 2rem;
+            background-color: var(--brand-warm, #e77920);
+            color: white;
+            border-radius: 9999px;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 1.125rem;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #d66810;
+            transform: scale(1.03);
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/9;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(4, 3, 39, 0.2);
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(231, 121, 32, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--brand-warm, #e77920);
+            flex-shrink: 0;
+            transition: transform 0.2s ease;
+        }
+
+        .feature-icon.bg-white {
+            background: white !important;
+        }
+
+        .morphing-card:hover .feature-icon {
+            transform: scale(1.08);
+        }
+
+        .gradient-border {
+            background: #ffffff;
+            border: 2px solid rgba(4, 3, 39, 0.1);
+            position: relative;
+            transition: transform 0.2s ease;
+        }
+
+        .gradient-border:hover {
+            transform: scale(1.01);
+        }
+
+        .feature-icon:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.02);
+        }
+
+        .gradient-border:hover {
+            transform: scale(1.01);
+        }
+
+        * {
+            transition-property: transform, opacity, color, background-color, border-color, box-shadow;
+            transition-duration: 0.2s;
+            transition-timing-function: ease;
+        }
+
+        /* Mobile header compact sizing */
+        @media (max-width: 767px) {
+            #lpHeaderLogo {
+                height: px !important;
+                width: auto;
+                max-width: 120px;
+            }
+
+            #menuToggleHome svg {
+                width: 32px;
+                height: 32px;
+            }
+
+            #menuToggleHome {
+                padding: 4px 6px;
+            }
+        }
+    </style>
+    <style>
+        /* Shared here */
+        .card-course-a {
+            @apply card p-8 rounded-2xl border border-accent shadow-sm transition-transform hover:shadow-md;
+            background: linear-gradient(180deg, rgba(231, 121, 32, 0.06), rgba(4, 3, 39, 0.02));
+        }
+
+        .card-course-a h4 {
+            font-size: 1.05rem;
+            line-height: 1.15;
+        }
+
+        .card-course-a p {
+            font-size: 0.98rem;
+        }
+
+        .card-course-a .feature-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--brand-warm, #e77920), #ffb77a);
+            color: #fff;
+            box-shadow: 0 8px 20px rgba(231, 121, 32, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (min-width: 768px) {
+
+            /* O kursie: wyłącz centrowanie ikony i zostaw tekst obok (ml-2 już jest) */
+            .card-course-a .feature-icon {
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+            }
+        }
+
+        .hover\:text-brand-warm:hover {
+            color: var(--brand-warm) !important;
+        }
+
+        /* Utility: image block aligned right within flex row, hidden on < md */
+        .img-block-right {
+            display: none;
+        }
+
+        /* Header shrink on scroll */
+        #lpHeaderLogo {
+            max-height: 64px;
+            transition: max-height 0.25s ease, transform 0.25s ease, filter 0.25s ease;
+        }
+
+        nav.nav-compact {
+            padding-top: 0.5rem !important;
+            padding-bottom: 0.5rem !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+        }
+
+        nav.nav-compact #lpHeaderLogo {
+            max-height: 46px;
+            transform: translateY(-2px);
+            filter: brightness(0.1);
+        }
+
+        @media (min-width:768px) {
+            .img-block-right {
+                display: block;
+                width: 30%;
+                height: 100%;
+                object-fit: contain;
+                margin-left: 0.5rem;
+                flex-shrink: 0;
+            }
+        }
+
+        .masterclass {
+            background: rgb(249, 249, 249);
+            padding: 64px 16px;
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+            color: #111827;
+        }
+
+        .container {
+            max-width: 920px;
+            margin: 0 auto;
+        }
+
+        .module {
+            margin-bottom: 64px;
+        }
+
+        .hero {
+            margin-bottom: 48px;
+        }
+
+        .eyebrow {
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: #6b7280;
+            margin-bottom: 12px;
+        }
+
+        h1 {
+            font-size: clamp(32px, 4vw, 46px);
+            line-height: 1.05;
+            margin: 0 0 20px;
+        }
+
+        .accent {
+            color: #4f46e5;
+        }
+
+        .lead {
+            font-size: 19px;
+            line-height: 1.6;
+            color: #374151;
+            margin-bottom: 28px;
+        }
+
+        .effect {
+            padding-left: 16px;
+            border-left: 4px solid #4f46e5;
+        }
+
+        .effect-label {
+            font-weight: 700;
+            margin: 0 0 6px;
+        }
+
+        .effect-text {
+            font-size: 18px;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .spaced {
+            letter-spacing: 0.25em;
+        }
+
+        .muted {
+            color: #6b7280;
+        }
+
+        .program h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            background: #ffffff;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+        }
+
+        .card h3 {
+            margin: 0 0 12px;
+            font-size: 19px;
+        }
+
+        .card p {
+            margin: 0;
+            line-height: 1.6;
+            color: #374151;
+        }
+
+        .bio-grid {
+            display: grid;
+            grid-template-columns: 204px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        .bio-photo {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .bio-photo img {
+            display: block;
+            border-radius: 8px;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.62);
+        }
+
+        .bio-text p:first-child {
+            margin-top: 0;
+        }
+
+        .bio-text {
+            text-align: left;
+        }
+
+        @media (max-width: 820px) {
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .bio-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    <!-- Consent (GCM v2) -->
+    <script>window.dataLayer = window.dataLayer || []; window.dataLayer.push({ consent: "default", ad_storage: "denied", analytics_storage: "denied", ad_user_data: "denied", ad_personalization: "denied", functionality_storage: "granted", security_storage: "granted" });</script>
+    <link rel="stylesheet" href="/assets/css/consent.css?v=dev4">
+    <script defer src="/assets/js/consent.js?v=dev5"></script>
+    <script defer src="/assets/js/menu.js?v=dev29&file=/lp/menu.stand-up-w-sprzedazy.json"></script>
+    <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+
+<body class="bg-white">
+    <!-- Navigation -->
+    <nav
+        class="fixed w-full bg-white/95 backdrop-blur-lg z-50 py-4 transition-all duration-300 border-b border-gray-200/50">
+        <div class="max-w-[1400px] mx-auto px-6 ">
+            <div class="flex items-center justify-between">
+                <div class="text-2xl font-bold tracking-tight">
+                    <a href="/">
+                        <img id="lpHeaderLogo" class="brightness-0" src="/assets/img/logo_main.png"
+                            alt="Jerzy Zientkowski">
+                    </a>
+                    <div id="dev-hero-size" class=" mt-1 text-xs text-gray-500 italic  ">
+                        <span class="inline xs:hidden sm:hidden md:hidden lg:hidden xl:hidden 2xl:hidden">DEV: base - H1
+                            text-2xl</span>
+                        <span class="hidden xs:inline sm:hidden md:hidden lg:hidden xl:hidden 2xl:hidden">DEV: xs - H1
+                            text-3xl</span>
+                        <span class="hidden sm:inline md:hidden lg:hidden xl:hidden 2xl:hidden">DEV: sm - H1
+                            text-4xl</span>
+                        <span class="hidden md:inline lg:hidden xl:hidden 2xl:hidden">DEV: md - H1 text-5xl</span>
+                        <span class="hidden lg:inline xl:hidden 2xl:hidden">DEV: lg - H1 text-5xl</span>
+                        <span class="hidden xl:inline 2xl:hidden">DEV: xl - H1 text-5xl</span>
+                        <span class="hidden 2xl:inline">DEV: 2xl - H1 text-5xl</span>
+                    </div>
+                </div>
+                <div id="navDesktop" class="hidden md:flex items-center space-x-8"></div>
+                <!-- Mobile hamburger (from home.html) -->
+                <div class="flex items-center ml-auto md:ml-8 md:hidden">
+                    <button id="menuToggleHome" aria-label="Menu"
+                        class="p-2 rounded-lg border border-gray-300 text-gray-800 hover:bg-gray-50">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile menu overlay + drawer (from home.html) -->
+    <div id="mobileMenuOverlayHome" class="fixed inset-0 bg-black/50 z-[1000] hidden"></div>
+    <aside id="mobileMenuHome"
+        class="fixed inset-y-0 right-0 w-4/5 max-w-sm bg-white z-[1001] shadow-xl transform translate-x-full transition-transform">
+        <div class="p-4 flex items-center justify-between border-b border-gray-200">
+            <span class="font-semibold text-dark">Menu</span>
+            <button id="menuCloseHome" aria-label="Zamknij menu" class="p-2 rounded-lg text-gray-600 hover:bg-gray-50">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <nav id="navMobile" class="p-4 space-y-3"></nav>
+    </aside>
+
+    <section class="masterclass py-16 bg-gray-50 pt-24 md:pt-28" id="masterclass">
+        <div class="max-w-[1200px] mx-auto px-6">
+
+            <header class="hero">
+                <p class="eyebrow">Masterclass online · 4 godziny</p>
+                <h1>Masterclass: <span class="accent">Sekrety przemawiania</span></h1>
+
+                <p class="lead">
+                    4 godziny spotkania online.<br>
+                    4 elementy prezentacji biznesowych, o których nikt Ci nie powiedział.<br>
+                    4 minuty Twojej prezentacji, żeby je realnie przećwiczyć.
+                </p>
+
+                <div class="effect">
+                    <p class="effect-label">Efekt?</p>
+                    <p class="effect-text">
+                        <strong class="spaced">L:E:P:S:Z:A</strong> prezentacja biznesowa.<br>
+                        <span class="muted">Zaskakująco świeża. Inna niż standard konferencyjny.</span>
+                    </p>
+                </div>
+            </header>
+
+            <main id="program" class="">
+                <h2>O czym będzie?</h2>
+
+                <div class="module cards" id="agenda">
+                    <article class="card">
+                        <h3>Sekret pierwszego dobrego wrażenia</h3>
+                        <p>
+                            W taki sposób, że dostaniesz do ręki <strong>narzędzia</strong> do budowania
+                            i ćwiczenia pierwszego wrażenia.
+                            <strong>Nigdy więcej nudy na początku.</strong>
+                        </p>
+                    </article>
+
+                    <article class="card">
+                        <h3>Sekret szybkiej sprzedaży</h3>
+                        <p>
+                            Bo im krócej na scenie, tym lepiej. I dla mówcy, i dla widowni.
+                            <strong>Nigdy więcej bezsensownego gadania godzinami.</strong>
+                        </p>
+                    </article>
+
+                    <article class="card">
+                        <h3>Sekret odporności psychicznej</h3>
+                        <p>
+                            Większość „guru” daje Ci narzędzia typu:
+                            „oddychaj głęboko, rozmasuj szczękę, wiedz co powiedzieć”.
+                            A sekret leży gdzie indziej.
+                            <strong>Zmienimy Ci oprogramowanie.</strong>
+                        </p>
+                    </article>
+
+                    <article class="card">
+                        <h3>Sekret nudy i klątwa wiedzy</h3>
+                        <p>
+                            Dostaniesz narzędzia, które pomogą Ci osiągnąć cel
+                            i jednocześnie mówić tak, żeby chciano Cię słuchać.
+                            Jest jedno <strong>magiczne słowo</strong>, które robi różnicę.
+                        </p>
+                    </article>
+                </div>
+
+                <div id="jak_pracujemy" class="module effect">
+                    <h2 class="effect-label">Podczas spotkania pracujemy modułami:</h2>
+                    <ul>
+                        <li>30 minut teorii z przykładami</li>
+                        <li>15 minut pracy z wybranym uczestnikiem</li>
+                        <li>15 minut komentarzy i pytań</li>
+                    </ul>
+                </div>
+
+
+            </main>
+
+        </div>
+    </section>
+
+    <!-- O mnie -->
+    <section id="o-mnie" class="py-16 bg-gray-50">
+        <div class="max-w-[1200px] mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-accent">
+                    O mnie
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="space-y-4">
+                    <p class="text-gray-700 leading-relaxed">
+                        <strong>Jerzy Zientkowski</strong> jest z wykształcenia informatykiem, z zawodu mówcą
+                        profesjonalnym. Z blisko 30-letnim dorobkiem w biznesie i współpracą z najróżniejszymi branżami
+                        i firmami różnej wielkości, posiada doświadczenie i unikatowy punkt patrzenia na skuteczność i
+                        efektywność biznesu.
+                    </p>
+
+                    <p class="text-gray-700 leading-relaxed">
+                        <strong>Przemawia, szkoli i wspiera, jako mentor i konsultant</strong> – przy prawie 40 tys.
+                        odbiorców jego treści rocznie jest nie tyle celebrytą, ale rozchwytywanym ekspertem.
+                    </p>
+
+                    <p class="text-gray-700 leading-relaxed">
+                        <strong>Pięciokrotny mistrz Polski</strong> w różnych kategoriach - mowy poważne, humorystyczne,
+                        improwizowane i ewaluacyjne, w języku polskim i angielskim. Dotarł w 2012 do finałów mistrzostw
+                        Europy w przemówieniach humorystycznych.
+                    </p>
+
+                    <div class="text-center lg:text-left mt-6">
+                        <a href="/bio.html"
+                            class="inline-flex items-center text-accent hover:text-orange-600 font-semibold">
+                            Zobacz pełne BIO
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="relative max-w-md mx-auto">
+                    <div class="gradient-border rounded-3xl p-1">
+                        <img src="/assets/img/JERZY-NA-lp-KURSU-1.jpg" alt="Jerzy Zientkowski"
+                            class="w-full rounded-3xl object-cover" />
+                    </div>
+
+                    <div
+                        class="absolute -bottom-6 -right-6 bg-white/90 backdrop-blur-sm p-4 rounded-2xl max-w-xs shadow-xl hidden lg:block">
+                        <p class="text-xs text-gray-700 font-medium italic">
+                            "Pozbawia złudzeń, nie pozbawiając marzeń"
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Referencje -->
+    <section id="referencje" class="py-24 bg-white">
+        <div class="max-w-[1400px] mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 text-accent">Referencje</h2>
+                <p class="text-lg text-gray-600">Wybrane opinie klientów.</p>
+            </div>
+            <div id="bioRefsGrid"></div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-[1400px] mx-auto px-6">
+            <div class="text-center">
+                <div class="flex justify-center space-x-6 mb-8">
+                    <a target="_blank" href="https://www.linkedin.com/in/jerzyzientkowski/"
+                        class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
+                        <i data-lucide="linkedin" class="w-6 h-6"></i>
+                    </a>
+                    <a target="_blank" href="https://www.instagram.com/jerzyzientkowskiofficial/"
+                        class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
+                        <i data-lucide="instagram" class="w-6 h-6"></i>
+                    </a>
+                    <a target="_blank" href="https://www.facebook.com/jerzy.zientkowski"
+                        class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
+                        <i data-lucide="facebook" class="w-6 h-6"></i>
+                    </a>
+                </div>
+
+                <div class="border-t border-white/20 pt-8">
+                    <p class="text-white/60">&copy; 2011-2025 Jerzy Zientkowski. Wszelkie prawa zastrzeżone</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <script src="/skrypty/references.js?v=202511106"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+
+            if (typeof ReferencesWidget !== 'undefined') {
+                new ReferencesWidget('#bioRefsGrid', {
+                    layout: 'carousel',
+                    csv: '/assets/txt/referencje2.csv',
+                    carousel: {
+                        clampLines: 12,
+                        arrows: true,
+                        counter: true
+                    }
+                }).load();
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href');
+                    if (targetId === '#' || !targetId) return;
+
+                    const targetSection = document.querySelector(targetId);
+                    if (targetSection) {
+                        window.scrollTo({
+                            top: targetSection.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            (function () {
+                const nav = document.querySelector('nav');
+                const logo = document.getElementById('lpHeaderLogo');
+                if (!nav) return;
+                function updateNav() {
+                    const compact = window.scrollY > 20;
+                    nav.classList.toggle('nav-compact', compact);
+                    if (logo) {
+                        logo.classList.toggle('nav-logo-compact', compact);
+                    }
+                }
+                window.addEventListener('scroll', updateNav, { passive: true });
+                updateNav();
+            })();
+        });
+    </script>
+
+    <!-- Mobile menu open/close (from home.html) -->
+    <script>
+        (function () {
+            const openBtn = document.getElementById('menuToggleHome');
+            const closeBtn = document.getElementById('menuCloseHome');
+            const overlay = document.getElementById('mobileMenuOverlayHome');
+            const menu = document.getElementById('mobileMenuHome');
+            function open() { overlay && overlay.classList.remove('hidden'); menu && menu.classList.remove('translate-x-full'); }
+            function close() { overlay && overlay.classList.add('hidden'); menu && menu.classList.add('translate-x-full'); }
+            openBtn && openBtn.addEventListener('click', open);
+            closeBtn && closeBtn.addEventListener('click', close);
+            overlay && overlay.addEventListener('click', close);
+            document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); }, { passive: true });
+        })();
+    </script>
+</body>
+
+</html>
