@@ -40,6 +40,7 @@ function collectFiles(string $dir, string $prefix, array &$out, string $where): 
 
 collectFiles($root, '', $entries, 'root');
 collectFiles($root . DIRECTORY_SEPARATOR . 'lp', '/lp', $entries, 'lp');
+collectFiles($root . DIRECTORY_SEPARATOR . 'masterclass', '/masterclass', $entries, 'masterclass');
 
 // Sort by location then name
 usort($entries, static function($a,$b){
