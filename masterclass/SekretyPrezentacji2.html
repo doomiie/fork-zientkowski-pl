@@ -399,11 +399,49 @@
     <script>window.dataLayer = window.dataLayer || []; window.dataLayer.push({ consent: "default", ad_storage: "denied", analytics_storage: "denied", ad_user_data: "denied", ad_personalization: "denied", functionality_storage: "granted", security_storage: "granted" });</script>
     <link rel="stylesheet" href="/assets/css/consent.css?v=dev4">
     <script defer src="/assets/js/consent.js?v=dev5"></script>
-    <script defer src="/assets/js/menu.js?v=dev29&file=/lp/menu.stand-up-w-sprzedazy.json"></script>
+    <script defer src="/assets/js/menu.js?v=dev29&file=/lp/menu.sekretyprezentacji.json"></script>
     <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 </head>
 
 <body class="bg-white">
+    <!-- Popup Modal (order frame) -->
+    <div id="popupOverlay" class="fixed inset-0 bg-black/60 z-[10050] hidden">
+        <div class="min-h-full flex items-center justify-center p-4">
+            <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-auto z-[10060]">
+                <button id="closePopup" aria-label="Zamknij"
+                    class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 z-[10070]">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+                <div class="p-4">
+                    <h2 class="text-lg md:text-2xl font-bold text-dark mb-3">Zamów masterclass</h2>
+                    <style>
+                        .wtl-responsive-iframe {
+                            width: 1px;
+                            min-width: 100%;
+                        }
+                    </style>
+                    <script src="https://kotryszientkowski.elms.pl/assets/js/iframe-resizer-embed.js"></script>
+                    <iframe class="wtl-responsive-iframe"
+                        src="https://kotryszientkowski.elms.pl/assets/js/s.php?id=3c59dc048e8850243be8079a5c74d079"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            iFrameResize({
+                                log: false,
+                                checkOrigin: false
+                            }, ".wtl-responsive-iframe");
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Navigation -->
     <nav
         class="fixed w-full bg-white/95 backdrop-blur-lg z-50 py-4 transition-all duration-300 border-b border-gray-200/50">
@@ -414,7 +452,7 @@
                         <img id="lpHeaderLogo" class="brightness-0" src="/assets/img/logo_main.png"
                             alt="Jerzy Zientkowski">
                     </a>
-                    <div id="dev-hero-size" class=" mt-1 text-xs text-gray-500 italic  ">
+                    <div id="dev-hero-size" class=" mt-1 text-xs text-gray-500 italic hidden ">
                         <span class="inline xs:hidden sm:hidden md:hidden lg:hidden xl:hidden 2xl:hidden">DEV: base - H1
                             text-2xl</span>
                         <span class="hidden xs:inline sm:hidden md:hidden lg:hidden xl:hidden 2xl:hidden">DEV: xs - H1
@@ -636,6 +674,42 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
     <script src="/skrypty/references.js?v=202511106"></script>
+    <!-- Popup logic (open on "Zamów") -->
+    <script>
+        (function () {
+            const overlay = document.getElementById('popupOverlay');
+            const closeBtn = document.getElementById('closePopup');
+            function openModal(e) {
+                if (e) e.preventDefault();
+                if (!overlay) return;
+                overlay.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+            function closeModal() {
+                if (!overlay) return;
+                overlay.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }
+
+            function isOrderTrigger(el) {
+                if (!el) return false;
+                if (el.hasAttribute('data-open-popup')) return true;
+                const href = (el.getAttribute('href') || '').trim();
+                if (href === '#kontakt') return true;
+                const label = (el.textContent || '').trim().toLowerCase();
+                return label === 'zamów' || label === 'zamow' || label.includes('zamów');
+            }
+
+            document.addEventListener('click', function (e) {
+                const trigger = e.target && e.target.closest ? e.target.closest('a,button') : null;
+                if (!trigger || !isOrderTrigger(trigger)) return;
+                openModal(e);
+            });
+            closeBtn && closeBtn.addEventListener('click', closeModal);
+            overlay && overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+        })();
+    </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {

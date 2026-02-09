@@ -623,7 +623,7 @@ console.log('Meeting types config:', meetingTypesCfg);
                 }
 
                 prevMonthBtn.disabled = monthOffset <= -1;
-                nextMonthBtn.disabled = monthOffset >= 2;
+                nextMonthBtn.disabled = monthOffset >= 6;
                 });
             }
 
@@ -909,11 +909,11 @@ console.log('Meeting types config:', meetingTypesCfg);
             });
 
             nextMonthBtn.addEventListener("click", () => {
-                if (monthOffset < 2) {
+                if (monthOffset < 6) {
                     monthOffset++;
                     updateCalendar();
                 } else {
-                    alert("Nie można wybrać więcej niż 2 miesiące do przodu.");
+                    alert("Nie można wybrać więcej niż 6 miesięcy do przodu.");
                 }
             });
 
