@@ -55,6 +55,19 @@
         /* Hide navigation on this page */
         .main-nav { display: none !important; }
         [data-mobile-menu] { display: none !important; }
+
+        /* Keep "Zarezerwuj" visible on hover/disabled */
+        .reserve-submit,
+        .reserve-submit:hover,
+        .reserve-submit:focus,
+        .reserve-submit:active,
+        .reserve-submit:disabled {
+            background-color: var(--color-accent, #3498db) !important;
+            color: #fff !important;
+        }
+        .reserve-submit:disabled {
+            opacity: 0.7 !important;
+        }
     </style>
     
     <script src="./assets/js/initVjs.js"></script>
@@ -205,8 +218,9 @@
                     </div>
                 </div>
 
-                <button type="submit" class="w-full bg-accent text-white py-3 px-6 hover:bg-dark transition fixed bottom-0 left-0 right-0 z-50 rounded-none md:static md:rounded-lg">
-                    Zarezerwuj spotkanie
+                <!-- <button type="submit" class="reserve-submit w-full bg-accent text-white py-3 px-6 hover:bg-accent hover:text-white focus:bg-accent focus:text-white transition fixed bottom-0 left-0 right-0 z-50 rounded-none md:static md:rounded-lg" style="background-color: var(--color-accent, #3498db) !important; color: #fff !important;"> -->
+                <button type="submit" class="w-full bg-accent text-white py-3 px-6  transition fixed bottom-0 left-0 right-0 z-50 rounded-none md:static md:rounded-lg">
+                    Zarezerwuj spotkanie tutaj
                 </button>
             </form>
         </div>
@@ -259,6 +273,13 @@
             const timePicker = document.getElementById("time-picker");
             const timeButtons = document.getElementById("time-buttons");
             const form = document.getElementById("meetingForm");
+            const submitBtn = form.querySelector("button[type='submit']");
+            const submitBtnDefaultText = submitBtn ? submitBtn.textContent : '';
+            function setSubmitLocked(locked, text) {
+                if (!submitBtn) return;
+                submitBtn.disabled = locked;
+                submitBtn.textContent = locked ? (text || submitBtnDefaultText) : submitBtnDefaultText;
+            }
             const prevMonthBtn = document.getElementById("prev-month");
 
             // Notifications bar (cookie-backed)
@@ -449,41 +470,42 @@ console.log('Meeting types config:', meetingTypesCfg);
                 afterCount = (data.after || []).length;
             }
 
-            function showPaymentIframe(onClose) {
-                const modal = document.getElementById('payment-modal');
-                const closeBtn = document.getElementById('payment-close');
-                let paymentOk = false;
-                let handler;
-                const cleanup = () => {
-                    modal.classList.add('hidden');
-                    clearInterval(pollInterval);
-                    window.removeEventListener('message', msgHandler);
-                    if (handler) closeBtn.removeEventListener('click', handler);
-                };
-                const finalize = () => {
-                    cleanup();
-                    if (onClose) onClose();
-                };
-                const msgHandler = (e) => {
-                    if (e.data && e.data.wtlPaymentStatus) {
-                        paymentOk = e.data.wtlPaymentStatus === 'success';
-                        if (paymentOk) finalize();
-                    }
-                };
-                window.addEventListener('message', msgHandler);
-                modal.classList.remove('hidden');
-                iFrameResize({ log: false }, '#payment-frame');
-                fetchWebhookLogs();
-                pollInterval = setInterval(fetchWebhookLogs, 2000);
-                handler = () => {
-                    cleanup();
-                    if (paymentOk) {
-                        if (onClose) onClose();
-                    } else {
-                        alert('Płatność nie została potwierdzona, rezerwacja nie została zapisana.');
-                    }
-                };
-                closeBtn.addEventListener('click', handler);
+            function showPaymentIframe() {
+                return new Promise(resolve => {
+                    const modal = document.getElementById('payment-modal');
+                    const closeBtn = document.getElementById('payment-close');
+                    let paymentOk = false;
+                    let handler;
+                    const cleanup = () => {
+                        modal.classList.add('hidden');
+                        clearInterval(pollInterval);
+                        window.removeEventListener('message', msgHandler);
+                        if (handler) closeBtn.removeEventListener('click', handler);
+                    };
+                    const finalize = (ok) => {
+                        cleanup();
+                        resolve(!!ok);
+                    };
+                    const msgHandler = (e) => {
+                        if (e.data && e.data.wtlPaymentStatus) {
+                            paymentOk = e.data.wtlPaymentStatus === 'success';
+                            if (paymentOk) finalize(true);
+                        }
+                    };
+                    window.addEventListener('message', msgHandler);
+                    modal.classList.remove('hidden');
+                    iFrameResize({ log: false }, '#payment-frame');
+                    fetchWebhookLogs();
+                    pollInterval = setInterval(fetchWebhookLogs, 2000);
+                    handler = () => {
+                        cleanup();
+                        if (!paymentOk) {
+                            alert('Płatność nie została potwierdzona, rezerwacja nie została zapisana.');
+                        }
+                        resolve(!!paymentOk);
+                    };
+                    closeBtn.addEventListener('click', handler);
+                });
             }
             let meetingType = document.getElementById('meeting-type').value; // start from selected (supports ?type=...)
 
@@ -893,12 +915,13 @@ console.log('Meeting types config:', meetingTypesCfg);
                     attendees: email ? [email] : []
                 };
 
-                await apiRequest('backend/calendar.php?action=create&return=/sesja.html', {
+                const result = await apiRequest('backend/calendar.php?action=create&return=/sesja.html', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
                 logDebug('Wysłano prośbę utworzenia wydarzenia');
+                return result;
             }
 
             prevMonthBtn.addEventListener("click", () => {
@@ -927,54 +950,68 @@ console.log('Meeting types config:', meetingTypesCfg);
                 const email = form.querySelector("input[type='email']").value;
                 const meetingType = document.getElementById('meeting-type').value;
                 const mtConf = meetingTypesCfg[meetingType] || {};
-                const successMsg = `Rezerwacja przyjęta:\n🗓️ Data: ${selectedDate}\n🕒 Godzina: ${selectedTime}\n📧 Email: ${email}\n📌 Typ: ${meetingType}`;
 
-                async function finalize() {
-                    await createCalendarEvent(email, meetingType);
+                setSubmitLocked(true, 'Rezerwuję...');
+
+                async function finalizeAfterSuccess(result) {
                     const mt = meetingTypesCfg[meetingType] || {};
                     const whenTxt = `${selectedDate} ${selectedTime || ''}`.trim();
                     addReservationNotification({
                         title: `${(mt.emoji||'')} ${(mt.name||meetingType)}`.trim(),
                         when: whenTxt,
                         email: email || '',
-                        meetLink: '',
+                        meetLink: result?.meetLink || '',
                         createdAt: new Date().toISOString(),
                     });
+                    selectedDate = null;
                     selectedTime = null;
-                    await showTimes(); // odśwież sloty po rezerwacji
+                    timePicker.classList.add("hidden");
+                    timeButtons.innerHTML = "";
+                    busyRangeCache = null;
+                    await updateCalendar(); // odśwież kalendarz po rezerwacji
                 }
 
-                if (mtConf.paid) {
-                    try {
-                        const frame = document.getElementById('payment-frame');
-                        const titleEl = document.getElementById('payment-title');
-                        const mtJson = ((cfgFromJson.meetingTypes || {})[meetingType]) || {};
-                        const amount = (mtJson.amount || mtConf.amount || '').toString().trim();
-                        if (titleEl) titleEl.textContent = amount ? `Sesja płatna, ${amount} zł` : 'Sesja płatna';
+                try {
+                    if (mtConf.paid) {
+                        try {
+                            const frame = document.getElementById('payment-frame');
+                            const titleEl = document.getElementById('payment-title');
+                            const mtJson = ((cfgFromJson.meetingTypes || {})[meetingType]) || {};
+                            const amount = (mtJson.amount || mtConf.amount || '').toString().trim();
+                            if (titleEl) titleEl.textContent = amount ? `Sesja płatna, ${amount} zł` : 'Sesja płatna';
 
-                        let paidLink = (mtConf.paid_link) || mtJson.paid_link || frame?.getAttribute('src') || '';
-                        if (frame && paidLink) {
-                            try {
-                                const u = new URL(paidLink, location.origin);
+                            let paidLink = (mtConf.paid_link) || mtJson.paid_link || frame?.getAttribute('src') || '';
+                            if (frame && paidLink) {
+                                try {
+                                    const u = new URL(paidLink, location.origin);
+                                    const emailVal = (form.querySelector("input[type='email']")?.value || '').trim();
+                                    if (emailVal) u.searchParams.set('prefill_email', emailVal);
+                                    paidLink = u.toString();
+                                } catch(_) {}
+                                frame.setAttribute('src', paidLink);
+                                // Try postMessage prefill after load (cross-origin safe if supported by receiver)
                                 const emailVal = (form.querySelector("input[type='email']")?.value || '').trim();
-                                if (emailVal) u.searchParams.set('prefill_email', emailVal);
-                                paidLink = u.toString();
-                            } catch(_) {}
-                            frame.setAttribute('src', paidLink);
-                            // Try postMessage prefill after load (cross-origin safe if supported by receiver)
-                            const emailVal = (form.querySelector("input[type='email']")?.value || '').trim();
-                            if (emailVal) {
-                                frame.addEventListener('load', function once(){
-                                    try { frame.contentWindow.postMessage({ wtlAction: 'prefill_email', email: emailVal }, '*'); } catch(_) {}
-                                }, { once: true });
+                                if (emailVal) {
+                                    frame.addEventListener('load', function once(){
+                                        try { frame.contentWindow.postMessage({ wtlAction: 'prefill_email', email: emailVal }, '*'); } catch(_) {}
+                                    }, { once: true });
+                                }
                             }
-                        }
-                    } catch(e) {}
-                    showPaymentIframe(finalize);
-                } else {
-                    await finalize();
-                }
+                        } catch(e) {}
+                        const paymentOk = await showPaymentIframe();
+                        if (!paymentOk) return;
+                    }
 
+                    const result = await createCalendarEvent(email, meetingType);
+                    const ok = !!(result && (result.event || result.meetLink || result.calendarId));
+                    if (ok) {
+                        await finalizeAfterSuccess(result);
+                    } else {
+                        alert('Nie udało się utworzyć rezerwacji. Spróbuj ponownie.');
+                    }
+                } finally {
+                    setSubmitLocked(false);
+                }
             });
 
             document.getElementById('meeting-type').addEventListener("change", e => {
@@ -1028,6 +1065,9 @@ console.log('Meeting types config:', meetingTypesCfg);
 </body>
 
 </html>
+
+
+
 
 
 
