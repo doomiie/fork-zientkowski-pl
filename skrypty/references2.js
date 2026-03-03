@@ -277,7 +277,7 @@
     }
 
     function cardTemplate(item, idx){
-      console.log("renderuję itemkę,", item);
+      // console.log("renderuję itemkę,", item);
       var name = (item['Imie, nazwisko'] || pick(item, ['imi','nazw']) || '').trim();
       var role = (item['Rola'] || '').trim();
       var opinia = (item['Opinia'] || '').trim();
