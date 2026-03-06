@@ -1,0 +1,692 @@
+﻿<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jerzy Zientkowski | Mówca biznesowy i trener komunikacji</title>
+  <meta name="description" content="Pomagam liderom i zespołom mówić jasno, przekonująco i z humorem, aby wystąpienia realnie wspierały sprzedaż, zaufanie i wyniki.">
+  <meta name="robots" content="index, follow">
+
+  <!-- Canonical + hreflang: dla statycznego projektu prostsze w utrzymaniu są osobne pliki HTML (pl: /, en: /index-en.html) -->
+  <link rel="canonical" href="https://zientkowski.pl/">
+  <link rel="alternate" hreflang="pl" href="https://zientkowski.pl/">
+  <link rel="alternate" hreflang="en" href="https://zientkowski.pl/index-en.html">
+  <link rel="alternate" hreflang="x-default" href="https://zientkowski.pl/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="pl_PL">
+  <meta property="og:site_name" content="Jerzy Zientkowski">
+  <meta property="og:title" content="Jerzy Zientkowski | Mówca biznesowy i trener komunikacji">
+  <meta property="og:description" content="Pomagam liderom i zespołom mówić jasno, przekonująco i z humorem, aby wystąpienia realnie wspierały sprzedaż, zaufanie i wyniki.">
+  <meta property="og:url" content="https://zientkowski.pl/">
+  <meta property="og:image" content="https://zientkowski.pl/assets/img/main_bg.jpg">
+  <meta property="og:image:alt" content="Jerzy Zientkowski podczas wystąpienia na scenie">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Jerzy Zientkowski | Mówca biznesowy i trener komunikacji ">
+  <meta name="twitter:description" content="Pomagam liderom i zespołom mówić jasno, przekonująco i z humorem, aby wystąpienia realnie wspierały sprzedaż, zaufanie i wyniki.">
+  <meta name="twitter:image" content="https://zientkowski.pl/assets/img/main_bg.jpg">
+
+  <!-- Favicons + manifest -->
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/img/favicon/favicon-96x96.png">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon/favicon.svg">
+  <link rel="shortcut icon" href="/assets/img/favicon/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+
+  <!-- Performance: preload font i głównego CSS -->
+  <link rel="preload" href="/assets/fonts/SpaceGrotesk-PL.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- Główny CSS: preload + onload (non-blocking) -->
+  <link rel="preload" href="/assets/css/app.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/assets/css/app.css"></noscript>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Shared CSS: podłącz tutaj wspólne style dla wielu stron -->
+  <!-- <link rel="stylesheet" href="/assets/css/shared.css"> -->
+
+  <!-- Consent CSS/JS: podłącz tutaj zgodnie z polityką zgód -->
+  <!-- <link rel="stylesheet" href="/assets/css/consent.css"> -->
+  <!-- <script defer src="/assets/js/consent.js"></script> -->
+
+  <style>
+    @font-face {
+      font-family: "Space Grotesk";
+      src: url("/assets/fonts/SpaceGrotesk-PL.woff2") format("woff2");
+      font-display: swap;
+      font-style: normal;
+      font-weight: 300 700;
+    }
+
+    :root {
+      --color-bg: #ffffff;
+      --color-surface: #f6f8fb;
+      --color-text: #111827;
+      --color-muted: #4b5563;
+      --color-accent: #0f4c81;
+      --color-accent-contrast: #ffffff;
+      --color-border: #d1d5db;
+      --color-focus: #0f4c81;
+      --radius-md: 0.75rem;
+      --radius-lg: 1rem;
+      --shadow-soft: 0 10px 30px rgba(17, 24, 39, 0.08);
+      --max-width: 1440px;
+      --header-height: 4.25rem;
+      --space-section: 5rem;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Space Grotesk", "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--color-text);
+      background-color: var(--color-bg);
+      line-height: 1.5;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+      height: auto;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    a:focus-visible,
+    button:focus-visible {
+      outline: 3px solid var(--color-focus);
+      outline-offset: 3px;
+      border-radius: 0.4rem;
+    }
+
+    .skip-link {
+      position: absolute;
+      left: 1rem;
+      top: -3rem;
+      z-index: 1000;
+      padding: 0.6rem 0.9rem;
+      border-radius: 0.5rem;
+      background: #111827;
+      color: #ffffff;
+      text-decoration: none;
+      transition: top 0.2s ease;
+    }
+
+    .skip-link:focus {
+      top: 0.8rem;
+    }
+
+    header .container,
+    main .container,
+    footer .container {
+      width: min(calc(100% - 40px), var(--max-width));
+      margin-inline: auto;
+    }
+
+    @media (min-width: 768px) {
+      header .container,
+      main .container,
+      footer .container {
+        width: min(calc(100% - 48px), var(--max-width));
+      }
+    }
+
+    @media (min-width: 1024px) {
+      header .container,
+      main .container,
+      footer .container {
+        width: min(calc(100% - 64px), var(--max-width));
+      }
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      min-height: var(--header-height);
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(17, 24, 39, 0.08);
+    }
+
+    .site-header__inner {
+      min-height: var(--header-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .brand {
+      text-decoration: none;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      color: #0f172a;
+      white-space: nowrap;
+    }
+
+    .site-nav {
+      display: none;
+    }
+
+    .site-nav__list {
+      list-style: none;
+      display: flex;
+      gap: 1rem;
+      margin: 0;
+      padding: 0;
+    }
+
+    .site-nav__link {
+      text-decoration: none;
+      color: #334155;
+      font-weight: 500;
+    }
+
+    .menu-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.6rem;
+      height: 2.6rem;
+      border-radius: 0.6rem;
+      border: 1px solid var(--color-border);
+      background: #ffffff;
+      color: #0f172a;
+      cursor: pointer;
+    }
+
+    .menu-toggle__icon {
+      width: 1.1rem;
+      height: 0.14rem;
+      background: currentColor;
+      position: relative;
+      border-radius: 1rem;
+    }
+
+    .menu-toggle__icon::before,
+    .menu-toggle__icon::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      width: 1.1rem;
+      height: 0.14rem;
+      background: currentColor;
+      border-radius: 1rem;
+    }
+
+    .menu-toggle__icon::before {
+      top: -0.36rem;
+    }
+
+    .menu-toggle__icon::after {
+      top: 0.36rem;
+    }
+
+    .mobile-menu {
+      display: none;
+      border-top: 1px solid rgba(17, 24, 39, 0.08);
+      background: #ffffff;
+    }
+
+    .mobile-menu.is-open {
+      display: block;
+    }
+
+    .mobile-menu__inner {
+      padding: 0.85rem 0 1rem;
+      color: var(--color-muted);
+      font-size: 0.95rem;
+    }
+
+    main {
+      display: block;
+    }
+
+    .hero {
+      padding: calc(var(--space-section) + 0.5rem) 0 var(--space-section);
+      scroll-margin-top: calc(var(--header-height) + 1rem);
+    }
+
+    .hero__layout {
+      display: grid;
+      gap: 2.25rem;
+      align-items: center;
+    }
+
+    .hero__label {
+      display: inline-block;
+      margin: 0 0 0.9rem;
+      font-size: 0.84rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-accent);
+    }
+
+    .hero h1 {
+      margin: 0;
+      max-width: 18ch;
+      font-size: clamp(2rem, 4.3vw, 4rem);
+      line-height: 1.05;
+      text-wrap: balance;
+      letter-spacing: -0.02em;
+    }
+
+    .hero__media {
+      border-radius: 1.1rem;
+      overflow: clip;
+      aspect-ratio: 16 / 9;
+      padding: 0;
+    }
+
+    .hero-video {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .hero-video-trigger {
+      position: absolute;
+      inset: 0;
+      border: 0;
+      background: transparent;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+      display: block;
+    }
+
+    .hero-video-thumbnail {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+
+    .hero-video-overlay {
+      position: absolute;
+      inset: 0;
+      background: transparent;
+    }
+
+    .hero-video-play {
+      position: absolute;
+      left: 50%;
+      top: 66.666%;
+      transform: translate(-50%, -50%);
+      width: 4.2rem;
+      height: 4.2rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      background: rgba(255, 255, 255, 0.92);
+      display: grid;
+      place-items: center;
+    }
+
+    .hero-video-play__icon {
+      width: 0;
+      height: 0;
+      border-top: 0.55rem solid transparent;
+      border-bottom: 0.55rem solid transparent;
+      border-left: 0.9rem solid #0f4c81;
+      margin-left: 0.16rem;
+    }
+
+    .hero-video-trigger:hover .hero-video-play,
+    .hero-video-trigger:focus-visible .hero-video-play {
+      background: #ffffff;
+      border-color: #ffffff;
+    }
+
+    .hero-video-embed {
+      width: 100%;
+      height: 100%;
+    }
+
+    .hero-video-embed iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+
+    .hero-video.is-active .hero-video-trigger {
+      display: none;
+    }
+
+    .hero-video.is-active .hero-video-embed {
+      display: block;
+    }
+
+    .hero-video-trigger:focus-visible {
+      z-index: 1;
+      outline-offset: -6px;
+    }
+
+    .site-footer {
+      border-top: 1px solid rgba(17, 24, 39, 0.1);
+      padding: 1.25rem 0;
+      color: var(--color-muted);
+      font-size: 0.92rem;
+    }
+
+    .client-logos {
+      padding: 0 0 var(--space-section);
+    }
+
+    .client-logos__label {
+      margin: 0 0 1rem;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+    }
+
+    .client-logos__list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.85rem;
+    }
+
+    .client-logos__item {
+      border: 1px solid rgba(17, 24, 39, 0.08);
+      border-radius: var(--radius-md);
+      background: #ffffff;
+      min-height: 76px;
+      display: grid;
+      place-items: center;
+      padding: 0.75rem;
+    }
+
+    .client-logos__link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 48px;
+    }
+
+    .client-logos__img {
+      max-height: 34px;
+      width: 100%;
+      object-fit: contain;
+      filter: grayscale(1);
+      opacity: 0.8;
+    }
+
+    .client-logos__link:hover .client-logos__img,
+    .client-logos__link:focus-visible .client-logos__img {
+      opacity: 1;
+    }
+
+    @media (min-width: 640px) {
+      .client-logos__list {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .client-logos__list {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 960px) {
+      .site-nav {
+        display: block;
+      }
+
+      .menu-toggle {
+        display: none;
+      }
+
+      .hero__layout {
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: 3.2rem;
+      }
+
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Jerzy Zientkowski",
+      "url": "https://zientkowski.pl/",
+      "image": "https://zientkowski.pl/assets/img/main_bg.jpg",
+      "jobTitle": "Mówca biznesowy",
+      "sameAs": [
+        "https://www.linkedin.com/in/jerzyzientkowski",
+        "https://www.youtube.com/@jerzy.zientkowski"
+      ],
+      "knowsAbout": [
+        "Wystąpienia publiczne",
+        "Komunikacja biznesowa",
+        "Storytelling"
+      ]
+    }
+  </script>
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Jerzy Zientkowski",
+      "url": "https://zientkowski.pl/",
+      "inLanguage": "pl-PL"
+    }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Przejdź do treści głównej</a>
+
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/" aria-label="Strona główna">
+        <img class="brightness-0 max-w-[150px]" src="/assets/img/logo_main.png" alt="Logo Strony Jerzego Zientkowskiego">
+      </a>
+
+      <!-- Desktop navigation placeholder -->
+      <nav class="site-nav" aria-label="Nawigacja główna">
+        <ul class="site-nav__list">
+          <li><a class="site-nav__link" href="#">[NAV 1]</a></li>
+          <li><a class="site-nav__link" href="#">[NAV 2]</a></li>
+          <li><a class="site-nav__link" href="#">[NAV 3]</a></li>
+        </ul>
+      </nav>
+
+      <!-- Mobile menu trigger (gotowe pod późniejszą rozbudowę) -->
+      <button
+        class="menu-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        data-menu-toggle
+      >
+        <span class="sr-only">Otwórz menu</span>
+        <span class="menu-toggle__icon" aria-hidden="true"></span>
+      </button>
+    </div>
+
+    <div class="mobile-menu" id="mobile-menu" hidden>
+      <div class="container mobile-menu__inner">
+        Menu mobilne zostanie uzupełnione w kolejnym etapie.
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="hero" aria-labelledby="hero-heading">
+      <div class="container hero__layout">
+        <div class="hero__content">
+          <p class="hero__label">Jerzy Zientkowski</p>
+            <h1 id="hero-heading">
+            <span style="font-weight: 300; color: var(--color-accent);">Z humorem...</span><br>
+            pozbawiam złudzeń,<br>nie pozbawiając marzeń.
+            </h1>
+        </div>
+
+        <div class="hero__media">
+          <div class="hero-video" data-hero-video data-video-id="m8lllx-xLIc">
+            <button class="hero-video-trigger" type="button" aria-label="Odtwórz fragment wystąpienia Jerzego Zientkowskiego">
+              <img
+                class="hero-video-thumbnail"
+                src="/assets/img/new_home.png"
+                alt="Jerzy Zientkowski podczas wystąpienia na scenie"
+                width="1200"
+                height="800"
+                fetchpriority="high"
+                decoding="async"
+              >
+              <span class="hero-video-overlay" aria-hidden="true"></span>
+              <span class="hero-video-play" aria-hidden="true">
+                <span class="hero-video-play__icon"></span>
+              </span>
+            </button>
+            <div class="hero-video-embed" hidden></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="client-logos" aria-label="Logotypy klientów">
+      <div class="container">
+        <p class="client-logos__label">Zaufali m.in.</p>
+        <ul class="client-logos__list">
+          <li class="client-logos__item">
+            <a class="client-logos__link" href="#">
+              <img class="client-logos__img" src="/assets/img/logos/logo1.svg" alt="Logo firmy 1" loading="lazy" decoding="async">
+            </a>
+          </li>
+          <li class="client-logos__item">
+            <a class="client-logos__link" href="#">
+              <img class="client-logos__img" src="/assets/img/logos/logo2.svg" alt="Logo firmy 2" loading="lazy" decoding="async">
+            </a>
+          </li>
+          <li class="client-logos__item">
+            <a class="client-logos__link" href="#">
+              <img class="client-logos__img" src="/assets/img/logos/logo3.svg" alt="Logo firmy 3" loading="lazy" decoding="async">
+            </a>
+          </li>
+          <li class="client-logos__item">
+            <a class="client-logos__link" href="#">
+              <img class="client-logos__img" src="/assets/img/logos/logo4.svg" alt="Logo firmy 4" loading="lazy" decoding="async">
+            </a>
+          </li>
+          <li class="client-logos__item">
+            <a class="client-logos__link" href="#">
+              <img class="client-logos__img" src="/assets/img/logos/logo5.svg" alt="Logo firmy 5" loading="lazy" decoding="async">
+            </a>
+          </li>
+          <li class="client-logos__item">
+            <a class="client-logos__link" href="#">
+              <img class="client-logos__img" src="/assets/img/logos/logo6.svg" alt="Logo firmy 6" loading="lazy" decoding="async">
+            </a>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer mt-auto bg-light py-8 border-t border-gray-200/60">
+    <div class="container mx-auto px-6">
+      <div class="text-center text-gray-600">
+        <p>&copy; 2011-2025 Jerzy Zientkowski. Wszelkie prawa zastrzeżone.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Site-wide JS: podłącz tutaj skrypty globalne (defer) -->
+  <script>
+    (function () {
+      var toggle = document.querySelector("[data-menu-toggle]");
+      var menu = document.getElementById("mobile-menu");
+      if (!toggle || !menu) return;
+
+      var toggleMenu = function () {
+        var expanded = toggle.getAttribute("aria-expanded") === "true";
+        toggle.setAttribute("aria-expanded", String(!expanded));
+        menu.hidden = expanded;
+        menu.classList.toggle("is-open", !expanded);
+      };
+
+      toggle.addEventListener("click", toggleMenu);
+    })();
+
+    (function () {
+      var heroVideo = document.querySelector("[data-hero-video]");
+      if (!heroVideo) return;
+
+      var trigger = heroVideo.querySelector(".hero-video-trigger");
+      var embed = heroVideo.querySelector(".hero-video-embed");
+      if (!trigger || !embed) return;
+
+      var isLoaded = false;
+      var YOUTUBE_VIDEO_ID = "m8lllx-xLIc";
+
+      trigger.addEventListener("click", function () {
+        if (isLoaded) return;
+
+        var iframe = document.createElement("iframe");
+        iframe.src = "https://www.youtube.com/embed/" + encodeURIComponent(YOUTUBE_VIDEO_ID) + "?autoplay=1&rel=0&modestbranding=1&playsinline=1";
+        iframe.title = "Fragment wystąpienia Jerzego Zientkowskiego na YouTube";
+        iframe.loading = "lazy";
+        iframe.referrerPolicy = "strict-origin-when-cross-origin";
+        iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+        iframe.setAttribute("allowfullscreen", "");
+
+        embed.hidden = false;
+        embed.appendChild(iframe);
+        heroVideo.classList.add("is-active");
+        isLoaded = true;
+      });
+    })();
+
+  </script>
+</body>
+</html>
