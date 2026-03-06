@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Karol Nieciecki — Konsultant biznesowy | Trener | Psycholog Biznesu</title>
+  <meta name="description" content="Karol Nieciecki — konsultant biznesowy, trener, psycholog biznesu. Doświadczenie w rozwoju biznesu, wsparciu aptek i sprzedaży (farmacja, B2B)." />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Karol Nieciecki — Konsultant biznesowy | Trener | Psycholog Biznesu" />
+  <meta property="og:description" content="Konsulting i szkolenia: rozwój biznesu, sprzedaż, HR, zarządzanie zmianą. Białystok / Polska." />
+
+  <style>
+    :root{
+      --bg:#0b1020;
+      --card:#0f1730;
+      --text:#e8ecff;
+      --muted:#aab3d6;
+      --line:rgba(255,255,255,.10);
+      --accent:#7c5cff;
+      --accent2:#32d3ff;
+      --shadow: 0 20px 60px rgba(0,0,0,.35);
+      --radius: 18px;
+      --max: 980px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background:
+        radial-gradient(1000px 700px at 15% 10%, rgba(124,92,255,.25), transparent 55%),
+        radial-gradient(900px 650px at 90% 15%, rgba(50,211,255,.18), transparent 55%),
+        radial-gradient(1200px 800px at 50% 100%, rgba(255,255,255,.06), transparent 60%),
+        var(--bg);
+      color:var(--text);
+      line-height:1.5;
+    }
+    a{color:inherit}
+    .wrap{max-width:var(--max); margin:0 auto; padding:28px 18px 56px}
+    header{
+      display:flex; gap:18px; align-items:flex-start; justify-content:space-between;
+      padding:22px;
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .title{display:flex; flex-direction:column; gap:10px}
+    h1{margin:0; font-size: clamp(28px, 4vw, 42px); letter-spacing:-.02em}
+    .subtitle{margin:0; font-size: 16px; color: var(--muted)}
+    .pillrow{display:flex; flex-wrap:wrap; gap:10px; margin-top:6px}
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 12px; border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      color: var(--muted);
+      font-size: 13px;
+      white-space:nowrap;
+    }
+    .actions{display:flex; flex-direction:column; gap:10px; align-items:flex-end}
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:10px;
+      padding:10px 14px; border-radius:12px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      text-decoration:none;
+      font-weight:600;
+      font-size:14px;
+      transition: transform .12s ease, background .12s ease;
+      min-width: 170px;
+    }
+    .btn:hover{transform: translateY(-1px); background: rgba(255,255,255,.06)}
+    .btn.primary{
+      border-color: rgba(124,92,255,.45);
+      background: linear-gradient(135deg, rgba(124,92,255,.40), rgba(50,211,255,.14));
+    }
+    main{margin-top:18px; display:grid; grid-template-columns: 1.2fr .8fr; gap:18px}
+    @media (max-width: 860px){
+      header{flex-direction:column}
+      .actions{align-items:stretch}
+      .btn{min-width:unset; width:100%}
+      main{grid-template-columns:1fr}
+    }
+    section{
+      padding:18px 18px;
+      border:1px solid var(--line);
+      background: rgba(15,23,48,.55);
+      border-radius: var(--radius);
+      box-shadow: 0 14px 40px rgba(0,0,0,.25);
+    }
+    h2{margin:0 0 10px; font-size:18px; letter-spacing:-.01em}
+    p{margin:0 0 10px; color: var(--muted)}
+    .list{display:flex; flex-direction:column; gap:12px; margin-top:10px}
+    .item{
+      padding:14px 14px;
+      border:1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255,255,255,.03);
+    }
+    .item .top{
+      display:flex; flex-wrap:wrap; gap:10px; justify-content:space-between; align-items:baseline;
+    }
+    .role{font-weight:700; color: var(--text)}
+    .org{color: var(--muted); font-weight:600}
+    .meta{color: var(--muted); font-size: 13px}
+    .grid2{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+    @media (max-width: 520px){ .grid2{grid-template-columns:1fr} }
+    footer{
+      margin-top:18px;
+      color: rgba(170,179,214,.75);
+      font-size: 12px;
+      text-align:center;
+    }
+    .kicker{
+      font-size: 12px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: rgba(170,179,214,.75);
+      margin-bottom: 8px;
+    }
+    .hr{height:1px; background: var(--line); margin: 14px 0}
+  </style>
+
+  <!-- Schema.org (Person) -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"Person",
+    "name":"Karol Nieciecki",
+    "jobTitle":"Konsultant biznesowy | Trener | Psycholog Biznesu",
+    "address":{
+      "@type":"Place",
+      "address":{"@type":"PostalAddress","addressLocality":"Białystok","addressRegion":"Podlaskie","addressCountry":"PL"}
+    },
+    "alumniOf":[
+      {"@type":"CollegeOrUniversity","name":"Uniwersytet WSB Merito Warszawa"},
+      {"@type":"CollegeOrUniversity","name":"WSFiZ w Białymstoku"}
+    ],
+    "worksFor":{"@type":"Organization","name":"OZGA Group"},
+    "sameAs":["https://www.linkedin.com/in/karol-nieciecki-79b75a262/"]
+  }
+  </script>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <div class="title">
+        <div class="kicker">wizytówka</div>
+        <h1>Karol Nieciecki</h1>
+        <p class="subtitle">Konsultant biznesowy • Trener • Psycholog Biznesu</p>
+
+        <div class="pillrow">
+          <div class="pill">📍 Białystok, Podlaskie, Polska</div>
+          <div class="pill">🏢 OZGA Group</div>
+          <div class="pill">💊 15+ lat doświadczeń w obszarze aptek/farmacji</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <a class="btn primary" href="https://www.linkedin.com/in/karol-nieciecki-79b75a262/" target="_blank" rel="noopener">LinkedIn</a>
+        <!-- UZUPEŁNIJ poniżej mail/telefon, jeśli chcesz -->
+        <a class="btn" href="#kontakt">Kontakt</a>
+      </div>
+    </header>
+
+    <main>
+      <section>
+        <h2>O mnie</h2>
+        <p>
+          Wspieram firmy w rozwoju biznesu poprzez uporządkowanie procesów, praktyczne działania sprzedażowe
+          oraz szkolenia. Łączę perspektywę biznesu i psychologii w pracy z ludźmi oraz organizacją.
+        </p>
+        <p>
+          Doświadczenie obejmuje m.in. rynek farmaceutyczny i współpracę z aptekami (wsparcie rozwoju,
+          sprzedaż, wdrożenia, praca z zespołami).
+        </p>
+
+        <div class="hr"></div>
+
+        <h2>Zakres współpracy</h2>
+        <div class="grid2">
+          <div class="item">
+            <div class="role">Konsulting biznesowy</div>
+            <div class="meta">rozwiązania “od strategii do wdrożenia”</div>
+          </div>
+          <div class="item">
+            <div class="role">Rozwój sprzedaży</div>
+            <div class="meta">proces, standardy pracy, wdrożenia</div>
+          </div>
+          <div class="item">
+            <div class="role">Szkolenia i warsztaty</div>
+            <div class="meta">dla zespołów i liderów</div>
+          </div>
+          <div class="item">
+            <div class="role">Psychologia w biznesie</div>
+            <div class="meta">komunikacja, motywacja, zmiana</div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Doświadczenie</h2>
+        <div class="list">
+          <div class="item">
+            <div class="top">
+              <div>
+                <div class="role">Ekspert ds. rozwoju biznesu</div>
+                <div class="org">OZGA Group</div>
+              </div>
+              <div class="meta">2025 – obecnie</div>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="top">
+              <div>
+                <div class="role">Koordynator ds. wsparcia aptek</div>
+                <div class="org">Grupa NEUCA</div>
+              </div>
+              <div class="meta">2016 – 2025 • tryb hybrydowy</div>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="top">
+              <div>
+                <div class="role">Przedstawiciel medyczny</div>
+                <div class="org">Boehringer Ingelheim</div>
+              </div>
+              <div class="meta">2011 – 2016 • Warszawa</div>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="top">
+              <div>
+                <div class="role">Przedstawiciel naukowo-medyczny</div>
+                <div class="org">Polorto</div>
+              </div>
+              <div class="meta">2008 – 2011</div>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="top">
+              <div>
+                <div class="role">Doradca biznesowy</div>
+                <div class="org">Polkomtel Sp. z o.o.</div>
+              </div>
+              <div class="meta">2006 – 2008</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hr"></div>
+
+        <h2>Wykształcenie</h2>
+        <div class="list">
+          <div class="item">
+            <div class="top">
+              <div>
+                <div class="role">Licencjat — Psychologia w biznesie</div>
+                <div class="org">Uniwersytet WSB Merito Warszawa</div>
+              </div>
+              <div class="meta">2020 – 2023</div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="top">
+              <div>
+                <div class="role">Gospodarka przestrzenna</div>
+                <div class="org">WSFiZ w Białymstoku</div>
+              </div>
+              <div class="meta">2000 – 2003</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <section id="kontakt" style="margin-top:18px;">
+      <h2>Kontakt</h2>
+      <p>Najprościej przez LinkedIn. </p>
+
+      <div class="list">
+        <div class="item">
+          <div class="top">
+            <div>
+              <div class="role">LinkedIn</div>
+              <div class="meta"><a href="https://www.linkedin.com/in/karol-nieciecki-79b75a262/" target="_blank" rel="noopener">linkedin.com/in/karol-nieciecki-79b75a262</a></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="item">
+          <div class="top">
+            <div>
+              <div class="role">E-mail</div>
+              <div class="meta"><a href="mailto:nieciecki22@gmail.com">nieciecki22@gmail.com</a></div>
+            </div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="top">
+            <div>
+              <div class="role">Telefon</div>
+              <div class="meta"><a href="tel:+48 516 823 012">+48 516 823 012</a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      © <span id="y"></span> Karol Nieciecki • Prosta strona-wizytówka
+    </footer>
+  </div>
+
+  <script>
+    document.getElementById("y").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

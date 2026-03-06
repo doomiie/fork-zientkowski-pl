@@ -1,27 +1,73 @@
 <!DOCTYPE html>
 <html lang="pl">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mentoring</title>
   <link rel="preload" as="style" href="/assets/css/app.min.css" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="/assets/css/app.min.css"></noscript>
+  <noscript>
+    <link rel="stylesheet" href="/assets/css/app.min.css">
+  </noscript>
   <link rel="preload" as="style" href="/assets/css/shared.css?v=dev18" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="/assets/css/shared.css?v=dev18"></noscript>
+  <noscript>
+    <link rel="stylesheet" href="/assets/css/shared.css?v=dev18">
+  </noscript>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
   <link rel="icon" type="image/png" href="/assets/img/favicon/favicon-96x96.png" sizes="96x96" />
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon/favicon.svg" />
   <link rel="shortcut icon" href="/assets/img/favicon/favicon.ico" />
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon/apple-touch-icon.png" />
   <link rel="manifest" href="/site.webmanifest" />
-  <style>*{font-family:'Space Grotesk',sans-serif}.bg-light{background-color:#F9F9F9}.text-dark{color:rgb(4,3,39)}.bg-dark{background-color:rgb(4,3,39)!important}body{position:relative;background:#000;min-height:100vh;}body::before{content:'';position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:-1}.page-bg{position:fixed;inset:0;background:url('/assets/img/wystapienia.webp') left/cover no-repeat;z-index:-2;pointer-events:none}</style>
+  <style>
+    * {
+      font-family: 'Space Grotesk', sans-serif
+    }
+
+    .bg-light {
+      background-color: #F9F9F9
+    }
+
+    .text-dark {
+      color: rgb(4, 3, 39)
+    }
+
+    .bg-dark {
+      background-color: rgb(4, 3, 39) !important
+    }
+
+    body {
+      position: relative;
+      background: #000;
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .45);
+      z-index: -1
+    }
+
+    .page-bg {
+      position: fixed;
+      inset: 0;
+      background: url('/assets/img/wystapienia.webp') left/cover no-repeat;
+      z-index: -2;
+      pointer-events: none
+    }
+  </style>
   <link rel="canonical" href="https://zientkowski.pl/mentoring.html" />
   <!-- Consent: default denied for analytics/marketing (GCM v2) -->
-  <script>window.dataLayer=window.dataLayer||[];window.dataLayer.push({consent:"default",ad_storage:"denied",analytics_storage:"denied",ad_user_data:"denied",ad_personalization:"denied",functionality_storage:"granted",security_storage:"granted"});</script>
+  <script>window.dataLayer = window.dataLayer || []; window.dataLayer.push({ consent: "default", ad_storage: "denied", analytics_storage: "denied", ad_user_data: "denied", ad_personalization: "denied", functionality_storage: "granted", security_storage: "granted" });</script>
   <link rel="stylesheet" href="/assets/css/consent.css?v=dev3">
-  <script defer src="/assets/js/consent.js?v=dev3"></script></head>
+  <script defer src="/assets/js/consent.js?v=dev3"></script>
+</head>
+
 <body class="min-h-screen flex flex-col">
   <div class="page-bg" aria-hidden="true"></div>
   <!-- Header -->
@@ -30,77 +76,166 @@
       <a href="/" class="flex items-center gap-3 font-bold">
         <img id="siteHeaderLogo" src="/assets/img/logo_main.png" alt="Logo" class=" max-w-[140px]">
       </a>
-     
+
     </div>
   </header>
 
 
 
-   <main class="flex-1 flex flex-col min-h-screen">
+  <main class="flex-1 flex flex-col min-h-screen">
     <!-- Hero only (copied from lp/lp2.html) -->
     <section id="hero" class="relative flex-1 flex items-center overflow-hidden">
       <div class="relative z-10 w-full">
         <div class="max-w-[1100px] mx-auto px-6 pt-28 pb-16">
           <div class="max-w-2xl text-white">
-            <h1 class="text-3xl sm:text-5xl md:text-6xl font-extrabold leading-tight">Mentoring indywidualny <small class="text-xs"> i nie tylko</small></h1>
-            <p class="mt-4 text-xl sm:text-lg text-white/90">Już wkrótce więcej informacji - bo uaktualniamy stronę...</p>
+            <h1 class="text-3xl sm:text-5xl md:text-6xl font-extrabold leading-tight">Mentoring indywidualny <small
+                class="text-xs"> i nie tylko</small></h1>
+            <p class="mt-4 text-xl sm:text-lg text-white/90">Już wkrótce więcej informacji - bo uaktualniamy stronę...
+            </p>
             <div class="mt-8 flex flex-wrap gap-4">
-              <a href="/docs/2026 mentoring v9.pdf" class="inline-flex items-center justify-center px-6 py-3 text-base font-semibold rounded-2xl bg-white text-brand-alert shadow-lg shadow-black/20 hover:-translate-y-0.5 transition">
+              <a href="/docs/2026 mentoring v9.pdf"
+                class="inline-flex items-center justify-center px-6 py-3 text-base font-semibold rounded-2xl bg-white text-brand-alert shadow-lg shadow-black/20 hover:-translate-y-0.5 transition">
                 A tymczasem zapraszam do kontaktu
-              </a> 
-              <a href="/docs/2026 mentoring v9.pdf" class="inline-flex items-center justify-center px-6 py-3 text-base font-semibold rounded-2xl border border-white/60 text-white hover:bg-white/10 transition">
+              </a>
+              <a href="/docs/2026 mentoring v9.pdf"
+                class="inline-flex items-center justify-center px-6 py-3 text-base font-semibold rounded-2xl border border-white/60 text-white hover:bg-white/10 transition">
                 PDF z opisem mentoringu
               </a>
-              
-              <a href="/sesja.html" class="inline-flex items-center justify-center px-6 py-3 text-base font-semibold rounded-2xl border border-white/60 text-white hover:bg-white/10 transition">
+
+              <a href="/sesja.html"
+                class="inline-flex items-center justify-center px-6 py-3 text-base font-semibold rounded-2xl border border-white/60 text-white hover:bg-white/10 transition">
                 Umów sesję
               </a>
+              <a id="buyMentoringBtn" href="#kontakt" data-open-popup
+                class="hidden inline-flex items-center justify-center px-6 py-3 text-base font-semibold rounded-2xl border border-white/60 text-white hover:-translate-y-0.5 transition">
+                Kup mentoringi z AZM5
+              </a>
+
             </div>
           </div>
         </div>
       </div>
     </section>
-       <!-- Footer -->
+    <!-- Footer -->
     <footer class="bg-transparent text-white  mt-8">
-        <div class="container mx-auto px-4">
-            <div class="flex justify-center space-x-4 mb-6">
-                <a href="https://www.linkedin.com/in/jerzyzientkowski/"
-                    class="p-2 rounded-full hover:bg-gray-100 transition-colors">
-                    <i data-lucide="linkedin" class="w-5 h-5 text-white hover:text-accent"></i>
-                </a>
-                <a href="https://www.instagram.com/jerzyzientkowskiofficial/"
-                    class="p-2 rounded-full hover:bg-gray-100 transition-colors">
-                    <i data-lucide="instagram" class="w-5 h-5 text-white   hover:text-accent"></i>
-                </a>
-                <a href="https://www.facebook.com/jerzy.zientkowski"
-                    class="p-2 rounded-full hover:bg-gray-100 transition-colors">
-                    <i data-lucide="facebook" class="w-5 h-5 text-white hover:text-accent"></i>
-                </a>
-            </div>
-            <div class="text-center text-white pt-6 border-t border-gray-200">
-                <p class="mb-4">&copy; 2011-2012-2025 Jerzy Zientkowski. Wszelkie prawa zastrzeżone</p>
-                <div class="flex justify-center items-center text-sm hidden">
-                    <a href="#" class="d-none hover:text-accent transition-colors">Polityka prywatności</a>
-                    <span class="mx-2 text-gray-300">|</span>
-                    <a href="#" class="d-none hover:text-accent transition-colors">Regulamin</a>
-                </div>
-            </div>
+      <div class="container mx-auto px-4">
+        <div class="flex justify-center space-x-4 mb-6">
+          <a href="https://www.linkedin.com/in/jerzyzientkowski/"
+            class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+            <i data-lucide="linkedin" class="w-5 h-5 text-white hover:text-accent"></i>
+          </a>
+          <a href="https://www.instagram.com/jerzyzientkowskiofficial/"
+            class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+            <i data-lucide="instagram" class="w-5 h-5 text-white   hover:text-accent"></i>
+          </a>
+          <a href="https://www.facebook.com/jerzy.zientkowski"
+            class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+            <i data-lucide="facebook" class="w-5 h-5 text-white hover:text-accent"></i>
+          </a>
         </div>
+        <div class="text-center text-white pt-6 border-t border-gray-200">
+          <p class="mb-4">&copy; 2011-2012-2026 Jerzy Zientkowski. Wszelkie prawa zastrzeżone</p>
+          <div class="flex justify-center items-center text-sm hidden">
+            <a href="#" class="d-none hover:text-accent transition-colors">Polityka prywatności</a>
+            <span class="mx-2 text-gray-300">|</span>
+            <a href="#" class="d-none hover:text-accent transition-colors">Regulamin</a>
+          </div>
+        </div>
+      </div>
     </footer>
   </main>
 
   <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   <script>
     // Update current year
-    (function(){
+    (function () {
       var y = document.getElementById('year');
       if (y) y.textContent = new Date().getFullYear();
     })();
-    document.addEventListener('DOMContentLoaded', function(){
+
+    document.addEventListener('DOMContentLoaded', function () {
       if (window.lucide && typeof window.lucide.createIcons === 'function') {
         window.lucide.createIcons();
       }
-    })();
+
+      const params = new URLSearchParams(window.location.search);
+      const customer = params.get('customer');
+      const buyBtn = document.getElementById('buyMentoringBtn');
+
+      if (buyBtn && customer === 'AZM5') {
+        buyBtn.classList.remove('hidden');
+      }
+    });
+
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const overlay = document.getElementById('popupOverlay');
+      const closeBtn = document.getElementById('closePopup');
+
+      function openModal(e) {
+        if (e) e.preventDefault();
+        if (!overlay) return;
+        overlay.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+
+        if (typeof iFrameResize === 'function') {
+          iFrameResize({ log: false, checkOrigin: false }, '.wtl-responsive-iframe');
+        }
+      }
+
+      function closeModal() {
+        if (!overlay) return;
+        overlay.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+      }
+
+      document.addEventListener('click', function (e) {
+        const trigger = e.target.closest('[data-open-popup]');
+        if (!trigger) return;
+        openModal(e);
+      });
+
+      closeBtn && closeBtn.addEventListener('click', closeModal);
+      overlay && overlay.addEventListener('click', function (e) {
+        if (e.target === overlay) closeModal();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeModal();
+      });
+    });
+
+
+
   </script>
 </body>
+<div id="popupOverlay" class="fixed inset-0 bg-black/60 z-[10050] hidden">
+  <div class="min-h-full flex items-center justify-center p-4">
+    <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-auto z-[10060]">
+      <button id="closePopup" aria-label="Zamknij"
+        class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 z-[10070]">
+        ✕
+      </button>
+
+      <div class="p-4">
+        <h2 class="text-lg md:text-2xl font-bold text-dark mb-3">Kup mentoringi z AZM5, 790zł+VAT/sesja</h2>
+
+        <style>
+          .wtl-responsive-iframe {
+            width: 1px;
+            min-width: 100%;
+          }
+        </style>
+        <script src="https://kotryszientkowski.elms.pl/assets/js/iframe-resizer-embed.js"></script>
+
+        <iframe class="wtl-responsive-iframe"
+          src="https://kotryszientkowski.elms.pl/assets/js/s.php?id=8e296a067a37563370ded05f5a3bf3ec" frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 </html>
