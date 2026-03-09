@@ -1,0 +1,12 @@
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+RewriteEngine On
+
+# Public download endpoint (hash-based) served by PHP controller.
+RewriteRule ^download/([A-Za-z0-9_-]+)(?:/(.*))?$ serve.php?hash=$1&name=$2 [QSA,L,NC]
+
+# Never expose storage directory directly.
+RewriteRule ^files(?:/|$) - [F,L,NC]
+</IfModule>
+

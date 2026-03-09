@@ -1,10 +1,12 @@
 ﻿<!DOCTYPE html>
 <html lang="pl">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Jerzy Zientkowski | Mówca biznesowy i trener komunikacji</title>
-  <meta name="description" content="Pomagam liderom i zespołom mówić jasno, przekonująco i z humorem, aby wystąpienia realnie wspierały sprzedaż, zaufanie i wyniki.">
+  <meta name="description"
+    content="Pomagam liderom i zespołom mówić jasno, przekonująco i z humorem, aby wystąpienia realnie wspierały sprzedaż, zaufanie i wyniki.">
   <meta name="robots" content="index, follow">
 
   <!-- Canonical + hreflang: dla statycznego projektu prostsze w utrzymaniu są osobne pliki HTML (pl: /, en: /index-en.html) -->
@@ -18,7 +20,8 @@
   <meta property="og:locale" content="pl_PL">
   <meta property="og:site_name" content="Jerzy Zientkowski">
   <meta property="og:title" content="Jerzy Zientkowski | Mówca biznesowy i trener komunikacji">
-  <meta property="og:description" content="Pomagam liderom i zespołom mówić jasno, przekonująco i z humorem, aby wystąpienia realnie wspierały sprzedaż, zaufanie i wyniki.">
+  <meta property="og:description"
+    content="Pomagam liderom i zespołom mówić jasno, przekonująco i z humorem, aby wystąpienia realnie wspierały sprzedaż, zaufanie i wyniki.">
   <meta property="og:url" content="https://zientkowski.pl/">
   <meta property="og:image" content="https://zientkowski.pl/assets/img/main_bg.jpg">
   <meta property="og:image:alt" content="Jerzy Zientkowski podczas wystąpienia na scenie">
@@ -26,7 +29,8 @@
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Jerzy Zientkowski | Mówca biznesowy i trener komunikacji ">
-  <meta name="twitter:description" content="Pomagam liderom i zespołom mówić jasno, przekonująco i z humorem, aby wystąpienia realnie wspierały sprzedaż, zaufanie i wyniki.">
+  <meta name="twitter:description"
+    content="Pomagam liderom i zespołom mówić jasno, przekonująco i z humorem, aby wystąpienia realnie wspierały sprzedaż, zaufanie i wyniki.">
   <meta name="twitter:image" content="https://zientkowski.pl/assets/img/main_bg.jpg">
 
   <!-- Favicons + manifest -->
@@ -40,7 +44,9 @@
   <link rel="preload" href="/assets/fonts/SpaceGrotesk-PL.woff2" as="font" type="font/woff2" crossorigin>
   <!-- Główny CSS: preload + onload (non-blocking) -->
   <link rel="preload" href="/assets/css/app.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="/assets/css/app.css"></noscript>
+  <noscript>
+    <link rel="stylesheet" href="/assets/css/app.css">
+  </noscript>
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Shared CSS: podłącz tutaj wspólne style dla wielu stron -->
@@ -76,7 +82,9 @@
       --space-section: 5rem;
     }
 
-    *, *::before, *::after {
+    *,
+    *::before,
+    *::after {
       box-sizing: border-box;
     }
 
@@ -136,6 +144,7 @@
     }
 
     @media (min-width: 768px) {
+
       header .container,
       main .container,
       footer .container {
@@ -144,6 +153,7 @@
     }
 
     @media (min-width: 1024px) {
+
       header .container,
       main .container,
       footer .container {
@@ -408,54 +418,102 @@
     }
 
     .zaufanie h2 {
-      margin: 0 0 1.25rem;
+      margin: 0 0 1rem;
       font-size: clamp(1.35rem, 2.1vw, 1.8rem);
       line-height: 1.2;
       letter-spacing: -0.01em;
       color: var(--color-text);
     }
 
-    .zaufanie__grid {
-      list-style: none;
-      margin: 0;
-      padding: 0;
+    .logo-slider {
+      height: 120px;
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0.9rem;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 0.75rem;
     }
 
-    .zaufanie__item {
-      min-height: 74px;
-      display: grid;
-      place-items: center;
-      padding: 0.7rem;
-      border-radius: var(--radius-md);
-      background: #fff;
-      border: 1px solid rgba(17, 24, 39, 0.08);
+    .logo-slider__viewport {
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      align-items: center;
     }
 
-    .zaufanie__item img {
-      max-height: 48px;
+    .logo-slider__track {
+      display: inline-flex;
+      align-items: center;
+      gap: 48px;
+      width: max-content;
+      animation: zaufanie-marquee 60s linear infinite;
+      will-change: transform;
+    }
+
+    .logo-slider__viewport:hover .logo-slider__track,
+    .logo-slider__viewport:focus-within .logo-slider__track {
+      animation-play-state: paused;
+    }
+
+    .logo-slider__track img {
+      max-height: 50px;
       width: auto;
-      max-width: 100%;
+      max-width: 180px;
       object-fit: contain;
       opacity: 0.8;
-      transition: opacity 0.18s ease;
+      transition: opacity 0.2s ease;
+      flex: 0 0 auto;
     }
 
-    .zaufanie__item:hover img {
+    .logo-slider__track img:hover {
       opacity: 1;
     }
 
-    @media (min-width: 768px) {
-      .zaufanie__grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+    .logo-slider__prev,
+    .logo-slider__next {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 999px;
+      border: 1px solid rgba(17, 24, 39, 0.18);
+      background: #fff;
+      color: #334155;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .logo-slider__prev:hover,
+    .logo-slider__next:hover {
+      background: #f8fafc;
+    }
+
+    .logo-slider__prev:focus-visible,
+    .logo-slider__next:focus-visible {
+      outline: 3px solid var(--color-focus);
+      outline-offset: 2px;
+    }
+
+    @keyframes zaufanie-marquee {
+      from {
+        transform: translateX(0);
+      }
+
+      to {
+        transform: translateX(-50%);
       }
     }
 
-    @media (min-width: 1024px) {
-      .zaufanie__grid {
-        grid-template-columns: repeat(6, minmax(0, 1fr));
+    @media (min-width: 768px) {
+      .logo-slider {
+        height: 150px;
+      }
+
+      .logo-slider__track img {
+        max-height: 70px;
       }
     }
 
@@ -540,7 +598,9 @@
         scroll-behavior: auto;
       }
 
-      *, *::before, *::after {
+      *,
+      *::before,
+      *::after {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
@@ -578,13 +638,15 @@
     }
   </script>
 </head>
+
 <body>
   <a class="skip-link" href="#main-content">Przejdź do treści głównej</a>
 
   <header class="site-header">
     <div class="container site-header__inner">
       <a class="brand" href="/" aria-label="Strona główna">
-        <img class="brightness-0 max-w-[150px]" src="/assets/img/logo_main.png" alt="Logo Strony Jerzego Zientkowskiego">
+        <img class="brightness-0 max-w-[150px]" src="/assets/img/logo_main.png"
+          alt="Logo Strony Jerzego Zientkowskiego">
       </a>
 
       <!-- Desktop navigation placeholder -->
@@ -597,13 +659,7 @@
       </nav>
 
       <!-- Mobile menu trigger (gotowe pod późniejszą rozbudowę) -->
-      <button
-        class="menu-toggle"
-        type="button"
-        aria-expanded="false"
-        aria-controls="mobile-menu"
-        data-menu-toggle
-      >
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" data-menu-toggle>
         <span class="sr-only">Otwórz menu</span>
         <span class="menu-toggle__icon" aria-hidden="true"></span>
       </button>
@@ -621,25 +677,20 @@
       <div class="container hero__layout">
         <div class="hero__content">
           <p class="hero__label">Jerzy Zientkowski</p>
-            <h1 id="hero-heading">
+          <h1 id="hero-heading">
             <span style="font-weight: 300; color: var(--color-accent);">Z humorem...</span><br>
             pozbawiam złudzeń,<br>nie pozbawiając marzeń.
-            </h1>
+          </h1>
         </div>
 
         <div class="hero__media">
           <div class="hero-video" data-hero-video data-video-id="m8lllx-xLIc">
-            <button class="hero-video-trigger" type="button" aria-label="Odtwórz fragment wystąpienia Jerzego Zientkowskiego">
-              <img
-                class="hero-video-thumbnail"
-                src="/assets/img/new_home.png"
-                alt="Jerzy Zientkowski podczas wystąpienia na scenie"
-                width="1200"
-                height="800"
-                fetchpriority="high"
-                decoding="async"
-              >
-              <span class="hero-video-overlay" aria-hidden="true"></span>
+            <button class="hero-video-trigger" type="button"
+              aria-label="Odtwórz fragment wystąpienia Jerzego Zientkowskiego">
+              <img class="hero-video-thumbnail" src="/assets/img/new_home.png"
+                alt="Jerzy Zientkowski podczas wystąpienia na scenie" width="1200" height="800" fetchpriority="high"
+                decoding="async" style="object-fit: contain; object-position: center;">
+                <span class="hero-video-overlay" aria-hidden="true"></span>
               <span class="hero-video-play" aria-hidden="true">
                 <span class="hero-video-play__icon"></span>
               </span>
@@ -653,119 +704,128 @@
     <section class="zaufanie" aria-labelledby="zaufanie-heading">
       <div class="container">
         <h2 id="zaufanie-heading">Zaufali mi</h2>
-        <ul class="zaufanie__grid">
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/4results-logo-white.svg" alt="Logo 4Results Logo White" loading="lazy" decoding="async">
-          </li>
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/alior-logo.png" alt="Logo Alior Logo" loading="lazy" decoding="async">
-          </li>
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/allianz-az-opm-g-iocipc-toi-hor-rgb-aem-web.svg" alt="Logo Allianz Az Opm G Iocipc Toi Hor Rgb Aem Web" loading="lazy" decoding="async">
-          </li>
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/be-media-logo.png" alt="Logo Be Media Logo" loading="lazy" decoding="async">
-          </li>
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/blueskysystem-logomain.png" alt="Logo Blueskysystem Logomain" loading="lazy" decoding="async">
-          </li>
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/briantracy-logo-icon-white-48-48.png" alt="Logo Briantracy Logo Icon White 48 48" loading="lazy" decoding="async">
-          </li>
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/capgemini-capgemini-engineering-logo.svg" alt="Logo Capgemini Capgemini Engineering Logo" loading="lazy" decoding="async">
-          </li>
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/carlsberg-share.png" alt="Logo Carlsberg Share" loading="lazy" decoding="async">
-          </li>
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/colway-logo-footer.png" alt="Logo Colway Logo Footer" loading="lazy" decoding="async">
-          </li>
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/contour-technology-logotyp.svg" alt="Logo Contour Technology Logotyp" loading="lazy" decoding="async">
-          </li>
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/dagma-award-001.png" alt="Logo Dagma Award 001" loading="lazy" decoding="async">
-          </li>
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/ebcg-ebcg-logo-white.svg" alt="Logo Ebcg Ebcg Logo White" loading="lazy" decoding="async">
-          </li>
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/enea-enea-aplikacja-305x202.png" alt="Logo Enea Enea Aplikacja 305X202" loading="lazy" decoding="async">
-          </li>
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/ergo-ergo-logo-munich-re-dam.svg" alt="Logo Ergo Ergo Logo Munich Re Dam" loading="lazy" decoding="async">
-          </li>
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/erif-kruk-logo.png" alt="Logo Erif Kruk Logo" loading="lazy" decoding="async">
-          </li>
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/etisoft-logo-zebra.png" alt="Logo Etisoft Logo Zebra" loading="lazy" decoding="async">
-          </li>
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/festiwalinspiracji-festiwalinspiracji.png" alt="Logo Festiwalinspiracji Festiwalinspiracji" loading="lazy" decoding="async">
-          </li>
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/gea-footer.png" alt="Logo Gea Footer" loading="lazy" decoding="async">
-          </li>
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/gs1pl-apple-touch-icon-114x114.png" alt="Logo Gs1pl Apple Touch Icon 114X114" loading="lazy" decoding="async">
-          </li>
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/gsk-stvg-2-2022-smtlab-17-hess.png" alt="Logo Gsk Stvg 2 2022 Smtlab 17 Hess" loading="lazy" decoding="async">
-          </li>
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/ibcs-techstep-logo-rgb-colour-transparent-640x285.png" alt="Logo Ibcs Techstep Logo Rgb Colour Transparent 640X285" loading="lazy" decoding="async">
-          </li>
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/icevents-logo-pion-cb-4x-100-1024x859.png" alt="Logo Icevents Logo Pion Cb 4X 100 1024X859" loading="lazy" decoding="async">
-          </li>
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/in4mates-sellfee-logo.svg" alt="Logo In4mates Sellfee Logo" loading="lazy" decoding="async">
-          </li>
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/inea-image.png" alt="Logo Inea Image" loading="lazy" decoding="async">
-          </li>
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/investcuffs-costa-agent-logo-1-rigy4cnl4qu3hm0yegmhjfzr8vedyibjy3hu2gz1t4.png" alt="Logo Investcuffs Costa Agent Logo 1 Rigy4cnl4qu3hm0yegmhjfzr8vedyibjy3hu2gz1t4" loading="lazy" decoding="async">
-          </li>
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/iobd-iobd-logo.png" alt="Logo Iobd Iobd Logo" loading="lazy" decoding="async">
-          </li>
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/izbaarchitektow-logo.svg" alt="Logo Izbaarchitektow Logo" loading="lazy" decoding="async">
-          </li>
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/jtsa-logo-jt-s-a.png" alt="Logo Jtsa Logo Jt S A" loading="lazy" decoding="async">
-          </li>
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/kghm-logo.png" alt="Logo Kghm Logo" loading="lazy" decoding="async">
-          </li>
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/kuehne-nagel-wherenext-episode1.png" alt="Logo Kuehne Nagel Wherenext Episode1" loading="lazy" decoding="async">
-          </li>
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/pkobp-63086f97-c7b3-436b-a060-a2947f8713f4.svg" alt="Logo Pkobp 63086F97 C7b3 436B A060 A2947f8713f4" loading="lazy" decoding="async">
-          </li>
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/prestigebg-logo-200x151.png" alt="Logo Prestigebg Logo 200X151" loading="lazy" decoding="async">
-          </li>
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/prouve-logo-prouve.svg" alt="Logo Prouve Logo Prouve" loading="lazy" decoding="async">
-          </li>
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/pzu-pzu-logo.svg" alt="Logo Pzu Pzu Logo" loading="lazy" decoding="async">
-          </li>
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/relopack-relopack-logo-rgb-1024x387.png" alt="Logo Relopack Relopack Logo Rgb 1024X387" loading="lazy" decoding="async">
-          </li>
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/schoellerallibert-iplschoeller-logo-white.png" alt="Logo Schoellerallibert Iplschoeller Logo White" loading="lazy" decoding="async">
-          </li>
-          <li class="zaufanie__item">
-            <img src="/assets/img/zaufanie/westhill-wh-logo-w-r84buyh7vgsu0vh0561yibpdpmijpx112o6mgzinjw.png" alt="Logo Westhill Wh Logo W R84buyh7vgsu0vh0561yibpdpmijpx112o6mgzinjw" loading="lazy" decoding="async">
-          </li>
-        </ul>
+        <div class="logo-slider" data-logo-slider>
+          <button class="logo-slider__prev" type="button" aria-label="Przewiń logo w lewo">&#8249;</button>
+          <div class="logo-slider__viewport" aria-label="Logotypy firm">
+            <div class="logo-slider__track" data-logo-track>
+              <img src="/assets/img/zaufanie/4results-logo-white.svg" alt="Logo 4Results Logo White" loading="lazy"
+                decoding="async"> <img src="/assets/img/zaufanie/alior-logo.png" alt="Logo Alior Logo" loading="lazy"
+                decoding="async"> <img src="/assets/img/zaufanie/allianz-az-opm-g-iocipc-toi-hor-rgb-aem-web.svg"
+                alt="Logo Allianz Az Opm G Iocipc Toi Hor Rgb Aem Web" loading="lazy" decoding="async"> <img
+                src="/assets/img/zaufanie/be-media-logo.png" alt="Logo Be Media Logo" loading="lazy" decoding="async">
+              <img src="/assets/img/zaufanie/blueskysystem-logomain.png" alt="Logo Blueskysystem Logomain"
+                loading="lazy" decoding="async"> <img src="/assets/img/zaufanie/briantracy-logo-icon-white-48-48.png"
+                alt="Logo Briantracy Logo Icon White 48 48" loading="lazy" decoding="async"> <img
+                src="/assets/img/zaufanie/capgemini-capgemini-engineering-logo.svg"
+                alt="Logo Capgemini Capgemini Engineering Logo" loading="lazy" decoding="async"> <img
+                src="/assets/img/zaufanie/carlsberg-share.png" alt="Logo Carlsberg Share" loading="lazy"
+                decoding="async"> <img src="/assets/img/zaufanie/colway-logo-footer.png" alt="Logo Colway Logo Footer"
+                loading="lazy" decoding="async"> <img src="/assets/img/zaufanie/contour-technology-logotyp.svg"
+                alt="Logo Contour Technology Logotyp" loading="lazy" decoding="async"> <img
+                src="/assets/img/zaufanie/dagma-award-001.png" alt="Logo Dagma Award 001" loading="lazy"
+                decoding="async"> <img src="/assets/img/zaufanie/ebcg-ebcg-logo-white.svg"
+                alt="Logo Ebcg Ebcg Logo White" loading="lazy" decoding="async"> <img
+                src="/assets/img/zaufanie/enea-enea-aplikacja-305x202.png" alt="Logo Enea Enea Aplikacja 305X202"
+                loading="lazy" decoding="async"> <img src="/assets/img/zaufanie/ergo-ergo-logo-munich-re-dam.svg"
+                alt="Logo Ergo Ergo Logo Munich Re Dam" loading="lazy" decoding="async"> <img
+                src="/assets/img/zaufanie/erif-kruk-logo.png" alt="Logo Erif Kruk Logo" loading="lazy" decoding="async">
+              <img src="/assets/img/zaufanie/etisoft-logo-zebra.png" alt="Logo Etisoft Logo Zebra" loading="lazy"
+                decoding="async"> <img src="/assets/img/zaufanie/festiwalinspiracji-festiwalinspiracji.png"
+                alt="Logo Festiwalinspiracji Festiwalinspiracji" loading="lazy" decoding="async"> <img
+                src="/assets/img/zaufanie/gea-footer.png" alt="Logo Gea Footer" loading="lazy" decoding="async"> <img
+                src="/assets/img/zaufanie/gs1pl-apple-touch-icon-114x114.png" alt="Logo Gs1pl Apple Touch Icon 114X114"
+                loading="lazy" decoding="async"> <img src="/assets/img/zaufanie/gsk-stvg-2-2022-smtlab-17-hess.png"
+                alt="Logo Gsk Stvg 2 2022 Smtlab 17 Hess" loading="lazy" decoding="async"> <img
+                src="/assets/img/zaufanie/ibcs-techstep-logo-rgb-colour-transparent-640x285.png"
+                alt="Logo Ibcs Techstep Logo Rgb Colour Transparent 640X285" loading="lazy" decoding="async"> <img
+                src="/assets/img/zaufanie/icevents-logo-pion-cb-4x-100-1024x859.png"
+                alt="Logo Icevents Logo Pion Cb 4X 100 1024X859" loading="lazy" decoding="async"> <img
+                src="/assets/img/zaufanie/in4mates-sellfee-logo.svg" alt="Logo In4mates Sellfee Logo" loading="lazy"
+                decoding="async"> <img src="/assets/img/zaufanie/inea-image.png" alt="Logo Inea Image" loading="lazy"
+                decoding="async"> <img
+                src="/assets/img/zaufanie/investcuffs-costa-agent-logo-1-rigy4cnl4qu3hm0yegmhjfzr8vedyibjy3hu2gz1t4.png"
+                alt="Logo Investcuffs Costa Agent Logo 1 Rigy4cnl4qu3hm0yegmhjfzr8vedyibjy3hu2gz1t4" loading="lazy"
+                decoding="async"> <img src="/assets/img/zaufanie/iobd-iobd-logo.png" alt="Logo Iobd Iobd Logo"
+                loading="lazy" decoding="async"> <img src="/assets/img/zaufanie/izbaarchitektow-logo.svg"
+                alt="Logo Izbaarchitektow Logo" loading="lazy" decoding="async"> <img
+                src="/assets/img/zaufanie/jtsa-logo-jt-s-a.png" alt="Logo Jtsa Logo Jt S A" loading="lazy"
+                decoding="async"> <img src="/assets/img/zaufanie/kghm-logo.png" alt="Logo Kghm Logo" loading="lazy"
+                decoding="async"> <img src="/assets/img/zaufanie/kuehne-nagel-wherenext-episode1.png"
+                alt="Logo Kuehne Nagel Wherenext Episode1" loading="lazy" decoding="async"> <img
+                src="/assets/img/zaufanie/pkobp-63086f97-c7b3-436b-a060-a2947f8713f4.svg"
+                alt="Logo Pkobp 63086F97 C7b3 436B A060 A2947f8713f4" loading="lazy" decoding="async"> <img
+                src="/assets/img/zaufanie/prestigebg-logo-200x151.png" alt="Logo Prestigebg Logo 200X151" loading="lazy"
+                decoding="async"> <img src="/assets/img/zaufanie/prouve-logo-prouve.svg" alt="Logo Prouve Logo Prouve"
+                loading="lazy" decoding="async"> <img src="/assets/img/zaufanie/pzu-pzu-logo.svg"
+                alt="Logo Pzu Pzu Logo" loading="lazy" decoding="async"> <img
+                src="/assets/img/zaufanie/relopack-relopack-logo-rgb-1024x387.png"
+                alt="Logo Relopack Relopack Logo Rgb 1024X387" loading="lazy" decoding="async"> <img
+                src="/assets/img/zaufanie/schoellerallibert-iplschoeller-logo-white.png"
+                alt="Logo Schoellerallibert Iplschoeller Logo White" loading="lazy" decoding="async"> <img
+                src="/assets/img/zaufanie/westhill-wh-logo-w-r84buyh7vgsu0vh0561yibpdpmijpx112o6mgzinjw.png"
+                alt="Logo Westhill Wh Logo W R84buyh7vgsu0vh0561yibpdpmijpx112o6mgzinjw" loading="lazy"
+                decoding="async"> <img src="/assets/img/zaufanie/4results-logo-white.svg" alt="Logo 4Results Logo White"
+                loading="lazy" decoding="async"> <img src="/assets/img/zaufanie/alior-logo.png" alt="Logo Alior Logo"
+                loading="lazy" decoding="async"> <img
+                src="/assets/img/zaufanie/allianz-az-opm-g-iocipc-toi-hor-rgb-aem-web.svg"
+                alt="Logo Allianz Az Opm G Iocipc Toi Hor Rgb Aem Web" loading="lazy" decoding="async"> <img
+                src="/assets/img/zaufanie/be-media-logo.png" alt="Logo Be Media Logo" loading="lazy" decoding="async">
+              <img src="/assets/img/zaufanie/blueskysystem-logomain.png" alt="Logo Blueskysystem Logomain"
+                loading="lazy" decoding="async"> <img src="/assets/img/zaufanie/briantracy-logo-icon-white-48-48.png"
+                alt="Logo Briantracy Logo Icon White 48 48" loading="lazy" decoding="async"> <img
+                src="/assets/img/zaufanie/capgemini-capgemini-engineering-logo.svg"
+                alt="Logo Capgemini Capgemini Engineering Logo" loading="lazy" decoding="async"> <img
+                src="/assets/img/zaufanie/carlsberg-share.png" alt="Logo Carlsberg Share" loading="lazy"
+                decoding="async"> <img src="/assets/img/zaufanie/colway-logo-footer.png" alt="Logo Colway Logo Footer"
+                loading="lazy" decoding="async"> <img src="/assets/img/zaufanie/contour-technology-logotyp.svg"
+                alt="Logo Contour Technology Logotyp" loading="lazy" decoding="async"> <img
+                src="/assets/img/zaufanie/dagma-award-001.png" alt="Logo Dagma Award 001" loading="lazy"
+                decoding="async"> <img src="/assets/img/zaufanie/ebcg-ebcg-logo-white.svg"
+                alt="Logo Ebcg Ebcg Logo White" loading="lazy" decoding="async"> <img
+                src="/assets/img/zaufanie/enea-enea-aplikacja-305x202.png" alt="Logo Enea Enea Aplikacja 305X202"
+                loading="lazy" decoding="async"> <img src="/assets/img/zaufanie/ergo-ergo-logo-munich-re-dam.svg"
+                alt="Logo Ergo Ergo Logo Munich Re Dam" loading="lazy" decoding="async"> <img
+                src="/assets/img/zaufanie/erif-kruk-logo.png" alt="Logo Erif Kruk Logo" loading="lazy" decoding="async">
+              <img src="/assets/img/zaufanie/etisoft-logo-zebra.png" alt="Logo Etisoft Logo Zebra" loading="lazy"
+                decoding="async"> <img src="/assets/img/zaufanie/festiwalinspiracji-festiwalinspiracji.png"
+                alt="Logo Festiwalinspiracji Festiwalinspiracji" loading="lazy" decoding="async"> <img
+                src="/assets/img/zaufanie/gea-footer.png" alt="Logo Gea Footer" loading="lazy" decoding="async"> <img
+                src="/assets/img/zaufanie/gs1pl-apple-touch-icon-114x114.png" alt="Logo Gs1pl Apple Touch Icon 114X114"
+                loading="lazy" decoding="async"> <img src="/assets/img/zaufanie/gsk-stvg-2-2022-smtlab-17-hess.png"
+                alt="Logo Gsk Stvg 2 2022 Smtlab 17 Hess" loading="lazy" decoding="async"> <img
+                src="/assets/img/zaufanie/ibcs-techstep-logo-rgb-colour-transparent-640x285.png"
+                alt="Logo Ibcs Techstep Logo Rgb Colour Transparent 640X285" loading="lazy" decoding="async"> <img
+                src="/assets/img/zaufanie/icevents-logo-pion-cb-4x-100-1024x859.png"
+                alt="Logo Icevents Logo Pion Cb 4X 100 1024X859" loading="lazy" decoding="async"> <img
+                src="/assets/img/zaufanie/in4mates-sellfee-logo.svg" alt="Logo In4mates Sellfee Logo" loading="lazy"
+                decoding="async"> <img src="/assets/img/zaufanie/inea-image.png" alt="Logo Inea Image" loading="lazy"
+                decoding="async"> <img
+                src="/assets/img/zaufanie/investcuffs-costa-agent-logo-1-rigy4cnl4qu3hm0yegmhjfzr8vedyibjy3hu2gz1t4.png"
+                alt="Logo Investcuffs Costa Agent Logo 1 Rigy4cnl4qu3hm0yegmhjfzr8vedyibjy3hu2gz1t4" loading="lazy"
+                decoding="async"> <img src="/assets/img/zaufanie/iobd-iobd-logo.png" alt="Logo Iobd Iobd Logo"
+                loading="lazy" decoding="async"> <img src="/assets/img/zaufanie/izbaarchitektow-logo.svg"
+                alt="Logo Izbaarchitektow Logo" loading="lazy" decoding="async"> <img
+                src="/assets/img/zaufanie/jtsa-logo-jt-s-a.png" alt="Logo Jtsa Logo Jt S A" loading="lazy"
+                decoding="async"> <img src="/assets/img/zaufanie/kghm-logo.png" alt="Logo Kghm Logo" loading="lazy"
+                decoding="async"> <img src="/assets/img/zaufanie/kuehne-nagel-wherenext-episode1.png"
+                alt="Logo Kuehne Nagel Wherenext Episode1" loading="lazy" decoding="async"> <img
+                src="/assets/img/zaufanie/pkobp-63086f97-c7b3-436b-a060-a2947f8713f4.svg"
+                alt="Logo Pkobp 63086F97 C7b3 436B A060 A2947f8713f4" loading="lazy" decoding="async"> <img
+                src="/assets/img/zaufanie/prestigebg-logo-200x151.png" alt="Logo Prestigebg Logo 200X151" loading="lazy"
+                decoding="async"> <img src="/assets/img/zaufanie/prouve-logo-prouve.svg" alt="Logo Prouve Logo Prouve"
+                loading="lazy" decoding="async"> <img src="/assets/img/zaufanie/pzu-pzu-logo.svg"
+                alt="Logo Pzu Pzu Logo" loading="lazy" decoding="async"> <img
+                src="/assets/img/zaufanie/relopack-relopack-logo-rgb-1024x387.png"
+                alt="Logo Relopack Relopack Logo Rgb 1024X387" loading="lazy" decoding="async"> <img
+                src="/assets/img/zaufanie/schoellerallibert-iplschoeller-logo-white.png"
+                alt="Logo Schoellerallibert Iplschoeller Logo White" loading="lazy" decoding="async"> <img
+                src="/assets/img/zaufanie/westhill-wh-logo-w-r84buyh7vgsu0vh0561yibpdpmijpx112o6mgzinjw.png"
+                alt="Logo Westhill Wh Logo W R84buyh7vgsu0vh0561yibpdpmijpx112o6mgzinjw" loading="lazy"
+                decoding="async">
+            </div>
+          </div>
+          <button class="logo-slider__next" type="button" aria-label="Przewiń logo w prawo">&#8250;</button>
+        </div>
       </div>
     </section>
 
@@ -775,32 +835,38 @@
         <ul class="client-logos__list">
           <li class="client-logos__item">
             <a class="client-logos__link" href="#">
-              <img class="client-logos__img" src="/assets/img/logos/logo1.svg" alt="Logo firmy 1" loading="lazy" decoding="async">
+              <img class="client-logos__img" src="/assets/img/logos/logo1.svg" alt="Logo firmy 1" loading="lazy"
+                decoding="async">
             </a>
           </li>
           <li class="client-logos__item">
             <a class="client-logos__link" href="#">
-              <img class="client-logos__img" src="/assets/img/logos/logo2.svg" alt="Logo firmy 2" loading="lazy" decoding="async">
+              <img class="client-logos__img" src="/assets/img/logos/logo2.svg" alt="Logo firmy 2" loading="lazy"
+                decoding="async">
             </a>
           </li>
           <li class="client-logos__item">
             <a class="client-logos__link" href="#">
-              <img class="client-logos__img" src="/assets/img/logos/logo3.svg" alt="Logo firmy 3" loading="lazy" decoding="async">
+              <img class="client-logos__img" src="/assets/img/logos/logo3.svg" alt="Logo firmy 3" loading="lazy"
+                decoding="async">
             </a>
           </li>
           <li class="client-logos__item">
             <a class="client-logos__link" href="#">
-              <img class="client-logos__img" src="/assets/img/logos/logo4.svg" alt="Logo firmy 4" loading="lazy" decoding="async">
+              <img class="client-logos__img" src="/assets/img/logos/logo4.svg" alt="Logo firmy 4" loading="lazy"
+                decoding="async">
             </a>
           </li>
           <li class="client-logos__item">
             <a class="client-logos__link" href="#">
-              <img class="client-logos__img" src="/assets/img/logos/logo5.svg" alt="Logo firmy 5" loading="lazy" decoding="async">
+              <img class="client-logos__img" src="/assets/img/logos/logo5.svg" alt="Logo firmy 5" loading="lazy"
+                decoding="async">
             </a>
           </li>
           <li class="client-logos__item">
             <a class="client-logos__link" href="#">
-              <img class="client-logos__img" src="/assets/img/logos/logo6.svg" alt="Logo firmy 6" loading="lazy" decoding="async">
+              <img class="client-logos__img" src="/assets/img/logos/logo6.svg" alt="Logo firmy 6" loading="lazy"
+                decoding="async">
             </a>
           </li>
         </ul>
@@ -862,7 +928,40 @@
       });
     })();
 
+    (function () {
+      var slider = document.querySelector("[data-logo-slider]");
+      if (!slider) return;
+
+      var track = slider.querySelector("[data-logo-track]");
+      var prev = slider.querySelector(".logo-slider__prev");
+      var next = slider.querySelector(".logo-slider__next");
+      if (!track || !prev || !next) return;
+
+      var step = function () {
+        var first = track.querySelector("img");
+        if (!first) return 220;
+        var gap = parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap || "48");
+        return first.getBoundingClientRect().width + gap;
+      };
+
+      var nudge = function (direction) {
+        track.style.animationPlayState = "paused";
+        var duration = 60000;
+        var width = track.scrollWidth / 2;
+        if (!width) return;
+        var deltaPx = step() * direction;
+        var deltaMs = (Math.abs(deltaPx) / width) * duration;
+        var currentDelay = parseFloat(track.dataset.delay || "0");
+        var nextDelay = direction > 0 ? currentDelay - deltaMs : currentDelay + deltaMs;
+        track.style.animationDelay = nextDelay + "ms";
+        track.dataset.delay = String(nextDelay);
+      };
+
+      prev.addEventListener("click", function () { nudge(-1); });
+      next.addEventListener("click", function () { nudge(1); });
+    })();
+
   </script>
 </body>
-</html>
 
+</html>
