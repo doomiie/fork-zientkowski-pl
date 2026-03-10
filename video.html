@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video | Jerzy Zientkowski</title>
+  <link rel="preload" as="style" href="/assets/css/app.min.css?v=brand12" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="stylesheet" href="/assets/css/app.min.css?v=brand12">
+  <noscript><link rel="stylesheet" href="/assets/css/app.min.css?v=brand12"></noscript>
+  <link rel="stylesheet" href="/assets/css/video.css">
+</head>
+<body class="bg-light min-h-screen">
+  <a class="skip-link" href="#main-content">Przejdź do treści głównej</a>
+
+  <header class="video-header">
+    <div class="video-container video-header__inner">
+      <a href="/" class="video-brand" aria-label="Strona główna">
+        <img src="/assets/img/logo_main.png" alt="Logo Jerzy Zientkowski">
+      </a>
+      <p class="video-header__meta">Panel komentarzy wideo</p>
+    </div>
+  </header>
+
+  <main id="main-content" class="video-main">
+    <div class="video-container">
+      <section class="video-screen" aria-labelledby="video-title">
+        <div class="video-screen__player">
+          <h1 id="video-title" class="video-screen__title">Wideo</h1>
+          <p id="video-status" class="video-screen__status" role="status" aria-live="polite">Ładowanie...</p>
+          <div class="video-player-wrap">
+            <div id="yt-player" aria-label="Odtwarzacz YouTube"></div>
+          </div>
+          <button id="add-comment-btn" class="video-button video-button--primary" type="button" aria-label="Dodaj komentarz" hidden>
+            Dodaj komentarz
+          </button>
+        </div>
+
+        <aside class="video-screen__comments" aria-labelledby="comments-heading">
+          <h2 id="comments-heading" class="video-screen__subtitle">Komentarze</h2>
+          <p id="comments-empty" class="video-screen__empty" hidden>Brak komentarzy dla tego filmu.</p>
+          <ul id="comments-list" class="video-comments" aria-label="Lista komentarzy"></ul>
+        </aside>
+      </section>
+
+      <section id="comment-form-section" class="video-form-section" aria-labelledby="form-heading" hidden>
+        <h2 id="form-heading" class="video-screen__subtitle">Dodaj komentarz</h2>
+        <form id="comment-form" class="video-form" novalidate>
+          <div class="video-form__grid">
+            <label class="video-form__field">
+              <span>Czas (sekundy)</span>
+              <input id="comment-time" name="czas_sekundy" type="number" min="0" max="86400" required>
+            </label>
+            <label class="video-form__field">
+              <span>Czas (tekst)</span>
+              <input id="comment-time-text" name="czas_tekst" type="text" placeholder="mm:ss lub h:mm:ss">
+            </label>
+          </div>
+
+          <label class="video-form__field">
+            <span>Tytuł komentarza</span>
+            <input id="comment-title" name="tytul" type="text" maxlength="160">
+          </label>
+
+          <label class="video-form__field">
+            <span>Treść komentarza</span>
+            <textarea id="comment-content" name="tresc" rows="4" maxlength="2000"></textarea>
+          </label>
+
+          <div class="video-form__grid">
+            <label class="video-form__field">
+              <span>Wariant</span>
+              <input id="comment-variant" name="wariant" type="text" maxlength="64" value="ogolny">
+            </label>
+            <label class="video-form__field">
+              <span>Autor</span>
+              <input id="comment-author" name="autor" type="text" maxlength="80">
+            </label>
+          </div>
+
+          <div class="video-form__actions">
+            <button type="submit" class="video-button video-button--primary">Zapisz komentarz</button>
+            <button type="button" id="cancel-comment-btn" class="video-button video-button--ghost">Anuluj</button>
+          </div>
+          <input id="comment-id" name="comment_id" type="hidden">
+          <p id="form-status" class="video-form__status" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <script src="/assets/js/video.js" defer></script>
+</body>
+</html>
