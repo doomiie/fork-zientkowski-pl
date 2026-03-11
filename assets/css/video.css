@@ -44,14 +44,21 @@ body {
 .video-header {
   background: #fff;
   border-bottom: 1px solid rgba(15, 23, 42, 0.1);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
 }
 
 .video-header__inner {
   min-height: 72px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 16px;
+}
+
+.video-header__menu-slot {
+  display: flex;
+  align-items: center;
+  margin-right: auto;
 }
 
 .video-brand img {
@@ -66,7 +73,7 @@ body {
 }
 
 .video-main {
-  padding: 24px 0 56px;
+  padding: 108px 0 56px;
 }
 
 .video-screen {
@@ -441,6 +448,90 @@ body {
   margin: 0;
   min-height: 1.2em;
   color: var(--video-muted);
+}
+
+.video-auth-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+}
+
+.video-auth-modal__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(2, 6, 23, 0.58);
+}
+
+.video-auth-modal__panel {
+  position: relative;
+  width: min(560px, calc(100% - 24px));
+  margin: 7vh auto 0;
+  background: #fff;
+  border: 1px solid var(--video-border);
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 24px 48px rgba(2, 6, 23, 0.25);
+}
+
+.video-auth-modal__close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 1px solid var(--video-border);
+  background: #fff;
+  color: var(--video-text);
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.video-add-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+}
+
+.video-add-modal__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(2, 6, 23, 0.58);
+}
+
+.video-add-modal__panel {
+  position: relative;
+  width: min(620px, calc(100% - 24px));
+  margin: 7vh auto 0;
+  background: #fff;
+  border: 1px solid var(--video-border);
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 24px 48px rgba(2, 6, 23, 0.25);
+}
+
+.video-add-modal__close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 1px solid var(--video-border);
+  background: #fff;
+  color: var(--video-text);
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.video-add-modal .video-source {
+  margin-top: 0;
+}
+
+body.video-modal-open {
+  overflow: hidden;
 }
 
 @media (min-width: 768px) {

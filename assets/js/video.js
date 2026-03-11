@@ -14,6 +14,9 @@
   var titleEl = document.getElementById("video-title");
   var statusEl = document.getElementById("video-status");
   var tokenInfoEl = document.getElementById("video-token-info");
+  var accessMessageEl = document.getElementById("video-access-message");
+  var playerWrapEl = document.getElementById("video-player-wrap");
+  var commentsSectionEl = document.getElementById("video-comments-section");
   var videoListSectionEl = document.getElementById("video-list-section");
   var videoListSelectEl = document.getElementById("video-list-select");
   var videoListStatusEl = document.getElementById("video-list-status");
@@ -42,8 +45,13 @@
   var authCsrfEl = document.getElementById("video-auth-csrf");
   var authStatusEl = document.getElementById("video-auth-status");
   var authLogoutBtn = document.getElementById("video-auth-logout-btn");
+  var authModalEl = document.getElementById("video-auth-modal");
+  var authModalOverlayEl = document.getElementById("video-auth-modal-overlay");
+  var authCloseBtn = document.getElementById("video-auth-close-btn");
+  var addModalEl = document.getElementById("video-add-modal");
+  var addModalOverlayEl = document.getElementById("video-add-modal-overlay");
+  var addCloseBtn = document.getElementById("video-add-close-btn");
 
-  var videoAddSectionEl = document.getElementById("video-add-section");
   var videoAddFormEl = document.getElementById("video-add-form");
   var videoAddInputEl = document.getElementById("video-add-input");
   var videoAddStatusEl = document.getElementById("video-add-status");
@@ -54,8 +62,14 @@
   var playerReady = false;
   var editingCommentId = null;
   var accessInfo = null;
+  var hasContentAccess = false;
   var authState = { logged_in: false, user_id: null, email: null, role: null };
   var csrfToken = "";
+  var ytApiRequested = false;
+  var authMenuTrigger = null;
+  var addMenuTrigger = null;
+  var previouslyFocusedEl = null;
+  var closeMobileMenuFn = null;
 
   var SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition || null;
   var speechRecognition = null;
@@ -141,6 +155,259 @@
     return "-";
   }
 
+  function hasTokenSession(access) {
+    return !!(access && access.token && access.token.token_id);
+  }
+
+  function computeContentAccess(access) {
+    return !!authState.logged_in || hasTokenSession(access || accessInfo);
+  }
+
+  function applyAccessState(allowed) {
+    hasContentAccess = !!allowed;
+    if (videoListSectionEl) videoListSectionEl.hidden = !hasContentAccess;
+    if (playerWrapEl) playerWrapEl.hidden = !hasContentAccess;
+    if (commentsSectionEl) commentsSectionEl.hidden = !hasContentAccess;
+    if (accessMessageEl) accessMessageEl.hidden = hasContentAccess;
+    if (!hasContentAccess) {
+      comments = [];
+      renderComments();
+      if (videoListSelectEl) videoListSelectEl.innerHTML = "<option value=\"\">Brak dostępu</option>";
+      if (addCommentBtn) addCommentBtn.hidden = true;
+      if (formSection) formSection.hidden = true;
+    }
+  }
+
+  function updateAuthMenuButtons() {
+    var desktopBtn = document.getElementById("video-auth-trigger-desktop");
+    var mobileBtn = document.getElementById("video-auth-trigger-mobile");
+    var label = authState.logged_in ? "Konto" : "Logowanie";
+    if (desktopBtn) desktopBtn.textContent = label;
+    if (mobileBtn) mobileBtn.textContent = label;
+  }
+
+  function openAuthModalFromMenu(event) {
+    authMenuTrigger = event && event.currentTarget ? event.currentTarget : null;
+    if (typeof closeMobileMenuFn === "function") closeMobileMenuFn();
+    openAuthModal();
+  }
+
+  function openAddModalFromMenu(event) {
+    if (!canCurrentUserAddVideo()) return;
+    addMenuTrigger = event && event.currentTarget ? event.currentTarget : null;
+    if (typeof closeMobileMenuFn === "function") closeMobileMenuFn();
+    openAddModal();
+  }
+
+  function updateVideoAddMenuButtons() {
+    var desktopBtn = document.getElementById("video-add-trigger-desktop");
+    var mobileBtn = document.getElementById("video-add-trigger-mobile");
+    var canAdd = canCurrentUserAddVideo();
+    if (desktopBtn) desktopBtn.hidden = !canAdd;
+    if (mobileBtn) mobileBtn.hidden = !canAdd;
+  }
+
+  function canCurrentUserAddVideo() {
+    return !!(
+      authState &&
+      authState.logged_in === true &&
+      accessInfo &&
+      accessInfo.effective &&
+      accessInfo.effective.can_add_video === true
+    );
+  }
+
+  function ensureVideoMenuButtons() {
+    var navDesktop = document.getElementById("navDesktop");
+    var navMobile = document.getElementById("navMobile");
+    if (!navDesktop || !navMobile) return false;
+
+    var desktopBtn = document.getElementById("video-auth-trigger-desktop");
+    if (!desktopBtn) {
+      desktopBtn = document.createElement("button");
+      desktopBtn.id = "video-auth-trigger-desktop";
+      desktopBtn.type = "button";
+      desktopBtn.className = "btn-menu";
+      desktopBtn.textContent = "Logowanie";
+      desktopBtn.addEventListener("click", openAuthModalFromMenu);
+      navDesktop.appendChild(desktopBtn);
+    }
+
+    var mobileBtn = document.getElementById("video-auth-trigger-mobile");
+    if (!mobileBtn) {
+      mobileBtn = document.createElement("button");
+      mobileBtn.id = "video-auth-trigger-mobile";
+      mobileBtn.type = "button";
+      mobileBtn.className = "dd-row block px-3 py-2 rounded-lg text-brand-primary";
+      mobileBtn.textContent = "Logowanie";
+      mobileBtn.addEventListener("click", openAuthModalFromMenu);
+      navMobile.appendChild(mobileBtn);
+    }
+
+    var desktopAddBtn = document.getElementById("video-add-trigger-desktop");
+    if (!desktopAddBtn) {
+      desktopAddBtn = document.createElement("button");
+      desktopAddBtn.id = "video-add-trigger-desktop";
+      desktopAddBtn.type = "button";
+      desktopAddBtn.className = "btn-menu";
+      desktopAddBtn.textContent = "Dodaj video";
+      desktopAddBtn.hidden = true;
+      desktopAddBtn.addEventListener("click", openAddModalFromMenu);
+      navDesktop.appendChild(desktopAddBtn);
+    }
+
+    var mobileAddBtn = document.getElementById("video-add-trigger-mobile");
+    if (!mobileAddBtn) {
+      mobileAddBtn = document.createElement("button");
+      mobileAddBtn.id = "video-add-trigger-mobile";
+      mobileAddBtn.type = "button";
+      mobileAddBtn.className = "dd-row block px-3 py-2 rounded-lg text-brand-primary";
+      mobileAddBtn.textContent = "Dodaj video";
+      mobileAddBtn.hidden = true;
+      mobileAddBtn.addEventListener("click", openAddModalFromMenu);
+      navMobile.appendChild(mobileAddBtn);
+    }
+
+    updateAuthMenuButtons();
+    updateVideoAddMenuButtons();
+    return true;
+  }
+
+  function scheduleVideoMenuButtons() {
+    if (ensureVideoMenuButtons()) return;
+    var retries = 0;
+    var timer = window.setInterval(function () {
+      retries += 1;
+      if (ensureVideoMenuButtons() || retries > 20) window.clearInterval(timer);
+    }, 250);
+  }
+
+  function getFocusableWithin(node) {
+    if (!node) return [];
+    return Array.prototype.slice.call(
+      node.querySelectorAll('a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])')
+    );
+  }
+
+  function openAuthModal() {
+    if (!authModalEl) return;
+    if (addModalEl && !addModalEl.hidden) closeAddModal();
+    previouslyFocusedEl = document.activeElement;
+    authModalEl.hidden = false;
+    document.body.classList.add("video-modal-open");
+    var target = (!authState.logged_in && authEmailEl) ? authEmailEl : (authCloseBtn || authPasswordEl || authEmailEl);
+    if (target) target.focus();
+  }
+
+  function closeAuthModal() {
+    if (!authModalEl) return;
+    authModalEl.hidden = true;
+    document.body.classList.remove("video-modal-open");
+    if (authMenuTrigger && typeof authMenuTrigger.focus === "function") {
+      authMenuTrigger.focus();
+      authMenuTrigger = null;
+      return;
+    }
+    if (previouslyFocusedEl && typeof previouslyFocusedEl.focus === "function") {
+      previouslyFocusedEl.focus();
+    }
+    previouslyFocusedEl = null;
+  }
+
+  function openAddModal() {
+    if (!addModalEl) return;
+    if (authModalEl && !authModalEl.hidden) closeAuthModal();
+    setVideoAddStatus("");
+    previouslyFocusedEl = document.activeElement;
+    addModalEl.hidden = false;
+    document.body.classList.add("video-modal-open");
+    if (videoAddInputEl) videoAddInputEl.focus();
+  }
+
+  function closeAddModal() {
+    if (!addModalEl) return;
+    addModalEl.hidden = true;
+    document.body.classList.remove("video-modal-open");
+    if (addMenuTrigger && typeof addMenuTrigger.focus === "function") {
+      addMenuTrigger.focus();
+      addMenuTrigger = null;
+      return;
+    }
+    if (previouslyFocusedEl && typeof previouslyFocusedEl.focus === "function") {
+      previouslyFocusedEl.focus();
+    }
+    previouslyFocusedEl = null;
+  }
+
+  function handleAuthModalKeydown(event) {
+    if (!authModalEl || authModalEl.hidden) return;
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeAuthModal();
+      return;
+    }
+    if (event.key !== "Tab") return;
+    var focusables = getFocusableWithin(authModalEl);
+    if (!focusables.length) return;
+    var first = focusables[0];
+    var last = focusables[focusables.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
+  function handleAddModalKeydown(event) {
+    if (!addModalEl || addModalEl.hidden) return;
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeAddModal();
+      return;
+    }
+    if (event.key !== "Tab") return;
+    var focusables = getFocusableWithin(addModalEl);
+    if (!focusables.length) return;
+    var first = focusables[0];
+    var last = focusables[focusables.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
+  function initMobileMenuHandlers() {
+    var openBtn = document.getElementById("menuToggleHome");
+    var closeBtn = document.getElementById("menuCloseHome");
+    var overlay = document.getElementById("mobileMenuOverlayHome");
+    var menu = document.getElementById("mobileMenuHome");
+
+    function openMenu() {
+      if (!overlay || !menu) return;
+      overlay.classList.remove("hidden");
+      menu.classList.remove("translate-x-full");
+    }
+
+    function closeMenu() {
+      if (!overlay || !menu) return;
+      overlay.classList.add("hidden");
+      menu.classList.add("translate-x-full");
+    }
+    closeMobileMenuFn = closeMenu;
+
+    if (openBtn) openBtn.addEventListener("click", openMenu);
+    if (closeBtn) closeBtn.addEventListener("click", closeMenu);
+    if (overlay) overlay.addEventListener("click", closeMenu);
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") closeMenu();
+    });
+  }
+
   function renderAuthUi() {
     if (!authSectionEl) return;
     var logged = !!authState.logged_in;
@@ -157,10 +424,8 @@
     if (submitBtn) submitBtn.hidden = logged;
     if (authLogoutBtn) authLogoutBtn.hidden = !logged;
 
-    if (videoAddSectionEl) {
-      var canAdd = !!(accessInfo && accessInfo.effective && accessInfo.effective.can_add_video === true);
-      videoAddSectionEl.hidden = !canAdd;
-    }
+    updateAuthMenuButtons();
+    updateVideoAddMenuButtons();
   }
 
   async function fetchAuthStatus() {
@@ -201,7 +466,8 @@
       if (authPasswordEl) authPasswordEl.value = "";
       renderAuthUi();
       setAuthStatus("Zalogowano.");
-      await reloadVideoContext();
+      closeAuthModal();
+      await refreshAccessAndContent();
     } catch (error) {
       setAuthStatus(error instanceof Error ? error.message : "Błąd logowania.");
     }
@@ -222,7 +488,8 @@
       if (authCsrfEl) authCsrfEl.value = csrfToken;
       renderAuthUi();
       setAuthStatus("Wylogowano.");
-      await reloadVideoContext();
+      closeAuthModal();
+      await refreshAccessAndContent();
     } catch (error) {
       setAuthStatus(error instanceof Error ? error.message : "Błąd wylogowania.");
     }
@@ -243,6 +510,11 @@
 
   async function submitVideoAdd(event) {
     event.preventDefault();
+    if (!canCurrentUserAddVideo()) {
+      setVideoAddStatus("Brak uprawnień do dodawania filmów.");
+      closeAddModal();
+      return;
+    }
     var value = String(videoAddInputEl && videoAddInputEl.value || "").trim();
     if (!value) {
       setVideoAddStatus("Wklej link YouTube lub ID.");
@@ -256,6 +528,7 @@
       setVideoAddStatus(data.created ? "Film dodany." : "Film już istnieje.");
       if (videoAddInputEl) videoAddInputEl.value = "";
       await reloadVideoContext();
+      closeAddModal();
       window.location.href = buildVideoUrl(newId);
     } catch (error) {
       setVideoAddStatus(error instanceof Error ? error.message : "Nie udało się dodać filmu.");
@@ -481,24 +754,42 @@
   }
 
   function loadYouTube(videoId) {
+    if (!videoId) return;
+    if (window.YT && window.YT.Player) {
+      if (player && typeof player.loadVideoById === "function") {
+        player.loadVideoById(videoId);
+        playerReady = true;
+        setStatus("Gotowe");
+      } else {
+        buildPlayer(videoId);
+      }
+      return;
+    }
+
     window.onYouTubeIframeAPIReady = function () {
-      player = new window.YT.Player("yt-player", {
-        videoId: videoId,
-        playerVars: { rel: 0, modestbranding: 1, playsinline: 1 },
-        events: {
-          onReady: function () { playerReady = true; setStatus("Gotowe"); },
-          onStateChange: function (event) {
-            if (!addCommentBtn) return;
-            if (editMode && event.data === 2) addCommentBtn.hidden = false;
-            else if (event.data === 1) addCommentBtn.hidden = true;
-          }
-        }
-      });
+      buildPlayer(videoId);
     };
+    if (ytApiRequested) return;
+    ytApiRequested = true;
     var tag = document.createElement("script");
     tag.src = "https://www.youtube.com/iframe_api";
     tag.async = true;
     document.head.appendChild(tag);
+  }
+
+  function buildPlayer(videoId) {
+    player = new window.YT.Player("yt-player", {
+      videoId: videoId,
+      playerVars: { rel: 0, modestbranding: 1, playsinline: 1 },
+      events: {
+        onReady: function () { playerReady = true; setStatus("Gotowe"); },
+        onStateChange: function (event) {
+          if (!addCommentBtn) return;
+          if (editMode && event.data === 2) addCommentBtn.hidden = false;
+          else if (event.data === 1) addCommentBtn.hidden = true;
+        }
+      }
+    });
   }
 
   async function fetchData() {
@@ -674,15 +965,32 @@
     });
   }
 
-  async function reloadVideoContext() {
+  function applyListData(listData) {
+    videos = listData && Array.isArray(listData.videos) ? listData.videos : [];
+    updateAccessInfo(listData ? (listData.access || null) : null);
+    var allowed = computeContentAccess(accessInfo);
+    applyAccessState(allowed);
+    if (!allowed) {
+      setStatus("Brak dostępu do treści. Zaloguj się lub użyj poprawnego tokenu.");
+      setVideoListStatus("");
+      return false;
+    }
+    renderVideoList();
+    var countMsg = videos.length ? ("Filmów w bazie: " + videos.length + ".") : "Brak filmów do wyboru.";
+    setVideoListStatus(countMsg);
+    return true;
+  }
+
+  async function reloadVideoContext(preloadedListData) {
+    if (!hasContentAccess && !preloadedListData) {
+      applyAccessState(false);
+      return;
+    }
+
     setVideoListStatus("Ładowanie listy filmów...");
     try {
-      var listData = await fetchVideoList();
-      videos = listData.videos || [];
-      updateAccessInfo(listData.access || null);
-      renderVideoList();
-      var countMsg = videos.length ? ("Filmów w bazie: " + videos.length + ".") : "Brak filmów do wyboru.";
-      setVideoListStatus(countMsg);
+      var listData = preloadedListData || await fetchVideoList();
+      if (!applyListData(listData)) return;
 
       if (accessInfo && accessInfo.token && accessInfo.token.resource_type === "video" &&
           accessInfo.token.resource_id && source && source !== accessInfo.token.resource_id) {
@@ -691,8 +999,10 @@
         return;
       }
     } catch (error) {
-      renderVideoList();
+      applyAccessState(false);
       setVideoListStatus(error instanceof Error ? error.message : "Błąd ładowania listy filmów.");
+      setStatus("Brak dostępu do treści. Zaloguj się lub użyj poprawnego tokenu.");
+      return;
     }
 
     if (!source) {
@@ -711,6 +1021,12 @@
     try {
       var data = await fetchData();
       updateAccessInfo(data.access || accessInfo);
+      if (!computeContentAccess(accessInfo)) {
+        applyAccessState(false);
+        setStatus("Brak dostępu do treści. Zaloguj się lub użyj poprawnego tokenu.");
+        return;
+      }
+      applyAccessState(true);
       if (titleEl) titleEl.textContent = (data.video && data.video.tytul) ? data.video.tytul : "Wideo";
       editMode = !!data.edit;
       comments = Array.isArray(data.comments) ? data.comments : [];
@@ -726,8 +1042,22 @@
     }
   }
 
+  async function refreshAccessAndContent() {
+    try {
+      var listData = await fetchVideoList();
+      if (!applyListData(listData)) return;
+      await reloadVideoContext(listData);
+    } catch (error) {
+      applyAccessState(false);
+      setVideoListStatus(error instanceof Error ? error.message : "Błąd ładowania listy filmów.");
+      setStatus("Brak dostępu do treści. Zaloguj się lub użyj poprawnego tokenu.");
+    }
+  }
+
   async function init() {
     initSpeechRecognition();
+    initMobileMenuHandlers();
+    scheduleVideoMenuButtons();
 
     var storedAuthor = getStoredAuthor();
     if (authorInput && !String(authorInput.value || "").trim() && storedAuthor) {
@@ -739,6 +1069,12 @@
 
     if (authFormEl) authFormEl.addEventListener("submit", loginInline);
     if (authLogoutBtn) authLogoutBtn.addEventListener("click", logoutInline);
+    if (authCloseBtn) authCloseBtn.addEventListener("click", closeAuthModal);
+    if (authModalOverlayEl) authModalOverlayEl.addEventListener("click", closeAuthModal);
+    if (addCloseBtn) addCloseBtn.addEventListener("click", closeAddModal);
+    if (addModalOverlayEl) addModalOverlayEl.addEventListener("click", closeAddModal);
+    document.addEventListener("keydown", handleAuthModalKeydown);
+    document.addEventListener("keydown", handleAddModalKeydown);
     if (videoAddFormEl) videoAddFormEl.addEventListener("submit", submitVideoAdd);
     if (videoListSelectEl) videoListSelectEl.addEventListener("change", handleVideoSelectChange);
 
@@ -759,8 +1095,7 @@
       setAuthStatus(error instanceof Error ? error.message : "Nie udało się pobrać statusu logowania.");
     }
 
-    if (videoListSectionEl) videoListSectionEl.hidden = false;
-    await reloadVideoContext();
+    await refreshAccessAndContent();
   }
 
   if (addCommentBtn) addCommentBtn.addEventListener("click", showFormAtCurrentTime);
@@ -770,3 +1105,4 @@
 
   init();
 })();
+
