@@ -971,7 +971,7 @@
     var allowed = computeContentAccess(accessInfo);
     applyAccessState(allowed);
     if (!allowed) {
-      setStatus("Brak dostępu do treści. Zaloguj się lub użyj poprawnego tokenu.");
+      setStatus("1 Brak dostępu do treści. Zaloguj się lub użyj poprawnego tokenu.");
       setVideoListStatus("");
       return false;
     }
@@ -1001,7 +1001,7 @@
     } catch (error) {
       applyAccessState(false);
       setVideoListStatus(error instanceof Error ? error.message : "Błąd ładowania listy filmów.");
-      setStatus("Brak dostępu do treści. Zaloguj się lub użyj poprawnego tokenu.");
+      setStatus("2 Brak dostępu do treści. Zaloguj się lub użyj poprawnego tokenu.");
       return;
     }
 
@@ -1023,7 +1023,7 @@
       updateAccessInfo(data.access || accessInfo);
       if (!computeContentAccess(accessInfo)) {
         applyAccessState(false);
-        setStatus("Brak dostępu do treści. Zaloguj się lub użyj poprawnego tokenu.");
+        setStatus("3 Brak dostępu do treści. Zaloguj się lub użyj poprawnego tokenu.");
         return;
       }
       applyAccessState(true);
@@ -1050,7 +1050,7 @@
     } catch (error) {
       applyAccessState(false);
       setVideoListStatus(error instanceof Error ? error.message : "Błąd ładowania listy filmów.");
-      setStatus("Brak dostępu do treści. Zaloguj się lub użyj poprawnego tokenu.");
+      setStatus("4 Brak dostępu do treści. Zaloguj się lub użyj poprawnego tokenu.");
     }
   }
 

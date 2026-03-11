@@ -5,21 +5,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Video | Jerzy Zientkowski</title>
   <link rel="preload" as="style" href="/assets/css/app.min.css?v=brand12" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/assets/css/shared.css?v=dev18" onload="this.onload=null;this.rel='stylesheet'">
   <link rel="stylesheet" href="/assets/css/app.min.css?v=brand12">
+  <link rel="stylesheet" href="/assets/css/shared.css?v=dev18">
   <noscript><link rel="stylesheet" href="/assets/css/app.min.css?v=brand12"></noscript>
-  <link rel="stylesheet" href="/assets/css/video.css?v=20260311-1">
+  <noscript><link rel="stylesheet" href="/assets/css/shared.css?v=dev18"></noscript>
+  <link rel="stylesheet" href="/assets/css/video.css?v=20260311-2">
 </head>
 <body class="bg-light min-h-screen">
   <a class="skip-link" href="#main-content">Przejdź do treści głównej</a>
 
-  <header class="video-header">
+  <header id="siteHeader" class="video-header fixed top-0 left-0 right-0 z-50 py-4 bg-white">
     <div class="video-container video-header__inner">
+      <div class="video-header__menu-slot">
+        <nav id="navDesktop" class="hidden md:flex items-center space-x-8 text-dark"></nav>
+        <div class="flex items-center md:hidden">
+          <button id="menuToggleHome" aria-label="Menu" class="p-2 rounded-lg border border-gray-300 text-gray-800 hover:bg-gray-50">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
       <a href="/" class="video-brand" aria-label="Strona główna">
-        <img src="/assets/img/logo_main.png" alt="Logo Jerzy Zientkowski">
+        <img id="siteHeaderLogo" src="/assets/img/logo_main.png" alt="Logo Jerzy Zientkowski">
       </a>
-      <p class="video-header__meta">Panel komentarzy wideo</p>
     </div>
   </header>
+  <div id="mobileMenuOverlayHome" class="fixed inset-0 bg-black/50 z-[1000] hidden"></div>
+  <aside id="mobileMenuHome" class="fixed inset-y-0 right-0 w-4/5 max-w-sm bg-white z-[1001] shadow-xl transform translate-x-full transition-transform">
+    <div class="p-4 flex items-center justify-between border-b border-gray-200">
+      <span class="font-semibold text-dark">Menu</span>
+      <button id="menuCloseHome" aria-label="Zamknij menu" class="p-2 rounded-lg text-gray-600 hover:bg-gray-50">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+    <nav id="navMobile" class="p-4 space-y-3"></nav>
+  </aside>
 
   <main id="main-content" class="video-main">
     <div class="video-container">
@@ -28,38 +52,10 @@
           <h1 id="video-title" class="video-screen__title">Wideo</h1>
           <p id="video-status" class="video-screen__status" role="status" aria-live="polite">Ładowanie...</p>
           <p id="video-token-info" class="video-screen__status" role="status" aria-live="polite"></p>
-          <section id="video-auth-section" class="video-auth" aria-labelledby="video-auth-heading">
-            <h2 id="video-auth-heading" class="video-source__title">Logowanie użytkownika</h2>
-            <p id="video-auth-user" class="video-auth__user" role="status" aria-live="polite"></p>
-            <form id="video-auth-form" class="video-auth__form" novalidate>
-              <input id="video-auth-csrf" name="csrf_token" type="hidden">
-              <label class="video-source__field" for="video-auth-email">
-                <span>E-mail</span>
-                <input id="video-auth-email" name="email" type="email" autocomplete="username">
-              </label>
-              <label class="video-source__field" for="video-auth-password">
-                <span>Hasło</span>
-                <input id="video-auth-password" name="password" type="password" autocomplete="current-password">
-              </label>
-              <div class="video-form__actions">
-                <button type="submit" class="video-button video-button--primary">Zaloguj</button>
-                <button id="video-auth-logout-btn" type="button" class="video-button video-button--ghost" hidden>Wyloguj</button>
-              </div>
-            </form>
-            <p id="video-auth-status" class="video-source__status" role="status" aria-live="polite"></p>
-          </section>
-          <section id="video-add-section" class="video-source" aria-labelledby="video-add-heading" hidden>
-            <h2 id="video-add-heading" class="video-source__title">Dodaj video (trener/admin)</h2>
-            <form id="video-add-form" class="video-source__form" novalidate>
-              <label class="video-source__field" for="video-add-input">
-                <span>Pełny link YouTube lub ID</span>
-                <input id="video-add-input" name="youtube_url" type="text" placeholder="https://www.youtube.com/watch?v=..." required>
-              </label>
-              <button type="submit" class="video-button video-button--primary video-source__submit">Dodaj do bazy</button>
-            </form>
-            <p id="video-add-status" class="video-source__status" role="status" aria-live="polite"></p>
-          </section>
-          <details id="video-list-section" class="video-list" aria-labelledby="video-list-heading">
+          <p id="video-access-message" class="video-screen__status" role="status" aria-live="polite" hidden>
+            Zaloguj się lub użyj poprawnego tokenu, aby zobaczyć listę filmów.
+          </p>
+          <details id="video-list-section" class="video-list" aria-labelledby="video-list-heading" hidden>
             <summary id="video-list-heading" class="video-list__summary">Lista filmów</summary>
             <div class="video-list__body">
               <label class="video-list__field" for="video-list-select">
@@ -71,7 +67,7 @@
               <p id="video-list-status" class="video-list__status" role="status" aria-live="polite"></p>
             </div>
           </details>
-          <div class="video-player-wrap">
+          <div id="video-player-wrap" class="video-player-wrap" hidden>
             <div id="yt-player" aria-label="Odtwarzacz YouTube"></div>
           </div>
           <button id="add-comment-btn" class="video-button video-button--primary" type="button" aria-label="Dodaj komentarz" hidden>
@@ -79,7 +75,7 @@
           </button>
         </div>
 
-        <aside class="video-screen__comments" aria-labelledby="comments-heading">
+        <aside id="video-comments-section" class="video-screen__comments" aria-labelledby="comments-heading" hidden>
           <h2 id="comments-heading" class="video-screen__subtitle">Komentarze</h2>
           <p id="comments-empty" class="video-screen__empty" hidden>Brak komentarzy dla tego filmu.</p>
           <ul id="comments-list" class="video-comments" aria-label="Lista komentarzy"></ul>
@@ -142,6 +138,52 @@
     </div>
   </main>
 
-  <script src="/assets/js/video.js?v=20260311-1" defer></script>
+  <div id="video-auth-modal" class="video-auth-modal" role="dialog" aria-modal="true" aria-labelledby="video-auth-heading" hidden>
+    <div id="video-auth-modal-overlay" class="video-auth-modal__overlay"></div>
+    <section class="video-auth-modal__panel" role="document">
+      <button id="video-auth-close-btn" type="button" class="video-auth-modal__close" aria-label="Zamknij logowanie">×</button>
+      <section id="video-auth-section" class="video-auth" aria-labelledby="video-auth-heading">
+        <h2 id="video-auth-heading" class="video-source__title">Logowanie użytkownika</h2>
+        <p id="video-auth-user" class="video-auth__user" role="status" aria-live="polite"></p>
+        <form id="video-auth-form" class="video-auth__form" novalidate>
+          <input id="video-auth-csrf" name="csrf_token" type="hidden">
+          <label class="video-source__field" for="video-auth-email">
+            <span>E-mail</span>
+            <input id="video-auth-email" name="email" type="email" autocomplete="username">
+          </label>
+          <label class="video-source__field" for="video-auth-password">
+            <span>Hasło</span>
+            <input id="video-auth-password" name="password" type="password" autocomplete="current-password">
+          </label>
+          <div class="video-form__actions">
+            <button type="submit" class="video-button video-button--primary">Zaloguj</button>
+            <button id="video-auth-logout-btn" type="button" class="video-button video-button--ghost" hidden>Wyloguj</button>
+          </div>
+        </form>
+        <p id="video-auth-status" class="video-source__status" role="status" aria-live="polite"></p>
+      </section>
+    </section>
+  </div>
+
+
+  <div id="video-add-modal" class="video-add-modal" role="dialog" aria-modal="true" aria-labelledby="video-add-heading" hidden>
+    <div id="video-add-modal-overlay" class="video-add-modal__overlay"></div>
+    <section class="video-add-modal__panel" role="document">
+      <button id="video-add-close-btn" type="button" class="video-add-modal__close" aria-label="Zamknij dodawanie filmu">×</button>
+      <section id="video-add-section" class="video-source" aria-labelledby="video-add-heading">
+        <h2 id="video-add-heading" class="video-source__title">Dodaj video (trener/admin)</h2>
+        <form id="video-add-form" class="video-source__form" novalidate>
+          <label class="video-source__field" for="video-add-input">
+            <span>Pełny link YouTube lub ID</span>
+            <input id="video-add-input" name="youtube_url" type="text" placeholder="https://www.youtube.com/watch?v=..." required>
+          </label>
+          <button type="submit" class="video-button video-button--primary video-source__submit">Dodaj do bazy</button>
+        </form>
+        <p id="video-add-status" class="video-source__status" role="status" aria-live="polite"></p>
+      </section>
+    </section>
+  </div>
+  <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="/assets/js/video.js?v=20260311-3" defer></script>
 </body>
 </html>
