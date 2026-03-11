@@ -21,6 +21,7 @@ AddDefaultCharset UTF-8
   Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
   Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
   <Files "video.html">
+    Header always unset Permissions-Policy
     Header always set Permissions-Policy "geolocation=(), microphone=(self), camera=()"
   </Files>
   # Jeśli PHP/serwer dodaje X-Powered-By, spróbuj go ukryć

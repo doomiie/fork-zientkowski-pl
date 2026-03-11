@@ -889,6 +889,17 @@
     stopMediaStream();
   }
 
+  function resolveMicrophoneErrorMessage(error) {
+    var errName = String(error && error.name || "");
+    var errMsg = String(error && error.message || "").toLowerCase();
+    if (errMsg.indexOf("permissions policy") !== -1 || errMsg.indexOf("microphone is not allowed in this document") !== -1) {
+      return "Mikrofon jest zablokowany przez konfigurację serwera (Permissions-Policy).";
+    }
+    if (errName === "NotAllowedError" || errName === "PermissionDeniedError") return "Brak zgody na mikrofon.";
+    if (errName === "NotFoundError") return "Nie wykryto mikrofonu.";
+    return "Nie udało się uruchomić dyktowania.";
+  }
+
   async function startTranscription() {
     if (!speechRecognition) return;
     if (!window.isSecureContext) {
@@ -905,11 +916,7 @@
       speechRecognition.start();
     } catch (error) {
       stopMediaStream();
-      var message = "Nie udało się uruchomić dyktowania.";
-      var errName = String(error && error.name || "");
-      if (errName === "NotAllowedError" || errName === "PermissionDeniedError") message = "Brak zgody na mikrofon.";
-      else if (errName === "NotFoundError") message = "Nie wykryto mikrofonu.";
-      setTranscribeStatus(message);
+      setTranscribeStatus(resolveMicrophoneErrorMessage(error));
     }
   }
 
@@ -945,6 +952,9 @@
       else if (code === "no-speech") message = "Nie wykryto mowy.";
       else if (code === "audio-capture") message = "Nie wykryto mikrofonu.";
       else if (code === "network") message = "Błąd usługi rozpoznawania mowy (network).";
+      if (String(event && event.message || "").toLowerCase().indexOf("permissions policy") !== -1) {
+        message = "Mikrofon jest zablokowany przez konfigurację serwera (Permissions-Policy).";
+      }
       setTranscribeStatus(message);
     };
     speechRecognition.onresult = function (event) {
