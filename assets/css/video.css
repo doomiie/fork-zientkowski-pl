@@ -99,6 +99,124 @@ body {
   margin: 6px 0 0;
 }
 
+.video-source {
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid var(--video-border);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.video-source__title {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.video-source__form {
+  margin-top: 8px;
+  display: grid;
+  gap: 8px;
+}
+
+.video-source__field {
+  display: grid;
+  gap: 6px;
+}
+
+.video-source__field span {
+  font-size: 0.9rem;
+  color: var(--video-muted);
+}
+
+.video-source__field input {
+  width: 100%;
+  border: 1px solid var(--video-border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font: inherit;
+  color: inherit;
+  background: #fff;
+}
+
+.video-source__submit {
+  margin-top: 0;
+  justify-self: start;
+}
+
+.video-source__status {
+  margin: 8px 0 0;
+  color: var(--video-muted);
+  min-height: 1.2em;
+}
+
+.video-auth {
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid var(--video-border);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.video-auth__user {
+  margin: 8px 0 0;
+  color: var(--video-muted);
+}
+
+.video-auth__form {
+  margin-top: 8px;
+  display: grid;
+  gap: 8px;
+}
+
+.video-list {
+  margin-top: 12px;
+  border: 1px solid var(--video-border);
+  border-radius: 12px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.video-list__summary {
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 12px;
+  user-select: none;
+}
+
+.video-list__body {
+  border-top: 1px solid var(--video-border);
+  padding: 12px;
+  display: grid;
+  gap: 8px;
+}
+
+.video-list__field {
+  display: grid;
+  gap: 6px;
+}
+
+.video-list__field span {
+  font-size: 0.9rem;
+  color: var(--video-muted);
+}
+
+.video-list__field select {
+  width: 100%;
+  border: 1px solid var(--video-border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font: inherit;
+  color: inherit;
+  background: #fff;
+}
+
+.video-list__status {
+  margin: 0;
+  color: var(--video-muted);
+  min-height: 1.2em;
+}
+
 .video-player-wrap {
   margin-top: 12px;
   aspect-ratio: 16 / 9;
@@ -136,7 +254,10 @@ body {
 }
 
 .video-button:focus-visible,
-.video-comments__item:focus-visible,
+.video-comments__jump:focus-visible,
+.video-comments__action:focus-visible,
+.video-mic-btn:focus-visible,
+.video-list select:focus-visible,
 .video-form input:focus-visible,
 .video-form textarea:focus-visible {
   outline: 3px solid #5b6bf7;
@@ -154,13 +275,11 @@ body {
 }
 
 .video-comments__item {
-  text-align: left;
   width: 100%;
   border: 1px solid var(--video-border);
   background: #fff;
   border-radius: 10px;
   padding: 12px;
-  cursor: pointer;
 }
 
 .video-comments__item:hover {
@@ -170,6 +289,17 @@ body {
 .video-comments__item.is-active {
   border-color: var(--video-accent);
   background: #f5f7ff;
+}
+
+.video-comments__jump {
+  width: 100%;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
 }
 
 .video-comments__time {
@@ -195,23 +325,44 @@ body {
 .video-comments__actions {
   margin-top: 8px;
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
 }
 
 .video-comments__action {
+  appearance: none;
+  -webkit-appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  line-height: 1;
+  font-weight: 600;
   min-height: 30px;
   border-radius: 999px;
   border: 1px solid var(--video-border);
   background: #fff;
   color: var(--video-text);
-  padding: 0 10px;
+  padding: 7px 12px;
   font-size: 0.82rem;
   cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.video-comments__action:hover {
+  border-color: #b9c4d7;
+  background: #f8fafc;
 }
 
 .video-comments__action--danger {
   color: #9f1239;
   border-color: #f2bfd0;
+  background: #fff7f9;
+}
+
+.video-comments__action--danger:hover {
+  border-color: #e99ab6;
+  background: #ffeef4;
 }
 
 .video-form {
@@ -231,6 +382,41 @@ body {
 
 .video-form__field span {
   font-size: 0.9rem;
+  color: var(--video-muted);
+}
+
+.video-form__field-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.video-mic-btn {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid var(--video-border);
+  background: #fff;
+  color: var(--video-text);
+  border-radius: 999px;
+  min-width: 34px;
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0 9px;
+  line-height: 1;
+}
+
+.video-mic-btn.is-recording {
+  border-color: #e11d48;
+  background: #ffe4eb;
+}
+
+.video-transcribe-status {
+  min-height: 1.2em;
+  font-size: 0.82rem;
   color: var(--video-muted);
 }
 

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
@@ -7,7 +7,7 @@
   <link rel="preload" as="style" href="/assets/css/app.min.css?v=brand12" onload="this.onload=null;this.rel='stylesheet'">
   <link rel="stylesheet" href="/assets/css/app.min.css?v=brand12">
   <noscript><link rel="stylesheet" href="/assets/css/app.min.css?v=brand12"></noscript>
-  <link rel="stylesheet" href="/assets/css/video.css">
+  <link rel="stylesheet" href="/assets/css/video.css?v=20260311-1">
 </head>
 <body class="bg-light min-h-screen">
   <a class="skip-link" href="#main-content">Przejdź do treści głównej</a>
@@ -27,6 +27,50 @@
         <div class="video-screen__player">
           <h1 id="video-title" class="video-screen__title">Wideo</h1>
           <p id="video-status" class="video-screen__status" role="status" aria-live="polite">Ładowanie...</p>
+          <p id="video-token-info" class="video-screen__status" role="status" aria-live="polite"></p>
+          <section id="video-auth-section" class="video-auth" aria-labelledby="video-auth-heading">
+            <h2 id="video-auth-heading" class="video-source__title">Logowanie użytkownika</h2>
+            <p id="video-auth-user" class="video-auth__user" role="status" aria-live="polite"></p>
+            <form id="video-auth-form" class="video-auth__form" novalidate>
+              <input id="video-auth-csrf" name="csrf_token" type="hidden">
+              <label class="video-source__field" for="video-auth-email">
+                <span>E-mail</span>
+                <input id="video-auth-email" name="email" type="email" autocomplete="username">
+              </label>
+              <label class="video-source__field" for="video-auth-password">
+                <span>Hasło</span>
+                <input id="video-auth-password" name="password" type="password" autocomplete="current-password">
+              </label>
+              <div class="video-form__actions">
+                <button type="submit" class="video-button video-button--primary">Zaloguj</button>
+                <button id="video-auth-logout-btn" type="button" class="video-button video-button--ghost" hidden>Wyloguj</button>
+              </div>
+            </form>
+            <p id="video-auth-status" class="video-source__status" role="status" aria-live="polite"></p>
+          </section>
+          <section id="video-add-section" class="video-source" aria-labelledby="video-add-heading" hidden>
+            <h2 id="video-add-heading" class="video-source__title">Dodaj video (trener/admin)</h2>
+            <form id="video-add-form" class="video-source__form" novalidate>
+              <label class="video-source__field" for="video-add-input">
+                <span>Pełny link YouTube lub ID</span>
+                <input id="video-add-input" name="youtube_url" type="text" placeholder="https://www.youtube.com/watch?v=..." required>
+              </label>
+              <button type="submit" class="video-button video-button--primary video-source__submit">Dodaj do bazy</button>
+            </form>
+            <p id="video-add-status" class="video-source__status" role="status" aria-live="polite"></p>
+          </section>
+          <details id="video-list-section" class="video-list" aria-labelledby="video-list-heading">
+            <summary id="video-list-heading" class="video-list__summary">Lista filmów</summary>
+            <div class="video-list__body">
+              <label class="video-list__field" for="video-list-select">
+                <span>Wybierz film z bazy</span>
+                <select id="video-list-select" name="video_list">
+                  <option value="">Ładowanie listy...</option>
+                </select>
+              </label>
+              <p id="video-list-status" class="video-list__status" role="status" aria-live="polite"></p>
+            </div>
+          </details>
           <div class="video-player-wrap">
             <div id="yt-player" aria-label="Odtwarzacz YouTube"></div>
           </div>
@@ -62,8 +106,18 @@
           </label>
 
           <label class="video-form__field">
-            <span>Treść komentarza</span>
+            <span class="video-form__field-head">
+              <span>Treść komentarza</span>
+              <button
+                id="comment-transcribe-btn"
+                class="video-mic-btn"
+                type="button"
+                aria-label="Dyktuj treść komentarza"
+                title="Dyktowanie głosowe"
+              >🎤</button>
+            </span>
             <textarea id="comment-content" name="tresc" rows="4" maxlength="2000"></textarea>
+            <span id="comment-transcribe-status" class="video-transcribe-status" role="status" aria-live="polite"></span>
           </label>
 
           <div class="video-form__grid">
@@ -88,6 +142,6 @@
     </div>
   </main>
 
-  <script src="/assets/js/video.js" defer></script>
+  <script src="/assets/js/video.js?v=20260311-1" defer></script>
 </body>
 </html>
