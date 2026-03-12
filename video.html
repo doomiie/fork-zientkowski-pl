@@ -7,29 +7,31 @@
   <link rel="preload" as="style" href="/assets/css/app.min.css?v=brand12" onload="this.onload=null;this.rel='stylesheet'">
   <link rel="preload" as="style" href="/assets/css/shared.css?v=dev18" onload="this.onload=null;this.rel='stylesheet'">
   <link rel="stylesheet" href="/assets/css/app.min.css?v=brand12">
-  <link rel="stylesheet" href="/assets/css/shared.css?v=dev18">
+  <link rel="stylesheet" href="/assets/css/shared.css?v=dev19">
   <noscript><link rel="stylesheet" href="/assets/css/app.min.css?v=brand12"></noscript>
   <noscript><link rel="stylesheet" href="/assets/css/shared.css?v=dev18"></noscript>
-  <link rel="stylesheet" href="/assets/css/video.css?v=20260311-2">
+  <link rel="stylesheet" href="/assets/css/video.css?v=20260312-5">
 </head>
 <body class="bg-light min-h-screen">
   <a class="skip-link" href="#main-content">Przejdź do treści głównej</a>
 
-  <header id="siteHeader" class="video-header fixed top-0 left-0 right-0 z-50 py-4 bg-white">
+  <header id="siteHeader" class="video-header fixed top-0 left-0 right-0 z-50 bg-white">
     <div class="video-container video-header__inner">
+      <a href="/" class="video-brand" aria-label="Strona główna">
+        <img id="siteHeaderLogo" class="brightness-0" src="/assets/img/logo_main.png" alt="Logo Jerzy Zientkowski">
+      </a>
       <div class="video-header__menu-slot">
-        <nav id="navDesktop" class="hidden md:flex items-center space-x-8 text-dark"></nav>
+        <nav id="navDesktop" class="hidden md:flex items-center justify-end w-full text-dark">
+          <div id="video-menu-controls-desktop" class="video-menu-controls" aria-live="polite"></div>
+        </nav>
         <div class="flex items-center md:hidden">
-          <button id="menuToggleHome" aria-label="Menu" class="p-2 rounded-lg border border-gray-300 text-gray-800 hover:bg-gray-50">
+          <button id="menuToggleHome" aria-label="Menu" class="video-menu-toggle" aria-controls="mobileMenuHome" aria-expanded="false">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
             </svg>
           </button>
         </div>
       </div>
-      <a href="/" class="video-brand" aria-label="Strona główna">
-        <img id="siteHeaderLogo" src="/assets/img/logo_main.png" alt="Logo Jerzy Zientkowski">
-      </a>
     </div>
   </header>
   <div id="mobileMenuOverlayHome" class="fixed inset-0 bg-black/50 z-[1000] hidden"></div>
@@ -42,7 +44,9 @@
         </svg>
       </button>
     </div>
-    <nav id="navMobile" class="p-4 space-y-3"></nav>
+    <nav id="navMobile" class="p-4 space-y-3">
+      <div id="video-menu-controls-mobile" class="video-mobile-controls" aria-live="polite"></div>
+    </nav>
   </aside>
 
   <main id="main-content" class="video-main">
@@ -55,18 +59,6 @@
           <p id="video-access-message" class="video-screen__status" role="status" aria-live="polite" hidden>
             Zaloguj się lub użyj poprawnego tokenu, aby zobaczyć listę filmów.
           </p>
-          <details id="video-list-section" class="video-list" aria-labelledby="video-list-heading" hidden>
-            <summary id="video-list-heading" class="video-list__summary">Lista filmów</summary>
-            <div class="video-list__body">
-              <label class="video-list__field" for="video-list-select">
-                <span>Wybierz film z bazy</span>
-                <select id="video-list-select" name="video_list">
-                  <option value="">Ładowanie listy...</option>
-                </select>
-              </label>
-              <p id="video-list-status" class="video-list__status" role="status" aria-live="polite"></p>
-            </div>
-          </details>
           <div id="video-player-wrap" class="video-player-wrap" hidden>
             <div id="yt-player" aria-label="Odtwarzacz YouTube"></div>
           </div>
@@ -82,10 +74,22 @@
         </aside>
       </section>
 
-      <section id="comment-form-section" class="video-form-section" aria-labelledby="form-heading" hidden>
+    </div>
+  </main>
+
+  <div id="comment-modal" class="comment-modal" role="dialog" aria-modal="true" aria-labelledby="form-heading" hidden>
+    <div id="comment-modal-overlay" class="comment-modal__overlay"></div>
+    <section id="comment-modal-panel" class="comment-modal__panel" role="document">
+      <button id="comment-modal-close-btn" type="button" class="comment-modal__close" aria-label="Zamknij formularz komentarza">×</button>
+      <section id="comment-form-section" class="video-form-section comment-modal__body" aria-labelledby="form-heading">
         <h2 id="form-heading" class="video-screen__subtitle">Dodaj komentarz</h2>
         <form id="comment-form" class="video-form" novalidate>
-          <div class="video-form__grid">
+          <div id="comment-meta-readonly" class="video-form__meta" hidden>
+            <p class="video-form__meta-row"><span>Czas:</span> <strong id="comment-meta-time">00:00</strong></p>
+            <p class="video-form__meta-row"><span>Autor:</span> <strong id="comment-meta-author">-</strong></p>
+          </div>
+
+          <div id="comment-time-fields" class="video-form__grid">
             <label class="video-form__field">
               <span>Czas (sekundy)</span>
               <input id="comment-time" name="czas_sekundy" type="number" min="0" max="86400" required>
@@ -96,7 +100,7 @@
             </label>
           </div>
 
-          <label class="video-form__field">
+          <label id="comment-title-field" class="video-form__field">
             <span>Tytuł komentarza</span>
             <input id="comment-title" name="tytul" type="text" maxlength="160">
           </label>
@@ -116,7 +120,7 @@
             <span id="comment-transcribe-status" class="video-transcribe-status" role="status" aria-live="polite"></span>
           </label>
 
-          <div class="video-form__grid">
+          <div id="comment-meta-fields" class="video-form__grid">
             <label class="video-form__field">
               <span>Wariant</span>
               <input id="comment-variant" name="wariant" type="text" maxlength="64" value="ogolny">
@@ -135,8 +139,8 @@
           <p id="form-status" class="video-form__status" role="status" aria-live="polite"></p>
         </form>
       </section>
-    </div>
-  </main>
+    </section>
+  </div>
 
   <div id="video-auth-modal" class="video-auth-modal" role="dialog" aria-modal="true" aria-labelledby="video-auth-heading" hidden>
     <div id="video-auth-modal-overlay" class="video-auth-modal__overlay"></div>
@@ -184,6 +188,6 @@
     </section>
   </div>
   <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-  <script src="/assets/js/video.js?v=20260311-3" defer></script>
+  <script src="/assets/js/video.js?v=20260312-6" defer></script>
 </body>
 </html>
