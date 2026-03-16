@@ -6,8 +6,10 @@
   var ACCESS_API_URL = "/backend/access_token.php";
   var AUTHOR_STORAGE_KEY = "video_comment_author";
   var AUTHOR_COOKIE_KEY = "video_comment_author";
+  var GDRIVE_MAP_STORAGE_KEY = "video_gdrive_map_v1";
   var params = new URLSearchParams(window.location.search);
   var source = (params.get("source") || "").trim();
+  var gdriveIdParam = (params.get("gdrive_id") || "").trim();
   var accessToken = (params.get("vt") || "").trim();
   var rawEdit = (params.get("edit") || "").trim().toLowerCase();
   var editMode = rawEdit === "1" || rawEdit === "true" || rawEdit === "yes" || rawEdit === "on";
@@ -19,6 +21,8 @@
   var playerWrapEl = document.getElementById("video-player-wrap");
   var ytPlayerEl = document.getElementById("yt-player");
   var drivePlayerEl = document.getElementById("drive-player");
+  var drivePreviewEl = document.getElementById("drive-preview");
+  var driveOpenExternalEl = document.getElementById("drive-open-external");
   var commentsSectionEl = document.getElementById("video-comments-section");
   var navDesktopEl = document.getElementById("navDesktop");
   var navMobileEl = document.getElementById("navMobile");
@@ -148,11 +152,64 @@
 
   function buildVideoUrl(youtubeId) {
     var next = new URLSearchParams(window.location.search);
-    next.set("source", youtubeId);
+    var sourceKey = String(youtubeId || "").trim();
+    next.set("source", sourceKey);
+    var meta = findVideoMetaBySource(sourceKey);
+    var provider = String(meta && meta.provider || "").trim().toLowerCase();
+    var providerVideoId = String(meta && meta.provider_video_id || "").trim();
+    if (provider === "gdrive" && isDriveFileId(providerVideoId)) {
+      next.set("gdrive_id", providerVideoId);
+    } else if (isDriveSourceKey(sourceKey)) {
+      var mappedId = getMappedGdriveId(sourceKey);
+      if (mappedId) next.set("gdrive_id", mappedId);
+      else next.delete("gdrive_id");
+    } else {
+      next.delete("gdrive_id");
+    }
     if (editMode) next.set("edit", "1");
     else next.delete("edit");
     next.delete("vt");
     return "video.html?" + next.toString();
+  }
+
+  function isDriveFileId(value) {
+    return /^[A-Za-z0-9_-]{20,120}$/.test(String(value || "").trim());
+  }
+
+  function isDriveSourceKey(value) {
+    return /^gd_[a-f0-9]{17}$/i.test(String(value || "").trim());
+  }
+
+  function readGdriveMap() {
+    try {
+      var raw = String(window.localStorage.getItem(GDRIVE_MAP_STORAGE_KEY) || "").trim();
+      if (!raw) return {};
+      var parsed = JSON.parse(raw);
+      return parsed && typeof parsed === "object" ? parsed : {};
+    } catch (error) {
+      return {};
+    }
+  }
+
+  function writeGdriveMap(map) {
+    try { window.localStorage.setItem(GDRIVE_MAP_STORAGE_KEY, JSON.stringify(map || {})); } catch (error) {}
+  }
+
+  function getMappedGdriveId(sourceKey) {
+    var key = String(sourceKey || "").trim();
+    if (!isDriveSourceKey(key)) return "";
+    var map = readGdriveMap();
+    var value = String(map[key] || "").trim();
+    return isDriveFileId(value) ? value : "";
+  }
+
+  function rememberGdriveId(sourceKey, driveId) {
+    var key = String(sourceKey || "").trim();
+    var id = String(driveId || "").trim();
+    if (!isDriveSourceKey(key) || !isDriveFileId(id)) return;
+    var map = readGdriveMap();
+    map[key] = id;
+    writeGdriveMap(map);
   }
 
   function resolveVideoTitle(video) {
@@ -1233,6 +1290,19 @@
   function setPlayerSurface(type) {
     if (ytPlayerEl) ytPlayerEl.hidden = type !== "youtube";
     if (drivePlayerEl) drivePlayerEl.hidden = type !== "html5";
+    if (drivePreviewEl) drivePreviewEl.hidden = type !== "drive_preview";
+  }
+
+  function setDriveExternalLink(video) {
+    if (!driveOpenExternalEl) return;
+    var driveId = resolveDriveFileId(video || {});
+    if (!driveId) {
+      driveOpenExternalEl.hidden = true;
+      driveOpenExternalEl.removeAttribute("href");
+      return;
+    }
+    driveOpenExternalEl.href = "https://drive.google.com/file/d/" + encodeURIComponent(driveId) + "/view";
+    driveOpenExternalEl.hidden = false;
   }
 
   function resetPlayerState() {
@@ -1250,6 +1320,11 @@
       try { drivePlayerEl.pause(); } catch (error) {}
       drivePlayerEl.removeAttribute("src");
       drivePlayerEl.load();
+    }
+    if (drivePreviewEl) drivePreviewEl.removeAttribute("src");
+    if (driveOpenExternalEl) {
+      driveOpenExternalEl.hidden = true;
+      driveOpenExternalEl.removeAttribute("href");
     }
     player = null;
     playerType = "";
@@ -1314,13 +1389,12 @@
     drivePlayerEl.dataset.boundPlayerState = "1";
   }
 
-  function resolveDrivePlayableUrl(video) {
+  function resolveDriveFileId(video) {
     var direct = String(video && video.source_url || "").trim();
     direct = direct
       .replace(/&amp;/g, "&")
       .replace(/\\\//g, "/")
       .replace(/%2F/gi, "/");
-    if (direct && direct.indexOf("/uc?export=download") !== -1) return direct;
 
     var driveId = String(video && video.provider_video_id || "").trim();
     if (!driveId && direct) {
@@ -1344,15 +1418,41 @@
       } catch (error) {}
     }
 
+    if (!driveId && isDriveSourceKey(source) && isDriveFileId(gdriveIdParam)) {
+      driveId = gdriveIdParam;
+    }
+    if (!driveId && isDriveSourceKey(source)) {
+      driveId = getMappedGdriveId(source);
+    }
+    if (!driveId) return "";
+    rememberGdriveId(source, driveId);
+    return driveId;
+  }
+
+  function resolveDrivePlayableUrl(video) {
+    var direct = String(video && video.source_url || "").trim();
+    direct = direct
+      .replace(/&amp;/g, "&")
+      .replace(/\\\//g, "/")
+      .replace(/%2F/gi, "/");
+    if (direct && direct.indexOf("/uc?export=download") !== -1) return direct;
+    var driveId = resolveDriveFileId(video);
     if (!driveId) return "";
     return "https://drive.google.com/uc?export=download&id=" + encodeURIComponent(driveId);
+  }
+
+  function resolveDrivePreviewUrl(video) {
+    var driveId = resolveDriveFileId(video);
+    if (!driveId) return "";
+    return "https://drive.google.com/file/d/" + encodeURIComponent(driveId) + "/preview";
   }
 
   function isLikelyDriveVideo(video) {
     var provider = String(video && video.provider || "").trim().toLowerCase();
     if (provider === "gdrive") return true;
     var sourceKey = String(video && video.youtube_id || source || "").trim();
-    if (/^gd_[a-f0-9]{17}$/i.test(sourceKey)) return true;
+    if (isDriveSourceKey(sourceKey)) return true;
+    if (isDriveSourceKey(sourceKey) && isDriveFileId(gdriveIdParam)) return true;
     var sourceUrl = String(video && video.source_url || "").toLowerCase();
     return sourceUrl.indexOf("drive.google.com") !== -1 || sourceUrl.indexOf("docs.google.com") !== -1;
   }
@@ -1387,8 +1487,33 @@
         });
       }
       setStatus("Brak poprawnego adresu źródła dla Google Drive.");
+      setDriveExternalLink(video || findVideoMetaBySource(source) || {});
       return;
     }
+
+    var fallbackToPreview = function (reason) {
+      var previewUrl = resolveDrivePreviewUrl(video || {});
+      if (!previewUrl) {
+        var fallbackMeta = findVideoMetaBySource(source);
+        if (fallbackMeta) previewUrl = resolveDrivePreviewUrl(fallbackMeta);
+      }
+      if (!previewUrl || !drivePreviewEl) {
+        setStatus("Brak poprawnego adresu źródła dla Google Drive.");
+        setDriveExternalLink(video || findVideoMetaBySource(source) || {});
+        return;
+      }
+      if (window.console && typeof window.console.warn === "function") {
+        window.console.warn("Drive HTML5 fallback -> preview", { reason: reason || "unknown", source: source });
+      }
+      setPlayerSurface("drive_preview");
+      playerType = "drive_preview";
+      player = null;
+      resetPlayerState();
+      if (addCommentBtn) addCommentBtn.hidden = true;
+      drivePreviewEl.src = previewUrl;
+      setStatus("Odtwarzanie przez Google Drive preview (fallback).");
+      setDriveExternalLink(video || findVideoMetaBySource(source) || {});
+    };
 
     if (playerType === "youtube" || !player) destroyCurrentPlayer();
     setPlayerSurface("html5");
@@ -1396,9 +1521,37 @@
     player = drivePlayerEl;
     playerType = "html5";
     resetPlayerState();
+    var resolved = false;
+    var resolveTimer = 0;
+    var onReady = function () {
+      resolved = true;
+      if (resolveTimer) {
+        window.clearTimeout(resolveTimer);
+        resolveTimer = 0;
+      }
+      drivePlayerEl.removeEventListener("loadedmetadata", onReady);
+      drivePlayerEl.removeEventListener("error", onError);
+      drivePlayerEl.removeEventListener("stalled", onError);
+      drivePlayerEl.removeEventListener("abort", onError);
+    };
+    var onError = function () {
+      if (resolved) return;
+      onReady();
+      fallbackToPreview("html5_error");
+    };
+    drivePlayerEl.addEventListener("loadedmetadata", onReady);
+    drivePlayerEl.addEventListener("error", onError);
+    drivePlayerEl.addEventListener("stalled", onError);
+    drivePlayerEl.addEventListener("abort", onError);
+    resolveTimer = window.setTimeout(function () {
+      if (resolved) return;
+      onReady();
+      fallbackToPreview("html5_timeout");
+    }, 5000);
     drivePlayerEl.src = playableUrl;
     drivePlayerEl.load();
     setStatus("Ładowanie odtwarzacza...");
+    setDriveExternalLink(video || findVideoMetaBySource(source) || {});
   }
 
   function loadYouTube(videoId) {
@@ -1754,6 +1907,10 @@
   }
 
   async function init() {
+    if (isDriveSourceKey(source) && isDriveFileId(gdriveIdParam)) {
+      rememberGdriveId(source, gdriveIdParam);
+    }
+
     initSpeechRecognition();
     initMobileMenuHandlers();
     scheduleVideoMenuButtons();

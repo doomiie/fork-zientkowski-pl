@@ -62,7 +62,9 @@
           <div id="video-player-wrap" class="video-player-wrap" hidden>
             <div id="yt-player" aria-label="Odtwarzacz YouTube"></div>
             <video id="drive-player" aria-label="Odtwarzacz Google Drive" controls playsinline preload="metadata" hidden></video>
+            <iframe id="drive-preview" title="Podgląd Google Drive" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allow="autoplay; fullscreen" hidden></iframe>
           </div>
+          <a id="drive-open-external" class="video-button video-button--ghost" href="#" target="_blank" rel="noopener noreferrer" hidden>Otwórz w Google Drive</a>
           <button id="add-comment-btn" class="video-button video-button--primary" type="button" aria-label="Dodaj komentarz" hidden>
             Dodaj komentarz
           </button>
@@ -189,6 +191,6 @@
     </section>
   </div>
   <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-  <script src="/assets/js/video.js?v=20260316-4" defer></script>
+  <script src="/assets/js/video.js?v=20260316-9" defer></script>
 </body>
 </html>

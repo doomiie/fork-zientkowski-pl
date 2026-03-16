@@ -518,7 +518,15 @@ try {
                 <td><?php echo h((string)$video['status']); ?></td>
                 <td><?php echo ((int)$video['publiczny'] === 1) ? 'tak' : 'nie'; ?></td>
                 <td><?php echo h((string)$video['zaktualizowano']); ?></td>
-                <td><a href="/video.html?source=<?php echo urlencode((string)$video['youtube_id']); ?>" target="_blank" rel="noopener">otworz</a></td>
+                <td>
+                  <?php
+                    $previewUrl = '/video.html?source=' . urlencode((string)$video['youtube_id']);
+                    if ((string)($video['provider'] ?? '') === 'gdrive' && trim((string)($video['provider_video_id'] ?? '')) !== '') {
+                        $previewUrl .= '&gdrive_id=' . urlencode((string)$video['provider_video_id']);
+                    }
+                  ?>
+                  <a href="<?php echo h($previewUrl); ?>" target="_blank" rel="noopener">otworz</a>
+                </td>
                 <td>
                   <form method="post" action="videos.php" onsubmit="return confirm('Usunac ten film i wszystkie jego komentarze?');">
                     <input type="hidden" name="csrf_token" value="<?php echo h(csrf_token()); ?>">
