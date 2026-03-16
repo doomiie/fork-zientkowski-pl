@@ -10,19 +10,50 @@ function h(string $v): string
     return htmlspecialchars($v, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
+function validate_source_key(string $value): bool
+{
+    return (bool)preg_match('/^[A-Za-z0-9_-]{6,20}$/', $value);
+}
+
 function validate_youtube_id(string $value): bool
 {
     return (bool)preg_match('/^[A-Za-z0-9_-]{6,20}$/', $value);
 }
 
-function extract_youtube_id(string $value): string
+function validate_drive_file_id(string $value): bool
+{
+    return (bool)preg_match('/^[A-Za-z0-9_-]{20,120}$/', $value);
+}
+
+function build_drive_source_key(string $driveFileId): string
+{
+    return 'gd_' . substr(sha1($driveFileId), 0, 17);
+}
+
+/**
+ * @return array{provider:string,provider_video_id:string,source_key:string,source_url:string}|null
+ */
+function parse_video_source(string $value): ?array
 {
     $value = trim($value);
     if ($value === '') {
-        return '';
+        return null;
     }
     if (validate_youtube_id($value)) {
-        return $value;
+        return [
+            'provider' => 'youtube',
+            'provider_video_id' => $value,
+            'source_key' => $value,
+            'source_url' => 'https://www.youtube.com/watch?v=' . $value,
+        ];
+    }
+    if (validate_drive_file_id($value)) {
+        return [
+            'provider' => 'gdrive',
+            'provider_video_id' => $value,
+            'source_key' => build_drive_source_key($value),
+            'source_url' => 'https://drive.google.com/file/d/' . $value . '/view',
+        ];
     }
 
     $parts = @parse_url($value);
@@ -36,7 +67,15 @@ function extract_youtube_id(string $value): string
 
     if ($host === 'youtu.be' || $host === 'www.youtu.be') {
         $id = $path === '' ? '' : explode('/', $path)[0];
-        return validate_youtube_id($id) ? $id : '';
+        if (validate_youtube_id($id)) {
+            return [
+                'provider' => 'youtube',
+                'provider_video_id' => $id,
+                'source_key' => $id,
+                'source_url' => 'https://www.youtube.com/watch?v=' . $id,
+            ];
+        }
+        return null;
     }
     if (
         $host === 'youtube.com' ||
@@ -46,15 +85,56 @@ function extract_youtube_id(string $value): string
     ) {
         parse_str($query, $queryParams);
         if (!empty($queryParams['v']) && validate_youtube_id((string)$queryParams['v'])) {
-            return (string)$queryParams['v'];
+            $id = (string)$queryParams['v'];
+            return [
+                'provider' => 'youtube',
+                'provider_video_id' => $id,
+                'source_key' => $id,
+                'source_url' => 'https://www.youtube.com/watch?v=' . $id,
+            ];
         }
         $segments = $path === '' ? [] : explode('/', $path);
         if (count($segments) >= 2 && in_array($segments[0], ['embed', 'shorts', 'live', 'v'], true)) {
             $candidate = (string)$segments[1];
-            return validate_youtube_id($candidate) ? $candidate : '';
+            if (validate_youtube_id($candidate)) {
+                return [
+                    'provider' => 'youtube',
+                    'provider_video_id' => $candidate,
+                    'source_key' => $candidate,
+                    'source_url' => 'https://www.youtube.com/watch?v=' . $candidate,
+                ];
+            }
+            return null;
         }
     }
-    return '';
+
+    if (
+        $host === 'drive.google.com' ||
+        $host === 'www.drive.google.com' ||
+        $host === 'docs.google.com'
+    ) {
+        parse_str($query, $queryParams);
+        $driveId = '';
+        if (!empty($queryParams['id'])) {
+            $driveId = (string)$queryParams['id'];
+        } else {
+            $segments = $path === '' ? [] : explode('/', $path);
+            $dIndex = array_search('d', $segments, true);
+            if ($dIndex !== false && isset($segments[$dIndex + 1])) {
+                $driveId = (string)$segments[$dIndex + 1];
+            }
+        }
+        if (validate_drive_file_id($driveId)) {
+            return [
+                'provider' => 'gdrive',
+                'provider_video_id' => $driveId,
+                'source_key' => build_drive_source_key($driveId),
+                'source_url' => 'https://drive.google.com/file/d/' . $driveId . '/view',
+            ];
+        }
+    }
+
+    return null;
 }
 
 $error = '';
@@ -69,33 +149,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($action === 'add') {
             $sourceInput = trim((string)($_POST['youtube_source'] ?? ''));
-            $youtubeId = extract_youtube_id($sourceInput);
-            if ($youtubeId === '') {
-                $error = 'Podaj poprawny link YouTube lub ID.';
+            $parsedSource = parse_video_source($sourceInput);
+            if (!$parsedSource) {
+                $error = 'Podaj poprawny link YouTube lub Google Drive.';
             } else {
+                $provider = (string)$parsedSource['provider'];
+                $providerVideoId = (string)$parsedSource['provider_video_id'];
+                $sourceKey = (string)$parsedSource['source_key'];
+                $sourceUrl = (string)$parsedSource['source_url'];
                 try {
-                    $selectStmt = $pdo->prepare('SELECT id, youtube_id FROM videos WHERE youtube_id = ? LIMIT 1');
-                    $selectStmt->execute([$youtubeId]);
+                    $selectStmt = $pdo->prepare(
+                        'SELECT id, youtube_id, provider, provider_video_id FROM videos
+                         WHERE (provider = ? AND provider_video_id = ?) OR youtube_id = ?
+                         LIMIT 1'
+                    );
+                    $selectStmt->execute([$provider, $providerVideoId, $sourceKey]);
                     $existing = $selectStmt->fetch(PDO::FETCH_ASSOC);
 
                     if ($existing) {
                         $success = 'Film juz istnieje w bazie.';
                     } else {
-                        $title = 'YouTube video ' . $youtubeId;
-                        $slug = $youtubeId;
-                        $thumbnail = 'https://i.ytimg.com/vi/' . rawurlencode($youtubeId) . '/hqdefault.jpg';
+                        $title = $provider === 'gdrive'
+                            ? ('Google Drive video ' . mb_substr($providerVideoId, 0, 10))
+                            : ('YouTube video ' . $providerVideoId);
+                        $slug = $sourceKey;
+                        $thumbnail = $provider === 'youtube'
+                            ? ('https://i.ytimg.com/vi/' . rawurlencode($providerVideoId) . '/hqdefault.jpg')
+                            : '';
                         $statusCandidates = ['active', 'opublikowany', 'published', 'aktywny', 'draft'];
                         $inserted = false;
                         foreach ($statusCandidates as $status) {
                             try {
                                 $insertStmt = $pdo->prepare(
                                     'INSERT INTO videos
-                                        (youtube_id, tytul, slug, opis, miniaturka_url, status, dlugosc_sekundy, jezyk, publiczny, utworzono, zaktualizowano)
+                                        (youtube_id, provider, provider_video_id, source_url, tytul, slug, opis, miniaturka_url, status, dlugosc_sekundy, jezyk, publiczny, utworzono, zaktualizowano)
                                      VALUES
-                                        (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())'
+                                        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())'
                                 );
                                 $insertStmt->execute([
-                                    $youtubeId,
+                                    $sourceKey,
+                                    $provider,
+                                    $providerVideoId,
+                                    $sourceUrl,
                                     $title,
                                     $slug,
                                     '',
@@ -207,7 +302,7 @@ $assignments = [];
 
 try {
     $videosStmt = $pdo->query(
-        'SELECT id, youtube_id, tytul, status, publiczny, zaktualizowano
+        'SELECT id, youtube_id, provider, provider_video_id, source_url, tytul, status, publiczny, zaktualizowano
          FROM videos
          ORDER BY zaktualizowano DESC, id DESC
          LIMIT 200'
@@ -233,7 +328,7 @@ try {
     $assignStmt = $pdo->query(
         "SELECT uva.user_id, uva.video_id, uva.can_edit, uva.updated_at,
                 u.email AS user_email, u.role AS user_role,
-                v.youtube_id, v.tytul
+                v.youtube_id, v.provider, v.provider_video_id, v.tytul
          FROM user_video_access uva
          JOIN users u ON u.id = uva.user_id
          JOIN videos v ON v.id = uva.video_id
@@ -276,8 +371,8 @@ try {
   </header>
   <main>
     <section class="card">
-      <h1 style="margin-top:0;">Dodaj film YouTube</h1>
-      <p>Wklej pelny URL YouTube lub samo ID.</p>
+      <h1 style="margin-top:0;">Dodaj film (YouTube / Google Drive)</h1>
+      <p>Wklej pelny URL lub ID z YouTube albo Google Drive.</p>
       <?php if ($error !== ''): ?><p class="err"><?php echo h($error); ?></p><?php endif; ?>
       <?php if ($success !== ''): ?><p class="ok"><?php echo h($success); ?></p><?php endif; ?>
       <form method="post" action="videos.php" autocomplete="off">
@@ -285,7 +380,7 @@ try {
         <input type="hidden" name="action" value="add">
         <div class="row">
           <label for="youtube_source">Link lub ID</label>
-          <input id="youtube_source" name="youtube_source" type="text" required placeholder="https://www.youtube.com/watch?v=..." value="<?php echo h($sourceInput); ?>">
+          <input id="youtube_source" name="youtube_source" type="text" required placeholder="https://www.youtube.com/watch?v=... lub https://drive.google.com/file/d/.../view" value="<?php echo h($sourceInput); ?>">
         </div>
         <button type="submit">Dodaj do bazy</button>
       </form>
@@ -302,7 +397,7 @@ try {
             <option value="">Wybierz video...</option>
             <?php foreach ($videos as $video): ?>
               <option value="<?php echo h((string)$video['id']); ?>">
-                <?php echo h((string)$video['youtube_id'] . ' - ' . (string)$video['tytul']); ?>
+                <?php echo h((string)$video['provider'] . ' : ' . (string)$video['youtube_id'] . ' - ' . (string)$video['tytul']); ?>
               </option>
             <?php endforeach; ?>
           </select>
@@ -350,7 +445,8 @@ try {
             <?php foreach ($assignments as $a): ?>
               <tr>
                 <td>
-                  <code><?php echo h((string)$a['youtube_id']); ?></code><br>
+                  <code><?php echo h((string)$a['youtube_id']); ?></code>
+                  <small><?php echo h(' [' . (string)$a['provider'] . ']'); ?></small><br>
                   <?php echo h((string)$a['tytul']); ?>
                 </td>
                 <td><?php echo h((string)$a['user_email'] . ' [' . (string)$a['user_role'] . ']'); ?></td>
@@ -393,7 +489,9 @@ try {
           <thead>
             <tr>
               <th>ID</th>
-              <th>YouTube ID</th>
+              <th>Source key</th>
+              <th>Provider</th>
+              <th>Provider ID</th>
               <th>Tytul</th>
               <th>Status</th>
               <th>Publiczny</th>
@@ -407,6 +505,8 @@ try {
               <tr>
                 <td><?php echo h((string)$video['id']); ?></td>
                 <td><code><?php echo h((string)$video['youtube_id']); ?></code></td>
+                <td><?php echo h((string)$video['provider']); ?></td>
+                <td><code><?php echo h((string)$video['provider_video_id']); ?></code></td>
                 <td><?php echo h((string)$video['tytul']); ?></td>
                 <td><?php echo h((string)$video['status']); ?></td>
                 <td><?php echo ((int)$video['publiczny'] === 1) ? 'tak' : 'nie'; ?></td>
@@ -429,4 +529,3 @@ try {
   </main>
 </body>
 </html>
-

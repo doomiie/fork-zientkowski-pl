@@ -98,6 +98,8 @@
   var speechRecognition = null;
   var isTranscribing = false;
   var mediaStream = null;
+  var transcribeHeardSpeech = false;
+  var transcribeSilenceTimer = null;
 
   function setStatus(msg) {
     if (statusEl) statusEl.textContent = msg;
@@ -335,6 +337,7 @@
 
   function applyAccessState(allowed) {
     hasContentAccess = !!allowed;
+    document.body.classList.toggle("video-has-content-access", hasContentAccess);
     if (videoMenuPickerDesktop) videoMenuPickerDesktop.hidden = !hasContentAccess;
     if (videoMenuPickerMobile) videoMenuPickerMobile.hidden = !hasContentAccess;
     if (!hasContentAccess) closeDesktopVideoMenuPanel(false);
@@ -1185,9 +1188,9 @@
     if (formStatusEl) formStatusEl.textContent = "";
     var submitBtn = formEl ? formEl.querySelector('button[type="submit"]') : null;
     if (submitBtn) submitBtn.textContent = "Zapisz zmiany";
-    setCommentFormMode(true);
+    setCommentFormMode(false);
     openCommentModal(triggerEl || null);
-    titleInput.focus();
+    if (contentInput) contentInput.focus();
   }
 
   async function deleteComment(commentId) {
@@ -1369,6 +1372,12 @@
     stopMediaStream();
   }
 
+  function clearTranscribeSilenceTimer() {
+    if (!transcribeSilenceTimer) return;
+    window.clearTimeout(transcribeSilenceTimer);
+    transcribeSilenceTimer = null;
+  }
+
   function resolveMicrophoneErrorMessage(error) {
     var errName = String(error && error.name || "");
     var errMsg = String(error && error.message || "").toLowerCase();
@@ -1409,23 +1418,35 @@
     }
     speechRecognition = new SpeechRecognitionCtor();
     speechRecognition.lang = "pl-PL";
-    speechRecognition.continuous = true;
+    speechRecognition.continuous = false;
     speechRecognition.interimResults = true;
+    speechRecognition.maxAlternatives = 1;
 
     speechRecognition.onstart = function () {
       isTranscribing = true;
+      transcribeHeardSpeech = false;
+      clearTranscribeSilenceTimer();
+      transcribeSilenceTimer = window.setTimeout(function () {
+        if (isTranscribing && !transcribeHeardSpeech) {
+          setTranscribeStatus("Nie wykryto mowy. Mów wyraźnie i bliżej mikrofonu.");
+        }
+      }, 4000);
       setTranscribeButtonState(true);
       setTranscribeStatus("Nagrywanie... mów teraz.");
     };
     speechRecognition.onend = function () {
       isTranscribing = false;
+      clearTranscribeSilenceTimer();
       setTranscribeButtonState(false);
       stopMediaStream();
-      if (!transcribeStatusEl || !transcribeStatusEl.textContent || transcribeStatusEl.textContent.indexOf("Błąd") !== 0) {
+      if (!transcribeHeardSpeech) {
+        setTranscribeStatus("Brak rozpoznanej mowy. Spróbuj ponownie.");
+      } else if (!transcribeStatusEl || !transcribeStatusEl.textContent || transcribeStatusEl.textContent.indexOf("Błąd") !== 0) {
         setTranscribeStatus("Dyktowanie zatrzymane.");
       }
     };
     speechRecognition.onerror = function (event) {
+      clearTranscribeSilenceTimer();
       var code = String(event && event.error || "");
       var message = "Błąd dyktowania.";
       if (code === "not-allowed" || code === "service-not-allowed") message = "Brak zgody na mikrofon.";
@@ -1438,6 +1459,8 @@
       setTranscribeStatus(message);
     };
     speechRecognition.onresult = function (event) {
+      transcribeHeardSpeech = true;
+      clearTranscribeSilenceTimer();
       var interim = "";
       for (var i = event.resultIndex; i < event.results.length; i += 1) {
         var transcript = String(event.results[i][0] && event.results[i][0].transcript || "").trim();

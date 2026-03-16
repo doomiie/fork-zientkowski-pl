@@ -820,11 +820,28 @@ body.video-modal-open {
 }
 
 @media (max-width: 767px) {
-  .video-player-wrap {
+  .video-screen__player {
     position: sticky;
     top: calc(var(--video-header-height) + 8px);
     z-index: 12;
+    padding: 10px;
+    border-radius: 12px;
+    background: var(--video-card);
     box-shadow: 0 12px 30px rgba(2, 6, 23, 0.2);
+  }
+
+  .video-player-wrap {
+    margin-top: 0;
+    position: static;
+    box-shadow: none;
+  }
+
+  body.video-has-content-access #video-title,
+  body.video-has-content-access #video-status,
+  body.video-has-content-access #video-token-info,
+  body.video-has-content-access #video-access-message,
+  #add-comment-btn {
+    display: none !important;
   }
 }
 
