@@ -4,6 +4,8 @@ declare(strict_types=1);
 require __DIR__ . '/db.php';
 require_login();
 require_admin();
+$videosAdminBuild = 'videos.php build 2026-03-16-gdrive-1';
+header('X-Admin-Videos-Build: ' . $videosAdminBuild);
 
 function h(string $v): string
 {
@@ -361,12 +363,17 @@ try {
     th, td { text-align:left; border-bottom:1px solid #e5e7eb; padding:8px 6px; vertical-align:top; }
     code { background:#f3f4f6; padding:2px 6px; border-radius:6px; }
     .inline { display:inline-flex; gap:8px; align-items:center; }
+    .build { margin:0; font-size:12px; opacity:.8; }
   </style>
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline';">
 </head>
 <body>
+  <!-- <?php echo h($videosAdminBuild); ?> -->
   <header>
-    <div><strong>Wideo - administracja</strong></div>
+    <div>
+      <strong>Wideo - administracja</strong>
+      <p class="build"><?php echo h($videosAdminBuild); ?></p>
+    </div>
     <div><a class="btn secondary" href="index.php">Powrot do panelu</a></div>
   </header>
   <main>

@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="/assets/css/shared.css?v=dev19">
   <noscript><link rel="stylesheet" href="/assets/css/app.min.css?v=brand12"></noscript>
   <noscript><link rel="stylesheet" href="/assets/css/shared.css?v=dev18"></noscript>
-  <link rel="stylesheet" href="/assets/css/video.css?v=20260313-2">
+  <link rel="stylesheet" href="/assets/css/video.css?v=20260316-1">
 </head>
 <body class="bg-light min-h-screen">
   <a class="skip-link" href="#main-content">Przejdź do treści głównej</a>
@@ -61,6 +61,7 @@
           </p>
           <div id="video-player-wrap" class="video-player-wrap" hidden>
             <div id="yt-player" aria-label="Odtwarzacz YouTube"></div>
+            <video id="drive-player" aria-label="Odtwarzacz Google Drive" controls playsinline preload="metadata" hidden></video>
           </div>
           <button id="add-comment-btn" class="video-button video-button--primary" type="button" aria-label="Dodaj komentarz" hidden>
             Dodaj komentarz
@@ -178,8 +179,8 @@
         <h2 id="video-add-heading" class="video-source__title">Dodaj video (trener/admin)</h2>
         <form id="video-add-form" class="video-source__form" novalidate>
           <label class="video-source__field" for="video-add-input">
-            <span>Pełny link YouTube lub ID</span>
-            <input id="video-add-input" name="youtube_url" type="text" placeholder="https://www.youtube.com/watch?v=..." required>
+            <span>Pełny link YouTube/Google Drive lub ID</span>
+            <input id="video-add-input" name="youtube_url" type="text" placeholder="https://www.youtube.com/watch?v=... lub https://drive.google.com/file/d/.../view" required>
           </label>
           <button type="submit" class="video-button video-button--primary video-source__submit">Dodaj do bazy</button>
         </form>
@@ -188,6 +189,6 @@
     </section>
   </div>
   <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-  <script src="/assets/js/video.js?v=20260313-1" defer></script>
+  <script src="/assets/js/video.js?v=20260316-4" defer></script>
 </body>
 </html>

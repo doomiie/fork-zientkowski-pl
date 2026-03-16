@@ -440,9 +440,15 @@ body {
 }
 
 #yt-player,
-#yt-player iframe {
+#yt-player iframe,
+#drive-player {
   width: 100%;
   height: 100%;
+}
+
+#drive-player {
+  display: block;
+  background: #000;
 }
 
 .video-button {

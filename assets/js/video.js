@@ -17,6 +17,8 @@
   var tokenInfoEl = document.getElementById("video-token-info");
   var accessMessageEl = document.getElementById("video-access-message");
   var playerWrapEl = document.getElementById("video-player-wrap");
+  var ytPlayerEl = document.getElementById("yt-player");
+  var drivePlayerEl = document.getElementById("drive-player");
   var commentsSectionEl = document.getElementById("video-comments-section");
   var navDesktopEl = document.getElementById("navDesktop");
   var navMobileEl = document.getElementById("navMobile");
@@ -70,6 +72,7 @@
   var comments = [];
   var videos = [];
   var player = null;
+  var playerType = "";
   var playerReady = false;
   var lastPlayerState = -1;
   var pauseAutoOpenTimer = null;
@@ -139,7 +142,7 @@
     });
   }
 
-  function isYoutubeId(value) {
+  function isSourceKey(value) {
     return /^[A-Za-z0-9_-]{6,20}$/.test(String(value || "").trim());
   }
 
@@ -345,6 +348,7 @@
     if (commentsSectionEl) commentsSectionEl.hidden = !hasContentAccess;
     if (accessMessageEl) accessMessageEl.hidden = hasContentAccess;
     if (!hasContentAccess) {
+      destroyCurrentPlayer();
       comments = [];
       renderComments();
       getVideoListSelectElements().forEach(function (selectEl) {
@@ -906,7 +910,7 @@
     }
     var value = String(videoAddInputEl && videoAddInputEl.value || "").trim();
     if (!value) {
-      setVideoAddStatus("Wklej link YouTube lub ID.");
+      setVideoAddStatus("Wklej link YouTube lub Google Drive.");
       return;
     }
     setVideoAddStatus("Dodawanie filmu...");
@@ -1101,8 +1105,16 @@
 
   function seekAndPlay(seconds) {
     if (!playerReady || !player) return;
-    player.seekTo(Math.max(0, Number(seconds) || 0), true);
-    player.playVideo();
+    var target = Math.max(0, Number(seconds) || 0);
+    if (playerType === "youtube" && typeof player.seekTo === "function") {
+      player.seekTo(target, true);
+      if (typeof player.playVideo === "function") player.playVideo();
+      return;
+    }
+    if (playerType === "html5" && typeof player.currentTime !== "undefined") {
+      try { player.currentTime = target; } catch (error) {}
+      if (typeof player.play === "function") player.play().catch(function () {});
+    }
   }
 
   function clearPauseAutoOpenCandidate() {
@@ -1114,8 +1126,13 @@
   }
 
   function readCurrentPlayerTime() {
-    if (!player || typeof player.getCurrentTime !== "function") return 0;
-    var value = Number(player.getCurrentTime() || 0);
+    if (!player) return 0;
+    var value = 0;
+    if (playerType === "youtube" && typeof player.getCurrentTime === "function") {
+      value = Number(player.getCurrentTime() || 0);
+    } else if (playerType === "html5" && typeof player.currentTime !== "undefined") {
+      value = Number(player.currentTime || 0);
+    }
     return Number.isFinite(value) ? Math.max(0, value) : 0;
   }
 
@@ -1145,7 +1162,7 @@
     if (!editMode || !playerReady || !player || !timeInput || !timeTextInput || !formEl || !titleInput) return;
     if (isCommentModalOpen()) return;
     clearPauseAutoOpenCandidate();
-    var seconds = Math.max(0, Math.floor(player.getCurrentTime() || 0));
+    var seconds = Math.max(0, Math.floor(readCurrentPlayerTime() || 0));
     timeInput.value = String(seconds);
     timeTextInput.value = formatTime(seconds);
     if (formStatusEl) formStatusEl.textContent = "";
@@ -1213,12 +1230,186 @@
     }
   }
 
+  function setPlayerSurface(type) {
+    if (ytPlayerEl) ytPlayerEl.hidden = type !== "youtube";
+    if (drivePlayerEl) drivePlayerEl.hidden = type !== "html5";
+  }
+
+  function resetPlayerState() {
+    playerReady = false;
+    lastPlayerState = -1;
+    clearPauseAutoOpenCandidate();
+  }
+
+  function destroyCurrentPlayer() {
+    clearPauseAutoOpenCandidate();
+    if (playerType === "youtube" && player && typeof player.destroy === "function") {
+      try { player.destroy(); } catch (error) {}
+    }
+    if (drivePlayerEl) {
+      try { drivePlayerEl.pause(); } catch (error) {}
+      drivePlayerEl.removeAttribute("src");
+      drivePlayerEl.load();
+    }
+    player = null;
+    playerType = "";
+    resetPlayerState();
+  }
+
+  function handlePlayerStateChange(nextState) {
+    var prevState = lastPlayerState;
+    lastPlayerState = Number(nextState);
+
+    if (!editMode) {
+      if (addCommentBtn) addCommentBtn.hidden = true;
+      clearPauseAutoOpenCandidate();
+      return;
+    }
+    if (lastPlayerState === 1) {
+      if (addCommentBtn && !isCommentModalOpen()) addCommentBtn.hidden = true;
+      clearPauseAutoOpenCandidate();
+      return;
+    }
+    if (lastPlayerState === 3 || lastPlayerState === 5) {
+      clearPauseAutoOpenCandidate();
+      return;
+    }
+    if (lastPlayerState === 2) {
+      if (addCommentBtn) addCommentBtn.hidden = false;
+      if (prevState === 1 && !isCommentModalOpen()) scheduleAutoCommentOpenOnPause();
+      return;
+    }
+    if (lastPlayerState === 0 || lastPlayerState === -1) clearPauseAutoOpenCandidate();
+  }
+
+  function ensureDrivePlayerBindings() {
+    if (!drivePlayerEl || drivePlayerEl.dataset.boundPlayerState === "1") return;
+
+    drivePlayerEl.addEventListener("play", function () {
+      if (playerType !== "html5") return;
+      handlePlayerStateChange(1);
+    });
+    drivePlayerEl.addEventListener("pause", function () {
+      if (playerType !== "html5") return;
+      handlePlayerStateChange(2);
+    });
+    drivePlayerEl.addEventListener("seeking", function () {
+      if (playerType !== "html5") return;
+      handlePlayerStateChange(3);
+    });
+    drivePlayerEl.addEventListener("waiting", function () {
+      if (playerType !== "html5") return;
+      handlePlayerStateChange(3);
+    });
+    drivePlayerEl.addEventListener("ended", function () {
+      if (playerType !== "html5") return;
+      handlePlayerStateChange(0);
+    });
+    drivePlayerEl.addEventListener("loadedmetadata", function () {
+      if (playerType !== "html5") return;
+      playerReady = true;
+      setStatus("Gotowe");
+    });
+
+    drivePlayerEl.dataset.boundPlayerState = "1";
+  }
+
+  function resolveDrivePlayableUrl(video) {
+    var direct = String(video && video.source_url || "").trim();
+    direct = direct
+      .replace(/&amp;/g, "&")
+      .replace(/\\\//g, "/")
+      .replace(/%2F/gi, "/");
+    if (direct && direct.indexOf("/uc?export=download") !== -1) return direct;
+
+    var driveId = String(video && video.provider_video_id || "").trim();
+    if (!driveId && direct) {
+      var matchPath = direct.match(/\/file\/d\/([A-Za-z0-9_-]{20,120})/i);
+      var matchQuery = direct.match(/[?&]id=([A-Za-z0-9_-]{20,120})/i);
+      if (matchPath && matchPath[1]) driveId = matchPath[1];
+      else if (matchQuery && matchQuery[1]) driveId = matchQuery[1];
+    }
+    if (!driveId && direct) {
+      try {
+        var parsed = new URL(direct, window.location.origin);
+        var host = String(parsed.hostname || "").toLowerCase();
+        if (host.indexOf("drive.google.com") !== -1 || host.indexOf("docs.google.com") !== -1) {
+          driveId = parsed.searchParams.get("id") || "";
+          if (!driveId) {
+            var parts = String(parsed.pathname || "").split("/").filter(Boolean);
+            var dIndex = parts.indexOf("d");
+            if (dIndex >= 0 && parts[dIndex + 1]) driveId = parts[dIndex + 1];
+          }
+        }
+      } catch (error) {}
+    }
+
+    if (!driveId) return "";
+    return "https://drive.google.com/uc?export=download&id=" + encodeURIComponent(driveId);
+  }
+
+  function isLikelyDriveVideo(video) {
+    var provider = String(video && video.provider || "").trim().toLowerCase();
+    if (provider === "gdrive") return true;
+    var sourceKey = String(video && video.youtube_id || source || "").trim();
+    if (/^gd_[a-f0-9]{17}$/i.test(sourceKey)) return true;
+    var sourceUrl = String(video && video.source_url || "").toLowerCase();
+    return sourceUrl.indexOf("drive.google.com") !== -1 || sourceUrl.indexOf("docs.google.com") !== -1;
+  }
+
+  function findVideoMetaBySource(sourceKey) {
+    var key = String(sourceKey || "").trim();
+    if (!key || !Array.isArray(videos)) return null;
+    for (var i = 0; i < videos.length; i += 1) {
+      var item = videos[i] || {};
+      if (String(item.youtube_id || "").trim() === key) return item;
+    }
+    return null;
+  }
+
+  function loadDriveVideo(video) {
+    if (!drivePlayerEl) {
+      setStatus("Brak komponentu odtwarzacza Google Drive.");
+      return;
+    }
+
+    var playableUrl = resolveDrivePlayableUrl(video);
+    if (!playableUrl) {
+      var fallbackMeta = findVideoMetaBySource(source);
+      if (fallbackMeta) playableUrl = resolveDrivePlayableUrl(fallbackMeta);
+    }
+    if (!playableUrl) {
+      if (window.console && typeof window.console.warn === "function") {
+        window.console.warn("Drive metadata missing", {
+          source: source,
+          video: video,
+          matched: findVideoMetaBySource(source)
+        });
+      }
+      setStatus("Brak poprawnego adresu źródła dla Google Drive.");
+      return;
+    }
+
+    if (playerType === "youtube" || !player) destroyCurrentPlayer();
+    setPlayerSurface("html5");
+    ensureDrivePlayerBindings();
+    player = drivePlayerEl;
+    playerType = "html5";
+    resetPlayerState();
+    drivePlayerEl.src = playableUrl;
+    drivePlayerEl.load();
+    setStatus("Ładowanie odtwarzacza...");
+  }
+
   function loadYouTube(videoId) {
     if (!videoId) return;
+    if (playerType === "html5") destroyCurrentPlayer();
+    setPlayerSurface("youtube");
     if (window.YT && window.YT.Player) {
-      if (player && typeof player.loadVideoById === "function") {
+      if (playerType === "youtube" && player && typeof player.loadVideoById === "function") {
         player.loadVideoById(videoId);
         playerReady = true;
+        lastPlayerState = -1;
         setStatus("Gotowe");
       } else {
         buildPlayer(videoId);
@@ -1238,6 +1429,9 @@
   }
 
   function buildPlayer(videoId) {
+    if (!ytPlayerEl) return;
+    resetPlayerState();
+    playerType = "youtube";
     player = new window.YT.Player("yt-player", {
       videoId: videoId,
       playerVars: { rel: 0, modestbranding: 1, playsinline: 1 },
@@ -1245,39 +1439,22 @@
         onReady: function () {
           playerReady = true;
           lastPlayerState = -1;
-          clearPauseAutoOpenCandidate();
           setStatus("Gotowe");
         },
         onStateChange: function (event) {
-          var nextState = Number(event && event.data);
-          var prevState = lastPlayerState;
-          lastPlayerState = nextState;
-
-          if (!editMode) {
-            if (addCommentBtn) addCommentBtn.hidden = true;
-            clearPauseAutoOpenCandidate();
-            return;
-          }
-          if (nextState === 1) {
-            if (addCommentBtn && !isCommentModalOpen()) addCommentBtn.hidden = true;
-            clearPauseAutoOpenCandidate();
-            return;
-          }
-          if (nextState === 3 || nextState === 5) {
-            clearPauseAutoOpenCandidate();
-            return;
-          }
-          if (nextState === 2) {
-            if (addCommentBtn) addCommentBtn.hidden = false;
-            if (prevState === 1 && !isCommentModalOpen()) {
-              scheduleAutoCommentOpenOnPause();
-            }
-            return;
-          }
-          if (nextState === 0 || nextState === -1) clearPauseAutoOpenCandidate();
+          handlePlayerStateChange(Number(event && event.data));
         }
       }
     });
+  }
+
+  function loadVideoByProvider(video) {
+    if (isLikelyDriveVideo(video || {})) {
+      loadDriveVideo(video || {});
+      return;
+    }
+    var ytVideoId = String(video && video.provider_video_id || video && video.youtube_id || source || "").trim();
+    loadYouTube(ytVideoId);
   }
 
   async function fetchData() {
@@ -1520,12 +1697,12 @@
     }
 
     if (!source) {
-      setStatus("Brak parametru source. Użyj np. video.html?source=YOUTUBE_ID");
+      setStatus("Brak parametru source. Użyj np. video.html?source=ID_FILMU");
       comments = [];
       renderComments();
       return;
     }
-    if (!isYoutubeId(source)) {
+    if (!isSourceKey(source)) {
       setStatus("Niepoprawny parametr source.");
       comments = [];
       renderComments();
@@ -1552,8 +1729,9 @@
       comments = Array.isArray(data.comments) ? data.comments : [];
       sortCommentsByTime();
       renderComments();
-      loadYouTube(data.video.youtube_id || source);
       setStatus(editMode ? "Ładowanie odtwarzacza..." : "Tryb podglądu.");
+      var mergedVideo = Object.assign({}, findVideoMetaBySource(source) || {}, data.video || {});
+      loadVideoByProvider(mergedVideo);
     } catch (error) {
       setStatus(error instanceof Error ? error.message : "Błąd ładowania.");
       comments = [];
