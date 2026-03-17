@@ -71,7 +71,7 @@
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
         body: JSON.stringify({ csrf_token: csrf() })
       });
-      window.location.href = "/video/login.php";
+      window.location.replace("/video/");
     } catch (error) {
       alert(error instanceof Error ? error.message : "Nie udaĹ‚o siÄ™ wylogowaÄ‡.");
     }
@@ -179,7 +179,7 @@
       var balance = await api(TOKENS_API + "?action=my_balance");
       byId("vapp-token-balance").textContent =
         "Saldo: uploady " + balance.balance.remaining_upload_links +
-        " | wybĂłr trenera " + balance.balance.remaining_trainer_choices;
+        " | wybór trenera " + balance.balance.remaining_trainer_choices;
 
       var list = await api(TOKENS_API + "?action=list_types");
       typesWrap.innerHTML = "";
@@ -190,7 +190,7 @@
           "<h3>" + escapeHtml(item.title) + "</h3>" +
           "<p>" + escapeHtml(item.description || "") + "</p>" +
           "<p>Uploady: <strong>" + Number(item.max_upload_links || 0) + "</strong></p>" +
-          "<p>WybĂłr trenera: <strong>" + (Number(item.can_choose_trainer || 0) === 1 ? "tak" : "nie") + "</strong></p>" +
+          "<p>Wybr trenera: <strong>" + (Number(item.can_choose_trainer || 0) === 1 ? "tak" : "nie") + "</strong></p>" +
           "<p>Cena: <strong>" + escapeHtml(formatMoney(item.price_gross_pln, item.currency)) + "</strong></p>" +
           "<button class='vapp-btn' data-token-type='" + escapeHtml(String(item.id)) + "'>Kup teraz</button>";
         typesWrap.appendChild(card);
@@ -250,7 +250,7 @@
       var balance = await api(TOKENS_API + "?action=my_balance");
       setText("vapp-my-balance",
         "Saldo: uploady " + balance.balance.remaining_upload_links +
-        " | wybĂłr trenera " + balance.balance.remaining_trainer_choices);
+        " | wybór trenera " + balance.balance.remaining_trainer_choices);
     } catch (error) {
       setText("vapp-my-balance", error instanceof Error ? error.message : "BĹ‚Ä…d salda.");
     }
@@ -456,4 +456,3 @@
     if (page === "trener.php") loadTrainerSection();
   });
 })();
-

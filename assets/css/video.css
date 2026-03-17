@@ -1000,6 +1000,16 @@ body {
   background: #fbfdff;
 }
 
+.review-form__item--missing {
+  border-color: #dc2626;
+  background: #fef2f2;
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.08);
+}
+
+.review-form__item--missing .review-form__question {
+  color: #991b1b;
+}
+
 .review-form__question {
   margin: 0 0 8px;
   font-size: 0.92rem;

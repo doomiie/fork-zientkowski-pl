@@ -616,6 +616,10 @@
             var group = scale.querySelectorAll(".review-form__score");
             group.forEach(function (el) { el.classList.remove("is-active"); });
             label.classList.add("is-active");
+            row.classList.remove("review-form__item--missing");
+            if (!countMissingReviewAnswers()) {
+              setReviewFormStatus("");
+            }
           });
 
           var text = document.createElement("span");
@@ -640,6 +644,9 @@
     if (reviewOverallNoteEl) reviewOverallNoteEl.value = String(summary && summary.overall_note || "");
     if (!reviewFormEl) return;
 
+    reviewFormEl.querySelectorAll(".review-form__item--missing").forEach(function (node) {
+      node.classList.remove("review-form__item--missing");
+    });
     reviewFormEl.querySelectorAll(".review-form__score").forEach(function (node) {
       node.classList.remove("is-active");
     });
@@ -671,6 +678,73 @@
       out.push({ item_key: itemKey, score: score });
     });
     return out;
+  }
+
+  function getReviewItemOrder(itemKey) {
+    var def = reviewDefinitionMap && reviewDefinitionMap[itemKey] ? reviewDefinitionMap[itemKey] : null;
+    if (!def) return 999999;
+    var categoryPos = Number(def.category_position || 0) || 0;
+    var itemPos = Number(def.position || 0) || 0;
+    return categoryPos * 100 + itemPos;
+  }
+
+  function getMissingReviewItemKeys() {
+    if (!reviewFormEl) return [];
+    return Object.keys(reviewDefinitionMap || {})
+      .filter(function (itemKey) {
+        return !reviewFormEl.querySelector('input[type="radio"][data-item-key="' + itemKey + '"]:checked');
+      })
+      .sort(function (a, b) {
+        var orderA = getReviewItemOrder(a);
+        var orderB = getReviewItemOrder(b);
+        if (orderA !== orderB) return orderA - orderB;
+        return a.localeCompare(b);
+      });
+  }
+
+  function countMissingReviewAnswers() {
+    return getMissingReviewItemKeys().length;
+  }
+
+  function highlightMissingReviewItems(missingKeys) {
+    if (!reviewFormEl) return null;
+    reviewFormEl.querySelectorAll(".review-form__item--missing").forEach(function (node) {
+      node.classList.remove("review-form__item--missing");
+    });
+    var firstRow = null;
+    (Array.isArray(missingKeys) ? missingKeys : []).forEach(function (itemKey) {
+      var row = reviewFormEl.querySelector('[data-review-item="' + itemKey + '"]');
+      if (!row) return;
+      row.classList.add("review-form__item--missing");
+      if (!firstRow) firstRow = row;
+    });
+    return firstRow;
+  }
+
+  function focusFirstMissingReviewItem(missingKeys) {
+    if (!reviewFormEl) return false;
+    var firstKey = Array.isArray(missingKeys) && missingKeys.length ? missingKeys[0] : "";
+    if (!firstKey) return false;
+    var row = reviewFormEl.querySelector('[data-review-item="' + firstKey + '"]');
+    if (!row) return false;
+    if (typeof row.scrollIntoView === "function") {
+      row.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+    var input = row.querySelector('input[type="radio"]');
+    if (input && typeof input.focus === "function") input.focus();
+    return true;
+  }
+
+  function notifyMissingReviewAnswers() {
+    var missingKeys = getMissingReviewItemKeys();
+    if (!missingKeys.length) {
+      highlightMissingReviewItems([]);
+      return false;
+    }
+    highlightMissingReviewItems(missingKeys);
+    setReviewFormStatus("Uzupełnij wszystkie oceny (brakuje: " + missingKeys.length + ").");
+    focusFirstMissingReviewItem(missingKeys);
+    return true;
   }
 
   function renderReviewSummary(summary) {
@@ -892,12 +966,16 @@
       reviewDraftSummary = data.review_summary_draft || null;
       reviewPublishedSummary = data.review_summary_published || null;
       renderReviewForm(reviewDefinition);
-      setReviewFormValues(reviewDraftSummary);
+      setReviewFormValues(reviewDraftSummary || reviewPublishedSummary || null);
       renderReviewSummary(reviewPublishedSummary);
       openReviewModal(reviewMenuTrigger);
-      setReviewFormStatus("");
-      var firstInput = reviewFormEl ? reviewFormEl.querySelector('input[type="radio"]') : null;
-      if (firstInput && typeof firstInput.focus === "function") firstInput.focus();
+      if (reviewDraftSummary || reviewPublishedSummary) {
+        if (!notifyMissingReviewAnswers()) setReviewFormStatus("");
+      } else {
+        setReviewFormStatus("");
+        var firstInput = reviewFormEl ? reviewFormEl.querySelector('input[type="radio"]') : null;
+        if (firstInput && typeof firstInput.focus === "function") firstInput.focus();
+      }
     } catch (error) {
       setStatus(error instanceof Error ? error.message : "Błąd ładowania podsumowania.");
     }
@@ -943,6 +1021,7 @@
   }
 
   async function handleReviewPublish() {
+    if (notifyMissingReviewAnswers()) return;
     setReviewFormStatus("Publikowanie podsumowania...");
     setButtonLoading(reviewPublishBtn, true);
     setButtonLoading(reviewSaveDraftBtn, false);
@@ -1528,10 +1607,7 @@
       authState = data.user || { logged_in: false, user_id: null, email: null, role: null };
       csrfToken = String(data.csrf_token || "");
       if (authCsrfEl) authCsrfEl.value = csrfToken;
-      renderAuthUi();
-      setAuthStatus("Wylogowano.");
-      closeAuthModal();
-      await refreshAccessAndContent();
+      window.location.replace("/video/");
     } catch (error) {
       setAuthStatus(error instanceof Error ? error.message : "Błąd wylogowania.");
     }

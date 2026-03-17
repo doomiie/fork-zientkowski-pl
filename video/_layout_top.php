@@ -41,15 +41,16 @@ declare(strict_types=1);
       <button id="vapp-menu-close" class="vapp-drawer__close" type="button" aria-label="Zamknij menu">×</button>
     </div>
     <nav class="vapp-nav vapp-nav--drawer">
-      <a href="/video">/video</a>
-      <a href="/video/index.php">Start</a>
-      <a href="/video/tokens.php">Żetony</a>
-      <a href="/video/my-videos.php">Moje filmy</a>
-      <?php if (!empty($videoAppUser['is_trener']) || !empty($videoAppUser['is_admin'])): ?>
-        <a href="/video/trener.php">Strefa trenera</a>
-      <?php endif; ?>
-      <?php if (!empty($videoAppUser['is_admin'])): ?>
-        <a href="/video/admin.php">Admin</a>
+      <a href="/video">Start</a>
+      <?php if (!empty($videoAppUser['logged_in'])): ?>
+        <a href="/video/tokens.php">Żetony</a>
+        <a href="/video/my-videos.php">Moje filmy</a>
+        <?php if (!empty($videoAppUser['is_trener']) || !empty($videoAppUser['is_admin'])): ?>
+          <a href="/video/trener.php">Strefa trenera</a>
+        <?php endif; ?>
+        <?php if (!empty($videoAppUser['is_admin'])): ?>
+          <a href="/video/admin.php">Admin</a>
+        <?php endif; ?>
       <?php endif; ?>
     </nav>
     <div class="vapp-user vapp-user--drawer">

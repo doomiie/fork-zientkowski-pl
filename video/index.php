@@ -1,10 +1,19 @@
 <?php
 declare(strict_types=1);
 require __DIR__ . '/_bootstrap.php';
+
+if (!empty($videoAppUser['logged_in'])) {
+    if (!empty($videoAppUser['is_admin']) || !empty($videoAppUser['is_trener'])) {
+        header('Location: /video/trener.php');
+        exit;
+    }
+    header('Location: /video/my-videos.php');
+    exit;
+}
+
 $videoPageTitle = 'Video App - Start';
 require __DIR__ . '/_layout_top.php';
 ?>
-<?php if (empty($videoAppUser['logged_in'])): ?>
 <section class="vapp-card">
   <h1>Video App</h1>
   <p class="vapp-muted">Aby rozpocząć, zaloguj się lub utwórz konto.</p>
@@ -13,7 +22,6 @@ require __DIR__ . '/_layout_top.php';
     <a class="vapp-btn vapp-btn--ghost" href="/video/register.php">Rejestracja</a>
   </div>
 </section>
-<?php endif; ?>
 
 <section class="vapp-card">
   <h2>Workflow MVP</h2>
