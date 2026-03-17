@@ -139,6 +139,73 @@ function parse_video_source(string $value): ?array
     return null;
 }
 
+/**
+ * @return array<int,array{source:string,title:string,line:string}>
+ */
+function parse_bulk_video_entries(string $input): array
+{
+    $raw = trim($input);
+    if ($raw === '') {
+        return [];
+    }
+
+    $lines = preg_split('/\R+/', $raw) ?: [];
+    $items = [];
+
+    foreach ($lines as $line) {
+        $line = trim((string)$line);
+        if ($line === '') {
+            continue;
+        }
+
+        $title = '';
+        $source = '';
+
+        if (str_contains($line, '->')) {
+            [$left, $right] = array_pad(explode('->', $line, 2), 2, '');
+            $left = trim((string)$left);
+            $right = trim((string)$right);
+            $left = preg_replace('/^\s*\d+[.)]?\s*/u', '', $left) ?? $left;
+            $title = trim($left);
+            $source = trim($right);
+        } else {
+            $source = $line;
+        }
+
+        if ($source === '') {
+            continue;
+        }
+
+        $items[] = [
+            'source' => $source,
+            'title' => $title,
+            'line' => $line,
+        ];
+    }
+
+    return $items;
+}
+
+/**
+ * @param mixed $raw
+ * @return array<int,int>
+ */
+function normalize_video_ids($raw): array
+{
+    if (!is_array($raw)) {
+        return [];
+    }
+    $ids = [];
+    foreach ($raw as $value) {
+        $id = (int)$value;
+        if ($id > 0) {
+            $ids[] = $id;
+        }
+    }
+    $ids = array_values(array_unique($ids));
+    return $ids;
+}
+
 $error = '';
 $success = '';
 $sourceInput = '';
@@ -151,29 +218,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($action === 'add') {
             $sourceInput = trim((string)($_POST['youtube_source'] ?? ''));
-            $parsedSource = parse_video_source($sourceInput);
-            if (!$parsedSource) {
-                $error = 'Podaj poprawny link YouTube lub Google Drive.';
+            $entries = parse_bulk_video_entries($sourceInput);
+            if (!$entries) {
+                $error = 'Wklej przynajmniej jeden link lub ID.';
             } else {
-                $provider = (string)$parsedSource['provider'];
-                $providerVideoId = (string)$parsedSource['provider_video_id'];
-                $sourceKey = (string)$parsedSource['source_key'];
-                $sourceUrl = (string)$parsedSource['source_url'];
-                try {
-                    $selectStmt = $pdo->prepare(
-                        'SELECT id, youtube_id, provider, provider_video_id FROM videos
-                         WHERE (provider = ? AND provider_video_id = ?) OR youtube_id = ?
-                         LIMIT 1'
-                    );
-                    $selectStmt->execute([$provider, $providerVideoId, $sourceKey]);
-                    $existing = $selectStmt->fetch(PDO::FETCH_ASSOC);
+                $addedCount = 0;
+                $existingCount = 0;
+                $invalidLines = [];
+                $saveErrors = [];
 
-                    if ($existing) {
-                        $success = 'Film juz istnieje w bazie.';
-                    } else {
-                        $title = $provider === 'gdrive'
-                            ? ('Google Drive video ' . mb_substr($providerVideoId, 0, 10))
-                            : ('YouTube video ' . $providerVideoId);
+                foreach ($entries as $entry) {
+                    $parsedSource = parse_video_source((string)$entry['source']);
+                    if (!$parsedSource) {
+                        $invalidLines[] = (string)$entry['line'];
+                        continue;
+                    }
+
+                    $provider = (string)$parsedSource['provider'];
+                    $providerVideoId = (string)$parsedSource['provider_video_id'];
+                    $sourceKey = (string)$parsedSource['source_key'];
+                    $sourceUrl = (string)$parsedSource['source_url'];
+
+                    try {
+                        $selectStmt = $pdo->prepare(
+                            'SELECT id, youtube_id, provider, provider_video_id FROM videos
+                             WHERE (provider = ? AND provider_video_id = ?) OR youtube_id = ?
+                             LIMIT 1'
+                        );
+                        $selectStmt->execute([$provider, $providerVideoId, $sourceKey]);
+                        $existing = $selectStmt->fetch(PDO::FETCH_ASSOC);
+
+                        if ($existing) {
+                            $existingCount += 1;
+                            continue;
+                        }
+
+                        $candidateTitle = trim((string)$entry['title']);
+                        $title = $candidateTitle !== ''
+                            ? mb_substr($candidateTitle, 0, 255)
+                            : ($provider === 'gdrive'
+                                ? ('Google Drive video ' . mb_substr($providerVideoId, 0, 10))
+                                : ('YouTube video ' . $providerVideoId));
+
                         $slug = $sourceKey;
                         $thumbnail = $provider === 'youtube'
                             ? ('https://i.ytimg.com/vi/' . rawurlencode($providerVideoId) . '/hqdefault.jpg')
@@ -209,12 +295,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             }
                         }
                         if (!$inserted) {
-                            throw new RuntimeException('Nie udalo sie dodac filmu do bazy.');
+                            $saveErrors[] = (string)$entry['line'];
+                            continue;
                         }
-                        $success = 'Film zostal dodany.';
+                        $addedCount += 1;
+                    } catch (Throwable $e) {
+                        $saveErrors[] = (string)$entry['line'];
                     }
-                } catch (Throwable $e) {
-                    $error = 'Blad zapisu: ' . mb_substr($e->getMessage(), 0, 220);
+                }
+
+                $parts = [];
+                if ($addedCount > 0) $parts[] = 'Dodano: ' . $addedCount . '.';
+                if ($existingCount > 0) $parts[] = 'Juz istnialo: ' . $existingCount . '.';
+                if ($invalidLines) $parts[] = 'Niepoprawne linie: ' . count($invalidLines) . '.';
+                if ($saveErrors) $parts[] = 'Bledy zapisu: ' . count($saveErrors) . '.';
+
+                if ($addedCount > 0 || $existingCount > 0) {
+                    $success = implode(' ', $parts);
+                } else {
+                    $error = $parts ? implode(' ', $parts) : 'Nie udalo sie przetworzyc danych.';
                 }
             }
         } elseif ($action === 'delete') {
@@ -242,6 +341,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $error = 'Blad usuwania: ' . mb_substr($e->getMessage(), 0, 220);
                 }
             }
+        } elseif ($action === 'bulk_delete') {
+            $videoIds = normalize_video_ids($_POST['video_ids'] ?? []);
+            if (!$videoIds) {
+                $error = 'Zaznacz przynajmniej jeden film do usuniecia.';
+            } else {
+                try {
+                    $placeholders = implode(',', array_fill(0, count($videoIds), '?'));
+                    $pdo->beginTransaction();
+                    $pdo->prepare('DELETE FROM user_video_access WHERE video_id IN (' . $placeholders . ')')->execute($videoIds);
+                    $pdo->prepare('DELETE FROM komentarze_video WHERE video_id IN (' . $placeholders . ')')->execute($videoIds);
+                    $deleteStmt = $pdo->prepare('DELETE FROM videos WHERE id IN (' . $placeholders . ')');
+                    $deleteStmt->execute($videoIds);
+                    $deleted = (int)$deleteStmt->rowCount();
+                    $pdo->commit();
+                    $success = 'Usunieto filmow: ' . $deleted . '.';
+                } catch (Throwable $e) {
+                    if ($pdo->inTransaction()) {
+                        $pdo->rollBack();
+                    }
+                    $error = 'Blad usuwania masowego: ' . mb_substr($e->getMessage(), 0, 220);
+                }
+            }
         } elseif ($action === 'assign_user_to_video') {
             $videoId = (int)($_POST['video_id'] ?? 0);
             $userId = (int)($_POST['user_id'] ?? 0);
@@ -259,6 +380,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $success = 'Przypisanie zapisane.';
                 } catch (Throwable $e) {
                     $error = 'Blad przypisania: ' . mb_substr($e->getMessage(), 0, 220);
+                }
+            }
+        } elseif ($action === 'bulk_assign_user_to_video') {
+            $videoIds = normalize_video_ids($_POST['video_ids'] ?? []);
+            $userId = (int)($_POST['bulk_user_id'] ?? 0);
+            $canEdit = ((string)($_POST['bulk_can_edit'] ?? '0') === '1') ? 1 : 0;
+            if (!$videoIds || $userId <= 0) {
+                $error = 'Zaznacz filmy i wybierz uzytkownika.';
+            } else {
+                try {
+                    $stmt = $pdo->prepare(
+                        'INSERT INTO user_video_access (user_id, video_id, can_edit, created_at, updated_at)
+                         VALUES (?, ?, ?, NOW(), NOW())
+                         ON DUPLICATE KEY UPDATE can_edit = VALUES(can_edit), updated_at = NOW()'
+                    );
+                    $assigned = 0;
+                    foreach ($videoIds as $videoId) {
+                        $stmt->execute([$userId, $videoId, $canEdit]);
+                        $assigned += 1;
+                    }
+                    $success = 'Przypisano filmow: ' . $assigned . '.';
+                } catch (Throwable $e) {
+                    $error = 'Blad przypisania masowego: ' . mb_substr($e->getMessage(), 0, 220);
                 }
             }
         } elseif ($action === 'unassign_user_from_video') {
@@ -292,6 +436,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $success = $stmt->rowCount() > 0 ? 'Uprawnienie edycji zaktualizowane.' : 'Brak przypisania do aktualizacji.';
                 } catch (Throwable $e) {
                     $error = 'Blad aktualizacji uprawnienia: ' . mb_substr($e->getMessage(), 0, 220);
+                }
+            }
+        } elseif ($action === 'update_video_title') {
+            $videoId = (int)($_POST['video_id'] ?? 0);
+            $title = mb_substr(trim((string)($_POST['video_title'] ?? '')), 0, 255);
+            if ($videoId <= 0) {
+                $error = 'Niepoprawne ID filmu do aktualizacji.';
+            } elseif ($title === '') {
+                $error = 'Tytul filmu nie moze byc pusty.';
+            } else {
+                try {
+                    $stmt = $pdo->prepare('UPDATE videos SET tytul = ?, zaktualizowano = NOW() WHERE id = ? LIMIT 1');
+                    $stmt->execute([$title, $videoId]);
+                    $success = $stmt->rowCount() > 0 ? 'Tytul filmu zaktualizowany.' : 'Brak zmian tytulu.';
+                } catch (Throwable $e) {
+                    $error = 'Blad aktualizacji tytulu: ' . mb_substr($e->getMessage(), 0, 220);
                 }
             }
         }
@@ -354,7 +514,8 @@ try {
     .card { background:#fff; border-radius:14px; padding:16px; box-shadow:0 10px 28px rgba(0,0,0,.06); }
     .row { display:grid; gap:6px; margin-bottom:12px; }
     .grid { display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); }
-    input, select { width:100%; border:1px solid #d1d5db; border-radius:10px; padding:10px 12px; font:inherit; }
+    input, select, textarea { width:100%; border:1px solid #d1d5db; border-radius:10px; padding:10px 12px; font:inherit; }
+    textarea { min-height: 130px; resize: vertical; }
     button, a.btn { display:inline-block; background:#040327; color:#fff; border:0; border-radius:10px; padding:10px 14px; text-decoration:none; font-weight:600; cursor:pointer; }
     a.btn.secondary { background:#fff; color:#111827; border:1px solid #d1d5db; }
     .ok { color:#166534; font-weight:600; }
@@ -363,6 +524,9 @@ try {
     th, td { text-align:left; border-bottom:1px solid #e5e7eb; padding:8px 6px; vertical-align:top; }
     code { background:#f3f4f6; padding:2px 6px; border-radius:6px; }
     .inline { display:inline-flex; gap:8px; align-items:center; }
+    .inline input[type="text"] { min-width:260px; padding:8px 10px; }
+    .bulk-tools { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:10px; }
+    .bulk-tools button { background:#fff; color:#111827; border:1px solid #d1d5db; }
     .build { margin:0; font-size:12px; opacity:.8; }
   </style>
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline';">
@@ -379,7 +543,7 @@ try {
   <main>
     <section class="card">
       <h1 style="margin-top:0;">Dodaj film (YouTube / Google Drive)</h1>
-      <p>Wklej pelny URL lub ID z YouTube albo Google Drive.</p>
+      <p>Wklej pojedynczy URL/ID albo liste linii, np. "Imie Nazwisko -&gt; URL".</p>
       <?php if ($error !== ''): ?><p class="err"><?php echo h($error); ?></p><?php endif; ?>
       <?php if ($success !== ''): ?><p class="ok"><?php echo h($success); ?></p><?php endif; ?>
       <form method="post" action="videos.php" autocomplete="off">
@@ -387,7 +551,7 @@ try {
         <input type="hidden" name="action" value="add">
         <div class="row">
           <label for="youtube_source">Link lub ID</label>
-          <input id="youtube_source" name="youtube_source" type="text" required placeholder="https://www.youtube.com/watch?v=... lub https://drive.google.com/file/d/.../view" value="<?php echo h($sourceInput); ?>">
+          <textarea id="youtube_source" name="youtube_source" required placeholder="https://www.youtube.com/watch?v=...&#10;1. Jan Kowalski -> https://youtu.be/ABC...&#10;2. Anna Nowak -> https://drive.google.com/file/d/XYZ.../view"><?php echo h($sourceInput); ?></textarea>
         </div>
         <button type="submit">Dodaj do bazy</button>
       </form>
@@ -492,9 +656,42 @@ try {
       <?php if (!$videos): ?>
         <p>Brak filmow.</p>
       <?php else: ?>
+        <div class="bulk-tools">
+          <button id="bulk-select-all-btn" type="button">Zaznacz wszystko</button>
+          <button id="bulk-select-none-btn" type="button">Odznacz wszystko</button>
+        </div>
+        <form id="bulk-videos-form" method="post" action="videos.php" class="grid" style="margin-bottom:12px;">
+          <input type="hidden" name="csrf_token" value="<?php echo h(csrf_token()); ?>">
+          <label class="row">
+            <span>Uzytkownik (dla przypisania)</span>
+            <select name="bulk_user_id">
+              <option value="">Wybierz uzytkownika...</option>
+              <?php foreach ($users as $user): ?>
+                <option value="<?php echo h((string)$user['id']); ?>">
+                  <?php echo h((string)$user['email'] . ' [' . (string)$user['role'] . ']'); ?>
+                </option>
+              <?php endforeach; ?>
+            </select>
+          </label>
+          <label class="row">
+            <span>Tryb przypisania</span>
+            <select name="bulk_can_edit">
+              <option value="0">view</option>
+              <option value="1">edit</option>
+            </select>
+          </label>
+          <div class="row" style="align-self:end;">
+            <button type="submit" name="action" value="bulk_assign_user_to_video">Dodaj zaznaczone do uzytkownika</button>
+          </div>
+          <div class="row" style="align-self:end;">
+            <button type="submit" name="action" value="bulk_delete" style="background:#9f1239;">Usun zaznaczone filmy</button>
+          </div>
+        </form>
+
         <table>
           <thead>
             <tr>
+              <th><input id="bulk-select-master" type="checkbox" aria-label="Zaznacz wszystkie filmy"></th>
               <th>ID</th>
               <th>Source key</th>
               <th>Provider</th>
@@ -510,11 +707,22 @@ try {
           <tbody>
             <?php foreach ($videos as $video): ?>
               <tr>
+                <td>
+                  <input form="bulk-videos-form" class="bulk-video-checkbox" type="checkbox" name="video_ids[]" value="<?php echo h((string)$video['id']); ?>" aria-label="Zaznacz film <?php echo h((string)$video['id']); ?>">
+                </td>
                 <td><?php echo h((string)$video['id']); ?></td>
                 <td><code><?php echo h((string)$video['youtube_id']); ?></code></td>
                 <td><?php echo h((string)$video['provider']); ?></td>
                 <td><code><?php echo h((string)$video['provider_video_id']); ?></code></td>
-                <td><?php echo h((string)$video['tytul']); ?></td>
+                <td>
+                  <form method="post" action="videos.php" class="inline">
+                    <input type="hidden" name="csrf_token" value="<?php echo h(csrf_token()); ?>">
+                    <input type="hidden" name="action" value="update_video_title">
+                    <input type="hidden" name="video_id" value="<?php echo h((string)$video['id']); ?>">
+                    <input type="text" name="video_title" maxlength="255" value="<?php echo h((string)$video['tytul']); ?>" required>
+                    <button type="submit">Zapisz</button>
+                  </form>
+                </td>
                 <td><?php echo h((string)$video['status']); ?></td>
                 <td><?php echo ((int)$video['publiczny'] === 1) ? 'tak' : 'nie'; ?></td>
                 <td><?php echo h((string)$video['zaktualizowano']); ?></td>
@@ -542,5 +750,6 @@ try {
       <?php endif; ?>
     </section>
   </main>
+  <script src="/assets/js/admin-videos-bulk.js?v=20260316-1" defer></script>
 </body>
 </html>

@@ -1,0 +1,225 @@
+:root {
+  --vapp-bg: #f3f5f9;
+  --vapp-card: #ffffff;
+  --vapp-text: #0f172a;
+  --vapp-muted: #475569;
+  --vapp-border: #d9e1ec;
+  --vapp-accent: #040327;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", "Trebuchet MS", Arial, sans-serif;
+  color: var(--vapp-text);
+  background: var(--vapp-bg);
+}
+
+.vapp-wrap {
+  width: min(calc(100% - 32px), 1200px);
+  margin-inline: auto;
+}
+
+.vapp-top {
+  background: #fff;
+  border-bottom: 1px solid var(--vapp-border);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.vapp-top__inner {
+  min-height: 68px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.vapp-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--vapp-text);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.vapp-brand img {
+  width: 110px;
+  height: auto;
+  filter: brightness(0);
+}
+
+.vapp-nav {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.vapp-nav a,
+.vapp-user a,
+.vapp-user button {
+  border: 1px solid var(--vapp-border);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--vapp-text);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 6px 10px;
+}
+
+.vapp-user {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vapp-user span {
+  font-size: 0.82rem;
+  color: var(--vapp-muted);
+}
+
+.vapp-main {
+  padding: 18px 0 28px;
+}
+
+.vapp-card {
+  background: var(--vapp-card);
+  border: 1px solid var(--vapp-border);
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+  margin-bottom: 14px;
+}
+
+.vapp-card--narrow {
+  width: min(100%, 460px);
+}
+
+.vapp-card h1,
+.vapp-card h2 {
+  margin: 0 0 10px;
+}
+
+.vapp-muted {
+  color: var(--vapp-muted);
+}
+
+.vapp-form {
+  display: grid;
+  gap: 10px;
+}
+
+.vapp-form label {
+  display: grid;
+  gap: 6px;
+  font-size: 0.92rem;
+}
+
+.vapp-form input,
+.vapp-form select,
+.vapp-form textarea {
+  width: 100%;
+  border: 1px solid var(--vapp-border);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--vapp-text);
+  font: inherit;
+  padding: 10px 12px;
+}
+
+.vapp-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.vapp-btn {
+  border: 0;
+  border-radius: 10px;
+  background: var(--vapp-accent);
+  color: #fff;
+  text-decoration: none;
+  cursor: pointer;
+  padding: 10px 14px;
+  font: inherit;
+  font-weight: 600;
+}
+
+.vapp-btn--ghost {
+  background: #fff;
+  color: var(--vapp-text);
+  border: 1px solid var(--vapp-border);
+}
+
+.vapp-status {
+  min-height: 1.2em;
+  margin: 4px 0 0;
+  color: var(--vapp-muted);
+}
+
+.vapp-ok {
+  color: #065f46;
+}
+
+.vapp-warn {
+  color: #92400e;
+}
+
+.vapp-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+}
+
+.vapp-pack {
+  border: 1px solid var(--vapp-border);
+  border-radius: 12px;
+  background: #fff;
+  padding: 12px;
+  display: grid;
+  gap: 8px;
+}
+
+.vapp-pack h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.vapp-pack p {
+  margin: 0;
+  color: var(--vapp-muted);
+  font-size: 0.9rem;
+}
+
+.vapp-table-wrap {
+  overflow: auto;
+}
+
+.vapp-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.vapp-table th,
+.vapp-table td {
+  text-align: left;
+  border-bottom: 1px solid #e8edf4;
+  padding: 8px 6px;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 860px) {
+  .vapp-top__inner {
+    grid-template-columns: 1fr;
+    padding: 10px 0;
+  }
+}
+

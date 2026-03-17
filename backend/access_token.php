@@ -44,6 +44,156 @@ function access_set_session_cookie(string $sessionRaw): void
     ]);
 }
 
+function access_validate_source_key(string $value): bool
+{
+    return (bool)preg_match('/^[A-Za-z0-9_-]{6,20}$/', $value);
+}
+
+function access_can_create_video_token(PDO $pdo, int $userId, string $role, string $sourceKey): bool
+{
+    if ($userId <= 0 || $sourceKey === '' || !access_validate_source_key($sourceKey)) {
+        return false;
+    }
+    if ($role === 'admin') {
+        return true;
+    }
+    if ($role !== 'editor') {
+        return false;
+    }
+
+    try {
+        $stmt = $pdo->prepare(
+            'SELECT 1
+             FROM user_video_access uva
+             JOIN videos v ON v.id = uva.video_id
+             WHERE uva.user_id = ?
+               AND uva.can_edit = 1
+               AND v.youtube_id = ?
+             LIMIT 1'
+        );
+        $stmt->execute([$userId, $sourceKey]);
+        return (bool)$stmt->fetchColumn();
+    } catch (Throwable $e) {
+        return false;
+    }
+}
+
+function access_create(PDO $pdo): void
+{
+    if (!is_logged_in()) {
+        access_json_response(401, [
+            'ok' => false,
+            'error' => 'not_logged_in',
+            'message' => 'Wymagane logowanie.',
+        ]);
+    }
+
+    $userId = current_user_id();
+    $role = strtolower(trim((string)current_user_role()));
+    $data = access_get_input_data();
+    $csrf = (string)($data['csrf_token'] ?? '');
+    $targetKey = trim((string)($data['target'] ?? 'video'));
+    $scope = trim((string)($data['scope'] ?? 'view'));
+    $resourceType = trim((string)($data['resource_type'] ?? 'video'));
+    $resourceId = trim((string)($data['resource_id'] ?? ''));
+    $note = mb_substr(trim((string)($data['note'] ?? '')), 0, 255);
+    $tokenTtl = (int)($data['token_ttl_minutes'] ?? 1440);
+    $sessionTtl = (int)($data['session_ttl_minutes'] ?? 720);
+
+    if (!csrf_check($csrf)) {
+        access_json_response(400, [
+            'ok' => false,
+            'error' => 'invalid_csrf',
+            'message' => 'Nieprawidlowy token bezpieczenstwa.',
+        ]);
+    }
+    if ($targetKey !== 'video' || $scope !== 'view' || $resourceType !== 'video') {
+        access_json_response(400, [
+            'ok' => false,
+            'error' => 'invalid_input',
+            'message' => 'Dla tego endpointu dozwolony jest tylko token view dla video.',
+        ]);
+    }
+    if (!access_validate_source_key($resourceId)) {
+        access_json_response(400, [
+            'ok' => false,
+            'error' => 'invalid_resource',
+            'message' => 'Niepoprawny identyfikator filmu.',
+        ]);
+    }
+    if ($tokenTtl < 1 || $tokenTtl > 1440) {
+        access_json_response(400, [
+            'ok' => false,
+            'error' => 'invalid_token_ttl',
+            'message' => 'TTL tokenu musi byc w zakresie 1-1440 minut.',
+        ]);
+    }
+    if ($sessionTtl < 1 || $sessionTtl > 720) {
+        access_json_response(400, [
+            'ok' => false,
+            'error' => 'invalid_session_ttl',
+            'message' => 'TTL sesji musi byc w zakresie 1-720 minut.',
+        ]);
+    }
+    if (!access_can_create_video_token($pdo, $userId, $role, $resourceId)) {
+        access_json_response(403, [
+            'ok' => false,
+            'error' => 'forbidden',
+            'message' => 'Brak uprawnien do generowania tokenu dla tego filmu.',
+        ]);
+    }
+
+    try {
+        $rawToken = bin2hex(random_bytes(32));
+        $tokenHash = hash('sha256', $rawToken);
+        $expiresAt = (new DateTimeImmutable('now'))
+            ->modify('+' . $tokenTtl . ' minutes')
+            ->format('Y-m-d H:i:s');
+
+        $stmt = $pdo->prepare(
+            'INSERT INTO access_tokens
+                (token_hash, target_key, scope, resource_type, resource_id, max_uses, used_count, session_ttl_minutes, expires_at, note, created_by_user_id, created_at, updated_at)
+             VALUES
+                (?, ?, ?, ?, ?, 0, 0, ?, ?, ?, ?, NOW(), NOW())'
+        );
+        $stmt->execute([
+            $tokenHash,
+            $targetKey,
+            $scope,
+            $resourceType,
+            $resourceId,
+            $sessionTtl,
+            $expiresAt,
+            $note !== '' ? $note : null,
+            $userId,
+        ]);
+
+        $params = ['vt' => $rawToken];
+        $url = '/video.html?' . http_build_query($params);
+
+        access_json_response(201, [
+            'ok' => true,
+            'token' => $rawToken,
+            'url' => $url,
+            'meta' => [
+                'target' => $targetKey,
+                'scope' => $scope,
+                'resource_type' => $resourceType,
+                'resource_id' => $resourceId,
+                'token_ttl_minutes' => $tokenTtl,
+                'session_ttl_minutes' => $sessionTtl,
+                'expires_at' => $expiresAt,
+            ],
+        ]);
+    } catch (Throwable $e) {
+        access_json_response(500, [
+            'ok' => false,
+            'error' => 'create_failed',
+            'message' => 'Nie udalo sie utworzyc tokenu.',
+        ]);
+    }
+}
+
 function access_exchange(PDO $pdo): void
 {
     $data = access_get_input_data();
@@ -177,6 +327,9 @@ $action = trim((string)($_GET['action'] ?? ''));
 
 if ($action === 'exchange' && $method === 'POST') {
     access_exchange($pdo);
+}
+if ($action === 'create' && $method === 'POST') {
+    access_create($pdo);
 }
 
 access_json_response(405, [

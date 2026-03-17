@@ -73,6 +73,14 @@ if (is_admin()) {
                 ['label' => 'Generator tokenow', 'href' => 'access_tokens.php'],
             ],
         ],
+        [
+            'title' => 'Zetony video app',
+            'description' => 'Typy, ceny i zamowienia zetonow aplikacji /video/.',
+            'links' => [
+                ['label' => 'Typy zetonow', 'href' => 'token_types.php'],
+                ['label' => 'Zamowienia zetonow', 'href' => 'token_orders.php'],
+            ],
+        ],
     ]);
 }
 ?>

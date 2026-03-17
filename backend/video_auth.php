@@ -193,6 +193,74 @@ function auth_logout(PDO $pdo): void
     ]);
 }
 
+function auth_register(PDO $pdo): void
+{
+    $data = auth_get_input_data();
+    $email = mb_strtolower(trim((string)($data['email'] ?? '')));
+    $password = (string)($data['password'] ?? '');
+    $token = (string)($data['csrf_token'] ?? '');
+
+    if (!csrf_check($token)) {
+        auth_json_response(400, [
+            'ok' => false,
+            'error' => 'invalid_csrf',
+            'message' => 'Nieprawidłowy token bezpieczeństwa.',
+        ]);
+    }
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        auth_json_response(400, [
+            'ok' => false,
+            'error' => 'invalid_email',
+            'message' => 'Podaj poprawny e-mail.',
+        ]);
+    }
+    if (mb_strlen($password) < 8) {
+        auth_json_response(400, [
+            'ok' => false,
+            'error' => 'weak_password',
+            'message' => 'Hasło musi mieć co najmniej 8 znaków.',
+        ]);
+    }
+
+    try {
+        $exists = $pdo->prepare('SELECT id FROM users WHERE email = ? LIMIT 1');
+        $exists->execute([$email]);
+        if ($exists->fetch(PDO::FETCH_ASSOC)) {
+            auth_json_response(409, [
+                'ok' => false,
+                'error' => 'email_exists',
+                'message' => 'Konto o tym e-mailu już istnieje.',
+            ]);
+        }
+
+        $hash = password_hash($password, PASSWORD_BCRYPT);
+        $insert = $pdo->prepare(
+            "INSERT INTO users (email, password_hash, role, is_active, created_at, updated_at)
+             VALUES (?, ?, 'viewer', 1, NOW(), NOW())"
+        );
+        $insert->execute([$email, $hash]);
+        $newId = (int)$pdo->lastInsertId();
+
+        $_SESSION['user_id'] = $newId;
+        $_SESSION['user_email'] = $email;
+        $_SESSION['user_role'] = 'viewer';
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        $pdo->prepare('UPDATE users SET last_login_at = NOW() WHERE id = ?')->execute([$newId]);
+
+        auth_json_response(201, [
+            'ok' => true,
+            'user' => auth_current_user($pdo),
+            'csrf_token' => csrf_token(),
+        ]);
+    } catch (Throwable $e) {
+        auth_json_response(500, [
+            'ok' => false,
+            'error' => 'register_failed',
+            'message' => 'Nie udało się utworzyć konta.',
+        ]);
+    }
+}
+
 $method = strtoupper((string)($_SERVER['REQUEST_METHOD'] ?? 'GET'));
 $action = trim((string)($_GET['action'] ?? 'status'));
 
@@ -205,10 +273,12 @@ if ($action === 'login' && $method === 'POST') {
 if ($action === 'logout' && $method === 'POST') {
     auth_logout($pdo);
 }
+if ($action === 'register' && $method === 'POST') {
+    auth_register($pdo);
+}
 
 auth_json_response(405, [
     'ok' => false,
     'error' => 'method_not_allowed',
     'message' => 'Nieobsługiwana akcja lub metoda.',
 ]);
-

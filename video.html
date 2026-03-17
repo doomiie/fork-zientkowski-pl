@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="/assets/css/shared.css?v=dev19">
   <noscript><link rel="stylesheet" href="/assets/css/app.min.css?v=brand12"></noscript>
   <noscript><link rel="stylesheet" href="/assets/css/shared.css?v=dev18"></noscript>
-  <link rel="stylesheet" href="/assets/css/video.css?v=20260316-1">
+  <link rel="stylesheet" href="/assets/css/video.css?v=20260317-2">
 </head>
 <body class="bg-light min-h-screen">
   <a class="skip-link" href="#main-content">Przejdź do treści głównej</a>
@@ -54,11 +54,6 @@
       <section class="video-screen" aria-labelledby="video-title">
         <div class="video-screen__player" aria-label="Odtwarzacz wideo">
           <h1 id="video-title" class="video-screen__title">Wideo</h1>
-          <p id="video-status" class="video-screen__status" role="status" aria-live="polite">Ładowanie...</p>
-          <p id="video-token-info" class="video-screen__status" role="status" aria-live="polite"></p>
-          <p id="video-access-message" class="video-screen__status" role="status" aria-live="polite" hidden>
-            Zaloguj się lub użyj poprawnego tokenu, aby zobaczyć listę filmów.
-          </p>
           <div id="video-player-wrap" class="video-player-wrap" hidden>
             <div id="yt-player" aria-label="Odtwarzacz YouTube"></div>
             <video id="drive-player" aria-label="Odtwarzacz Google Drive" controls playsinline preload="metadata" hidden></video>
@@ -79,6 +74,45 @@
 
     </div>
   </main>
+
+  <!-- Footer -->
+  <footer class="video-footer bg-gray-900 text-white py-12">
+    <div class="max-w-[1400px] mx-auto px-6">
+      <section class="video-footer-status" aria-label="Status odtwarzacza">
+        <div class="video-footer-status__panel">
+          <p id="video-status" class="video-screen__status" role="status" aria-live="polite">Ładowanie...</p>
+          <p id="video-token-info" class="video-screen__status" role="status" aria-live="polite"></p>
+          <p id="video-access-message" class="video-screen__status" role="status" aria-live="polite" hidden>
+            Zaloguj się lub użyj poprawnego tokenu, aby zobaczyć listę filmów.
+          </p>
+          <div id="generated-access-token-box" class="video-token-box" hidden>
+            <p class="video-token-box__label">Link dostępu (view)</p>
+            <input id="generated-access-token-url" type="text" readonly aria-label="Wygenerowany link tokenu dostępu">
+          </div>
+        </div>
+      </section>
+      <div class="text-center">
+        <div class="video-footer__social-row flex justify-center space-x-6 mb-8">
+          <a target="_blank" href="https://www.linkedin.com/in/jerzyzientkowski/"
+            class="video-footer__social-link w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
+            <i data-lucide="linkedin" class="w-6 h-6"></i>
+          </a>
+          <a target="_blank" href="https://www.instagram.com/jerzyzientkowskiofficial/"
+            class="video-footer__social-link w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
+            <i data-lucide="instagram" class="w-6 h-6"></i>
+          </a>
+          <a target="_blank" href="https://www.facebook.com/jerzy.zientkowski"
+            class="video-footer__social-link w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
+            <i data-lucide="facebook" class="w-6 h-6"></i>
+          </a>
+        </div>
+
+        <div class="video-footer__copyright border-t border-white/20 pt-8">
+          <p class="text-white/60">&copy; 2011-2025 Jerzy Zientkowski. Wszelkie prawa zastrzeżone</p>
+        </div>
+      </div>
+    </div>
+  </footer>
 
   <div id="comment-modal" class="comment-modal" role="dialog" aria-modal="true" aria-labelledby="form-heading" hidden>
     <div id="comment-modal-overlay" class="comment-modal__overlay"></div>
@@ -191,6 +225,6 @@
     </section>
   </div>
   <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-  <script src="/assets/js/video.js?v=20260316-9" defer></script>
+  <script src="/assets/js/video.js?v=20260316-13" defer></script>
 </body>
 </html>

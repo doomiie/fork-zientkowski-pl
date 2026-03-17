@@ -23,6 +23,8 @@
   var drivePlayerEl = document.getElementById("drive-player");
   var drivePreviewEl = document.getElementById("drive-preview");
   var driveOpenExternalEl = document.getElementById("drive-open-external");
+  var generatedAccessTokenBoxEl = document.getElementById("generated-access-token-box");
+  var generatedAccessTokenUrlEl = document.getElementById("generated-access-token-url");
   var commentsSectionEl = document.getElementById("video-comments-section");
   var navDesktopEl = document.getElementById("navDesktop");
   var navMobileEl = document.getElementById("navMobile");
@@ -107,6 +109,7 @@
   var mediaStream = null;
   var transcribeHeardSpeech = false;
   var transcribeSilenceTimer = null;
+  var canEditCurrentSource = false;
 
   function setStatus(msg) {
     if (statusEl) statusEl.textContent = msg;
@@ -114,6 +117,52 @@
   function setVideoListStatus(msg) {
     var statusEls = document.querySelectorAll("[data-video-list-status]");
     statusEls.forEach(function (node) { node.textContent = msg || ""; });
+  }
+
+  function getVideoPickerListEl() {
+    return document.getElementById("video-picker-list");
+  }
+
+  function renderVideoPickerList() {
+    var listEl = getVideoPickerListEl();
+    if (!listEl) return;
+    listEl.innerHTML = "";
+
+    if (!videos.length) {
+      var empty = document.createElement("p");
+      empty.className = "video-picker-panel__empty";
+      empty.textContent = hasContentAccess ? "Brak filmów w bazie." : "Brak dostępu.";
+      listEl.appendChild(empty);
+      return;
+    }
+
+    var fragment = document.createDocumentFragment();
+    videos.forEach(function (video) {
+      var value = String(video.youtube_id || "").trim();
+      if (!value) return;
+      var button = document.createElement("button");
+      button.type = "button";
+      button.className = "video-picker-item" + (value === source ? " is-active" : "");
+      button.setAttribute("data-source", value);
+      button.textContent = resolveVideoTitle(video);
+      button.addEventListener("click", function () {
+        if (value === source) {
+          closeDesktopVideoMenuPanel(true);
+          return;
+        }
+        if (accessInfo && accessInfo.token && accessInfo.token.resource_type === "video" &&
+          accessInfo.token.resource_id && value !== accessInfo.token.resource_id) {
+          setVideoListStatus("Ten token pozwala tylko na jeden film: " + accessInfo.token.resource_id);
+          return;
+        }
+        setVideoListStatus("Przełączanie filmu...");
+        closeDesktopVideoMenuPanel(false);
+        if (typeof closeMobileMenuFn === "function") closeMobileMenuFn();
+        window.location.href = buildVideoUrl(value);
+      });
+      fragment.appendChild(button);
+    });
+    listEl.appendChild(fragment);
   }
   function setTokenInfo(msg) {
     if (tokenInfoEl) tokenInfoEl.textContent = msg || "";
@@ -126,6 +175,65 @@
   }
   function setTranscribeStatus(msg) {
     if (transcribeStatusEl) transcribeStatusEl.textContent = msg || "";
+  }
+
+  function hideGeneratedAccessToken() {
+    if (generatedAccessTokenBoxEl) generatedAccessTokenBoxEl.hidden = true;
+    if (generatedAccessTokenUrlEl) generatedAccessTokenUrlEl.value = "";
+  }
+
+  function getGenerateTokenTriggerElements() {
+    return Array.prototype.slice.call(document.querySelectorAll("[data-generate-access-token-trigger]"));
+  }
+
+  function updateGenerateTokenButtonVisibility() {
+    var canShow = !!(editMode && canEditCurrentSource && hasContentAccess && source);
+    getGenerateTokenTriggerElements().forEach(function (buttonEl) {
+      buttonEl.hidden = !canShow;
+    });
+    if (!canShow) hideGeneratedAccessToken();
+  }
+
+  async function generateAccessTokenForCurrentVideo() {
+    if (!source) return;
+    if (!canEditCurrentSource) {
+      setStatus("Brak uprawnień do generowania tokenu dla tego filmu.");
+      return;
+    }
+    var buttons = getGenerateTokenTriggerElements();
+    buttons.forEach(function (buttonEl) { buttonEl.disabled = true; });
+    setStatus("Generowanie tokenu...");
+    try {
+      var response = await fetch(ACCESS_API_URL + "?action=create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({
+          csrf_token: csrfToken,
+          target: "video",
+          scope: "view",
+          resource_type: "video",
+          resource_id: source,
+          token_ttl_minutes: 1440,
+          session_ttl_minutes: 720,
+          note: "Szybki token z video.html"
+        })
+      });
+      var data = await response.json().catch(function () { return {}; });
+      if (!response.ok || !data.ok || !data.token) throw new Error(data.message || "Nie udało się wygenerować tokenu.");
+      var tokenUrl = String(data.url || "").trim();
+      if (!tokenUrl) tokenUrl = "/video.html?vt=" + encodeURIComponent(String(data.token));
+      var absolute = tokenUrl.startsWith("http")
+        ? tokenUrl
+        : (window.location.origin + tokenUrl);
+      if (generatedAccessTokenUrlEl) generatedAccessTokenUrlEl.value = absolute;
+      if (generatedAccessTokenBoxEl) generatedAccessTokenBoxEl.hidden = false;
+      setStatus("Token wygenerowany.");
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : "Błąd generowania tokenu.");
+      hideGeneratedAccessToken();
+    } finally {
+      buttons.forEach(function (buttonEl) { buttonEl.disabled = false; });
+    }
   }
 
   function getVideoListSelectElements() {
@@ -405,6 +513,7 @@
     if (commentsSectionEl) commentsSectionEl.hidden = !hasContentAccess;
     if (accessMessageEl) accessMessageEl.hidden = hasContentAccess;
     if (!hasContentAccess) {
+      canEditCurrentSource = false;
       destroyCurrentPlayer();
       comments = [];
       renderComments();
@@ -413,7 +522,9 @@
       });
       if (addCommentBtn) addCommentBtn.hidden = true;
       hideForm(false);
+      updateGenerateTokenButtonVisibility();
     }
+    if (hasContentAccess) updateGenerateTokenButtonVisibility();
   }
 
   function updateAuthMenuButtons() {
@@ -533,17 +644,9 @@
     heading.className = "video-picker-panel__title";
     heading.textContent = "Wybierz film";
 
-    var label = document.createElement("label");
-    label.className = "video-picker-panel__label";
-    label.setAttribute("for", "video-list-select-modal");
-    label.textContent = "Lista filmów";
-
-    var select = document.createElement("select");
-    select.id = "video-list-select-modal";
-    select.name = "video_list_modal";
-    select.className = "video-picker-panel__select";
-    select.setAttribute("data-video-list-select", "modal");
-    select.innerHTML = "<option value=\"\">Ładowanie listy...</option>";
+    var list = document.createElement("div");
+    list.id = "video-picker-list";
+    list.className = "video-picker-panel__list";
 
     var status = document.createElement("p");
     status.id = "video-list-status-modal";
@@ -552,10 +655,9 @@
     status.setAttribute("aria-live", "polite");
     status.setAttribute("data-video-list-status", "modal");
 
-    label.appendChild(select);
     panel.appendChild(closeBtn);
     panel.appendChild(heading);
-    panel.appendChild(label);
+    panel.appendChild(list);
     panel.appendChild(status);
     modal.appendChild(overlay);
     modal.appendChild(panel);
@@ -587,8 +689,9 @@
     bindVideoListSelectHandlers();
     if (videoPickerModalEl) videoPickerModalEl.hidden = false;
     if (videoMenuTrigger) videoMenuTrigger.setAttribute("aria-expanded", "true");
-    var select = document.getElementById("video-list-select-modal");
-    if (select) select.focus();
+    renderVideoPickerList();
+    var active = videoPickerModalEl ? videoPickerModalEl.querySelector(".video-picker-item.is-active") : null;
+    if (active && typeof active.focus === "function") active.focus();
   }
 
   function openVideoPickerFromMenu(event) {
@@ -694,8 +797,41 @@
       mobileRoot.appendChild(mobileAddBtn);
     }
 
+    var desktopTokenBtn = document.getElementById("video-generate-token-trigger-desktop");
+    if (!desktopTokenBtn) {
+      desktopTokenBtn = document.createElement("button");
+      desktopTokenBtn.id = "video-generate-token-trigger-desktop";
+      desktopTokenBtn.type = "button";
+      desktopTokenBtn.className = "video-menu-btn video-menu-btn--secondary";
+      desktopTokenBtn.textContent = "Wygeneruj token dostępu";
+      desktopTokenBtn.hidden = true;
+      desktopTokenBtn.setAttribute("data-generate-access-token-trigger", "1");
+      desktopTokenBtn.addEventListener("click", function () {
+        closeDesktopVideoMenuPanel(false);
+        generateAccessTokenForCurrentVideo();
+      });
+      desktopRoot.appendChild(desktopTokenBtn);
+    }
+
+    var mobileTokenBtn = document.getElementById("video-generate-token-trigger-mobile");
+    if (!mobileTokenBtn) {
+      mobileTokenBtn = document.createElement("button");
+      mobileTokenBtn.id = "video-generate-token-trigger-mobile";
+      mobileTokenBtn.type = "button";
+      mobileTokenBtn.className = "video-mobile-nav-btn";
+      mobileTokenBtn.textContent = "Wygeneruj token dostępu";
+      mobileTokenBtn.hidden = true;
+      mobileTokenBtn.setAttribute("data-generate-access-token-trigger", "1");
+      mobileTokenBtn.addEventListener("click", function () {
+        if (typeof closeMobileMenuFn === "function") closeMobileMenuFn();
+        generateAccessTokenForCurrentVideo();
+      });
+      mobileRoot.appendChild(mobileTokenBtn);
+    }
+
     updateAuthMenuButtons();
     updateVideoAddMenuButtons();
+    updateGenerateTokenButtonVisibility();
     return true;
   }
 
@@ -876,6 +1012,7 @@
 
     updateAuthMenuButtons();
     updateVideoAddMenuButtons();
+    updateGenerateTokenButtonVisibility();
   }
 
   async function fetchAuthStatus() {
@@ -1002,12 +1139,6 @@
     applyDefaultAuthor(accessInfo);
 
     var identityParts = [];
-    if (authState && authState.logged_in) {
-      var email = String(authState.email || "").trim();
-      var role = String(authState.role || "").trim();
-      var roleText = role ? (" (" + roleLabel(role) + ")") : "";
-      identityParts.push("User: " + (email || "zalogowany") + roleText);
-    }
     if (accessInfo && accessInfo.token && accessInfo.token.token_id) {
       var tokenId = String(accessInfo.token.token_id || "").trim();
       var tokenSource = accessInfo.token.resource_type === "video" && accessInfo.token.resource_id
@@ -1019,6 +1150,7 @@
   }
 
   function renderVideoList() {
+    renderVideoPickerList();
     var selectEls = getVideoListSelectElements();
     if (!selectEls.length) return;
     selectEls.forEach(function (selectEl) {
@@ -1872,13 +2004,14 @@
       }
       applyAccessState(true);
       if (titleEl) titleEl.textContent = resolveVideoTitle(data.video);
-      var canEditCurrentSource = !!(
+      canEditCurrentSource = !!(
         data &&
         data.access &&
         data.access.effective &&
         data.access.effective.can_edit_source === true
       );
       editMode = !!data.edit || canEditCurrentSource;
+      updateGenerateTokenButtonVisibility();
       comments = Array.isArray(data.comments) ? data.comments : [];
       sortCommentsByTime();
       renderComments();
@@ -1891,6 +2024,8 @@
       renderComments();
       if (addCommentBtn) addCommentBtn.hidden = true;
       hideForm(false);
+      canEditCurrentSource = false;
+      updateGenerateTokenButtonVisibility();
     }
   }
 

@@ -6,6 +6,7 @@ header('X-Content-Type-Options: nosniff');
 
 require_once __DIR__ . '/../admin/db.php';
 require_once __DIR__ . '/access_guard.php';
+require_once __DIR__ . '/video_tokens_lib.php';
 
 /**
  * @param array<string,mixed> $payload
@@ -466,7 +467,7 @@ if ($action === 'list_videos' && $method === 'GET') {
     $editMode = $editModeRequested && ((bool)($ctx['effective']['global_edit'] ?? false));
 
     try {
-        $sql = 'SELECT id, youtube_id, provider, provider_video_id, source_url, tytul, slug, miniaturka_url, status, publiczny, utworzono, zaktualizowano
+        $sql = 'SELECT id, youtube_id, provider, provider_video_id, source_url, tytul, slug, miniaturka_url, status, publiczny, owner_user_id, assigned_trainer_user_id, created_via_token_order_id, utworzono, zaktualizowano
                 FROM videos';
         $where = [];
         $params = [];
@@ -547,7 +548,7 @@ if ($action === 'upsert_video' && $method === 'POST') {
 
     try {
         $selectStmt = $pdo->prepare(
-            'SELECT id, youtube_id, provider, provider_video_id, source_url, tytul, slug, opis, miniaturka_url, status, dlugosc_sekundy, jezyk, publiczny, utworzono, zaktualizowano
+            'SELECT id, youtube_id, provider, provider_video_id, source_url, tytul, slug, opis, miniaturka_url, status, dlugosc_sekundy, jezyk, publiczny, owner_user_id, assigned_trainer_user_id, created_via_token_order_id, utworzono, zaktualizowano
              FROM videos
              WHERE (provider = ? AND provider_video_id = ?) OR youtube_id = ?
              LIMIT 1'
@@ -649,6 +650,214 @@ if ($action === 'upsert_video' && $method === 'POST') {
     }
 }
 
+if ($action === 'add_user_video_link' && $method === 'POST') {
+    $data = get_input_data();
+    $csrf = (string)($data['csrf_token'] ?? '');
+    if (!csrf_check($csrf)) {
+        json_response(400, [
+            'ok' => false,
+            'error' => 'invalid_csrf',
+            'message' => 'Nieprawidłowy token bezpieczeństwa.',
+        ]);
+    }
+
+    $user = $ctx['user'] ?? [];
+    $userId = (int)($user['user_id'] ?? 0);
+    $role = (string)($user['role'] ?? '');
+    if ($userId <= 0 || empty($user['logged_in'])) {
+        json_response(401, [
+            'ok' => false,
+            'error' => 'not_logged_in',
+            'message' => 'Musisz się zalogować.',
+        ]);
+    }
+    if ($role !== 'user' && $role !== 'admin') {
+        json_response(403, [
+            'ok' => false,
+            'error' => 'role_forbidden',
+            'message' => 'Tylko użytkownik może dodać film przez żeton.',
+        ]);
+    }
+
+    $rawUrl = trim((string)($data['youtube_url'] ?? $data['source'] ?? ''));
+    $parsed = parse_video_source($rawUrl);
+    if (!$parsed || (string)$parsed['provider'] !== 'youtube') {
+        json_response(400, [
+            'ok' => false,
+            'error' => 'invalid_source',
+            'message' => 'W tym trybie możesz dodać tylko poprawny link lub ID YouTube.',
+        ]);
+    }
+
+    $selectedTrainerId = (int)($data['trainer_user_id'] ?? 0);
+    $consumeTrainerChoice = $selectedTrainerId > 0;
+    if ($selectedTrainerId > 0 && !vt_is_trainer_user($pdo, $selectedTrainerId)) {
+        json_response(400, [
+            'ok' => false,
+            'error' => 'invalid_trainer',
+            'message' => 'Wybrany trener nie jest dostępny.',
+        ]);
+    }
+
+    if ($selectedTrainerId <= 0) {
+        try {
+            $defStmt = $pdo->prepare(
+                'SELECT trainer_user_id
+                 FROM user_trainer_rel
+                 WHERE user_id = ? AND is_default = 1
+                 ORDER BY id DESC
+                 LIMIT 1'
+            );
+            $defStmt->execute([$userId]);
+            $relTrainer = (int)($defStmt->fetchColumn() ?: 0);
+            if ($relTrainer > 0 && vt_is_trainer_user($pdo, $relTrainer)) {
+                $selectedTrainerId = $relTrainer;
+            }
+        } catch (Throwable $e) {
+            // ignore, fallback below
+        }
+        if ($selectedTrainerId <= 0) {
+            $selectedTrainerId = (int)(vt_pick_default_trainer($pdo) ?? 0);
+        }
+    }
+
+    if ($selectedTrainerId <= 0) {
+        json_response(400, [
+            'ok' => false,
+            'error' => 'trainer_missing',
+            'message' => 'Brak dostępnego trenera do przypisania filmu.',
+        ]);
+    }
+
+    $consume = vt_consume_upload_entitlement($pdo, $userId, $consumeTrainerChoice);
+    if (!$consume['ok']) {
+        json_response(402, [
+            'ok' => false,
+            'error' => 'insufficient_entitlements',
+            'message' => $consumeTrainerChoice
+                ? 'Brak żetonu pozwalającego wybrać trenera.'
+                : 'Brak żetonów upload do dodania filmu.',
+            'balance' => vt_get_user_balance($pdo, $userId),
+        ]);
+    }
+
+    $provider = (string)$parsed['provider'];
+    $providerVideoId = (string)$parsed['provider_video_id'];
+    $sourceKey = (string)$parsed['source_key'];
+    $sourceUrl = (string)$parsed['source_url'];
+    $entitlementId = (int)($consume['entitlement_id'] ?? 0);
+    $sourceOrderId = (int)($consume['source_order_id'] ?? 0);
+
+    try {
+        $selectStmt = $pdo->prepare(
+            'SELECT id, youtube_id, owner_user_id
+             FROM videos
+             WHERE (provider = ? AND provider_video_id = ?) OR youtube_id = ?
+             LIMIT 1'
+        );
+        $selectStmt->execute([$provider, $providerVideoId, $sourceKey]);
+        $existing = $selectStmt->fetch(PDO::FETCH_ASSOC);
+        if ($existing) {
+            $owner = (int)($existing['owner_user_id'] ?? 0);
+            if ($owner > 0 && $owner !== $userId && $role !== 'admin') {
+                throw new RuntimeException('Film już należy do innego użytkownika.');
+            }
+            $videoId = (int)$existing['id'];
+            $up = $pdo->prepare(
+                'UPDATE videos
+                 SET owner_user_id = COALESCE(owner_user_id, ?),
+                     assigned_trainer_user_id = COALESCE(assigned_trainer_user_id, ?),
+                     created_via_token_order_id = COALESCE(created_via_token_order_id, ?),
+                     source_url = ?,
+                     zaktualizowano = NOW()
+                 WHERE id = ?'
+            );
+            $up->execute([$userId, $selectedTrainerId, $sourceOrderId > 0 ? $sourceOrderId : null, $sourceUrl, $videoId]);
+        } else {
+            $title = 'YouTube video ' . $providerVideoId;
+            $slug = $sourceKey;
+            $thumbnail = 'https://i.ytimg.com/vi/' . rawurlencode($providerVideoId) . '/hqdefault.jpg';
+            $insertStmt = $pdo->prepare(
+                'INSERT INTO videos
+                    (youtube_id, provider, provider_video_id, source_url, tytul, slug, opis, miniaturka_url, status, dlugosc_sekundy, jezyk, publiczny, owner_user_id, assigned_trainer_user_id, created_via_token_order_id, utworzono, zaktualizowano)
+                 VALUES
+                    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())'
+            );
+            $insertStmt->execute([
+                $sourceKey,
+                $provider,
+                $providerVideoId,
+                $sourceUrl,
+                $title,
+                $slug,
+                '',
+                $thumbnail,
+                'active',
+                0,
+                'pl',
+                1,
+                $userId,
+                $selectedTrainerId,
+                $sourceOrderId > 0 ? $sourceOrderId : null,
+            ]);
+            $videoId = (int)$pdo->lastInsertId();
+        }
+
+        $assignOwner = $pdo->prepare(
+            'INSERT INTO user_video_access (user_id, video_id, can_edit, created_at, updated_at)
+             VALUES (?, ?, 0, NOW(), NOW())
+             ON DUPLICATE KEY UPDATE updated_at = NOW()'
+        );
+        $assignOwner->execute([$userId, $videoId]);
+
+        $assignTrainer = $pdo->prepare(
+            'INSERT INTO user_video_access (user_id, video_id, can_edit, created_at, updated_at)
+             VALUES (?, ?, 1, NOW(), NOW())
+             ON DUPLICATE KEY UPDATE can_edit = 1, updated_at = NOW()'
+        );
+        $assignTrainer->execute([$selectedTrainerId, $videoId]);
+
+        $relUpsert = $pdo->prepare(
+            'INSERT INTO user_trainer_rel (user_id, trainer_user_id, is_default, created_at, updated_at)
+             VALUES (?, ?, 1, NOW(), NOW())
+             ON DUPLICATE KEY UPDATE updated_at = NOW()'
+        );
+        $relUpsert->execute([$userId, $selectedTrainerId]);
+
+        json_response(201, [
+            'ok' => true,
+            'video' => [
+                'id' => $videoId,
+                'youtube_id' => $sourceKey,
+                'source_url' => $sourceUrl,
+                'assigned_trainer_user_id' => $selectedTrainerId,
+            ],
+            'balance' => vt_get_user_balance($pdo, $userId),
+        ]);
+    } catch (Throwable $e) {
+        if ($entitlementId > 0) {
+            try {
+                $refundSql = 'UPDATE user_token_entitlements
+                              SET remaining_upload_links = remaining_upload_links + 1, updated_at = NOW()';
+                if ($consumeTrainerChoice) {
+                    $refundSql .= ', remaining_trainer_choices = remaining_trainer_choices + 1';
+                }
+                $refundSql .= ' WHERE id = ?';
+                $refund = $pdo->prepare($refundSql);
+                $refund->execute([$entitlementId]);
+            } catch (Throwable $rollbackErr) {
+                // ignore
+            }
+        }
+
+        json_response(500, [
+            'ok' => false,
+            'error' => 'add_user_video_link_failed',
+            'message' => $e->getMessage() ?: 'Nie udało się dodać filmu.',
+        ]);
+    }
+}
+
 if ($action === 'load' && $method === 'GET') {
     $source = trim((string)($_GET['source'] ?? ''));
     if ($source === '' || !validate_source_key($source)) {
@@ -668,7 +877,7 @@ if ($action === 'load' && $method === 'GET') {
 
     try {
         $videoStmt = $pdo->prepare(
-            'SELECT id, youtube_id, provider, provider_video_id, source_url, tytul, slug, opis, miniaturka_url, status, dlugosc_sekundy, jezyk, publiczny, utworzono, zaktualizowano
+            'SELECT id, youtube_id, provider, provider_video_id, source_url, tytul, slug, opis, miniaturka_url, status, dlugosc_sekundy, jezyk, publiczny, owner_user_id, assigned_trainer_user_id, created_via_token_order_id, utworzono, zaktualizowano
              FROM videos
              WHERE youtube_id = ?
              LIMIT 1'
