@@ -37,6 +37,22 @@
   var commentModalOverlayEl = document.getElementById("comment-modal-overlay");
   var commentModalPanelEl = document.getElementById("comment-modal-panel");
   var commentModalCloseBtn = document.getElementById("comment-modal-close-btn");
+  var reviewSummarySectionEl = document.getElementById("video-review-summary-section");
+  var reviewSummaryMetaEl = document.getElementById("video-review-summary-meta");
+  var reviewSummaryEmptyEl = document.getElementById("video-review-summary-empty");
+  var reviewSummaryContentEl = document.getElementById("video-review-summary-content");
+  var reviewModalEl = document.getElementById("review-modal");
+  var reviewModalOverlayEl = document.getElementById("review-modal-overlay");
+  var reviewModalPanelEl = document.getElementById("review-modal-panel");
+  var reviewModalCloseBtn = document.getElementById("review-modal-close-btn");
+  var reviewFormEl = document.getElementById("review-form");
+  var reviewFormCategoriesEl = document.getElementById("review-form-categories");
+  var reviewOverallNoteEl = document.getElementById("review-overall-note");
+  var reviewSummaryIdEl = document.getElementById("review-summary-id");
+  var reviewFormStatusEl = document.getElementById("review-form-status");
+  var reviewSaveDraftBtn = document.getElementById("review-save-draft-btn");
+  var reviewPublishBtn = document.getElementById("review-publish-btn");
+  var reviewCancelBtn = document.getElementById("review-cancel-btn");
   var formEl = document.getElementById("comment-form");
   var formStatusEl = document.getElementById("form-status");
   var cancelBtn = document.getElementById("cancel-comment-btn");
@@ -102,6 +118,12 @@
   var commentPreviouslyFocusedEl = null;
   var previouslyFocusedEl = null;
   var closeMobileMenuFn = null;
+  var reviewMenuTrigger = null;
+  var reviewPreviouslyFocusedEl = null;
+  var reviewDefinition = [];
+  var reviewDefinitionMap = {};
+  var reviewDraftSummary = null;
+  var reviewPublishedSummary = null;
 
   var SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition || null;
   var speechRecognition = null;
@@ -186,8 +208,18 @@
     return Array.prototype.slice.call(document.querySelectorAll("[data-generate-access-token-trigger]"));
   }
 
+  function isTrainerUiAllowed() {
+    var role = String(authState && authState.role || "").trim();
+    var roleAllowed = !!(
+      authState &&
+      authState.logged_in === true &&
+      (role === "trener" || role === "admin")
+    );
+    return !!(roleAllowed && hasContentAccess && canEditCurrentSource && source);
+  }
+
   function updateGenerateTokenButtonVisibility() {
-    var canShow = !!(editMode && canEditCurrentSource && hasContentAccess && source);
+    var canShow = isTrainerUiAllowed();
     getGenerateTokenTriggerElements().forEach(function (buttonEl) {
       buttonEl.hidden = !canShow;
     });
@@ -196,7 +228,7 @@
 
   async function generateAccessTokenForCurrentVideo() {
     if (!source) return;
-    if (!canEditCurrentSource) {
+    if (!isTrainerUiAllowed()) {
       setStatus("Brak uprawnień do generowania tokenu dla tego filmu.");
       return;
     }
@@ -215,13 +247,13 @@
           resource_id: source,
           token_ttl_minutes: 1440,
           session_ttl_minutes: 720,
-          note: "Szybki token z video.html"
+          note: "Szybki token z /video/play.php"
         })
       });
       var data = await response.json().catch(function () { return {}; });
       if (!response.ok || !data.ok || !data.token) throw new Error(data.message || "Nie udało się wygenerować tokenu.");
       var tokenUrl = String(data.url || "").trim();
-      if (!tokenUrl) tokenUrl = "/video.html?vt=" + encodeURIComponent(String(data.token));
+      if (!tokenUrl) tokenUrl = "/video/play.php?vt=" + encodeURIComponent(String(data.token));
       var absolute = tokenUrl.startsWith("http")
         ? tokenUrl
         : (window.location.origin + tokenUrl);
@@ -277,7 +309,7 @@
     if (editMode) next.set("edit", "1");
     else next.delete("edit");
     next.delete("vt");
-    return "video.html?" + next.toString();
+    return "/video/play.php?" + next.toString();
   }
 
   function isDriveFileId(value) {
@@ -323,6 +355,43 @@
   function resolveVideoTitle(video) {
     var dbTitle = String(video && video.tytul || "").trim();
     return dbTitle || "Bez tytułu";
+  }
+
+  function buildReviewDefinitionMap(definition) {
+    var map = {};
+    (Array.isArray(definition) ? definition : []).forEach(function (category) {
+      var categoryKey = String(category && category.key || "").trim();
+      var categoryTitle = String(category && category.title || "").trim();
+      var categoryPosition = Number(category && category.position || 0) || 0;
+      var items = Array.isArray(category && category.items) ? category.items : [];
+      items.forEach(function (item) {
+        var key = String(item && item.item_key || "").trim();
+        if (!key) return;
+        map[key] = {
+          item_key: key,
+          label: String(item && item.label || "").trim(),
+          category_key: categoryKey,
+          category_title: categoryTitle,
+          category_position: categoryPosition,
+          position: Number(item && item.position || 0) || 0
+        };
+      });
+    });
+    return map;
+  }
+
+  function scoreTone(score) {
+    var n = Number(score || 0);
+    if (n <= 1) return "tone-low";
+    if (n === 2) return "tone-mid";
+    return "tone-high";
+  }
+
+  function scoreLabel(score) {
+    var n = Number(score || 0);
+    if (n <= 1) return "do poprawy";
+    if (n === 2) return "średnio";
+    return "mocna strona";
   }
 
   function getStoredAuthor() {
@@ -430,7 +499,8 @@
     var addOpen = !!(addModalEl && addModalEl.hidden === false);
     var pickerOpen = !!(videoPickerModalEl && videoPickerModalEl.hidden === false);
     var commentOpen = isCommentModalOpen();
-    return authOpen || addOpen || pickerOpen || commentOpen;
+    var reviewOpen = isReviewModalOpen();
+    return authOpen || addOpen || pickerOpen || commentOpen || reviewOpen;
   }
 
   function openCommentModal(triggerEl) {
@@ -460,6 +530,213 @@
     commentPreviouslyFocusedEl = null;
   }
 
+  function isReviewModalOpen() {
+    return !!(reviewModalEl && reviewModalEl.hidden === false);
+  }
+
+  function setReviewFormStatus(msg) {
+    if (reviewFormStatusEl) reviewFormStatusEl.textContent = msg || "";
+  }
+
+  function setButtonLoading(buttonEl, loading) {
+    if (!buttonEl) return;
+    buttonEl.classList.toggle("is-loading", !!loading);
+    buttonEl.disabled = !!loading;
+  }
+
+  function openReviewModal(triggerEl) {
+    if (!reviewModalEl) return false;
+    if (isReviewModalOpen()) return true;
+    if (videoPickerModalEl && videoPickerModalEl.hidden === false) closeDesktopVideoMenuPanel(false);
+    if (authModalEl && authModalEl.hidden === false) closeAuthModal();
+    if (addModalEl && addModalEl.hidden === false) closeAddModal();
+    if (isCommentModalOpen()) hideForm(false);
+    reviewMenuTrigger = triggerEl || null;
+    reviewPreviouslyFocusedEl = document.activeElement;
+    reviewModalEl.hidden = false;
+    document.body.classList.add("video-modal-open");
+    return true;
+  }
+
+  function closeReviewModal(restoreFocus) {
+    if (!reviewModalEl) return;
+    reviewModalEl.hidden = true;
+    if (!anyPrimaryModalOpen()) document.body.classList.remove("video-modal-open");
+    if (restoreFocus) {
+      var focusTarget = reviewMenuTrigger || reviewPreviouslyFocusedEl;
+      if (focusTarget && typeof focusTarget.focus === "function") focusTarget.focus();
+    }
+    reviewMenuTrigger = null;
+    reviewPreviouslyFocusedEl = null;
+  }
+
+  function renderReviewForm(definition) {
+    if (!reviewFormCategoriesEl) return;
+    reviewFormCategoriesEl.innerHTML = "";
+    var categories = Array.isArray(definition) ? definition : [];
+    var fragment = document.createDocumentFragment();
+    categories.forEach(function (category) {
+      var card = document.createElement("section");
+      card.className = "review-form__category";
+      card.setAttribute("data-category-key", String(category.key || ""));
+
+      var title = document.createElement("h3");
+      title.className = "review-form__category-title";
+      title.textContent = String(category.title || "");
+      card.appendChild(title);
+
+      var itemsWrap = document.createElement("div");
+      itemsWrap.className = "review-form__items";
+      var items = Array.isArray(category.items) ? category.items : [];
+      items.forEach(function (item) {
+        var itemKey = String(item.item_key || "").trim();
+        if (!itemKey) return;
+        var row = document.createElement("div");
+        row.className = "review-form__item";
+        row.setAttribute("data-review-item", itemKey);
+
+        var q = document.createElement("p");
+        q.className = "review-form__question";
+        q.textContent = String(item.label || "");
+        row.appendChild(q);
+
+        var scale = document.createElement("div");
+        scale.className = "review-form__scale";
+        [1, 2, 3].forEach(function (score) {
+          var label = document.createElement("label");
+          label.className = "review-form__score";
+          label.setAttribute("data-score", String(score));
+
+          var input = document.createElement("input");
+          input.type = "radio";
+          input.name = "review_" + itemKey;
+          input.value = String(score);
+          input.setAttribute("data-item-key", itemKey);
+          input.addEventListener("change", function () {
+            var group = scale.querySelectorAll(".review-form__score");
+            group.forEach(function (el) { el.classList.remove("is-active"); });
+            label.classList.add("is-active");
+          });
+
+          var text = document.createElement("span");
+          text.textContent = String(score);
+          label.appendChild(input);
+          label.appendChild(text);
+          scale.appendChild(label);
+        });
+
+        row.appendChild(scale);
+        itemsWrap.appendChild(row);
+      });
+
+      card.appendChild(itemsWrap);
+      fragment.appendChild(card);
+    });
+    reviewFormCategoriesEl.appendChild(fragment);
+  }
+
+  function setReviewFormValues(summary) {
+    if (reviewSummaryIdEl) reviewSummaryIdEl.value = String(summary && summary.id || "");
+    if (reviewOverallNoteEl) reviewOverallNoteEl.value = String(summary && summary.overall_note || "");
+    if (!reviewFormEl) return;
+
+    reviewFormEl.querySelectorAll(".review-form__score").forEach(function (node) {
+      node.classList.remove("is-active");
+    });
+    reviewFormEl.querySelectorAll('input[type="radio"][data-item-key]').forEach(function (input) {
+      input.checked = false;
+    });
+
+    var answers = Array.isArray(summary && summary.answers) ? summary.answers : [];
+    answers.forEach(function (answer) {
+      var itemKey = String(answer && answer.item_key || "").trim();
+      var score = String(answer && answer.score || "").trim();
+      if (!itemKey || !score) return;
+      var selector = 'input[type="radio"][data-item-key="' + itemKey + '"][value="' + score + '"]';
+      var input = reviewFormEl.querySelector(selector);
+      if (!input) return;
+      input.checked = true;
+      if (input.parentElement) input.parentElement.classList.add("is-active");
+    });
+  }
+
+  function collectReviewAnswersFromForm() {
+    if (!reviewFormEl) return [];
+    var out = [];
+    Object.keys(reviewDefinitionMap || {}).forEach(function (itemKey) {
+      var checked = reviewFormEl.querySelector('input[type="radio"][data-item-key="' + itemKey + '"]:checked');
+      if (!checked) return;
+      var score = Number(checked.value || 0);
+      if (!Number.isInteger(score) || score < 1 || score > 3) return;
+      out.push({ item_key: itemKey, score: score });
+    });
+    return out;
+  }
+
+  function renderReviewSummary(summary) {
+    if (!reviewSummarySectionEl || !reviewSummaryContentEl || !reviewSummaryEmptyEl || !reviewSummaryMetaEl) return;
+    reviewSummarySectionEl.hidden = !hasContentAccess;
+    reviewSummaryContentEl.innerHTML = "";
+
+    if (!summary || !Array.isArray(summary.categories) || !summary.categories.length) {
+      reviewSummaryEmptyEl.hidden = false;
+      reviewSummaryMetaEl.textContent = "";
+      return;
+    }
+    reviewSummaryEmptyEl.hidden = true;
+
+    var total = Number(summary.total_score || 0);
+    var max = Number(summary.max_score || 0);
+    var percent = max > 0 ? Math.round((total / max) * 100) : 0;
+    var publishedAt = String(summary.published_at || "").trim();
+    reviewSummaryMetaEl.textContent = publishedAt ? ("Opublikowano: " + publishedAt) : "";
+
+    var overall = document.createElement("section");
+    overall.className = "video-review-summary__overall";
+    overall.innerHTML =
+      '<p class="video-review-summary__overall-title">Wynik globalny</p>' +
+      '<div class="video-review-summary__overall-line"><span>' + total + ' / ' + max + '</span><span>' + percent + '%</span></div>' +
+      '<div class="video-review-summary__bar"><div class="video-review-summary__bar-fill" style="width:' + Math.max(0, Math.min(100, percent)) + '%"></div></div>';
+    reviewSummaryContentEl.appendChild(overall);
+
+    var cardsWrap = document.createElement("div");
+    cardsWrap.className = "video-review-summary__categories";
+    summary.categories.forEach(function (category) {
+      var card = document.createElement("article");
+      card.className = "video-review-summary__card";
+      var catAvg = Number(category && category.avg_score || 0);
+      var catPercent = Math.round((catAvg / 3) * 100);
+      var title = '<h3 class="video-review-summary__card-title">' + escapeHtml(String(category && category.title || "")) + ' · ' + catAvg.toFixed(2) + '/3</h3>';
+      var bar = '<div class="video-review-summary__bar"><div class="video-review-summary__bar-fill" style="width:' + Math.max(0, Math.min(100, catPercent)) + '%"></div></div>';
+      card.innerHTML = title + bar;
+
+      var items = Array.isArray(category && category.items) ? category.items : [];
+      items.forEach(function (item) {
+        var row = document.createElement("div");
+        row.className = "video-review-summary__item";
+        var score = Number(item && item.score || 0);
+        var scorePct = Math.round((score / 3) * 100);
+        row.innerHTML =
+          '<span class="video-review-summary__item-label">' + escapeHtml(String(item && item.label || "")) + '</span>' +
+          '<div class="video-review-summary__item-line">' +
+            '<div class="video-review-summary__bar"><div class="video-review-summary__bar-fill" style="width:' + Math.max(0, Math.min(100, scorePct)) + '%"></div></div>' +
+            '<span class="video-review-summary__item-score ' + scoreTone(score) + '">' + score + '/3 · ' + scoreLabel(score) + '</span>' +
+          '</div>';
+        card.appendChild(row);
+      });
+      cardsWrap.appendChild(card);
+    });
+    reviewSummaryContentEl.appendChild(cardsWrap);
+
+    var note = String(summary.overall_note || "").trim();
+    if (note) {
+      var noteBox = document.createElement("div");
+      noteBox.className = "video-review-summary__note";
+      noteBox.textContent = note;
+      reviewSummaryContentEl.appendChild(noteBox);
+    }
+  }
+
   async function exchangeAccessToken(token) {
     var response = await fetch(ACCESS_API_URL + "?action=exchange", {
       method: "POST",
@@ -475,7 +752,7 @@
     var next = new URLSearchParams(window.location.search);
     next.delete("vt");
     var query = next.toString();
-    window.history.replaceState({}, "", "video.html" + (query ? ("?" + query) : ""));
+    window.history.replaceState({}, "", "/video/play.php" + (query ? ("?" + query) : ""));
   }
 
   function syncAuthFromAccess(access) {
@@ -512,19 +789,28 @@
     if (playerWrapEl) playerWrapEl.hidden = !hasContentAccess;
     if (commentsSectionEl) commentsSectionEl.hidden = !hasContentAccess;
     if (accessMessageEl) accessMessageEl.hidden = hasContentAccess;
+    if (reviewSummarySectionEl) reviewSummarySectionEl.hidden = !hasContentAccess;
     if (!hasContentAccess) {
       canEditCurrentSource = false;
       destroyCurrentPlayer();
       comments = [];
+      reviewDraftSummary = null;
+      reviewPublishedSummary = null;
       renderComments();
+      renderReviewSummary(null);
       getVideoListSelectElements().forEach(function (selectEl) {
         selectEl.innerHTML = "<option value=\"\">Brak dostępu</option>";
       });
       if (addCommentBtn) addCommentBtn.hidden = true;
       hideForm(false);
+      closeReviewModal(false);
       updateGenerateTokenButtonVisibility();
+      updateReviewMenuButtons();
     }
-    if (hasContentAccess) updateGenerateTokenButtonVisibility();
+    if (hasContentAccess) {
+      updateGenerateTokenButtonVisibility();
+      updateReviewMenuButtons();
+    }
   }
 
   function updateAuthMenuButtons() {
@@ -566,6 +852,126 @@
       accessInfo.effective &&
       accessInfo.effective.can_add_video === true
     );
+  }
+
+  function getReviewMenuTriggers() {
+    return Array.prototype.slice.call(document.querySelectorAll("[data-review-summary-trigger]"));
+  }
+
+  function updateReviewMenuButtons() {
+    var canShow = isTrainerUiAllowed();
+    getReviewMenuTriggers().forEach(function (buttonEl) {
+      buttonEl.hidden = !canShow;
+    });
+    if (!canShow && isReviewModalOpen()) closeReviewModal(false);
+  }
+
+  async function fetchReviewFormData() {
+    var url = API_URL + "?action=load_review_form&source=" + encodeURIComponent(source);
+    var response = await fetch(url, { headers: { "Accept": "application/json" } });
+    var data = await response.json().catch(function () { return {}; });
+    if (!response.ok || !data.ok) throw new Error(data.message || "Nie udało się pobrać formularza podsumowania.");
+    return data;
+  }
+
+  async function openReviewModalFromMenu(event) {
+    if (event) {
+      event.preventDefault();
+      reviewMenuTrigger = event.currentTarget || null;
+    }
+    if (!isTrainerUiAllowed()) return;
+    closeDesktopVideoMenuPanel(false);
+    if (typeof closeMobileMenuFn === "function") closeMobileMenuFn();
+    setReviewFormStatus("Ładowanie formularza...");
+    setButtonLoading(reviewSaveDraftBtn, false);
+    setButtonLoading(reviewPublishBtn, false);
+    try {
+      var data = await fetchReviewFormData();
+      reviewDefinition = Array.isArray(data.definition) ? data.definition : [];
+      reviewDefinitionMap = buildReviewDefinitionMap(reviewDefinition);
+      reviewDraftSummary = data.review_summary_draft || null;
+      reviewPublishedSummary = data.review_summary_published || null;
+      renderReviewForm(reviewDefinition);
+      setReviewFormValues(reviewDraftSummary);
+      renderReviewSummary(reviewPublishedSummary);
+      openReviewModal(reviewMenuTrigger);
+      setReviewFormStatus("");
+      var firstInput = reviewFormEl ? reviewFormEl.querySelector('input[type="radio"]') : null;
+      if (firstInput && typeof firstInput.focus === "function") firstInput.focus();
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : "Błąd ładowania podsumowania.");
+    }
+  }
+
+  async function saveReviewDraft() {
+    if (!source || !reviewFormEl) return null;
+    var payload = {
+      source: source,
+      summary_id: Number(reviewSummaryIdEl && reviewSummaryIdEl.value || 0) || undefined,
+      overall_note: String(reviewOverallNoteEl && reviewOverallNoteEl.value || "").trim(),
+      answers: collectReviewAnswersFromForm(),
+      csrf_token: csrfToken
+    };
+    var response = await fetch(API_URL + "?action=save_review_draft", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    var data = await response.json().catch(function () { return {}; });
+    if (!response.ok || !data.ok) throw new Error(data.message || "Nie udało się zapisać szkicu.");
+    if (Array.isArray(data.definition)) {
+      reviewDefinition = data.definition;
+      reviewDefinitionMap = buildReviewDefinitionMap(reviewDefinition);
+    }
+    reviewDraftSummary = data.review_summary_draft || reviewDraftSummary;
+    setReviewFormValues(reviewDraftSummary);
+    return data;
+  }
+
+  async function handleReviewSaveDraft() {
+    setReviewFormStatus("Zapisywanie szkicu...");
+    setButtonLoading(reviewSaveDraftBtn, true);
+    setButtonLoading(reviewPublishBtn, false);
+    try {
+      await saveReviewDraft();
+      setReviewFormStatus("Szkic zapisany.");
+    } catch (error) {
+      setReviewFormStatus(error instanceof Error ? error.message : "Błąd zapisu szkicu.");
+    } finally {
+      setButtonLoading(reviewSaveDraftBtn, false);
+    }
+  }
+
+  async function handleReviewPublish() {
+    setReviewFormStatus("Publikowanie podsumowania...");
+    setButtonLoading(reviewPublishBtn, true);
+    setButtonLoading(reviewSaveDraftBtn, false);
+    try {
+      var saveData = await saveReviewDraft();
+      var summaryId = Number(saveData && saveData.review_summary_draft && saveData.review_summary_draft.id || 0);
+      if (summaryId <= 0) throw new Error("Brak identyfikatora szkicu do publikacji.");
+
+      var response = await fetch(API_URL + "?action=publish_review", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({
+          source: source,
+          summary_id: summaryId,
+          csrf_token: csrfToken
+        })
+      });
+      var data = await response.json().catch(function () { return {}; });
+      if (!response.ok || !data.ok) throw new Error(data.message || "Nie udało się opublikować podsumowania.");
+      reviewPublishedSummary = data.review_summary_published || reviewPublishedSummary;
+      reviewDraftSummary = null;
+      renderReviewSummary(reviewPublishedSummary);
+      setReviewFormStatus("Podsumowanie opublikowane.");
+      closeReviewModal(true);
+    } catch (error) {
+      setReviewFormStatus(error instanceof Error ? error.message : "Błąd publikacji.");
+    } finally {
+      setButtonLoading(reviewPublishBtn, false);
+    }
   }
 
   function buildDesktopVideoMenuPicker(root) {
@@ -829,9 +1235,36 @@
       mobileRoot.appendChild(mobileTokenBtn);
     }
 
+    var desktopReviewBtn = document.getElementById("video-review-summary-trigger-desktop");
+    if (!desktopReviewBtn) {
+      desktopReviewBtn = document.createElement("button");
+      desktopReviewBtn.id = "video-review-summary-trigger-desktop";
+      desktopReviewBtn.type = "button";
+      desktopReviewBtn.className = "video-menu-btn video-menu-btn--secondary";
+      desktopReviewBtn.textContent = "Podsumuj nagranie";
+      desktopReviewBtn.hidden = true;
+      desktopReviewBtn.setAttribute("data-review-summary-trigger", "1");
+      desktopReviewBtn.addEventListener("click", openReviewModalFromMenu);
+      desktopRoot.appendChild(desktopReviewBtn);
+    }
+
+    var mobileReviewBtn = document.getElementById("video-review-summary-trigger-mobile");
+    if (!mobileReviewBtn) {
+      mobileReviewBtn = document.createElement("button");
+      mobileReviewBtn.id = "video-review-summary-trigger-mobile";
+      mobileReviewBtn.type = "button";
+      mobileReviewBtn.className = "video-mobile-nav-btn";
+      mobileReviewBtn.textContent = "Podsumuj nagranie";
+      mobileReviewBtn.hidden = true;
+      mobileReviewBtn.setAttribute("data-review-summary-trigger", "1");
+      mobileReviewBtn.addEventListener("click", openReviewModalFromMenu);
+      mobileRoot.appendChild(mobileReviewBtn);
+    }
+
     updateAuthMenuButtons();
     updateVideoAddMenuButtons();
     updateGenerateTokenButtonVisibility();
+    updateReviewMenuButtons();
     return true;
   }
 
@@ -964,6 +1397,27 @@
     }
   }
 
+  function handleReviewModalKeydown(event) {
+    if (!isReviewModalOpen()) return;
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeReviewModal(true);
+      return;
+    }
+    if (event.key !== "Tab") return;
+    var focusables = getFocusableWithin(reviewModalPanelEl || reviewModalEl);
+    if (!focusables.length) return;
+    var first = focusables[0];
+    var last = focusables[focusables.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
   function initMobileMenuHandlers() {
     var openBtn = document.getElementById("menuToggleHome");
     var closeBtn = document.getElementById("menuCloseHome");
@@ -1013,6 +1467,7 @@
     updateAuthMenuButtons();
     updateVideoAddMenuButtons();
     updateGenerateTokenButtonVisibility();
+    updateReviewMenuButtons();
   }
 
   async function fetchAuthStatus() {
@@ -1982,7 +2437,7 @@
     }
 
     if (!source) {
-      setStatus("Brak parametru source. Użyj np. video.html?source=ID_FILMU");
+      setStatus("Brak parametru source. Użyj np. /video/play.php?source=ID_FILMU");
       comments = [];
       renderComments();
       return;
@@ -2013,19 +2468,28 @@
       editMode = !!data.edit || canEditCurrentSource;
       updateGenerateTokenButtonVisibility();
       comments = Array.isArray(data.comments) ? data.comments : [];
+      reviewPublishedSummary = data.review_summary_published || null;
+      reviewDraftSummary = data.review_summary_draft || null;
       sortCommentsByTime();
       renderComments();
+      renderReviewSummary(reviewPublishedSummary);
       setStatus(editMode ? "Ładowanie odtwarzacza..." : "Tryb podglądu.");
       var mergedVideo = Object.assign({}, findVideoMetaBySource(source) || {}, data.video || {});
       loadVideoByProvider(mergedVideo);
+      updateReviewMenuButtons();
     } catch (error) {
       setStatus(error instanceof Error ? error.message : "Błąd ładowania.");
       comments = [];
+      reviewPublishedSummary = null;
+      reviewDraftSummary = null;
       renderComments();
+      renderReviewSummary(null);
       if (addCommentBtn) addCommentBtn.hidden = true;
       hideForm(false);
+      closeReviewModal(false);
       canEditCurrentSource = false;
       updateGenerateTokenButtonVisibility();
+      updateReviewMenuButtons();
     }
   }
 
@@ -2070,9 +2534,15 @@
     if (addModalOverlayEl) addModalOverlayEl.addEventListener("click", closeAddModal);
     if (commentModalCloseBtn) commentModalCloseBtn.addEventListener("click", function () { hideForm(true); });
     if (commentModalOverlayEl) commentModalOverlayEl.addEventListener("click", function () { hideForm(true); });
+    if (reviewModalCloseBtn) reviewModalCloseBtn.addEventListener("click", function () { closeReviewModal(true); });
+    if (reviewModalOverlayEl) reviewModalOverlayEl.addEventListener("click", function () { closeReviewModal(true); });
+    if (reviewSaveDraftBtn) reviewSaveDraftBtn.addEventListener("click", handleReviewSaveDraft);
+    if (reviewPublishBtn) reviewPublishBtn.addEventListener("click", handleReviewPublish);
+    if (reviewCancelBtn) reviewCancelBtn.addEventListener("click", function () { closeReviewModal(true); });
     document.addEventListener("keydown", handleAuthModalKeydown);
     document.addEventListener("keydown", handleAddModalKeydown);
     document.addEventListener("keydown", handleCommentModalKeydown);
+    document.addEventListener("keydown", handleReviewModalKeydown);
     if (videoAddFormEl) videoAddFormEl.addEventListener("submit", submitVideoAdd);
 
     if (accessToken) {

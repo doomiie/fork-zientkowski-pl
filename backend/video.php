@@ -7,6 +7,7 @@ header('X-Content-Type-Options: nosniff');
 require_once __DIR__ . '/../admin/db.php';
 require_once __DIR__ . '/access_guard.php';
 require_once __DIR__ . '/video_tokens_lib.php';
+require_once __DIR__ . '/video_review_lib.php';
 
 /**
  * @param array<string,mixed> $payload
@@ -31,6 +32,32 @@ function validate_youtube_id(string $value): bool
 function validate_drive_file_id(string $value): bool
 {
     return (bool)preg_match('/^[A-Za-z0-9_-]{20,120}$/', $value);
+}
+
+/**
+ * @return string[]
+ */
+function app_role_list(string $raw): array
+{
+    $value = strtolower(trim($raw));
+    if ($value === '') {
+        return [];
+    }
+    $parts = preg_split('/[\s,;|]+/', $value) ?: [];
+    $roles = [];
+    foreach ($parts as $part) {
+        $role = trim((string)$part);
+        if ($role === '') continue;
+        $roles[$role] = true;
+    }
+    return array_keys($roles);
+}
+
+function app_role_has(string $raw, string $role): bool
+{
+    $needle = strtolower(trim($role));
+    if ($needle === '') return false;
+    return in_array($needle, app_role_list($raw), true);
 }
 
 function build_drive_source_key(string $driveFileId): string
@@ -210,11 +237,11 @@ function get_current_user_auth(PDO $pdo): array
                 'role' => null,
             ];
         }
-        $rawRole = strtolower(trim((string)($row['role'] ?? 'viewer')));
+        $rawRole = (string)($row['role'] ?? 'viewer');
         $mapped = 'user';
-        if ($rawRole === 'admin') {
+        if (app_role_has($rawRole, 'admin')) {
             $mapped = 'admin';
-        } elseif ($rawRole === 'editor') {
+        } elseif (app_role_has($rawRole, 'editor')) {
             $mapped = 'trener';
         }
         return [
@@ -467,8 +494,25 @@ if ($action === 'list_videos' && $method === 'GET') {
     $editMode = $editModeRequested && ((bool)($ctx['effective']['global_edit'] ?? false));
 
     try {
-        $sql = 'SELECT id, youtube_id, provider, provider_video_id, source_url, tytul, slug, miniaturka_url, status, publiczny, owner_user_id, assigned_trainer_user_id, created_via_token_order_id, utworzono, zaktualizowano
-                FROM videos';
+        $sql = 'SELECT
+                    v.id,
+                    v.youtube_id,
+                    v.provider,
+                    v.provider_video_id,
+                    v.source_url,
+                    v.tytul,
+                    v.slug,
+                    v.miniaturka_url,
+                    v.status,
+                    v.publiczny,
+                    v.owner_user_id,
+                    v.assigned_trainer_user_id,
+                    v.created_via_token_order_id,
+                    v.utworzono,
+                    v.zaktualizowano,
+                    trainer.email AS assigned_trainer_username
+                FROM videos v
+                LEFT JOIN users trainer ON trainer.id = v.assigned_trainer_user_id';
         $where = [];
         $params = [];
 
@@ -492,14 +536,14 @@ if ($action === 'list_videos' && $method === 'GET') {
                 ]);
             }
             $in = implode(',', array_fill(0, count($allowed), '?'));
-            $where[] = 'youtube_id IN (' . $in . ')';
+            $where[] = 'v.youtube_id IN (' . $in . ')';
             $params = array_merge($params, $allowed);
         }
 
         if ($where) {
             $sql .= ' WHERE ' . implode(' AND ', $where);
         }
-        $sql .= ' ORDER BY zaktualizowano DESC, id DESC';
+        $sql .= ' ORDER BY v.zaktualizowano DESC, v.id DESC';
 
         $stmt = $pdo->prepare($sql);
         $stmt->execute($params);
@@ -858,6 +902,430 @@ if ($action === 'add_user_video_link' && $method === 'POST') {
     }
 }
 
+if ($action === 'update_user_video_title' && $method === 'POST') {
+    $data = get_input_data();
+    $csrf = (string)($data['csrf_token'] ?? '');
+    if (!csrf_check($csrf)) {
+        json_response(400, [
+            'ok' => false,
+            'error' => 'invalid_csrf',
+            'message' => 'Nieprawidłowy token bezpieczeństwa.',
+        ]);
+    }
+
+    $source = trim((string)($data['source'] ?? ''));
+    $title = mb_substr(trim((string)($data['title'] ?? '')), 0, 160);
+    if (!validate_source_key($source)) {
+        json_response(400, [
+            'ok' => false,
+            'error' => 'invalid_source',
+            'message' => 'Niepoprawny identyfikator filmu.',
+        ]);
+    }
+    if ($title === '') {
+        json_response(400, [
+            'ok' => false,
+            'error' => 'invalid_title',
+            'message' => 'Tytuł nie może być pusty.',
+        ]);
+    }
+
+    $user = $ctx['user'] ?? [];
+    $userId = (int)($user['user_id'] ?? 0);
+    $role = (string)($user['role'] ?? '');
+    if ($userId <= 0 || empty($user['logged_in'])) {
+        json_response(401, [
+            'ok' => false,
+            'error' => 'not_logged_in',
+            'message' => 'Musisz się zalogować.',
+        ]);
+    }
+
+    try {
+        $stmt = $pdo->prepare('SELECT id, owner_user_id FROM videos WHERE youtube_id = ? LIMIT 1');
+        $stmt->execute([$source]);
+        $video = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$video) {
+            json_response(404, [
+                'ok' => false,
+                'error' => 'video_not_found',
+                'message' => 'Nie znaleziono filmu.',
+            ]);
+        }
+
+        $ownerId = (int)($video['owner_user_id'] ?? 0);
+        $isAdmin = ($role === 'admin');
+        if (!$isAdmin && $ownerId !== $userId) {
+            json_response(403, [
+                'ok' => false,
+                'error' => 'title_update_forbidden',
+                'message' => 'Możesz edytować tylko swoje filmy.',
+            ]);
+        }
+
+        $upd = $pdo->prepare('UPDATE videos SET tytul = ?, zaktualizowano = NOW() WHERE id = ? LIMIT 1');
+        $upd->execute([$title, (int)$video['id']]);
+
+        json_response(200, [
+            'ok' => true,
+            'source' => $source,
+            'title' => $title,
+        ]);
+    } catch (Throwable $e) {
+        json_response(500, [
+            'ok' => false,
+            'error' => 'title_update_failed',
+            'message' => 'Nie udało się zapisać tytułu.',
+        ]);
+    }
+}
+
+if ($action === 'load_review_form' && $method === 'GET') {
+    $source = trim((string)($_GET['source'] ?? ''));
+    if ($source === '' || !validate_source_key($source)) {
+        json_response(400, [
+            'ok' => false,
+            'error' => 'invalid_source',
+            'message' => 'Niepoprawny identyfikator filmu.',
+        ]);
+    }
+    ensure_can_edit_source($ctx, $source);
+
+    $userId = (int)($ctx['user']['user_id'] ?? 0);
+    if ($userId <= 0 || empty($ctx['user']['logged_in'])) {
+        json_response(401, [
+            'ok' => false,
+            'error' => 'not_logged_in',
+            'message' => 'Musisz byc zalogowany, aby uzupelnic podsumowanie.',
+        ]);
+    }
+
+    try {
+        $video = vr_find_video_by_source($pdo, $source);
+        if (!$video) {
+            json_response(404, [
+                'ok' => false,
+                'error' => 'video_not_found',
+                'message' => 'Nie znaleziono filmu.',
+            ]);
+        }
+
+        $catalog = vr_catalog();
+        $dict = vr_item_dict();
+        $published = vr_load_latest_published($pdo, (int)$video['id']);
+        $draft = vr_load_draft_for_user($pdo, (int)$video['id'], $userId);
+
+        json_response(200, [
+            'ok' => true,
+            'definition' => $catalog,
+            'review_summary_published' => $published ? vr_hydrate_summary($pdo, $published, $catalog, $dict) : null,
+            'review_summary_draft' => $draft ? vr_hydrate_summary($pdo, $draft, $catalog, $dict) : null,
+            'access' => build_access_meta($ctx, $source),
+        ]);
+    } catch (Throwable $e) {
+        json_response(500, [
+            'ok' => false,
+            'error' => 'load_review_form_failed',
+            'message' => 'Nie udalo sie pobrac formularza podsumowania.',
+        ]);
+    }
+}
+
+if ($action === 'save_review_draft' && $method === 'POST') {
+    $data = get_input_data();
+    $csrf = (string)($data['csrf_token'] ?? '');
+    if (!csrf_check($csrf)) {
+        json_response(400, [
+            'ok' => false,
+            'error' => 'invalid_csrf',
+            'message' => 'Nieprawidlowy token bezpieczenstwa.',
+        ]);
+    }
+
+    $source = trim((string)($data['source'] ?? ''));
+    if ($source === '' || !validate_source_key($source)) {
+        json_response(400, [
+            'ok' => false,
+            'error' => 'invalid_source',
+            'message' => 'Niepoprawny identyfikator filmu.',
+        ]);
+    }
+    ensure_can_edit_source($ctx, $source);
+
+    $userId = (int)($ctx['user']['user_id'] ?? 0);
+    if ($userId <= 0 || empty($ctx['user']['logged_in'])) {
+        json_response(401, [
+            'ok' => false,
+            'error' => 'not_logged_in',
+            'message' => 'Musisz byc zalogowany, aby zapisac podsumowanie.',
+        ]);
+    }
+
+    $catalog = vr_catalog();
+    $dict = vr_item_dict();
+    $answers = vr_normalize_answers($data['answers'] ?? [], $dict);
+    $summaryId = (int)($data['summary_id'] ?? 0);
+    $overallNote = mb_substr(trim((string)($data['overall_note'] ?? '')), 0, 4000);
+
+    try {
+        $video = vr_find_video_by_source($pdo, $source);
+        if (!$video) {
+            json_response(404, [
+                'ok' => false,
+                'error' => 'video_not_found',
+                'message' => 'Nie znaleziono filmu.',
+            ]);
+        }
+        $videoId = (int)$video['id'];
+
+        $pdo->beginTransaction();
+
+        $summaryRow = null;
+        if ($summaryId > 0) {
+            $summaryStmt = $pdo->prepare(
+                'SELECT id, video_id, reviewer_user_id, status, version_no, published_at, overall_note, total_score, max_score, created_at, updated_at, archived_at
+                 FROM video_review_summaries
+                 WHERE id = ? AND video_id = ? LIMIT 1'
+            );
+            $summaryStmt->execute([$summaryId, $videoId]);
+            $row = $summaryStmt->fetch(PDO::FETCH_ASSOC);
+            if (!$row) {
+                $pdo->rollBack();
+                json_response(404, [
+                    'ok' => false,
+                    'error' => 'summary_not_found',
+                    'message' => 'Nie znaleziono szkicu podsumowania.',
+                ]);
+            }
+            if ((int)$row['reviewer_user_id'] !== $userId || (string)$row['status'] !== 'draft') {
+                $pdo->rollBack();
+                json_response(403, [
+                    'ok' => false,
+                    'error' => 'summary_forbidden',
+                    'message' => 'Brak uprawnien do zapisu tego szkicu.',
+                ]);
+            }
+            $summaryRow = vr_cast_summary_row($row);
+        } else {
+            $existingDraft = vr_load_draft_for_user($pdo, $videoId, $userId);
+            if ($existingDraft) {
+                $summaryRow = $existingDraft;
+            } else {
+                $nextVersion = vr_next_version_no($pdo, $videoId);
+                $insertStmt = $pdo->prepare(
+                    'INSERT INTO video_review_summaries
+                        (video_id, reviewer_user_id, status, version_no, overall_note, total_score, max_score, created_at, updated_at)
+                     VALUES
+                        (?, ?, "draft", ?, ?, 0, 0, NOW(), NOW())'
+                );
+                $insertStmt->execute([$videoId, $userId, $nextVersion, $overallNote !== '' ? $overallNote : null]);
+                $summaryRow = [
+                    'id' => (int)$pdo->lastInsertId(),
+                    'video_id' => $videoId,
+                    'reviewer_user_id' => $userId,
+                    'status' => 'draft',
+                    'version_no' => $nextVersion,
+                    'published_at' => null,
+                    'overall_note' => $overallNote,
+                    'total_score' => 0,
+                    'max_score' => 0,
+                    'created_at' => '',
+                    'updated_at' => '',
+                    'archived_at' => null,
+                ];
+            }
+        }
+
+        if (!$summaryRow) {
+            $pdo->rollBack();
+            json_response(500, [
+                'ok' => false,
+                'error' => 'summary_create_failed',
+                'message' => 'Nie udalo sie utworzyc szkicu podsumowania.',
+            ]);
+        }
+
+        $summaryId = (int)$summaryRow['id'];
+        $updateStmt = $pdo->prepare(
+            'UPDATE video_review_summaries
+             SET overall_note = ?, updated_at = NOW()
+             WHERE id = ? LIMIT 1'
+        );
+        $updateStmt->execute([$overallNote !== '' ? $overallNote : null, $summaryId]);
+        vr_upsert_scores($pdo, $summaryId, $answers);
+
+        $selectSavedStmt = $pdo->prepare(
+            'SELECT id, video_id, reviewer_user_id, status, version_no, published_at, overall_note, total_score, max_score, created_at, updated_at, archived_at
+             FROM video_review_summaries
+             WHERE id = ? LIMIT 1'
+        );
+        $selectSavedStmt->execute([$summaryId]);
+        $saved = $selectSavedStmt->fetch(PDO::FETCH_ASSOC);
+        if (!$saved) {
+            $pdo->rollBack();
+            json_response(500, [
+                'ok' => false,
+                'error' => 'summary_reload_failed',
+                'message' => 'Nie udalo sie odczytac zapisanego szkicu.',
+            ]);
+        }
+
+        $pdo->commit();
+
+        $draft = vr_hydrate_summary($pdo, vr_cast_summary_row($saved), $catalog, $dict);
+        json_response(200, [
+            'ok' => true,
+            'review_summary_draft' => $draft,
+            'definition' => $catalog,
+        ]);
+    } catch (Throwable $e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        json_response(500, [
+            'ok' => false,
+            'error' => 'save_review_draft_failed',
+            'message' => 'Nie udalo sie zapisac szkicu podsumowania.',
+        ]);
+    }
+}
+
+if ($action === 'publish_review' && $method === 'POST') {
+    $data = get_input_data();
+    $csrf = (string)($data['csrf_token'] ?? '');
+    if (!csrf_check($csrf)) {
+        json_response(400, [
+            'ok' => false,
+            'error' => 'invalid_csrf',
+            'message' => 'Nieprawidlowy token bezpieczenstwa.',
+        ]);
+    }
+
+    $source = trim((string)($data['source'] ?? ''));
+    $summaryId = (int)($data['summary_id'] ?? 0);
+    if ($source === '' || !validate_source_key($source) || $summaryId <= 0) {
+        json_response(400, [
+            'ok' => false,
+            'error' => 'invalid_input',
+            'message' => 'Niepoprawne dane publikacji.',
+        ]);
+    }
+    ensure_can_edit_source($ctx, $source);
+
+    $userId = (int)($ctx['user']['user_id'] ?? 0);
+    if ($userId <= 0 || empty($ctx['user']['logged_in'])) {
+        json_response(401, [
+            'ok' => false,
+            'error' => 'not_logged_in',
+            'message' => 'Musisz byc zalogowany, aby opublikowac podsumowanie.',
+        ]);
+    }
+
+    $catalog = vr_catalog();
+    $dict = vr_item_dict();
+    $totalItems = vr_total_items_count();
+
+    try {
+        $video = vr_find_video_by_source($pdo, $source);
+        if (!$video) {
+            json_response(404, [
+                'ok' => false,
+                'error' => 'video_not_found',
+                'message' => 'Nie znaleziono filmu.',
+            ]);
+        }
+        $videoId = (int)$video['id'];
+
+        $summaryStmt = $pdo->prepare(
+            'SELECT id, video_id, reviewer_user_id, status, version_no, published_at, overall_note, total_score, max_score, created_at, updated_at, archived_at
+             FROM video_review_summaries
+             WHERE id = ? AND video_id = ? LIMIT 1'
+        );
+        $summaryStmt->execute([$summaryId, $videoId]);
+        $row = $summaryStmt->fetch(PDO::FETCH_ASSOC);
+        if (!$row) {
+            json_response(404, [
+                'ok' => false,
+                'error' => 'summary_not_found',
+                'message' => 'Nie znaleziono szkicu podsumowania.',
+            ]);
+        }
+        if ((int)$row['reviewer_user_id'] !== $userId || (string)$row['status'] !== 'draft') {
+            json_response(403, [
+                'ok' => false,
+                'error' => 'summary_forbidden',
+                'message' => 'Brak uprawnien do publikacji tego szkicu.',
+            ]);
+        }
+
+        $summary = vr_cast_summary_row($row);
+        $answers = vr_load_scores($pdo, $summary, $dict);
+        if (count($answers) !== $totalItems) {
+            json_response(400, [
+                'ok' => false,
+                'error' => 'review_incomplete',
+                'message' => 'Uzupelnij wszystkie pytania przed publikacja.',
+            ]);
+        }
+
+        $totalScore = 0;
+        foreach ($answers as $answer) {
+            $totalScore += (int)$answer['score'];
+        }
+        $maxScore = $totalItems * 3;
+
+        $pdo->beginTransaction();
+        $archiveStmt = $pdo->prepare(
+            'UPDATE video_review_summaries
+             SET status = "archived", archived_at = NOW(), updated_at = NOW()
+             WHERE video_id = ? AND status = "published"'
+        );
+        $archiveStmt->execute([$videoId]);
+
+        $publishStmt = $pdo->prepare(
+            'UPDATE video_review_summaries
+             SET status = "published", published_at = NOW(), archived_at = NULL, total_score = ?, max_score = ?, updated_at = NOW()
+             WHERE id = ? AND status = "draft" LIMIT 1'
+        );
+        $publishStmt->execute([$totalScore, $maxScore, $summaryId]);
+        if ($publishStmt->rowCount() < 1) {
+            $pdo->rollBack();
+            json_response(409, [
+                'ok' => false,
+                'error' => 'publish_conflict',
+                'message' => 'Szkic nie jest juz dostepny do publikacji.',
+            ]);
+        }
+
+        $published = vr_load_latest_published($pdo, $videoId);
+        if (!$published) {
+            $pdo->rollBack();
+            json_response(500, [
+                'ok' => false,
+                'error' => 'publish_reload_failed',
+                'message' => 'Nie udalo sie odczytac opublikowanego podsumowania.',
+            ]);
+        }
+
+        $pdo->commit();
+
+        json_response(200, [
+            'ok' => true,
+            'review_summary_published' => vr_hydrate_summary($pdo, $published, $catalog, $dict),
+            'definition' => $catalog,
+        ]);
+    } catch (Throwable $e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        json_response(500, [
+            'ok' => false,
+            'error' => 'publish_review_failed',
+            'message' => 'Nie udalo sie opublikowac podsumowania.',
+        ]);
+    }
+}
+
 if ($action === 'load' && $method === 'GET') {
     $source = trim((string)($_GET['source'] ?? ''));
     if ($source === '' || !validate_source_key($source)) {
@@ -914,10 +1382,27 @@ if ($action === 'load' && $method === 'GET') {
         }
         unset($comment);
 
+        $catalog = vr_catalog();
+        $dict = vr_item_dict();
+        $publishedReview = null;
+        $draftReview = null;
+        try {
+            $publishedReview = vr_load_latest_published($pdo, (int)$video['id']);
+            $reviewerUserId = (int)($ctx['user']['user_id'] ?? 0);
+            if (can_edit_source($ctx, $source) && $reviewerUserId > 0) {
+                $draftReview = vr_load_draft_for_user($pdo, (int)$video['id'], $reviewerUserId);
+            }
+        } catch (Throwable $reviewErr) {
+            $publishedReview = null;
+            $draftReview = null;
+        }
+
         json_response(200, [
             'ok' => true,
             'video' => $video,
             'comments' => $comments,
+            'review_summary_published' => $publishedReview ? vr_hydrate_summary($pdo, $publishedReview, $catalog, $dict) : null,
+            'review_summary_draft' => $draftReview ? vr_hydrate_summary($pdo, $draftReview, $catalog, $dict) : null,
             'edit' => $editMode,
             'access' => build_access_meta($ctx, $source),
         ]);

@@ -728,7 +728,7 @@ try {
                 <td><?php echo h((string)$video['zaktualizowano']); ?></td>
                 <td>
                   <?php
-                    $previewUrl = '/video.html?source=' . urlencode((string)$video['youtube_id']);
+                    $previewUrl = '/video/play.php?source=' . urlencode((string)$video['youtube_id']);
                     if ((string)($video['provider'] ?? '') === 'gdrive' && trim((string)($video['provider_video_id'] ?? '')) !== '') {
                         $previewUrl .= '&gdrive_id=' . urlencode((string)$video['provider_video_id']);
                     }

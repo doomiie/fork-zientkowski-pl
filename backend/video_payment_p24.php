@@ -18,21 +18,69 @@ function p24_json(int $status, array $payload): void
 }
 
 /**
- * @return array{merchant_id:int,pos_id:int,api_key:string,crc:string,base_url:string,return_url:string,status_url:string}
+ * @return array{
+ *   provider:string,
+ *   enabled:bool,
+ *   sandbox_mode:bool,
+ *   sandbox_auto_capture:bool,
+ *   merchant_id:int,
+ *   pos_id:int,
+ *   api_key:string,
+ *   crc:string,
+ *   base_url:string,
+ *   return_url:string,
+ *   status_url:string
+ * }
  */
-function p24_config(): array
+function p24_config(PDO $pdo): array
 {
-    $sandbox = (string)(getenv('P24_SANDBOX') ?: '1');
-    $baseUrl = ($sandbox === '1')
+    $sandboxEnv = (string)(getenv('P24_SANDBOX') ?: '1');
+    $sandbox = ($sandboxEnv === '1');
+    $enabled = true;
+    $sandboxAutoCapture = true;
+    $provider = 'p24';
+    $merchantId = (int)(getenv('P24_MERCHANT_ID') ?: 0);
+    $posId = (int)(getenv('P24_POS_ID') ?: 0);
+    $apiKey = (string)(getenv('P24_API_KEY') ?: '');
+    $crc = (string)(getenv('P24_CRC') ?: '');
+    $appBaseUrl = trim((string)(getenv('APP_BASE_URL') ?: ''));
+
+    try {
+        $stmt = $pdo->query('SELECT * FROM video_payment_settings WHERE id = 1 LIMIT 1');
+        $row = $stmt ? ($stmt->fetch(PDO::FETCH_ASSOC) ?: null) : null;
+        if (is_array($row)) {
+            $provider = (string)($row['provider'] ?? $provider);
+            $enabled = ((int)($row['enabled'] ?? 1) === 1);
+            $sandbox = ((int)($row['sandbox_mode'] ?? ($sandbox ? 1 : 0)) === 1);
+            $sandboxAutoCapture = ((int)($row['sandbox_auto_capture'] ?? 1) === 1);
+            $merchantId = (int)($row['p24_merchant_id'] ?? $merchantId);
+            $posId = (int)($row['p24_pos_id'] ?? $posId);
+            $apiKey = trim((string)($row['p24_api_key'] ?? $apiKey));
+            $crc = trim((string)($row['p24_crc'] ?? $crc));
+            $dbBase = trim((string)($row['app_base_url'] ?? ''));
+            if ($dbBase !== '') $appBaseUrl = $dbBase;
+        }
+    } catch (Throwable $e) {
+        // keep env fallback
+    }
+
+    $baseUrl = $sandbox
         ? 'https://sandbox.przelewy24.pl/api/v1'
         : 'https://secure.przelewy24.pl/api/v1';
-    $siteBase = rtrim((string)(getenv('APP_BASE_URL') ?: ((isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost'))), '/');
+    if ($appBaseUrl === '') {
+        $appBaseUrl = ((isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost'));
+    }
+    $siteBase = rtrim($appBaseUrl, '/');
 
     return [
-        'merchant_id' => (int)(getenv('P24_MERCHANT_ID') ?: 0),
-        'pos_id' => (int)(getenv('P24_POS_ID') ?: 0),
-        'api_key' => (string)(getenv('P24_API_KEY') ?: ''),
-        'crc' => (string)(getenv('P24_CRC') ?: ''),
+        'provider' => $provider,
+        'enabled' => $enabled,
+        'sandbox_mode' => $sandbox,
+        'sandbox_auto_capture' => $sandboxAutoCapture,
+        'merchant_id' => $merchantId,
+        'pos_id' => $posId,
+        'api_key' => $apiKey,
+        'crc' => $crc,
         'base_url' => $baseUrl,
         'return_url' => $siteBase . '/video/tokens.php?payment=return',
         'status_url' => $siteBase . '/backend/video_payment_p24.php?action=notify',
@@ -125,12 +173,50 @@ function p24_checkout(PDO $pdo): void
         p24_json(200, ['ok' => true, 'already_paid' => true, 'message' => 'Zamówienie jest już opłacone.']);
     }
 
-    $cfg = p24_config();
+    $cfg = p24_config($pdo);
+    if (!$cfg['enabled']) {
+        p24_json(503, [
+            'ok' => false,
+            'error' => 'payments_disabled',
+            'message' => 'Płatności są obecnie wyłączone.',
+        ]);
+    }
+    if ($cfg['provider'] !== 'p24') {
+        p24_json(500, [
+            'ok' => false,
+            'error' => 'provider_not_supported',
+            'message' => 'Skonfigurowany provider płatności nie jest obsługiwany.',
+        ]);
+    }
+
+    if ($cfg['sandbox_mode'] && $cfg['sandbox_auto_capture']) {
+        $mockOrderId = 'SANDBOX-' . time();
+        $payload = json_encode([
+            'sandbox' => true,
+            'auto_capture' => true,
+            'simulated_order_id' => $mockOrderId,
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $updPaid = $pdo->prepare(
+            "UPDATE token_orders
+             SET status='paid', paid_at=NOW(), provider_order_id=?, provider_payload=?, updated_at=NOW()
+             WHERE id=?"
+        );
+        $updPaid->execute([$mockOrderId, $payload, (int)$order['id']]);
+        vt_grant_order_entitlements($pdo, (int)$order['id']);
+
+        p24_json(200, [
+            'ok' => true,
+            'sandbox_auto_captured' => true,
+            'payment_url' => '/video/tokens.php?payment=sandbox_paid&order=' . urlencode((string)$order['order_uuid']),
+            'order_id' => (int)$order['id'],
+        ]);
+    }
+
     if ($cfg['merchant_id'] <= 0 || $cfg['pos_id'] <= 0 || $cfg['api_key'] === '' || $cfg['crc'] === '') {
         p24_json(500, [
             'ok' => false,
             'error' => 'p24_not_configured',
-            'message' => 'Brak konfiguracji Przelewy24 (ENV).',
+            'message' => 'Brak pełnej konfiguracji Przelewy24.',
         ]);
     }
 
@@ -231,7 +317,7 @@ function p24_notify(PDO $pdo): void
         p24_json(404, ['ok' => false, 'error' => 'order_not_found', 'message' => 'Nie znaleziono zamówienia po sessionId.']);
     }
 
-    $cfg = p24_config();
+    $cfg = p24_config($pdo);
     if ($cfg['merchant_id'] <= 0 || $cfg['pos_id'] <= 0 || $cfg['api_key'] === '' || $cfg['crc'] === '') {
         p24_json(500, ['ok' => false, 'error' => 'p24_not_configured', 'message' => 'Brak konfiguracji Przelewy24.']);
     }
@@ -286,4 +372,3 @@ p24_json(405, [
     'error' => 'method_not_allowed',
     'message' => 'Nieobsługiwana akcja lub metoda.',
 ]);
-

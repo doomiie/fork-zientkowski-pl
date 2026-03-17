@@ -4,7 +4,7 @@ declare(strict_types=1);
 require __DIR__ . '/db.php';
 require_login();
 if (!is_admin()) {
-    header('Location: /video.html');
+    header('Location: /video/play.php');
     exit;
 }
 
@@ -79,6 +79,7 @@ if (is_admin()) {
             'links' => [
                 ['label' => 'Typy zetonow', 'href' => 'token_types.php'],
                 ['label' => 'Zamowienia zetonow', 'href' => 'token_orders.php'],
+                ['label' => 'Ustawienia platnosci', 'href' => 'video_payment_settings.php'],
             ],
         ],
     ]);

@@ -7,6 +7,30 @@ declare(strict_types=1);
  */
 
 /**
+ * @return string[]
+ */
+function vt_role_list(string $raw): array
+{
+    $value = strtolower(trim($raw));
+    if ($value === '') return [];
+    $parts = preg_split('/[\s,;|]+/', $value) ?: [];
+    $roles = [];
+    foreach ($parts as $part) {
+        $role = trim((string)$part);
+        if ($role === '') continue;
+        $roles[$role] = true;
+    }
+    return array_keys($roles);
+}
+
+function vt_role_has(string $raw, string $role): bool
+{
+    $needle = strtolower(trim($role));
+    if ($needle === '') return false;
+    return in_array($needle, vt_role_list($raw), true);
+}
+
+/**
  * @return array<string,mixed>
  */
 function vt_get_input_data(): array
@@ -57,11 +81,11 @@ function vt_current_user(PDO $pdo): array
             'role' => null,
         ];
     }
-    $rawRole = strtolower((string)$row['role']);
+    $rawRole = (string)$row['role'];
     $mapped = 'user';
-    if ($rawRole === 'admin') {
+    if (vt_role_has($rawRole, 'admin')) {
         $mapped = 'admin';
-    } elseif ($rawRole === 'editor') {
+    } elseif (vt_role_has($rawRole, 'editor')) {
         $mapped = 'trener';
     }
     return [
@@ -75,22 +99,27 @@ function vt_current_user(PDO $pdo): array
 function vt_is_trainer_user(PDO $pdo, int $userId): bool
 {
     if ($userId <= 0) return false;
-    $stmt = $pdo->prepare("SELECT 1 FROM users WHERE id = ? AND is_active = 1 AND role = 'editor' LIMIT 1");
+    $stmt = $pdo->prepare("SELECT role FROM users WHERE id = ? AND is_active = 1 LIMIT 1");
     $stmt->execute([$userId]);
-    return (bool)$stmt->fetchColumn();
+    $role = (string)($stmt->fetchColumn() ?: '');
+    return vt_role_has($role, 'editor') || vt_role_has($role, 'admin');
 }
 
 function vt_pick_default_trainer(PDO $pdo): ?int
 {
     $stmt = $pdo->query(
-        "SELECT id
+        "SELECT id, role
          FROM users
-         WHERE is_active = 1 AND role = 'editor'
-         ORDER BY (last_login_at IS NULL) ASC, last_login_at DESC, id ASC
-         LIMIT 1"
+         WHERE is_active = 1
+         ORDER BY (last_login_at IS NULL) ASC, last_login_at DESC, id ASC"
     );
-    $id = (int)($stmt->fetchColumn() ?: 0);
-    return $id > 0 ? $id : null;
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    foreach ($rows as $row) {
+        if (!vt_role_has((string)($row['role'] ?? ''), 'editor')) continue;
+        $id = (int)($row['id'] ?? 0);
+        if ($id > 0) return $id;
+    }
+    return null;
 }
 
 /**
@@ -232,4 +261,3 @@ function vt_grant_order_entitlements(PDO $pdo, int $orderId): bool
         return false;
     }
 }
-

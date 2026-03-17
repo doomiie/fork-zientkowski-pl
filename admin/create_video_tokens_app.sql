@@ -93,13 +93,34 @@ ALTER TABLE videos
   ADD CONSTRAINT fk_videos_token_order FOREIGN KEY (created_via_token_order_id) REFERENCES token_orders(id) ON DELETE SET NULL;
 
 INSERT INTO token_types (code, title, description, price_gross_pln, currency, max_upload_links, can_choose_trainer, is_active, sort_order)
-SELECT * FROM (
-  SELECT 'START_1', 'Start: 1 film', '1 link YouTube, trener automatyczny', 99.00, 'PLN', 1, 0, 1, 10
-) AS x
+SELECT 'START_1', 'Start: 1 film', '1 link YouTube, trener automatyczny', 99.00, 'PLN', 1, 0, 1, 10
 WHERE NOT EXISTS (SELECT 1 FROM token_types WHERE code = 'START_1');
 
 INSERT INTO token_types (code, title, description, price_gross_pln, currency, max_upload_links, can_choose_trainer, is_active, sort_order)
-SELECT * FROM (
-  SELECT 'PRO_3', 'Pro: 3 filmy', '3 linki YouTube, mozliwosc wyboru trenera', 249.00, 'PLN', 3, 1, 1, 20
-) AS x
+SELECT 'PRO_3', 'Pro: 3 filmy', '3 linki YouTube, mozliwosc wyboru trenera', 249.00, 'PLN', 3, 1, 1, 20
 WHERE NOT EXISTS (SELECT 1 FROM token_types WHERE code = 'PRO_3');
+
+CREATE TABLE IF NOT EXISTS video_payment_settings (
+  id TINYINT UNSIGNED NOT NULL,
+  provider VARCHAR(32) NOT NULL DEFAULT 'p24',
+  enabled TINYINT(1) NOT NULL DEFAULT 1,
+  sandbox_mode TINYINT(1) NOT NULL DEFAULT 1,
+  sandbox_auto_capture TINYINT(1) NOT NULL DEFAULT 1,
+  app_base_url VARCHAR(255) NULL,
+  p24_merchant_id INT UNSIGNED NULL,
+  p24_pos_id INT UNSIGNED NULL,
+  p24_api_key VARCHAR(255) NULL,
+  p24_crc VARCHAR(255) NULL,
+  note VARCHAR(255) NULL,
+  updated_by_user_id BIGINT UNSIGNED NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_video_pay_settings_user FOREIGN KEY (updated_by_user_id) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO video_payment_settings
+  (id, provider, enabled, sandbox_mode, sandbox_auto_capture, app_base_url, p24_merchant_id, p24_pos_id, p24_api_key, p24_crc, note, updated_by_user_id, created_at, updated_at)
+SELECT
+  1, 'p24', 1, 1, 1, NULL, NULL, NULL, NULL, NULL, 'Domyslna konfiguracja video app', NULL, NOW(), NOW()
+WHERE NOT EXISTS (SELECT 1 FROM video_payment_settings WHERE id = 1);

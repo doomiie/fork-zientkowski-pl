@@ -49,15 +49,39 @@ function access_validate_source_key(string $value): bool
     return (bool)preg_match('/^[A-Za-z0-9_-]{6,20}$/', $value);
 }
 
+/**
+ * @return string[]
+ */
+function access_role_list(string $raw): array
+{
+    $value = strtolower(trim($raw));
+    if ($value === '') return [];
+    $parts = preg_split('/[\s,;|]+/', $value) ?: [];
+    $roles = [];
+    foreach ($parts as $part) {
+        $role = trim((string)$part);
+        if ($role === '') continue;
+        $roles[$role] = true;
+    }
+    return array_keys($roles);
+}
+
+function access_role_has(string $raw, string $role): bool
+{
+    $needle = strtolower(trim($role));
+    if ($needle === '') return false;
+    return in_array($needle, access_role_list($raw), true);
+}
+
 function access_can_create_video_token(PDO $pdo, int $userId, string $role, string $sourceKey): bool
 {
     if ($userId <= 0 || $sourceKey === '' || !access_validate_source_key($sourceKey)) {
         return false;
     }
-    if ($role === 'admin') {
+    if (access_role_has($role, 'admin')) {
         return true;
     }
-    if ($role !== 'editor') {
+    if (!access_role_has($role, 'editor')) {
         return false;
     }
 
@@ -89,7 +113,7 @@ function access_create(PDO $pdo): void
     }
 
     $userId = current_user_id();
-    $role = strtolower(trim((string)current_user_role()));
+    $role = (string)current_user_role();
     $data = access_get_input_data();
     $csrf = (string)($data['csrf_token'] ?? '');
     $targetKey = trim((string)($data['target'] ?? 'video'));
@@ -169,7 +193,7 @@ function access_create(PDO $pdo): void
         ]);
 
         $params = ['vt' => $rawToken];
-        $url = '/video.html?' . http_build_query($params);
+        $url = '/video/play.php?' . http_build_query($params);
 
         access_json_response(201, [
             'ok' => true,

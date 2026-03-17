@@ -24,12 +24,11 @@ require __DIR__ . '/_layout_top.php';
 <section class="vapp-card">
   <h2>Moje filmy</h2>
   <div class="vapp-table-wrap">
-    <table class="vapp-table">
+    <table class="vapp-table vapp-table--my-videos">
       <thead>
         <tr>
-          <th>Źródło</th>
           <th>Tytuł</th>
-          <th>Trener</th>
+          <th>E-mail trenera</th>
           <th>Akcja</th>
         </tr>
       </thead>
@@ -38,4 +37,3 @@ require __DIR__ . '/_layout_top.php';
   </div>
 </section>
 <?php require __DIR__ . '/_layout_bottom.php'; ?>
-

@@ -71,12 +71,22 @@ function vt_list_trainers(PDO $pdo): void
 {
     vt_require_auth($pdo);
     $stmt = $pdo->query(
-        "SELECT id, email
+        "SELECT id, email, role
          FROM users
-         WHERE is_active = 1 AND role = 'editor'
+         WHERE is_active = 1
          ORDER BY (last_login_at IS NULL) ASC, last_login_at DESC, id ASC"
     );
-    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    $raw = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    $rows = [];
+    foreach ($raw as $row) {
+        if (!vt_role_has((string)($row['role'] ?? ''), 'editor')) {
+            continue;
+        }
+        $rows[] = [
+            'id' => (int)$row['id'],
+            'email' => (string)($row['email'] ?? ''),
+        ];
+    }
     vt_json_response(200, ['ok' => true, 'trainers' => $rows]);
 }
 

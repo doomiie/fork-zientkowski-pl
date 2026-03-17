@@ -1,8 +1,7 @@
 <?php
 declare(strict_types=1);
 require __DIR__ . '/_bootstrap.php';
-$role = (string)($videoAppUser['role'] ?? '');
-if ($role !== 'trener' && $role !== 'admin') {
+if (empty($videoAppUser['is_trener']) && empty($videoAppUser['is_admin'])) {
     header('Location: /video/login.php');
     exit;
 }
@@ -27,4 +26,3 @@ require __DIR__ . '/_layout_top.php';
   <p id="vapp-trainer-status" class="vapp-status"></p>
 </section>
 <?php require __DIR__ . '/_layout_bottom.php'; ?>
-

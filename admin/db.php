@@ -83,8 +83,42 @@ function current_user_role(): string {
     return $_SESSION['user_role'] ?? '';
 }
 
+/**
+ * @return string[]
+ */
+function role_list_from_raw(string $raw): array {
+    $value = strtolower(trim($raw));
+    if ($value === '') return [];
+    $parts = preg_split('/[\s,;|]+/', $value) ?: [];
+    $roles = [];
+    foreach ($parts as $part) {
+        $role = trim((string)$part);
+        if ($role === '') continue;
+        $roles[$role] = true;
+    }
+    return array_keys($roles);
+}
+
+function role_raw_has(string $raw, string $role): bool {
+    $needle = strtolower(trim($role));
+    if ($needle === '') return false;
+    $list = role_list_from_raw($raw);
+    return in_array($needle, $list, true);
+}
+
+/**
+ * @return string[]
+ */
+function current_user_roles(): array {
+    return role_list_from_raw(current_user_role());
+}
+
 function is_admin(): bool {
-    return current_user_role() === 'admin';
+    return role_raw_has(current_user_role(), 'admin');
+}
+
+function is_editor(): bool {
+    return role_raw_has(current_user_role(), 'editor');
 }
 
 function require_admin(): void {

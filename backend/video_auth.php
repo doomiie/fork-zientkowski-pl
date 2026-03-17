@@ -18,11 +18,10 @@ function auth_json_response(int $status, array $payload): void
 
 function auth_role_map(string $rawRole): string
 {
-    $role = strtolower(trim($rawRole));
-    if ($role === 'admin') {
+    if (function_exists('role_raw_has') && role_raw_has($rawRole, 'admin')) {
         return 'admin';
     }
-    if ($role === 'editor') {
+    if (function_exists('role_raw_has') && role_raw_has($rawRole, 'editor')) {
         return 'trener';
     }
     return 'user';

@@ -11,7 +11,7 @@ Moduł działa jako odrębna aplikacja URL, ale współdzieli:
 - `/video/login.php` - logowanie
 - `/video/tokens.php` - zakup żetonów i historia zamówień
 - `/video/my-videos.php` - dodawanie linku YouTube przez żeton
-- `/video/trener.php` - lista filmów trenera, przejście do `/video.html`
+- `/video/trener.php` - lista filmów trenera, przejście do `/video/play.php`
 - `/video/admin.php` - wejście do paneli admin
 
 ## Backend API
@@ -28,7 +28,11 @@ Moduł działa jako odrębna aplikacja URL, ale współdzieli:
 - `P24_API_KEY`
 - `P24_CRC`
 
+Preferowana konfiguracja jest w panelu:
+- `/admin/video_payment_settings.php`
+- Tryb `SANDBOX auto-zaliczanie` pozwala testować flow bez realnego checkout.
+
 ## DB migracja
 Uruchom SQL:
 - `admin/create_video_tokens_app.sql`
-
+- `admin/create_video_review_summary.sql`

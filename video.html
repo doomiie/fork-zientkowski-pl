@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="/assets/css/shared.css?v=dev19">
   <noscript><link rel="stylesheet" href="/assets/css/app.min.css?v=brand12"></noscript>
   <noscript><link rel="stylesheet" href="/assets/css/shared.css?v=dev18"></noscript>
-  <link rel="stylesheet" href="/assets/css/video.css?v=20260317-2">
+  <link rel="stylesheet" href="/assets/css/video.css?v=20260317-7">
 </head>
 <body class="bg-light min-h-screen">
   <a class="skip-link" href="#main-content">Przejdź do treści głównej</a>
@@ -70,6 +70,15 @@
           <p id="comments-empty" class="video-screen__empty" hidden>Brak komentarzy dla tego filmu.</p>
           <ul id="comments-list" class="video-comments" aria-label="Lista komentarzy"></ul>
         </aside>
+      </section>
+
+      <section id="video-review-summary-section" class="video-review-summary" aria-labelledby="review-summary-heading" hidden>
+        <div class="video-review-summary__head">
+          <h2 id="review-summary-heading" class="video-screen__subtitle">Podsumowanie trenera</h2>
+          <p id="video-review-summary-meta" class="video-review-summary__meta"></p>
+        </div>
+        <p id="video-review-summary-empty" class="video-screen__empty">Podsumowanie nie zostało jeszcze opublikowane.</p>
+        <div id="video-review-summary-content" class="video-review-summary__content"></div>
       </section>
 
     </div>
@@ -179,6 +188,30 @@
     </section>
   </div>
 
+  <div id="review-modal" class="review-modal" role="dialog" aria-modal="true" aria-labelledby="review-modal-heading" hidden>
+    <div id="review-modal-overlay" class="review-modal__overlay"></div>
+    <section id="review-modal-panel" class="review-modal__panel" role="document">
+      <button id="review-modal-close-btn" type="button" class="review-modal__close" aria-label="Zamknij podsumowanie">×</button>
+      <section class="review-modal__body" aria-labelledby="review-modal-heading">
+        <h2 id="review-modal-heading" class="video-screen__subtitle">Podsumuj nagranie</h2>
+        <form id="review-form" class="review-form" novalidate>
+          <div id="review-form-categories" class="review-form__categories"></div>
+          <label class="review-form__note-field" for="review-overall-note">
+            <span>Notatka ogólna</span>
+            <textarea id="review-overall-note" maxlength="4000" rows="4" placeholder="Dodatkowe wskazówki dla klienta..."></textarea>
+          </label>
+          <div class="video-form__actions review-form__actions">
+            <button id="review-save-draft-btn" type="button" class="video-button video-button--ghost">Zapisz szkic</button>
+            <button id="review-publish-btn" type="button" class="video-button video-button--primary">Zamknij i opublikuj</button>
+            <button id="review-cancel-btn" type="button" class="video-button video-button--ghost">Anuluj</button>
+          </div>
+          <input id="review-summary-id" type="hidden">
+          <p id="review-form-status" class="video-form__status" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+    </section>
+  </div>
+
   <div id="video-auth-modal" class="video-auth-modal" role="dialog" aria-modal="true" aria-labelledby="video-auth-heading" hidden>
     <div id="video-auth-modal-overlay" class="video-auth-modal__overlay"></div>
     <section class="video-auth-modal__panel" role="document">
@@ -225,6 +258,6 @@
     </section>
   </div>
   <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-  <script src="/assets/js/video.js?v=20260316-13" defer></script>
+  <script src="/assets/js/video.js?v=20260317-6" defer></script>
 </body>
 </html>

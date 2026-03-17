@@ -6,8 +6,8 @@
 # 1) Wyłączenie indeksowania katalogów i niepotrzebnych funkcji
 Options -Indexes -ExecCGI -Includes -MultiViews
 
-# Ustal indeks katalogu na index.html
-DirectoryIndex index.html
+# Ustal indeks katalogu (najpierw html, potem php)
+DirectoryIndex index.html index.php
 
 # 2) Domyślne kodowanie
 AddDefaultCharset UTF-8
@@ -20,10 +20,10 @@ AddDefaultCharset UTF-8
   Header always set X-XSS-Protection "1; mode=block"
   Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
   Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
-  <Files "video.html">
+  <FilesMatch "^(video\.html|play\.php|video/play\.php)$">
     Header always unset Permissions-Policy
     Header always set Permissions-Policy "geolocation=(), microphone=(self), camera=()"
-  </Files>
+  </FilesMatch>
   # Jeśli PHP/serwer dodaje X-Powered-By, spróbuj go ukryć
   Header always unset X-Powered-By
 </IfModule>
@@ -59,6 +59,9 @@ AddDefaultCharset UTF-8
   # Allow everything else under /docs to bypass further rewrites
   RewriteCond %{REQUEST_URI} ^/docs/ [NC]
   RewriteRule ^ - [L]
+
+  # Legacy player URL -> new canonical player URL
+  RewriteRule ^video\.html$ /video/play.php [R=302,L]
 
   # Nie przepisywać żądań do statycznych zasobów (serwuj bezpośrednio)
   RewriteCond %{REQUEST_URI} !^/docs/ [NC]

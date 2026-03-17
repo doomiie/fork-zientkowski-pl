@@ -125,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             if ($scope === 'edit') {
                                 $params['edit'] = '1';
                             }
-                            $generatedUrl = $base . '/video.html?' . http_build_query($params);
+                            $generatedUrl = $base . '/video/play.php?' . http_build_query($params);
                         }
                     }
 
@@ -179,6 +179,8 @@ try {
     table { width:100%; border-collapse:collapse; font-size:14px; }
     th, td { text-align:left; border-bottom:1px solid #e5e7eb; padding:8px 6px; vertical-align:top; }
     form.inline { margin:0; }
+    tr.token-row--expired td { color:#9ca3af; background:#f9fafb; }
+    tr.token-row--expired code { color:#9ca3af; background:#f3f4f6; }
   </style>
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline';">
 </head>
@@ -283,8 +285,16 @@ try {
                 $usesLabel = ((int)$row['max_uses'] === 0)
                   ? ((string)$row['used_count'] . '/bez limitu')
                   : ((string)$row['used_count'] . '/' . (string)$row['max_uses']);
+                $expiresAtRaw = trim((string)($row['expires_at'] ?? ''));
+                $isExpired = false;
+                if ($expiresAtRaw !== '') {
+                    $expTs = strtotime($expiresAtRaw);
+                    if ($expTs !== false) {
+                        $isExpired = ($expTs < time());
+                    }
+                }
               ?>
-              <tr>
+              <tr class="<?php echo $isExpired ? 'token-row--expired' : ''; ?>">
                 <td><?php echo h((string)$row['id']); ?></td>
                 <td><code><?php echo h((string)$row['target_key']); ?></code></td>
                 <td><code><?php echo h((string)$row['scope']); ?></code></td>
