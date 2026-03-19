@@ -127,6 +127,13 @@
         wrap.classList.add("is-editing");
         window.requestAnimationFrame(function () {
           select.focus();
+          if (typeof select.showPicker === "function") {
+            try {
+              select.showPicker();
+            } catch (error) {
+              // ignore
+            }
+          }
         });
       }
 
@@ -149,6 +156,10 @@
 
       trigger.addEventListener("click", function () {
         startEditing();
+      });
+
+      trigger.addEventListener("mousedown", function (event) {
+        event.preventDefault();
       });
 
       select.addEventListener("change", function () {

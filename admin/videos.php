@@ -1092,6 +1092,6 @@ try {
       <?php endif; ?>
     </section>
   </main>
-  <script src="/assets/js/admin-videos-bulk.js?v=20260319-3" defer></script>
+  <script src="/assets/js/admin-videos-bulk.js?v=20260319-5" defer></script>
 </body>
 </html>

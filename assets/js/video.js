@@ -172,7 +172,9 @@
     var local = String(parts[0] || "").trim();
     var domain = String(parts[1] || "").trim();
     if (!local || !domain) return "";
-    return local.slice(0, Math.min(3, local.length)) + "***@" + domain;
+    var prefix = local.slice(0, Math.min(2, local.length));
+    var suffix = local.length > 2 ? local.slice(-1) : "";
+    return prefix + "***" + suffix + "@" + domain;
   }
 
   function renderOwnerInfo(video) {
