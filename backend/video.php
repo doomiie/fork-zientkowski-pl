@@ -1013,12 +1013,18 @@ if ($action === 'load_review_form' && $method === 'GET') {
         $catalog = vr_catalog();
         $dict = vr_item_dict();
         $published = vr_load_latest_published($pdo, (int)$video['id']);
+        $historyRows = vr_load_summary_history($pdo, (int)$video['id']);
+        $history = [];
+        foreach ($historyRows as $historyRow) {
+            $history[] = vr_hydrate_summary($pdo, $historyRow, $catalog, $dict);
+        }
         $draft = vr_load_draft_for_user($pdo, (int)$video['id'], $userId);
 
         json_response(200, [
             'ok' => true,
             'definition' => $catalog,
             'review_summary_published' => $published ? vr_hydrate_summary($pdo, $published, $catalog, $dict) : null,
+            'review_summaries_published' => $history,
             'review_summary_draft' => $draft ? vr_hydrate_summary($pdo, $draft, $catalog, $dict) : null,
             'access' => build_access_meta($ctx, $source),
         ]);
@@ -1097,16 +1103,20 @@ if ($action === 'save_review_draft' && $method === 'POST') {
                     'message' => 'Nie znaleziono szkicu podsumowania.',
                 ]);
             }
-            if ((int)$row['reviewer_user_id'] !== $userId || (string)$row['status'] !== 'draft') {
+            if ((string)$row['status'] !== 'draft') {
+                $summaryId = 0;
+            } elseif ((int)$row['reviewer_user_id'] !== $userId) {
                 $pdo->rollBack();
                 json_response(403, [
                     'ok' => false,
                     'error' => 'summary_forbidden',
                     'message' => 'Brak uprawnien do zapisu tego szkicu.',
                 ]);
+            } else {
+                $summaryRow = vr_cast_summary_row($row);
             }
-            $summaryRow = vr_cast_summary_row($row);
-        } else {
+        }
+        if (!$summaryRow) {
             $existingDraft = vr_load_draft_for_user($pdo, $videoId, $userId);
             if ($existingDraft) {
                 $summaryRow = $existingDraft;
@@ -1173,9 +1183,15 @@ if ($action === 'save_review_draft' && $method === 'POST') {
         $pdo->commit();
 
         $draft = vr_hydrate_summary($pdo, vr_cast_summary_row($saved), $catalog, $dict);
+        $historyRows = vr_load_summary_history($pdo, $videoId);
+        $history = [];
+        foreach ($historyRows as $historyRow) {
+            $history[] = vr_hydrate_summary($pdo, $historyRow, $catalog, $dict);
+        }
         json_response(200, [
             'ok' => true,
             'review_summary_draft' => $draft,
+            'review_summaries_published' => $history,
             'definition' => $catalog,
         ]);
     } catch (Throwable $e) {
@@ -1312,9 +1328,15 @@ if ($action === 'publish_review' && $method === 'POST') {
 
         $pdo->commit();
 
+        $historyRows = vr_load_summary_history($pdo, $videoId);
+        $history = [];
+        foreach ($historyRows as $historyRow) {
+            $history[] = vr_hydrate_summary($pdo, $historyRow, $catalog, $dict);
+        }
         json_response(200, [
             'ok' => true,
             'review_summary_published' => vr_hydrate_summary($pdo, $published, $catalog, $dict),
+            'review_summaries_published' => $history,
             'definition' => $catalog,
         ]);
     } catch (Throwable $e) {
@@ -1391,11 +1413,12 @@ if ($action === 'load' && $method === 'GET') {
         $publishedReviews = [];
         $draftReview = null;
         try {
-            $publishedRows = vr_load_published_summaries($pdo, (int)$video['id']);
+            $publishedRows = vr_load_summary_history($pdo, (int)$video['id']);
             foreach ($publishedRows as $publishedRow) {
                 $publishedReviews[] = vr_hydrate_summary($pdo, $publishedRow, $catalog, $dict);
             }
-            $publishedReview = $publishedReviews[0] ?? null;
+            $publishedReview = vr_load_latest_published($pdo, (int)$video['id']);
+            $publishedReview = $publishedReview ? vr_hydrate_summary($pdo, $publishedReview, $catalog, $dict) : null;
             $reviewerUserId = (int)($ctx['user']['user_id'] ?? 0);
             if (can_edit_source($ctx, $source) && $reviewerUserId > 0) {
                 $draftReview = vr_load_draft_for_user($pdo, (int)$video['id'], $reviewerUserId);

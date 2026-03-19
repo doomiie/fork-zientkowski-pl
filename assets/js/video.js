@@ -832,7 +832,8 @@
 
   function formatSummaryTabLabel(summary) {
     var reviewerEmail = String(summary && summary.reviewer_email || "").trim() || "-";
-    return "Podsumowanie trenera " + reviewerEmail;
+    var versionNo = Number(summary && summary.version_no || 0);
+    return "Wersja #" + (versionNo > 0 ? versionNo : "-") + " · " + reviewerEmail;
   }
 
   function buildReviewPrintUrl(summary) {

@@ -209,7 +209,7 @@ if (!$video) {
 
 $catalog = vr_catalog();
 $dict = vr_item_dict();
-$publishedRows = vr_load_published_summaries($pdo, (int)$video['id']);
+$publishedRows = vr_load_summary_history($pdo, (int)$video['id']);
 $selected = null;
 foreach ($publishedRows as $row) {
     if ((int)$row['id'] === $reviewId) {
