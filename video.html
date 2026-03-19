@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="/assets/css/shared.css?v=dev19">
   <noscript><link rel="stylesheet" href="/assets/css/app.min.css?v=brand12"></noscript>
   <noscript><link rel="stylesheet" href="/assets/css/shared.css?v=dev18"></noscript>
-  <link rel="stylesheet" href="/assets/css/video.css?v=20260317-14">
+  <link rel="stylesheet" href="/assets/css/video.css?v=20260319-1">
 </head>
 <body class="bg-light min-h-screen">
   <a class="skip-link" href="#main-content">Przejdź do treści głównej</a>
@@ -67,7 +67,13 @@
         </div>
 
         <aside id="video-comments-section" class="video-screen__comments" aria-labelledby="comments-heading" hidden>
-          <h2 id="comments-heading" class="video-screen__subtitle">Komentarze</h2>
+          <div class="video-comments__head">
+            <h2 id="comments-heading" class="video-screen__subtitle">Komentarze</h2>
+            <div class="video-comments__controls" aria-label="Nawigacja komentarzy">
+              <button id="comments-scroll-top-btn" class="video-comments__scroll-btn video-comments__scroll-btn--top" type="button" aria-label="Przewiń komentarze na górę">↑</button>
+              <button id="comments-scroll-bottom-btn" class="video-comments__scroll-btn video-comments__scroll-btn--bottom" type="button" aria-label="Przewiń komentarze na dół">↓</button>
+            </div>
+          </div>
           <p id="comments-empty" class="video-screen__empty" hidden>Brak komentarzy dla tego filmu.</p>
           <ul id="comments-list" class="video-comments" aria-label="Lista komentarzy"></ul>
         </aside>
@@ -180,7 +186,7 @@
           </div>
 
           <div class="video-form__actions">
-            <button type="submit" id="comment-submit-btn" class="video-button video-button--primary">Zapisz komentarz <span>(Ctrl+Enter)</span></button>
+            <button type="submit" id="comment-submit-btn" class="video-button video-button--primary">Zapisz komentarz (Ctrl+Enter)</button>
             <button type="button" id="cancel-comment-btn" class="video-button video-button--ghost">Anuluj</button>
           </div>
           <label class="video-form__checkbox" for="comment-autoplay">
@@ -264,6 +270,6 @@
     </section>
   </div>
   <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-  <script src="/assets/js/video.js?v=20260319-2" defer></script>
+  <script src="/assets/js/video.js?v=20260319-4" defer></script>
 </body>
 </html>

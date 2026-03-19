@@ -34,6 +34,8 @@
   var videoMenuMobileUserSlotEl = document.getElementById("video-menu-user-mobile");
   var commentsListEl = document.getElementById("comments-list");
   var commentsEmptyEl = document.getElementById("comments-empty");
+  var commentsScrollTopBtn = document.getElementById("comments-scroll-top-btn");
+  var commentsScrollBottomBtn = document.getElementById("comments-scroll-bottom-btn");
   var addCommentBtn = document.getElementById("add-comment-btn");
   var commentModalEl = document.getElementById("comment-modal");
   var commentModalOverlayEl = document.getElementById("comment-modal-overlay");
@@ -2038,11 +2040,40 @@
     });
   }
 
+  function updateCommentsScrollButtons() {
+    if (!commentsListEl) return;
+    var hasOverflow = commentsListEl.scrollHeight > commentsListEl.clientHeight + 8;
+    var scrollTop = commentsListEl.scrollTop || 0;
+    var maxScrollTop = Math.max(0, commentsListEl.scrollHeight - commentsListEl.clientHeight);
+    var nearTop = scrollTop <= 24;
+    var nearBottom = maxScrollTop - scrollTop <= 24;
+
+    if (commentsScrollTopBtn) {
+      commentsScrollTopBtn.disabled = !hasOverflow || nearTop;
+      commentsScrollTopBtn.classList.toggle("is-disabled", commentsScrollTopBtn.disabled);
+    }
+    if (commentsScrollBottomBtn) {
+      commentsScrollBottomBtn.disabled = !hasOverflow || nearBottom;
+      commentsScrollBottomBtn.classList.toggle("is-disabled", commentsScrollBottomBtn.disabled);
+    }
+  }
+
+  function scrollCommentsToTop() {
+    if (!commentsListEl) return;
+    commentsListEl.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function scrollCommentsToBottom() {
+    if (!commentsListEl) return;
+    commentsListEl.scrollTo({ top: commentsListEl.scrollHeight, behavior: "smooth" });
+  }
+
   function renderComments() {
     if (!commentsListEl) return;
     commentsListEl.innerHTML = "";
     if (!comments.length) {
       if (commentsEmptyEl) commentsEmptyEl.hidden = false;
+      updateCommentsScrollButtons();
       return;
     }
     if (commentsEmptyEl) commentsEmptyEl.hidden = true;
@@ -2092,6 +2123,7 @@
       fragment.appendChild(item);
     });
     commentsListEl.appendChild(fragment);
+    window.requestAnimationFrame(updateCommentsScrollButtons);
   }
 
   function seekAndPlay(seconds) {
@@ -2910,6 +2942,9 @@
     if (addModalOverlayEl) addModalOverlayEl.addEventListener("click", closeAddModal);
     if (commentModalCloseBtn) commentModalCloseBtn.addEventListener("click", function () { hideForm(true); });
     if (commentModalOverlayEl) commentModalOverlayEl.addEventListener("click", function () { hideForm(true); });
+    if (commentsListEl) commentsListEl.addEventListener("scroll", updateCommentsScrollButtons, { passive: true });
+    if (commentsScrollTopBtn) commentsScrollTopBtn.addEventListener("click", scrollCommentsToTop);
+    if (commentsScrollBottomBtn) commentsScrollBottomBtn.addEventListener("click", scrollCommentsToBottom);
     if (reviewModalCloseBtn) reviewModalCloseBtn.addEventListener("click", function () { closeReviewModal(true); });
     if (reviewModalOverlayEl) reviewModalOverlayEl.addEventListener("click", function () { closeReviewModal(true); });
     if (reviewSaveDraftBtn) reviewSaveDraftBtn.addEventListener("click", handleReviewSaveDraft);
