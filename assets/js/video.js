@@ -30,6 +30,7 @@
   var navMobileEl = document.getElementById("navMobile");
   var videoMenuDesktopSlotEl = document.getElementById("video-menu-controls-desktop");
   var videoMenuMobileSlotEl = document.getElementById("video-menu-controls-mobile");
+  var videoMenuMobileUserSlotEl = document.getElementById("video-menu-user-mobile");
   var commentsListEl = document.getElementById("comments-list");
   var commentsEmptyEl = document.getElementById("comments-empty");
   var addCommentBtn = document.getElementById("add-comment-btn");
@@ -39,6 +40,8 @@
   var commentModalCloseBtn = document.getElementById("comment-modal-close-btn");
   var reviewSummarySectionEl = document.getElementById("video-review-summary-section");
   var reviewSummaryMetaEl = document.getElementById("video-review-summary-meta");
+  var reviewSummaryTabsEl = document.getElementById("video-review-summary-tabs");
+  var reviewSummaryPrintBtn = document.getElementById("video-review-summary-print-btn");
   var reviewSummaryEmptyEl = document.getElementById("video-review-summary-empty");
   var reviewSummaryContentEl = document.getElementById("video-review-summary-content");
   var reviewModalEl = document.getElementById("review-modal");
@@ -124,6 +127,8 @@
   var reviewDefinitionMap = {};
   var reviewDraftSummary = null;
   var reviewPublishedSummary = null;
+  var reviewPublishedSummaries = [];
+  var activePublishedReviewId = null;
 
   var SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition || null;
   var speechRecognition = null;
@@ -132,6 +137,22 @@
   var transcribeHeardSpeech = false;
   var transcribeSilenceTimer = null;
   var canEditCurrentSource = false;
+
+  function roleTokens(rawRole) {
+    return String(rawRole || "")
+      .toLowerCase()
+      .split(/[\s,;|]+/)
+      .map(function (part) { return String(part || "").trim(); })
+      .filter(function (part) { return !!part; });
+  }
+
+  function normalizeRole(rawRole) {
+    var tokens = roleTokens(rawRole);
+    if (tokens.indexOf("admin") >= 0) return "admin";
+    if (tokens.indexOf("trener") >= 0 || tokens.indexOf("editor") >= 0) return "trener";
+    if (tokens.indexOf("user") >= 0 || tokens.indexOf("viewer") >= 0) return "user";
+    return String(rawRole || "").trim().toLowerCase();
+  }
 
   function setStatus(msg) {
     if (statusEl) statusEl.textContent = msg;
@@ -209,13 +230,16 @@
   }
 
   function isTrainerUiAllowed() {
-    var role = String(authState && authState.role || "").trim();
-    var roleAllowed = !!(
-      authState &&
-      authState.logged_in === true &&
-      (role === "trener" || role === "admin")
-    );
-    return !!(roleAllowed && hasContentAccess && canEditCurrentSource && source);
+    var role = normalizeRole(authState && authState.role || "");
+    var isEditorOrAdmin = role === "trener" || role === "admin";
+    var roleAllowed = !!(authState && authState.logged_in === true && isEditorOrAdmin);
+    return !!(roleAllowed && editMode === true && hasContentAccess && canEditCurrentSource && source);
+  }
+
+  function canShowAddVideoUi() {
+    var role = normalizeRole(authState && authState.role || "");
+    var isEditorOrAdmin = role === "trener" || role === "admin";
+    return !!(authState && authState.logged_in === true && isEditorOrAdmin);
   }
 
   function updateGenerateTokenButtonVisibility() {
@@ -224,6 +248,7 @@
       buttonEl.hidden = !canShow;
     });
     if (!canShow) hideGeneratedAccessToken();
+    reorderMenuControls();
   }
 
   async function generateAccessTokenForCurrentVideo() {
@@ -747,14 +772,88 @@
     return true;
   }
 
-  function renderReviewSummary(summary) {
+  function normalizePublishedReviewSummaries(input) {
+    var list = [];
+    if (Array.isArray(input)) {
+      list = input.slice();
+    } else if (input && typeof input === "object") {
+      list = [input];
+    }
+    return list.filter(function (row) {
+      return row && Array.isArray(row.categories) && row.categories.length;
+    });
+  }
+
+  function getActivePublishedSummary() {
+    if (!reviewPublishedSummaries.length) return null;
+    if (activePublishedReviewId !== null) {
+      var fromState = reviewPublishedSummaries.find(function (row) {
+        return Number(row && row.id || 0) === Number(activePublishedReviewId);
+      });
+      if (fromState) return fromState;
+    }
+    return reviewPublishedSummaries[0] || null;
+  }
+
+  function formatSummaryTabLabel(summary) {
+    var reviewerEmail = String(summary && summary.reviewer_email || "").trim() || "-";
+    return "Podsumowanie trenera " + reviewerEmail;
+  }
+
+  function buildReviewPrintUrl(summary) {
+    if (!summary || !source) return "";
+    var paramsPrint = new URLSearchParams();
+    paramsPrint.set("source", String(source));
+    paramsPrint.set("review_id", String(Number(summary.id || 0)));
+    return "/video/review-print.php?" + paramsPrint.toString();
+  }
+
+  function renderReviewSummaryTabs() {
+    if (!reviewSummaryTabsEl) return;
+    reviewSummaryTabsEl.innerHTML = "";
+    var items = reviewPublishedSummaries;
+    if (!items.length) {
+      reviewSummaryTabsEl.hidden = true;
+      return;
+    }
+    reviewSummaryTabsEl.hidden = false;
+    var currentId = Number(activePublishedReviewId || (items[0] && items[0].id) || 0);
+    var fragment = document.createDocumentFragment();
+    items.forEach(function (summary) {
+      var id = Number(summary && summary.id || 0);
+      var button = document.createElement("button");
+      button.type = "button";
+      button.className = "video-review-summary__tab" + (id === currentId ? " is-active" : "");
+      button.setAttribute("data-review-summary-id", String(id));
+      button.textContent = formatSummaryTabLabel(summary);
+      button.addEventListener("click", function () {
+        activePublishedReviewId = id;
+        renderReviewSummary(reviewPublishedSummaries);
+      });
+      fragment.appendChild(button);
+    });
+    reviewSummaryTabsEl.appendChild(fragment);
+  }
+
+  function renderReviewSummary(input) {
     if (!reviewSummarySectionEl || !reviewSummaryContentEl || !reviewSummaryEmptyEl || !reviewSummaryMetaEl) return;
     reviewSummarySectionEl.hidden = !hasContentAccess;
     reviewSummaryContentEl.innerHTML = "";
 
-    if (!summary || !Array.isArray(summary.categories) || !summary.categories.length) {
+    reviewPublishedSummaries = normalizePublishedReviewSummaries(input);
+    if (reviewPublishedSummaries.length && activePublishedReviewId === null) {
+      activePublishedReviewId = Number(reviewPublishedSummaries[0].id || 0) || null;
+    }
+    var summary = getActivePublishedSummary();
+    renderReviewSummaryTabs();
+
+    if (!summary) {
       reviewSummaryEmptyEl.hidden = false;
       reviewSummaryMetaEl.textContent = "";
+      if (reviewSummaryPrintBtn) {
+        reviewSummaryPrintBtn.hidden = true;
+        reviewSummaryPrintBtn.onclick = null;
+      }
       return;
     }
     reviewSummaryEmptyEl.hidden = true;
@@ -763,7 +862,16 @@
     var max = Number(summary.max_score || 0);
     var percent = max > 0 ? Math.round((total / max) * 100) : 0;
     var publishedAt = String(summary.published_at || "").trim();
-    reviewSummaryMetaEl.textContent = publishedAt ? ("Opublikowano: " + publishedAt) : "";
+    var reviewerEmail = String(summary.reviewer_email || "").trim() || "-";
+    reviewSummaryMetaEl.textContent = "Trener: " + reviewerEmail + (publishedAt ? (" | Opublikowano: " + publishedAt) : "");
+
+    if (reviewSummaryPrintBtn) {
+      var printUrl = buildReviewPrintUrl(summary);
+      reviewSummaryPrintBtn.hidden = !printUrl;
+      reviewSummaryPrintBtn.onclick = printUrl ? function () {
+        window.open(printUrl, "_blank", "noopener,noreferrer");
+      } : null;
+    }
 
     var overall = document.createElement("section");
     overall.className = "video-review-summary__overall";
@@ -835,14 +943,15 @@
       logged_in: !!access.user.logged_in,
       user_id: access.user.user_id || null,
       email: access.user.email || null,
-      role: access.user.role || null
+      role: normalizeRole(access.user.role || "")
     };
   }
 
   function roleLabel(role) {
-    if (role === "admin") return "admin";
-    if (role === "trener") return "trener";
-    if (role === "user") return "user";
+    var normalized = normalizeRole(role || "");
+    if (normalized === "admin") return "admin";
+    if (normalized === "trener") return "trener";
+    if (normalized === "user") return "user";
     return "-";
   }
 
@@ -870,6 +979,8 @@
       comments = [];
       reviewDraftSummary = null;
       reviewPublishedSummary = null;
+      reviewPublishedSummaries = [];
+      activePublishedReviewId = null;
       renderComments();
       renderReviewSummary(null);
       getVideoListSelectElements().forEach(function (selectEl) {
@@ -890,9 +1001,33 @@
   function updateAuthMenuButtons() {
     var desktopBtn = document.getElementById("video-auth-trigger-desktop");
     var mobileBtn = document.getElementById("video-auth-trigger-mobile");
-    var label = authState.logged_in ? "Konto" : "Logowanie";
-    if (desktopBtn) desktopBtn.textContent = label;
-    if (mobileBtn) mobileBtn.textContent = label;
+    var desktopIdentity = document.getElementById("video-auth-identity-desktop");
+    var mobileIdentity = document.getElementById("video-auth-identity-mobile");
+    var desktopLogout = document.getElementById("video-auth-logout-desktop");
+    var mobileLogout = document.getElementById("video-auth-logout-mobile");
+    var logged = !!(authState && authState.logged_in);
+    var normalizedRole = normalizeRole(authState && authState.role || "");
+    var who = String(authState && authState.email || "").trim() || "Zalogowany";
+    var label = normalizedRole ? (who + " (" + normalizedRole + ")") : who;
+    if (desktopBtn) {
+      desktopBtn.textContent = "Logowanie";
+      desktopBtn.hidden = logged;
+    }
+    if (mobileBtn) {
+      mobileBtn.textContent = "Logowanie";
+      mobileBtn.hidden = logged;
+    }
+    if (desktopIdentity) {
+      desktopIdentity.textContent = label;
+      desktopIdentity.hidden = !logged;
+    }
+    if (mobileIdentity) {
+      mobileIdentity.textContent = label;
+      mobileIdentity.hidden = !logged;
+    }
+    if (desktopLogout) desktopLogout.hidden = !logged;
+    if (mobileLogout) mobileLogout.hidden = !logged;
+    reorderMenuControls();
   }
 
   function openAuthModalFromMenu(event) {
@@ -913,7 +1048,7 @@
   function updateVideoAddMenuButtons() {
     var desktopBtn = document.getElementById("video-add-trigger-desktop");
     var mobileBtn = document.getElementById("video-add-trigger-mobile");
-    var canAdd = canCurrentUserAddVideo();
+    var canAdd = canCurrentUserAddVideo() && canShowAddVideoUi();
     if (desktopBtn) desktopBtn.hidden = !canAdd;
     if (mobileBtn) mobileBtn.hidden = !canAdd;
   }
@@ -928,6 +1063,47 @@
     );
   }
 
+  function reorderMenuControls() {
+    var desktopRoot = videoMenuDesktopSlotEl || navDesktopEl;
+    var mobileRoot = videoMenuMobileSlotEl || navMobileEl;
+    var mobileUserRoot = videoMenuMobileUserSlotEl || mobileRoot;
+    if (desktopRoot) {
+      [
+        "video-picker-desktop",
+        "video-add-trigger-desktop",
+        "video-generate-token-trigger-desktop",
+        "video-review-summary-trigger-desktop",
+        "video-auth-trigger-desktop",
+        "video-auth-identity-desktop",
+        "video-auth-logout-desktop"
+      ].forEach(function (id) {
+        var node = document.getElementById(id);
+        if (node && node.parentElement === desktopRoot) desktopRoot.appendChild(node);
+      });
+    }
+    if (mobileRoot) {
+      [
+        "video-picker-mobile",
+        "video-add-trigger-mobile",
+        "video-generate-token-trigger-mobile",
+        "video-review-summary-trigger-mobile",
+        "video-auth-trigger-mobile"
+      ].forEach(function (id) {
+        var node = document.getElementById(id);
+        if (node && node.parentElement === mobileRoot) mobileRoot.appendChild(node);
+      });
+    }
+    if (mobileUserRoot) {
+      [
+        "video-auth-identity-mobile",
+        "video-auth-logout-mobile"
+      ].forEach(function (id) {
+        var node = document.getElementById(id);
+        if (node && node.parentElement === mobileUserRoot) mobileUserRoot.appendChild(node);
+      });
+    }
+  }
+
   function getReviewMenuTriggers() {
     return Array.prototype.slice.call(document.querySelectorAll("[data-review-summary-trigger]"));
   }
@@ -938,6 +1114,7 @@
       buttonEl.hidden = !canShow;
     });
     if (!canShow && isReviewModalOpen()) closeReviewModal(false);
+    reorderMenuControls();
   }
 
   async function fetchReviewFormData() {
@@ -965,9 +1142,11 @@
       reviewDefinitionMap = buildReviewDefinitionMap(reviewDefinition);
       reviewDraftSummary = data.review_summary_draft || null;
       reviewPublishedSummary = data.review_summary_published || null;
+      reviewPublishedSummaries = normalizePublishedReviewSummaries(data.review_summaries_published || reviewPublishedSummary);
+      activePublishedReviewId = reviewPublishedSummaries.length ? Number(reviewPublishedSummaries[0].id || 0) : null;
       renderReviewForm(reviewDefinition);
       setReviewFormValues(reviewDraftSummary || reviewPublishedSummary || null);
-      renderReviewSummary(reviewPublishedSummary);
+      renderReviewSummary(reviewPublishedSummaries);
       openReviewModal(reviewMenuTrigger);
       if (reviewDraftSummary || reviewPublishedSummary) {
         if (!notifyMissingReviewAnswers()) setReviewFormStatus("");
@@ -1042,8 +1221,10 @@
       var data = await response.json().catch(function () { return {}; });
       if (!response.ok || !data.ok) throw new Error(data.message || "Nie udało się opublikować podsumowania.");
       reviewPublishedSummary = data.review_summary_published || reviewPublishedSummary;
+      reviewPublishedSummaries = normalizePublishedReviewSummaries(data.review_summaries_published || reviewPublishedSummary);
+      activePublishedReviewId = reviewPublishedSummaries.length ? Number(reviewPublishedSummaries[0].id || 0) : null;
       reviewDraftSummary = null;
-      renderReviewSummary(reviewPublishedSummary);
+      renderReviewSummary(reviewPublishedSummaries);
       setReviewFormStatus("Podsumowanie opublikowane.");
       closeReviewModal(true);
     } catch (error) {
@@ -1211,6 +1392,7 @@
     if (!navDesktop || !navMobile) return false;
     var desktopRoot = videoMenuDesktopSlotEl || navDesktop;
     var mobileRoot = videoMenuMobileSlotEl || navMobile;
+    var mobileUserRoot = videoMenuMobileUserSlotEl || mobileRoot;
 
     buildDesktopVideoMenuPicker(desktopRoot);
     buildMobileVideoMenuPicker(mobileRoot);
@@ -1256,6 +1438,54 @@
       mobileBtn.textContent = "Logowanie";
       mobileBtn.addEventListener("click", openAuthModalFromMenu);
       mobileRoot.appendChild(mobileBtn);
+    }
+
+    var desktopIdentity = document.getElementById("video-auth-identity-desktop");
+    if (!desktopIdentity) {
+      desktopIdentity = document.createElement("span");
+      desktopIdentity.id = "video-auth-identity-desktop";
+      desktopIdentity.className = "video-menu-identity";
+      desktopIdentity.hidden = true;
+      desktopRoot.appendChild(desktopIdentity);
+    }
+
+    var mobileIdentity = document.getElementById("video-auth-identity-mobile");
+    if (!mobileIdentity) {
+      mobileIdentity = document.createElement("div");
+      mobileIdentity.id = "video-auth-identity-mobile";
+      mobileIdentity.className = "video-mobile-identity";
+      mobileIdentity.hidden = true;
+      mobileUserRoot.appendChild(mobileIdentity);
+    }
+
+    var desktopLogoutBtn = document.getElementById("video-auth-logout-desktop");
+    if (!desktopLogoutBtn) {
+      desktopLogoutBtn = document.createElement("button");
+      desktopLogoutBtn.id = "video-auth-logout-desktop";
+      desktopLogoutBtn.type = "button";
+      desktopLogoutBtn.className = "video-menu-btn video-menu-btn--secondary";
+      desktopLogoutBtn.textContent = "Wyloguj";
+      desktopLogoutBtn.hidden = true;
+      desktopLogoutBtn.addEventListener("click", function () {
+        closeDesktopVideoMenuPanel(false);
+        logoutInline();
+      });
+      desktopRoot.appendChild(desktopLogoutBtn);
+    }
+
+    var mobileLogoutBtn = document.getElementById("video-auth-logout-mobile");
+    if (!mobileLogoutBtn) {
+      mobileLogoutBtn = document.createElement("button");
+      mobileLogoutBtn.id = "video-auth-logout-mobile";
+      mobileLogoutBtn.type = "button";
+      mobileLogoutBtn.className = "video-mobile-nav-btn";
+      mobileLogoutBtn.textContent = "Wyloguj";
+      mobileLogoutBtn.hidden = true;
+      mobileLogoutBtn.addEventListener("click", function () {
+        if (typeof closeMobileMenuFn === "function") closeMobileMenuFn();
+        logoutInline();
+      });
+      mobileUserRoot.appendChild(mobileLogoutBtn);
     }
 
     var desktopAddBtn = document.getElementById("video-add-trigger-desktop");
@@ -1344,6 +1574,7 @@
     updateVideoAddMenuButtons();
     updateGenerateTokenButtonVisibility();
     updateReviewMenuButtons();
+    reorderMenuControls();
     return true;
   }
 
@@ -1554,6 +1785,7 @@
     var data = await response.json().catch(function () { return {}; });
     if (!response.ok || !data.ok) throw new Error(data.message || "Nie udało się pobrać statusu logowania.");
     authState = data.user || { logged_in: false, user_id: null, email: null, role: null };
+    authState.role = normalizeRole(authState.role || "");
     csrfToken = String(data.csrf_token || "");
     if (authCsrfEl) authCsrfEl.value = csrfToken;
     renderAuthUi();
@@ -1582,6 +1814,7 @@
       var data = await response.json().catch(function () { return {}; });
       if (!response.ok || !data.ok) throw new Error(data.message || "Nie udało się zalogować.");
       authState = data.user || authState;
+      authState.role = normalizeRole(authState.role || "");
       csrfToken = String(data.csrf_token || csrfToken);
       if (authCsrfEl) authCsrfEl.value = csrfToken;
       if (authPasswordEl) authPasswordEl.value = "";
@@ -1605,6 +1838,7 @@
       var data = await response.json().catch(function () { return {}; });
       if (!response.ok || !data.ok) throw new Error(data.message || "Nie udało się wylogować.");
       authState = data.user || { logged_in: false, user_id: null, email: null, role: null };
+      authState.role = normalizeRole(authState.role || "");
       csrfToken = String(data.csrf_token || "");
       if (authCsrfEl) authCsrfEl.value = csrfToken;
       window.location.replace("/video/");
@@ -2545,10 +2779,12 @@
       updateGenerateTokenButtonVisibility();
       comments = Array.isArray(data.comments) ? data.comments : [];
       reviewPublishedSummary = data.review_summary_published || null;
+      reviewPublishedSummaries = normalizePublishedReviewSummaries(data.review_summaries_published || reviewPublishedSummary);
+      activePublishedReviewId = reviewPublishedSummaries.length ? Number(reviewPublishedSummaries[0].id || 0) : null;
       reviewDraftSummary = data.review_summary_draft || null;
       sortCommentsByTime();
       renderComments();
-      renderReviewSummary(reviewPublishedSummary);
+      renderReviewSummary(reviewPublishedSummaries);
       setStatus(editMode ? "Ładowanie odtwarzacza..." : "Tryb podglądu.");
       var mergedVideo = Object.assign({}, findVideoMetaBySource(source) || {}, data.video || {});
       loadVideoByProvider(mergedVideo);
@@ -2557,6 +2793,8 @@
       setStatus(error instanceof Error ? error.message : "Błąd ładowania.");
       comments = [];
       reviewPublishedSummary = null;
+      reviewPublishedSummaries = [];
+      activePublishedReviewId = null;
       reviewDraftSummary = null;
       renderComments();
       renderReviewSummary(null);

@@ -177,6 +177,26 @@ function vr_load_latest_published(PDO $pdo, int $videoId): ?array
 }
 
 /**
+ * @return array<int,array{id:int,video_id:int,reviewer_user_id:int,status:string,version_no:int,published_at:?string,overall_note:?string,total_score:int,max_score:int,created_at:string,updated_at:string,archived_at:?string}>
+ */
+function vr_load_published_summaries(PDO $pdo, int $videoId): array
+{
+    $stmt = $pdo->prepare(
+        'SELECT id, video_id, reviewer_user_id, status, version_no, published_at, overall_note, total_score, max_score, created_at, updated_at, archived_at
+         FROM video_review_summaries
+         WHERE video_id = ? AND status = "published"
+         ORDER BY published_at DESC, id DESC'
+    );
+    $stmt->execute([$videoId]);
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    $out = [];
+    foreach ($rows as $row) {
+        $out[] = vr_cast_summary_row($row);
+    }
+    return $out;
+}
+
+/**
  * @return array{id:int,video_id:int,reviewer_user_id:int,status:string,version_no:int,published_at:?string,overall_note:?string,total_score:int,max_score:int,created_at:string,updated_at:string,archived_at:?string}|null
  */
 function vr_load_draft_for_user(PDO $pdo, int $videoId, int $reviewerUserId): ?array
@@ -315,6 +335,7 @@ function vr_build_category_stats(array $catalog, array $answers): array
  */
 function vr_hydrate_summary(PDO $pdo, array $summary, array $catalog, array $dict): array
 {
+    static $reviewerEmailCache = [];
     $answers = vr_load_scores($pdo, $summary, $dict);
     $categories = vr_build_category_stats($catalog, $answers);
     $answered = count($answers);
@@ -329,11 +350,28 @@ function vr_hydrate_summary(PDO $pdo, array $summary, array $catalog, array $dic
     if ($maxScore <= 0) {
         $maxScore = $totalItems * 3;
     }
+    $reviewerUserId = (int)$summary['reviewer_user_id'];
+    if (!array_key_exists($reviewerUserId, $reviewerEmailCache)) {
+        $reviewerEmailCache[$reviewerUserId] = '-';
+        if ($reviewerUserId > 0) {
+            try {
+                $stmt = $pdo->prepare('SELECT email FROM users WHERE id = ? LIMIT 1');
+                $stmt->execute([$reviewerUserId]);
+                $email = trim((string)($stmt->fetchColumn() ?: ''));
+                if ($email !== '') {
+                    $reviewerEmailCache[$reviewerUserId] = $email;
+                }
+            } catch (Throwable $e) {
+                $reviewerEmailCache[$reviewerUserId] = '-';
+            }
+        }
+    }
 
     return [
         'id' => (int)$summary['id'],
         'video_id' => (int)$summary['video_id'],
         'reviewer_user_id' => (int)$summary['reviewer_user_id'],
+        'reviewer_email' => (string)($reviewerEmailCache[$reviewerUserId] ?? '-'),
         'status' => (string)$summary['status'],
         'version_no' => (int)$summary['version_no'],
         'published_at' => $summary['published_at'],

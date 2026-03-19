@@ -108,6 +108,58 @@ body {
   gap: 10px;
 }
 
+.video-menu-controls [hidden],
+.video-mobile-controls [hidden] {
+  display: none !important;
+}
+
+#mobileMenuHome {
+  display: flex;
+  flex-direction: column;
+}
+
+#navMobile {
+  flex: 1 1 auto;
+  overflow: auto;
+}
+
+.video-mobile-user-slot {
+  margin-top: auto;
+  border-top: 1px solid var(--video-border);
+  padding: 10px 12px 12px;
+  display: grid;
+  gap: 10px;
+  background: #fff;
+}
+
+.video-mobile-user-slot [hidden] {
+  display: none !important;
+}
+
+.video-menu-identity {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  border-radius: 999px;
+  background: #f8fafc;
+  color: #0f172a;
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.video-mobile-identity {
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  border-radius: 11px;
+  background: #f8fafc;
+  color: #0f172a;
+  padding: 10px 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
 .video-menu-toggle {
   width: 40px;
   height: 40px;
@@ -1088,10 +1140,55 @@ body {
   gap: 10px;
 }
 
+.video-review-summary__head-side {
+  display: grid;
+  justify-items: end;
+  gap: 6px;
+}
+
 .video-review-summary__meta {
   margin: 0;
   color: #64748b;
   font-size: 0.85rem;
+}
+
+.video-review-summary__print-btn {
+  min-height: 34px;
+  padding: 0 12px;
+  font-size: 0.82rem;
+}
+
+.video-review-summary__tabs {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.video-review-summary__tab {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid #d3dde9;
+  background: #fff;
+  color: #1f2937;
+  border-radius: 999px;
+  min-height: 34px;
+  padding: 0 12px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.video-review-summary__tab:hover {
+  border-color: #aebdd1;
+  background: #f8fafc;
+}
+
+.video-review-summary__tab.is-active {
+  border-color: rgba(4, 3, 39, 0.28);
+  background: #eef2ff;
+  color: #040327;
 }
 
 .video-review-summary__content {
@@ -1348,6 +1445,13 @@ body.video-modal-open {
 
   .video-review-summary__categories {
     grid-template-columns: 1fr;
+  }
+  .video-review-summary__head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .video-review-summary__head-side {
+    justify-items: start;
   }
 }
 

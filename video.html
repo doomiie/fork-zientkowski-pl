@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="/assets/css/shared.css?v=dev19">
   <noscript><link rel="stylesheet" href="/assets/css/app.min.css?v=brand12"></noscript>
   <noscript><link rel="stylesheet" href="/assets/css/shared.css?v=dev18"></noscript>
-  <link rel="stylesheet" href="/assets/css/video.css?v=20260317-9">
+  <link rel="stylesheet" href="/assets/css/video.css?v=20260317-14">
 </head>
 <body class="bg-light min-h-screen">
   <a class="skip-link" href="#main-content">Przejdź do treści głównej</a>
@@ -47,6 +47,7 @@
     <nav id="navMobile" class="p-4 space-y-3">
       <div id="video-menu-controls-mobile" class="video-mobile-controls" aria-live="polite"></div>
     </nav>
+    <div id="video-menu-user-mobile" class="video-mobile-user-slot" aria-live="polite"></div>
   </aside>
 
   <main id="main-content" class="video-main">
@@ -75,8 +76,12 @@
       <section id="video-review-summary-section" class="video-review-summary" aria-labelledby="review-summary-heading" hidden>
         <div class="video-review-summary__head">
           <h2 id="review-summary-heading" class="video-screen__subtitle">Podsumowanie trenera</h2>
-          <p id="video-review-summary-meta" class="video-review-summary__meta"></p>
+          <div class="video-review-summary__head-side">
+            <p id="video-review-summary-meta" class="video-review-summary__meta"></p>
+            <button id="video-review-summary-print-btn" class="video-button video-button--ghost video-review-summary__print-btn" type="button" hidden>Drukuj PDF</button>
+          </div>
         </div>
+        <div id="video-review-summary-tabs" class="video-review-summary__tabs" hidden></div>
         <p id="video-review-summary-empty" class="video-screen__empty">Podsumowanie nie zostało jeszcze opublikowane.</p>
         <div id="video-review-summary-content" class="video-review-summary__content"></div>
       </section>
@@ -258,6 +263,6 @@
     </section>
   </div>
   <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-  <script src="/assets/js/video.js?v=20260317-9" defer></script>
+  <script src="/assets/js/video.js?v=20260317-14" defer></script>
 </body>
 </html>

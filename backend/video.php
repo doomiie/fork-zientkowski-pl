@@ -1385,15 +1385,21 @@ if ($action === 'load' && $method === 'GET') {
         $catalog = vr_catalog();
         $dict = vr_item_dict();
         $publishedReview = null;
+        $publishedReviews = [];
         $draftReview = null;
         try {
-            $publishedReview = vr_load_latest_published($pdo, (int)$video['id']);
+            $publishedRows = vr_load_published_summaries($pdo, (int)$video['id']);
+            foreach ($publishedRows as $publishedRow) {
+                $publishedReviews[] = vr_hydrate_summary($pdo, $publishedRow, $catalog, $dict);
+            }
+            $publishedReview = $publishedReviews[0] ?? null;
             $reviewerUserId = (int)($ctx['user']['user_id'] ?? 0);
             if (can_edit_source($ctx, $source) && $reviewerUserId > 0) {
                 $draftReview = vr_load_draft_for_user($pdo, (int)$video['id'], $reviewerUserId);
             }
         } catch (Throwable $reviewErr) {
             $publishedReview = null;
+            $publishedReviews = [];
             $draftReview = null;
         }
 
@@ -1401,7 +1407,8 @@ if ($action === 'load' && $method === 'GET') {
             'ok' => true,
             'video' => $video,
             'comments' => $comments,
-            'review_summary_published' => $publishedReview ? vr_hydrate_summary($pdo, $publishedReview, $catalog, $dict) : null,
+            'review_summary_published' => $publishedReview,
+            'review_summaries_published' => $publishedReviews,
             'review_summary_draft' => $draftReview ? vr_hydrate_summary($pdo, $draftReview, $catalog, $dict) : null,
             'edit' => $editMode,
             'access' => build_access_meta($ctx, $source),
