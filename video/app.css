@@ -252,6 +252,14 @@ body.vapp-drawer-open .vapp-drawer {
   color: var(--vapp-muted);
 }
 
+.vapp-status--ok {
+  color: #166534;
+}
+
+.vapp-status--error {
+  color: #991b1b;
+}
+
 .vapp-ok {
   color: #065f46;
 }

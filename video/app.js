@@ -46,7 +46,7 @@
   async function api(url, opts) {
     var res = await fetch(url, Object.assign({ headers: { "Accept": "application/json" } }, opts || {}));
     var json = await res.json().catch(function () { return {}; });
-    if (!res.ok || !json.ok) throw new Error(json.message || "BĹ‚Ä…d API.");
+    if (!res.ok || !json.ok) throw new Error(json.message || "Błąd API.");
     return json;
   }
 
@@ -73,7 +73,7 @@
       });
       window.location.replace("/video/");
     } catch (error) {
-      alert(error instanceof Error ? error.message : "Nie udaĹ‚o siÄ™ wylogowaÄ‡.");
+      alert(error instanceof Error ? error.message : "Nie udało się wylogować.");
     }
   }
 
@@ -134,7 +134,7 @@
         setText("vapp-login-status", "Zalogowano.");
         window.location.href = "/video/index.php";
       } catch (error) {
-        setText("vapp-login-status", error instanceof Error ? error.message : "BĹ‚Ä…d logowania.");
+        setText("vapp-login-status", error instanceof Error ? error.message : "Błąd logowania.");
       }
     });
   }
@@ -147,7 +147,7 @@
       setText("vapp-register-status", "Tworzenie konta...");
       var fd = new FormData(form);
       try {
-        await api(AUTH_API + "?action=register", {
+        var result = await api(AUTH_API + "?action=register", {
           method: "POST",
           headers: { "Content-Type": "application/json", "Accept": "application/json" },
           body: JSON.stringify({
@@ -156,10 +156,10 @@
             csrf_token: csrf()
           })
         });
-        setText("vapp-register-status", "Konto utworzone.");
-        window.location.href = "/video/index.php";
+        setText("vapp-register-status", String(result.message || "Konto utworzone. Sprawdz skrzynke e-mail."));
+        form.reset();
       } catch (error) {
-        setText("vapp-register-status", error instanceof Error ? error.message : "BĹ‚Ä…d rejestracji.");
+        setText("vapp-register-status", error instanceof Error ? error.message : "Błąd rejestracji.");
       }
     });
   }
@@ -174,7 +174,7 @@
     var ordersBody = byId("vapp-token-orders");
     if (!typesWrap || !ordersBody) return;
 
-    setText("vapp-tokens-status", "Ĺadowanie...");
+    setText("vapp-tokens-status", "Ładowanie...");
     try {
       var balance = await api(TOKENS_API + "?action=my_balance");
       byId("vapp-token-balance").textContent =
@@ -210,7 +210,7 @@
                 token_type_id: tokenTypeId
               })
             });
-            setText("vapp-tokens-status", "Przekierowanie do pĹ‚atnoĹ›ci...");
+            setText("vapp-tokens-status", "Przekierowanie do płatności...");
             var checkout = await api(PAYMENT_API + "?action=checkout", {
               method: "POST",
               headers: { "Content-Type": "application/json", "Accept": "application/json" },
@@ -220,9 +220,9 @@
               })
             });
             if (checkout.payment_url) window.location.href = checkout.payment_url;
-            else setText("vapp-tokens-status", "Brak URL pĹ‚atnoĹ›ci.");
+            else setText("vapp-tokens-status", "Brak URL płatności.");
           } catch (error) {
-            setText("vapp-tokens-status", error instanceof Error ? error.message : "BĹ‚Ä…d checkout.");
+            setText("vapp-tokens-status", error instanceof Error ? error.message : "Błąd checkout.");
           }
         });
       });
@@ -241,7 +241,7 @@
       });
       setText("vapp-tokens-status", "");
     } catch (error) {
-      setText("vapp-tokens-status", error instanceof Error ? error.message : "BĹ‚Ä…d Ĺ‚adowania.");
+      setText("vapp-tokens-status", error instanceof Error ? error.message : "Błąd ładowania.");
     }
   }
 
@@ -252,7 +252,7 @@
         "Saldo: uploady " + balance.balance.remaining_upload_links +
         " | wybór trenera " + balance.balance.remaining_trainer_choices);
     } catch (error) {
-      setText("vapp-my-balance", error instanceof Error ? error.message : "BĹ‚Ä…d salda.");
+      setText("vapp-my-balance", error instanceof Error ? error.message : "Błąd salda.");
     }
   }
 
@@ -295,7 +295,7 @@
           await loadMyVideosTable();
           await refreshMyBalance();
         } catch (error) {
-          setText("vapp-my-video-status", error instanceof Error ? error.message : "BĹ‚Ä…d dodawania filmu.");
+          setText("vapp-my-video-status", error instanceof Error ? error.message : "Błąd dodawania filmu.");
         }
       });
       form.dataset.boundSubmit = "1";
@@ -381,7 +381,7 @@
         return;
       }
       if (!next) {
-        setText("vapp-my-video-status", "TytuĹ‚ nie moĹĽe byÄ‡ pusty.");
+        setText("vapp-my-video-status", "Tytuł nie może być pusty.");
         restore(initial);
         return;
       }
@@ -390,7 +390,7 @@
         return;
       }
 
-      setText("vapp-my-video-status", "Zapisywanie tytuĹ‚u...");
+      setText("vapp-my-video-status", "Zapisywanie tytułu...");
       td.innerHTML = "<span class='vapp-inline-title-saving'><span class='vapp-inline-title-saving__text'>" + escapeHtml(next) + "</span><span class='vapp-spinner' aria-hidden='true'></span></span>";
 
       api(VIDEO_API + "?action=update_user_video_title", {
@@ -404,9 +404,9 @@
       }).then(function (res) {
         var savedTitle = String(res.title || next);
         restore(savedTitle);
-        setText("vapp-my-video-status", "TytuĹ‚ zapisany.");
+        setText("vapp-my-video-status", "Tytuł zapisany.");
       }).catch(function (error) {
-        setText("vapp-my-video-status", error instanceof Error ? error.message : "Nie udaĹ‚o siÄ™ zapisaÄ‡ tytuĹ‚u.");
+        setText("vapp-my-video-status", error instanceof Error ? error.message : "Nie udało się zapisać tytułu.");
         restore(initial);
       });
     };
@@ -426,7 +426,7 @@
   async function loadTrainerSection() {
     var tbody = byId("vapp-trainer-videos");
     if (!tbody) return;
-    setText("vapp-trainer-status", "Ĺadowanie filmĂłw...");
+    setText("vapp-trainer-status", "Ładowanie filmów...");
     try {
       var list = await api(VIDEO_API + "?action=list_videos&edit=1");
       tbody.innerHTML = "";
@@ -440,7 +440,7 @@
       });
       setText("vapp-trainer-status", "");
     } catch (error) {
-      setText("vapp-trainer-status", error instanceof Error ? error.message : "BĹ‚Ä…d Ĺ‚adowania.");
+      setText("vapp-trainer-status", error instanceof Error ? error.message : "Błąd ładowania.");
     }
   }
 

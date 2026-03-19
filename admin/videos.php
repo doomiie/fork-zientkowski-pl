@@ -5,6 +5,7 @@ require __DIR__ . '/db.php';
 require_login();
 require_admin();
 $videosAdminBuild = 'videos.php build 2026-03-16-gdrive-1';
+require_once __DIR__ . '/../backend/video_mail_lib.php';
 header('X-Admin-Videos-Build: ' . $videosAdminBuild);
 
 function h(string $v): string
@@ -206,6 +207,153 @@ function normalize_video_ids($raw): array
     return $ids;
 }
 
+/**
+ * @param array<string,mixed> $video
+ */
+function resolve_video_workflow_status(array $video): string
+{
+    $commentsCount = (int)($video['comments_count'] ?? 0);
+    $summariesCount = (int)($video['summaries_count'] ?? 0);
+    $orderPaid = (int)($video['token_order_paid'] ?? 0) === 1;
+
+    if ($summariesCount > 0) {
+        return 'zamkniete';
+    }
+    if ($commentsCount > 0) {
+        return 'w trakcie';
+    }
+    if ($orderPaid) {
+        return 'otwarte';
+    }
+    $fallbackStatus = trim((string)($video['status'] ?? ''));
+    if ($fallbackStatus === '' || $fallbackStatus === '-') {
+        return 'uwaga';
+    }
+
+    $normalized = mb_strtolower($fallbackStatus, 'UTF-8');
+    $knownStatuses = ['zamkniete', 'otwarte', 'w trakcie'];
+    if (in_array($normalized, $knownStatuses, true)) {
+        return $normalized;
+    }
+
+    return 'uwaga';
+}
+
+function video_workflow_status_class(string $status): string
+{
+    if ($status === 'zamkniete') {
+        return 'status-badge status-badge--closed';
+    }
+    if ($status === 'otwarte') {
+        return 'status-badge status-badge--open';
+    }
+    if ($status === 'w trakcie') {
+        return 'status-badge status-badge--progress';
+    }
+    return 'status-badge status-badge--warning';
+}
+
+function admin_video_user_option_label(array $user): string
+{
+    $videoScopeLabel = ((string)($user['role'] ?? '') === 'editor')
+        ? (((int)($user['has_global_video_access'] ?? 0) === 1) ? 'all-video' : 'assigned-video')
+        : 'client';
+    return (string)$user['email'] . ' [' . (string)$user['role'] . '; ' . $videoScopeLabel . ']';
+}
+
+function admin_video_option_label(array $video): string
+{
+    return (string)$video['provider'] . ' : ' . (string)$video['youtube_id'] . ' - ' . (string)$video['tytul'];
+}
+
+/**
+ * @return array{assignment_saved:bool,owner_updated:bool,mail_sent:bool}
+ */
+function admin_assign_video_to_user(PDO $pdo, int $videoId, int $userId, int $canEdit, bool $setOwner): array
+{
+    $result = [
+        'assignment_saved' => false,
+        'owner_updated' => false,
+        'mail_sent' => false,
+    ];
+
+    $pdo->beginTransaction();
+    try {
+        $videoStmt = $pdo->prepare(
+            'SELECT v.id, v.youtube_id, v.tytul, v.source_url, v.owner_user_id, v.assigned_trainer_user_id
+             FROM videos v
+             WHERE v.id = ?
+             LIMIT 1
+             FOR UPDATE'
+        );
+        $videoStmt->execute([$videoId]);
+        $video = $videoStmt->fetch(PDO::FETCH_ASSOC);
+        if (!$video) {
+            throw new RuntimeException('Nie znaleziono filmu.');
+        }
+
+        $userStmt = $pdo->prepare(
+            'SELECT id, email
+             FROM users
+             WHERE id = ? AND is_active = 1
+             LIMIT 1'
+        );
+        $userStmt->execute([$userId]);
+        $user = $userStmt->fetch(PDO::FETCH_ASSOC);
+        if (!$user) {
+            throw new RuntimeException('Nie znaleziono aktywnego uzytkownika.');
+        }
+
+        $assignStmt = $pdo->prepare(
+            'INSERT INTO user_video_access (user_id, video_id, can_edit, created_at, updated_at)
+             VALUES (?, ?, ?, NOW(), NOW())
+             ON DUPLICATE KEY UPDATE can_edit = VALUES(can_edit), updated_at = NOW()'
+        );
+        $assignStmt->execute([$userId, $videoId, $canEdit]);
+        $result['assignment_saved'] = true;
+
+        if ($setOwner) {
+            $ownerStmt = $pdo->prepare(
+                'UPDATE videos
+                 SET owner_user_id = ?, zaktualizowano = NOW()
+                 WHERE id = ?'
+            );
+            $ownerStmt->execute([$userId, $videoId]);
+            $result['owner_updated'] = true;
+        }
+
+        $pdo->commit();
+
+        if ($setOwner) {
+            try {
+                $trainerEmail = '';
+                $assignedTrainerId = (int)($video['assigned_trainer_user_id'] ?? 0);
+                if ($assignedTrainerId > 0) {
+                    $trainerStmt = $pdo->prepare('SELECT email FROM users WHERE id = ? LIMIT 1');
+                    $trainerStmt->execute([$assignedTrainerId]);
+                    $trainerEmail = trim((string)($trainerStmt->fetchColumn() ?: ''));
+                }
+
+                video_mail_send_touchpoint($pdo, 'video.upload.confirmation', (string)$user['email'], [
+                    'video_title' => (string)($video['tytul'] ?? ''),
+                    'video_url' => (string)($video['source_url'] ?? ''),
+                    'trainer_name' => $trainerEmail !== '' ? $trainerEmail : 'brak przypisanego trenera',
+                ]);
+                $result['mail_sent'] = true;
+            } catch (Throwable $mailErr) {
+                // ignore mail errors
+            }
+        }
+
+        return $result;
+    } catch (Throwable $e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        throw $e;
+    }
+}
+
 $error = '';
 $success = '';
 $sourceInput = '';
@@ -367,17 +515,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $videoId = (int)($_POST['video_id'] ?? 0);
             $userId = (int)($_POST['user_id'] ?? 0);
             $canEdit = ((string)($_POST['can_edit'] ?? '0') === '1') ? 1 : 0;
+            $setOwner = ((string)($_POST['set_as_owner'] ?? '0') === '1');
             if ($videoId <= 0 || $userId <= 0) {
                 $error = 'Niepoprawne dane przypisania.';
             } else {
                 try {
-                    $stmt = $pdo->prepare(
-                        'INSERT INTO user_video_access (user_id, video_id, can_edit, created_at, updated_at)
-                         VALUES (?, ?, ?, NOW(), NOW())
-                         ON DUPLICATE KEY UPDATE can_edit = VALUES(can_edit), updated_at = NOW()'
-                    );
-                    $stmt->execute([$userId, $videoId, $canEdit]);
-                    $success = 'Przypisanie zapisane.';
+                    $result = admin_assign_video_to_user($pdo, $videoId, $userId, $canEdit, $setOwner);
+                    if ($setOwner) {
+                        $success = $result['mail_sent']
+                            ? 'Przypisanie zapisane. Uzytkownik zostal ustawiony jako wlasciciel i dostal mail startowy workflow.'
+                            : 'Przypisanie zapisane. Uzytkownik zostal ustawiony jako wlasciciel.';
+                    } else {
+                        $success = 'Przypisanie zapisane.';
+                    }
                 } catch (Throwable $e) {
                     $error = 'Blad przypisania: ' . mb_substr($e->getMessage(), 0, 220);
                 }
@@ -447,9 +597,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $error = 'Tytul filmu nie moze byc pusty.';
             } else {
                 try {
-                    $stmt = $pdo->prepare('UPDATE videos SET tytul = ?, zaktualizowano = NOW() WHERE id = ? LIMIT 1');
-                    $stmt->execute([$title, $videoId]);
-                    $success = $stmt->rowCount() > 0 ? 'Tytul filmu zaktualizowany.' : 'Brak zmian tytulu.';
+                    $stmt = $pdo->prepare(
+                        'SELECT v.id, v.youtube_id, v.tytul, v.source_url, owner.email AS owner_email
+                         FROM videos v
+                         LEFT JOIN users owner ON owner.id = v.owner_user_id
+                         WHERE v.id = ? LIMIT 1'
+                    );
+                    $stmt->execute([$videoId]);
+                    $video = $stmt->fetch(PDO::FETCH_ASSOC);
+                    if (!$video) {
+                        $error = 'Nie znaleziono filmu do aktualizacji.';
+                    } else {
+                        $oldTitle = trim((string)($video['tytul'] ?? ''));
+                        $videoYoutubeUrl = trim((string)($video['source_url'] ?? ''));
+                        $videoPlatformUrl = function_exists('video_mail_absolute_url')
+                            ? video_mail_absolute_url('/video/play.php?source=' . rawurlencode((string)($video['youtube_id'] ?? '')))
+                            : '/video/play.php?source=' . rawurlencode((string)($video['youtube_id'] ?? ''));
+                        $upd = $pdo->prepare('UPDATE videos SET tytul = ?, zaktualizowano = NOW() WHERE id = ? LIMIT 1');
+                        $upd->execute([$title, $videoId]);
+                        if ($oldTitle !== $title) {
+                            try {
+                                $ownerEmail = trim((string)($video['owner_email'] ?? ''));
+                                if ($ownerEmail !== '') {
+                                    video_mail_send_touchpoint($pdo, 'video.title.changed', $ownerEmail, [
+                                        'video_title_old' => $oldTitle !== '' ? $oldTitle : (string)($video['youtube_id'] ?? $videoId),
+                                        'video_title_new' => $title,
+                                        'video_youtube_url' => $videoYoutubeUrl !== '' ? $videoYoutubeUrl : $videoPlatformUrl,
+                                        'video_platform_url' => $videoPlatformUrl,
+                                    ]);
+                                }
+                            } catch (Throwable $mailErr) {
+                                // ignore mail errors
+                            }
+                        }
+                        $success = $upd->rowCount() > 0 ? 'Tytul filmu zaktualizowany.' : 'Brak zmian tytulu.';
+                    }
                 } catch (Throwable $e) {
                     $error = 'Blad aktualizacji tytulu: ' . mb_substr($e->getMessage(), 0, 220);
                 }
@@ -464,9 +646,43 @@ $assignments = [];
 
 try {
     $videosStmt = $pdo->query(
-        'SELECT id, youtube_id, provider, provider_video_id, source_url, tytul, status, publiczny, zaktualizowano
-         FROM videos
-         ORDER BY zaktualizowano DESC, id DESC
+        'SELECT
+            v.id,
+            v.youtube_id,
+            v.provider,
+            v.provider_video_id,
+            v.source_url,
+            v.tytul,
+            owner.email AS owner_email,
+            v.status,
+            v.publiczny,
+            v.created_via_token_order_id,
+            v.zaktualizowano,
+            CASE
+                WHEN o.status = "paid" THEN 1
+                ELSE 0
+            END AS token_order_paid,
+            (
+                SELECT COUNT(*)
+                FROM komentarze_video kv
+                WHERE kv.video_id = v.id
+                  AND kv.widoczny = 1
+            ) AS comments_count,
+            (
+                SELECT COUNT(*)
+                FROM video_review_summaries vrs
+                WHERE vrs.video_id = v.id
+                  AND vrs.status IN ("published", "archived")
+            ) AS summaries_count,
+            (
+                SELECT COUNT(DISTINCT vrs2.reviewer_user_id)
+                FROM video_review_summaries vrs2
+                WHERE vrs2.video_id = v.id
+            ) AS trainers_count
+         FROM videos v
+         LEFT JOIN users owner ON owner.id = v.owner_user_id
+         LEFT JOIN token_orders o ON o.id = v.created_via_token_order_id
+         ORDER BY v.zaktualizowano DESC, v.id DESC
          LIMIT 200'
     );
     $videos = $videosStmt ? ($videosStmt->fetchAll(PDO::FETCH_ASSOC) ?: []) : [];
@@ -476,7 +692,7 @@ try {
 
 try {
     $usersStmt = $pdo->query(
-        "SELECT id, email, role, is_active
+        "SELECT id, email, role, has_global_video_access, is_active
          FROM users
          WHERE role IN ('editor', 'viewer')
          ORDER BY email ASC"
@@ -528,6 +744,20 @@ try {
     .bulk-tools { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:10px; }
     .bulk-tools button { background:#fff; color:#111827; border:1px solid #d1d5db; }
     .build { margin:0; font-size:12px; opacity:.8; }
+    .video-title-edit { display:flex; align-items:center; gap:8px; }
+    .video-title-button { display:inline-flex; align-items:center; gap:8px; background:transparent; border:0; padding:0; color:#111827; font:inherit; cursor:pointer; text-align:left; }
+    .video-title-button[disabled] { cursor:default; opacity:.95; }
+    .video-title-icon { font-size:14px; opacity:.7; }
+    .video-title-input { display:none; min-width:260px; max-width:100%; padding:8px 10px; border:1px solid #d1d5db; border-radius:8px; font:inherit; }
+    .video-title-edit.is-editing .video-title-button { display:none; }
+    .video-title-edit.is-editing .video-title-input { display:inline-block; }
+    .searchable-select { display:grid; gap:8px; }
+    .searchable-select-meta { color:#6b7280; font-size:12px; min-height:18px; }
+    .status-badge { display:inline-flex; align-items:center; border-radius:999px; padding:4px 10px; font-size:12px; font-weight:700; letter-spacing:.01em; text-transform:uppercase; }
+    .status-badge--closed { background:#dcfce7; color:#166534; }
+    .status-badge--open { background:#fee2e2; color:#991b1b; }
+    .status-badge--progress { background:#fef3c7; color:#92400e; }
+    .status-badge--warning { background:#fde68a; color:#854d0e; }
   </style>
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline';">
 </head>
@@ -541,6 +771,128 @@ try {
     <div><a class="btn secondary" href="index.php">Powrot do panelu</a></div>
   </header>
   <main>
+    <section class="card">
+      <h2 style="margin-top:0;">Filmy w bazie</h2>
+      <?php if (!$videos): ?>
+        <p>Brak filmow.</p>
+      <?php else: ?>
+        <div class="bulk-tools">
+          <button id="bulk-select-all-btn" type="button">Zaznacz wszystko</button>
+          <button id="bulk-select-none-btn" type="button">Odznacz wszystko</button>
+        </div>
+        <form id="bulk-videos-form" method="post" action="videos.php" class="grid" style="margin-bottom:12px;">
+          <input type="hidden" name="csrf_token" value="<?php echo h(csrf_token()); ?>">
+          <label class="row">
+            <span>Uzytkownik (dla przypisania)</span>
+            <div class="searchable-select" data-searchable-select-wrapper>
+              <input type="search" placeholder="Szukaj po e-mailu, roli, zakresie..." data-searchable-select-input>
+              <select name="bulk_user_id" data-searchable-select data-empty-label="Brak pasujacych uzytkownikow">
+                <option value="">Wybierz uzytkownika...</option>
+                <?php foreach ($users as $user): ?>
+                  <option value="<?php echo h((string)$user['id']); ?>"><?php echo h(admin_video_user_option_label($user)); ?></option>
+                <?php endforeach; ?>
+              </select>
+              <div class="searchable-select-meta" data-searchable-select-meta></div>
+            </div>
+          </label>
+          <label class="row">
+            <span>Tryb przypisania</span>
+            <select name="bulk_can_edit">
+              <option value="0">view</option>
+              <option value="1">edit</option>
+            </select>
+          </label>
+          <div class="row" style="align-self:end;">
+            <button type="submit" name="action" value="bulk_assign_user_to_video">Dodaj zaznaczone do uzytkownika</button>
+          </div>
+          <div class="row" style="align-self:end;">
+            <button type="submit" name="action" value="bulk_delete" style="background:#9f1239;">Usun zaznaczone filmy</button>
+          </div>
+        </form>
+
+        <table>
+          <thead>
+            <tr>
+              <th><input id="bulk-select-master" type="checkbox" aria-label="Zaznacz wszystkie filmy"></th>
+              <th>ID</th>
+              <th>Source key</th>
+              <th>Provider</th>
+              <th>Provider ID</th>
+              <th>Tytul</th>
+              <th>Wlasciciel</th>
+              <th>Status</th>
+              <th>Publiczny</th>
+              <th>Zaktualizowano</th>
+              <th>Podglad</th>
+              <th>Akcja</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php foreach ($videos as $video): ?>
+              <tr>
+                <td>
+                  <input form="bulk-videos-form" class="bulk-video-checkbox" type="checkbox" name="video_ids[]" value="<?php echo h((string)$video['id']); ?>" aria-label="Zaznacz film <?php echo h((string)$video['id']); ?>">
+                </td>
+                <td><?php echo h((string)$video['id']); ?></td>
+                <td><code><?php echo h((string)$video['youtube_id']); ?></code></td>
+                <td><?php echo h((string)$video['provider']); ?></td>
+                <td><code><?php echo h((string)$video['provider_video_id']); ?></code></td>
+                <td>
+                  <form method="post" action="videos.php" class="inline video-title-form" data-video-title-form>
+                    <input type="hidden" name="csrf_token" value="<?php echo h(csrf_token()); ?>">
+                    <input type="hidden" name="action" value="update_video_title">
+                    <input type="hidden" name="video_id" value="<?php echo h((string)$video['id']); ?>">
+                    <div class="video-title-edit" data-video-title-edit>
+                      <button type="button" class="video-title-button" data-video-title-trigger aria-label="Edytuj tytuł filmu">
+                        <span class="video-title-text" data-video-title-text><?php echo h((string)$video['tytul']); ?></span>
+                        <span class="video-title-icon" aria-hidden="true">&#9998;</span>
+                      </button>
+                      <input
+                        type="text"
+                        class="video-title-input"
+                        name="video_title"
+                        maxlength="255"
+                        value="<?php echo h((string)$video['tytul']); ?>"
+                        required
+                        data-video-title-input
+                      >
+                    </div>
+                  </form>
+                </td>
+                <td><?php echo h(trim((string)($video['owner_email'] ?? '')) !== '' ? (string)$video['owner_email'] : '-'); ?></td>
+                <td>
+                  <?php $workflowStatus = resolve_video_workflow_status($video); ?>
+                  <div><span class="<?php echo h(video_workflow_status_class($workflowStatus)); ?>"><?php echo h($workflowStatus); ?></span></div>
+                  <small>Komentarze: <?php echo (int)($video['comments_count'] ?? 0); ?></small><br>
+                  <small>Podsumowania: <?php echo (int)($video['summaries_count'] ?? 0); ?></small><br>
+                  <small>Trenerzy: <?php echo (int)($video['trainers_count'] ?? 0); ?></small>
+                </td>
+                <td><?php echo ((int)$video['publiczny'] === 1) ? 'tak' : 'nie'; ?></td>
+                <td><?php echo h((string)$video['zaktualizowano']); ?></td>
+                <td>
+                  <?php
+                    $previewUrl = '/video/play.php?source=' . urlencode((string)$video['youtube_id']);
+                    if ((string)($video['provider'] ?? '') === 'gdrive' && trim((string)($video['provider_video_id'] ?? '')) !== '') {
+                        $previewUrl .= '&gdrive_id=' . urlencode((string)$video['provider_video_id']);
+                    }
+                  ?>
+                  <a href="<?php echo h($previewUrl); ?>" target="_blank" rel="noopener">otworz</a>
+                </td>
+                <td>
+                  <form method="post" action="videos.php" onsubmit="return confirm('Usunac ten film i wszystkie jego komentarze?');">
+                    <input type="hidden" name="csrf_token" value="<?php echo h(csrf_token()); ?>">
+                    <input type="hidden" name="action" value="delete">
+                    <input type="hidden" name="video_id" value="<?php echo h((string)$video['id']); ?>">
+                    <button type="submit" style="background:#9f1239;">Usun</button>
+                  </form>
+                </td>
+              </tr>
+            <?php endforeach; ?>
+          </tbody>
+        </table>
+      <?php endif; ?>
+    </section>
+
     <section class="card">
       <h1 style="margin-top:0;">Dodaj film (YouTube / Google Drive)</h1>
       <p>Wklej pojedynczy URL/ID albo liste linii, np. "Imie Nazwisko -&gt; URL".</p>
@@ -564,31 +916,42 @@ try {
         <input type="hidden" name="action" value="assign_user_to_video">
         <label class="row">
           <span>Video</span>
-          <select name="video_id" required>
-            <option value="">Wybierz video...</option>
-            <?php foreach ($videos as $video): ?>
-              <option value="<?php echo h((string)$video['id']); ?>">
-                <?php echo h((string)$video['provider'] . ' : ' . (string)$video['youtube_id'] . ' - ' . (string)$video['tytul']); ?>
-              </option>
-            <?php endforeach; ?>
-          </select>
+          <div class="searchable-select" data-searchable-select-wrapper>
+            <input type="search" placeholder="Szukaj po source, providerze, tytule..." data-searchable-select-input>
+            <select name="video_id" required data-searchable-select data-empty-label="Brak pasujacych video">
+              <option value="">Wybierz video...</option>
+              <?php foreach ($videos as $video): ?>
+                <option value="<?php echo h((string)$video['id']); ?>"><?php echo h(admin_video_option_label($video)); ?></option>
+              <?php endforeach; ?>
+            </select>
+            <div class="searchable-select-meta" data-searchable-select-meta></div>
+          </div>
         </label>
         <label class="row">
           <span>Uzytkownik (trener/user)</span>
-          <select name="user_id" required>
-            <option value="">Wybierz uzytkownika...</option>
-            <?php foreach ($users as $user): ?>
-              <option value="<?php echo h((string)$user['id']); ?>">
-                <?php echo h((string)$user['email'] . ' [' . (string)$user['role'] . ']'); ?>
-              </option>
-            <?php endforeach; ?>
-          </select>
+          <div class="searchable-select" data-searchable-select-wrapper>
+            <input type="search" placeholder="Szukaj po e-mailu, roli, zakresie..." data-searchable-select-input>
+            <select name="user_id" required data-searchable-select data-empty-label="Brak pasujacych uzytkownikow">
+              <option value="">Wybierz uzytkownika...</option>
+              <?php foreach ($users as $user): ?>
+                <option value="<?php echo h((string)$user['id']); ?>"><?php echo h(admin_video_user_option_label($user)); ?></option>
+              <?php endforeach; ?>
+            </select>
+            <div class="searchable-select-meta" data-searchable-select-meta></div>
+          </div>
         </label>
         <label class="row">
           <span>Tryb</span>
           <select name="can_edit">
             <option value="0">view</option>
             <option value="1">edit</option>
+          </select>
+        </label>
+        <label class="row">
+          <span>Wlasciciel / workflow</span>
+          <select name="set_as_owner">
+            <option value="0">tylko dostep</option>
+            <option value="1">ustaw jako wlasciciela</option>
           </select>
         </label>
         <div class="row" style="align-self:end;">
@@ -650,106 +1013,7 @@ try {
         </table>
       <?php endif; ?>
     </section>
-
-    <section class="card">
-      <h2 style="margin-top:0;">Filmy w bazie</h2>
-      <?php if (!$videos): ?>
-        <p>Brak filmow.</p>
-      <?php else: ?>
-        <div class="bulk-tools">
-          <button id="bulk-select-all-btn" type="button">Zaznacz wszystko</button>
-          <button id="bulk-select-none-btn" type="button">Odznacz wszystko</button>
-        </div>
-        <form id="bulk-videos-form" method="post" action="videos.php" class="grid" style="margin-bottom:12px;">
-          <input type="hidden" name="csrf_token" value="<?php echo h(csrf_token()); ?>">
-          <label class="row">
-            <span>Uzytkownik (dla przypisania)</span>
-            <select name="bulk_user_id">
-              <option value="">Wybierz uzytkownika...</option>
-              <?php foreach ($users as $user): ?>
-                <option value="<?php echo h((string)$user['id']); ?>">
-                  <?php echo h((string)$user['email'] . ' [' . (string)$user['role'] . ']'); ?>
-                </option>
-              <?php endforeach; ?>
-            </select>
-          </label>
-          <label class="row">
-            <span>Tryb przypisania</span>
-            <select name="bulk_can_edit">
-              <option value="0">view</option>
-              <option value="1">edit</option>
-            </select>
-          </label>
-          <div class="row" style="align-self:end;">
-            <button type="submit" name="action" value="bulk_assign_user_to_video">Dodaj zaznaczone do uzytkownika</button>
-          </div>
-          <div class="row" style="align-self:end;">
-            <button type="submit" name="action" value="bulk_delete" style="background:#9f1239;">Usun zaznaczone filmy</button>
-          </div>
-        </form>
-
-        <table>
-          <thead>
-            <tr>
-              <th><input id="bulk-select-master" type="checkbox" aria-label="Zaznacz wszystkie filmy"></th>
-              <th>ID</th>
-              <th>Source key</th>
-              <th>Provider</th>
-              <th>Provider ID</th>
-              <th>Tytul</th>
-              <th>Status</th>
-              <th>Publiczny</th>
-              <th>Zaktualizowano</th>
-              <th>Podglad</th>
-              <th>Akcja</th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php foreach ($videos as $video): ?>
-              <tr>
-                <td>
-                  <input form="bulk-videos-form" class="bulk-video-checkbox" type="checkbox" name="video_ids[]" value="<?php echo h((string)$video['id']); ?>" aria-label="Zaznacz film <?php echo h((string)$video['id']); ?>">
-                </td>
-                <td><?php echo h((string)$video['id']); ?></td>
-                <td><code><?php echo h((string)$video['youtube_id']); ?></code></td>
-                <td><?php echo h((string)$video['provider']); ?></td>
-                <td><code><?php echo h((string)$video['provider_video_id']); ?></code></td>
-                <td>
-                  <form method="post" action="videos.php" class="inline">
-                    <input type="hidden" name="csrf_token" value="<?php echo h(csrf_token()); ?>">
-                    <input type="hidden" name="action" value="update_video_title">
-                    <input type="hidden" name="video_id" value="<?php echo h((string)$video['id']); ?>">
-                    <input type="text" name="video_title" maxlength="255" value="<?php echo h((string)$video['tytul']); ?>" required>
-                    <button type="submit">Zapisz</button>
-                  </form>
-                </td>
-                <td><?php echo h((string)$video['status']); ?></td>
-                <td><?php echo ((int)$video['publiczny'] === 1) ? 'tak' : 'nie'; ?></td>
-                <td><?php echo h((string)$video['zaktualizowano']); ?></td>
-                <td>
-                  <?php
-                    $previewUrl = '/video/play.php?source=' . urlencode((string)$video['youtube_id']);
-                    if ((string)($video['provider'] ?? '') === 'gdrive' && trim((string)($video['provider_video_id'] ?? '')) !== '') {
-                        $previewUrl .= '&gdrive_id=' . urlencode((string)$video['provider_video_id']);
-                    }
-                  ?>
-                  <a href="<?php echo h($previewUrl); ?>" target="_blank" rel="noopener">otworz</a>
-                </td>
-                <td>
-                  <form method="post" action="videos.php" onsubmit="return confirm('Usunac ten film i wszystkie jego komentarze?');">
-                    <input type="hidden" name="csrf_token" value="<?php echo h(csrf_token()); ?>">
-                    <input type="hidden" name="action" value="delete">
-                    <input type="hidden" name="video_id" value="<?php echo h((string)$video['id']); ?>">
-                    <button type="submit" style="background:#9f1239;">Usun</button>
-                  </form>
-                </td>
-              </tr>
-            <?php endforeach; ?>
-          </tbody>
-        </table>
-      <?php endif; ?>
-    </section>
   </main>
-  <script src="/assets/js/admin-videos-bulk.js?v=20260316-1" defer></script>
+  <script src="/assets/js/admin-videos-bulk.js?v=20260319-3" defer></script>
 </body>
 </html>

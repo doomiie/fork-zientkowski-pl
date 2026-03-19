@@ -86,6 +86,12 @@ function access_can_create_video_token(PDO $pdo, int $userId, string $role, stri
     }
 
     try {
+        $scopeStmt = $pdo->prepare('SELECT has_global_video_access FROM users WHERE id = ? AND is_active = 1 LIMIT 1');
+        $scopeStmt->execute([$userId]);
+        if ((int)($scopeStmt->fetchColumn() ?: 0) === 1) {
+            return true;
+        }
+
         $stmt = $pdo->prepare(
             'SELECT 1
              FROM user_video_access uva

@@ -5,6 +5,7 @@ header('Content-Type: application/json; charset=UTF-8');
 header('X-Content-Type-Options: nosniff');
 
 require_once __DIR__ . '/../admin/db.php';
+require_once __DIR__ . '/video_auth_lib.php';
 
 /**
  * @param array<string,mixed> $payload
@@ -45,7 +46,7 @@ function auth_get_input_data(): array
 }
 
 /**
- * @return array{logged_in:bool,user_id:int|null,email:string|null,role:string|null}
+ * @return array{logged_in:bool,user_id:int|null,email:string|null,role:string|null,has_global_video_access:bool}
  */
 function auth_current_user(PDO $pdo): array
 {
@@ -55,6 +56,7 @@ function auth_current_user(PDO $pdo): array
             'user_id' => null,
             'email' => null,
             'role' => null,
+            'has_global_video_access' => false,
         ];
     }
     $userId = current_user_id();
@@ -64,11 +66,12 @@ function auth_current_user(PDO $pdo): array
             'user_id' => null,
             'email' => null,
             'role' => null,
+            'has_global_video_access' => false,
         ];
     }
 
     try {
-        $stmt = $pdo->prepare('SELECT id, email, role, is_active FROM users WHERE id = ? LIMIT 1');
+        $stmt = $pdo->prepare('SELECT id, email, role, has_global_video_access, is_active FROM users WHERE id = ? LIMIT 1');
         $stmt->execute([$userId]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if (!$row || (int)$row['is_active'] !== 1) {
@@ -77,6 +80,7 @@ function auth_current_user(PDO $pdo): array
                 'user_id' => null,
                 'email' => null,
                 'role' => null,
+                'has_global_video_access' => false,
             ];
         }
         return [
@@ -84,6 +88,7 @@ function auth_current_user(PDO $pdo): array
             'user_id' => (int)$row['id'],
             'email' => (string)$row['email'],
             'role' => auth_role_map((string)$row['role']),
+            'has_global_video_access' => (int)($row['has_global_video_access'] ?? 0) === 1,
         ];
     } catch (Throwable $e) {
         return [
@@ -91,6 +96,7 @@ function auth_current_user(PDO $pdo): array
             'user_id' => null,
             'email' => null,
             'role' => null,
+            'has_global_video_access' => false,
         ];
     }
 }
@@ -115,19 +121,24 @@ function auth_login(PDO $pdo): void
         auth_json_response(400, [
             'ok' => false,
             'error' => 'invalid_csrf',
-            'message' => 'Nieprawidłowy token bezpieczeństwa.',
+            'message' => 'Nieprawidlowy token bezpieczenstwa.',
         ]);
     }
     if ($email === '' || $password === '') {
         auth_json_response(400, [
             'ok' => false,
             'error' => 'invalid_input',
-            'message' => 'Podaj e-mail i hasło.',
+            'message' => 'Podaj e-mail i haslo.',
         ]);
     }
 
     try {
-        $stmt = $pdo->prepare('SELECT id, email, password_hash, is_active, role FROM users WHERE email = ? LIMIT 1');
+        $stmt = $pdo->prepare(
+            'SELECT id, email, password_hash, is_active, role, has_global_video_access, email_verified_at
+             FROM users
+             WHERE email = ?
+             LIMIT 1'
+        );
         $stmt->execute([$email]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $ok = $row && (int)$row['is_active'] === 1 && password_verify($password, (string)$row['password_hash']);
@@ -135,13 +146,21 @@ function auth_login(PDO $pdo): void
             auth_json_response(401, [
                 'ok' => false,
                 'error' => 'invalid_credentials',
-                'message' => 'Nieprawidłowy e-mail lub hasło.',
+                'message' => 'Nieprawidlowy e-mail lub haslo.',
+            ]);
+        }
+        if ((string)($row['email_verified_at'] ?? '') === '') {
+            auth_json_response(403, [
+                'ok' => false,
+                'error' => 'email_not_verified',
+                'message' => 'Potwierdz adres e-mail przed zalogowaniem.',
             ]);
         }
 
         $_SESSION['user_id'] = (int)$row['id'];
         $_SESSION['user_email'] = (string)$row['email'];
         $_SESSION['user_role'] = (string)$row['role'];
+        $_SESSION['user_has_global_video_access'] = (int)($row['has_global_video_access'] ?? 0);
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         $pdo->prepare('UPDATE users SET last_login_at = NOW() WHERE id = ?')->execute([(int)$row['id']]);
 
@@ -154,7 +173,7 @@ function auth_login(PDO $pdo): void
         auth_json_response(500, [
             'ok' => false,
             'error' => 'login_failed',
-            'message' => 'Nie udało się zalogować.',
+            'message' => 'Nie udalo sie zalogowac.',
         ]);
     }
 }
@@ -167,7 +186,7 @@ function auth_logout(PDO $pdo): void
         auth_json_response(400, [
             'ok' => false,
             'error' => 'invalid_csrf',
-            'message' => 'Nieprawidłowy token bezpieczeństwa.',
+            'message' => 'Nieprawidlowy token bezpieczenstwa.',
         ]);
     }
 
@@ -203,7 +222,7 @@ function auth_register(PDO $pdo): void
         auth_json_response(400, [
             'ok' => false,
             'error' => 'invalid_csrf',
-            'message' => 'Nieprawidłowy token bezpieczeństwa.',
+            'message' => 'Nieprawidlowy token bezpieczenstwa.',
         ]);
     }
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -217,47 +236,117 @@ function auth_register(PDO $pdo): void
         auth_json_response(400, [
             'ok' => false,
             'error' => 'weak_password',
-            'message' => 'Hasło musi mieć co najmniej 8 znaków.',
+            'message' => 'Haslo musi miec co najmniej 8 znakow.',
         ]);
     }
 
     try {
-        $exists = $pdo->prepare('SELECT id FROM users WHERE email = ? LIMIT 1');
+        $pdo->beginTransaction();
+
+        $exists = $pdo->prepare('SELECT id, email_verified_at FROM users WHERE email = ? LIMIT 1');
         $exists->execute([$email]);
-        if ($exists->fetch(PDO::FETCH_ASSOC)) {
-            auth_json_response(409, [
-                'ok' => false,
-                'error' => 'email_exists',
-                'message' => 'Konto o tym e-mailu już istnieje.',
+        $existingRow = $exists->fetch(PDO::FETCH_ASSOC);
+        if ($existingRow) {
+            if ((string)($existingRow['email_verified_at'] ?? '') !== '') {
+                $pdo->rollBack();
+                auth_json_response(409, [
+                    'ok' => false,
+                    'error' => 'email_exists',
+                    'message' => 'Konto o tym e-mailu juz istnieje.',
+                ]);
+            }
+
+            $verification = auth_issue_email_verification($pdo, (int)$existingRow['id']);
+            auth_send_verification_email($pdo, $email, $verification['token']);
+            $pdo->commit();
+
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+
+            auth_json_response(200, [
+                'ok' => true,
+                'user' => [
+                    'logged_in' => false,
+                    'user_id' => null,
+                    'email' => null,
+                    'role' => null,
+                ],
+                'csrf_token' => csrf_token(),
+                'message' => 'Konto czeka na potwierdzenie. Wyslalismy nowy link weryfikacyjny.',
             ]);
         }
 
         $hash = password_hash($password, PASSWORD_BCRYPT);
+        if (!is_string($hash) || $hash === '') {
+            throw new RuntimeException('Password hash failed.');
+        }
+
         $insert = $pdo->prepare(
-            "INSERT INTO users (email, password_hash, role, is_active, created_at, updated_at)
-             VALUES (?, ?, 'viewer', 1, NOW(), NOW())"
+            "INSERT INTO users (email, password_hash, role, is_active, email_verified_at, created_at, updated_at)
+             VALUES (?, ?, 'viewer', 1, NULL, NOW(), NOW())"
         );
         $insert->execute([$email, $hash]);
         $newId = (int)$pdo->lastInsertId();
 
-        $_SESSION['user_id'] = $newId;
-        $_SESSION['user_email'] = $email;
-        $_SESSION['user_role'] = 'viewer';
+        $verification = auth_issue_email_verification($pdo, $newId);
+        auth_send_verification_email($pdo, $email, $verification['token']);
+        $pdo->commit();
+
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-        $pdo->prepare('UPDATE users SET last_login_at = NOW() WHERE id = ?')->execute([$newId]);
 
         auth_json_response(201, [
             'ok' => true,
-            'user' => auth_current_user($pdo),
+            'user' => [
+                'logged_in' => false,
+                'user_id' => null,
+                'email' => null,
+                'role' => null,
+            ],
             'csrf_token' => csrf_token(),
+            'message' => 'Konto utworzone. Sprawdz skrzynke e-mail i potwierdz adres przed zalogowaniem.',
         ]);
     } catch (Throwable $e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
         auth_json_response(500, [
             'ok' => false,
             'error' => 'register_failed',
-            'message' => 'Nie udało się utworzyć konta.',
+            'message' => 'Nie udalo sie utworzyc konta i wyslac wiadomosci weryfikacyjnej.',
         ]);
     }
+}
+
+function auth_verify_email(PDO $pdo): void
+{
+    $token = trim((string)($_GET['token'] ?? ''));
+    if ($token === '') {
+        auth_json_response(400, [
+            'ok' => false,
+            'error' => 'missing_token',
+            'message' => 'Brak tokenu weryfikacyjnego.',
+        ]);
+    }
+
+    $result = auth_verify_email_token($pdo, $token);
+    if (!$result['ok']) {
+        $error = (string)($result['error'] ?? 'invalid');
+        $messages = [
+            'invalid' => 'Link weryfikacyjny jest nieprawidlowy.',
+            'used' => 'Ten link weryfikacyjny zostal juz wykorzystany.',
+            'expired' => 'Link weryfikacyjny wygasl.',
+            'failed' => 'Nie udalo sie potwierdzic adresu e-mail.',
+        ];
+        auth_json_response(400, [
+            'ok' => false,
+            'error' => $error,
+            'message' => $messages[$error] ?? $messages['failed'],
+        ]);
+    }
+
+    auth_json_response(200, [
+        'ok' => true,
+        'message' => 'Adres e-mail zostal potwierdzony. Mozesz sie zalogowac.',
+    ]);
 }
 
 $method = strtoupper((string)($_SERVER['REQUEST_METHOD'] ?? 'GET'));
@@ -275,9 +364,12 @@ if ($action === 'logout' && $method === 'POST') {
 if ($action === 'register' && $method === 'POST') {
     auth_register($pdo);
 }
+if ($action === 'verify_email' && $method === 'GET') {
+    auth_verify_email($pdo);
+}
 
 auth_json_response(405, [
     'ok' => false,
     'error' => 'method_not_allowed',
-    'message' => 'Nieobsługiwana akcja lub metoda.',
+    'message' => 'Nieobslugiwana akcja lub metoda.',
 ]);

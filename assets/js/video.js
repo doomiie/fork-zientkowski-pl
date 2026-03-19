@@ -107,6 +107,7 @@
   var lastPlayerState = -1;
   var pauseAutoOpenTimer = null;
   var pauseAutoOpenCandidate = null;
+  var commentPlaybackSyncTimer = null;
   var editingCommentId = null;
   var accessInfo = null;
   var hasContentAccess = false;
@@ -192,7 +193,15 @@
       button.type = "button";
       button.className = "video-picker-item" + (value === source ? " is-active" : "");
       button.setAttribute("data-source", value);
-      button.textContent = resolveVideoTitle(video);
+      var commentsCount = Number(video && video.comments_count || 0);
+      var summariesCount = Number(video && video.summaries_count || 0);
+      button.innerHTML =
+        '<span class="video-picker-item__title">' + escapeHtml(resolveVideoTitle(video)) + '</span>' +
+        '<span class="video-picker-item__meta">' +
+          escapeHtml(formatCountLabel(commentsCount, "komentarz", "komentarze", "komentarzy")) +
+          ' · ' +
+          escapeHtml(formatCountLabel(summariesCount, "podsumowanie", "podsumowania", "podsumowań")) +
+        '</span>';
       button.addEventListener("click", function () {
         if (value === source) {
           closeDesktopVideoMenuPanel(true);
@@ -385,6 +394,17 @@
   function resolveVideoTitle(video) {
     var dbTitle = String(video && video.tytul || "").trim();
     return dbTitle || "Bez tytułu";
+  }
+
+  function formatCountLabel(count, one, few, many) {
+    var n = Math.max(0, Number(count || 0) || 0);
+    var mod10 = n % 10;
+    var mod100 = n % 100;
+    if (n === 1) return n + " " + one;
+    if (mod10 >= 2 && mod10 <= 4 && !(mod100 >= 12 && mod100 <= 14)) {
+      return n + " " + few;
+    }
+    return n + " " + many;
   }
 
   function buildReviewDefinitionMap(definition) {
@@ -927,7 +947,7 @@
       var catTotal = Number(category && category.total_score || 0);
       var catRatedItems = Number(category && category.rated_items || 0);
       var catPercent = catMax > 0 ? Math.round((catTotal / catMax) * 100) : 0;
-      var catSummary = catRatedItems > 0 ? (catAvg.toFixed(2) + '/3 · ' + catTotal + ' / ' + catMax) : 'ND';
+      var catSummary = catRatedItems > 0 ? (catAvg.toFixed(2) + '/' + catRatedItems + ' · ' + catTotal + ' / ' + (catRatedItems * 2)) : 'ND';
       var title = '<h3 class="video-review-summary__card-title">' + escapeHtml(String(category && category.title || "")) + ' · ' + escapeHtml(catSummary) + '</h3>';
       var bar = '<div class="video-review-summary__bar"><div class="video-review-summary__bar-fill" style="width:' + Math.max(0, Math.min(100, catPercent)) + '%"></div></div>';
       card.innerHTML = title + bar;
@@ -2041,6 +2061,60 @@
     });
   }
 
+  function isElementFullyVisibleInContainer(container, element) {
+    if (!container || !element) return false;
+    var containerRect = container.getBoundingClientRect();
+    var elementRect = element.getBoundingClientRect();
+    return elementRect.top >= containerRect.top && elementRect.bottom <= containerRect.bottom;
+  }
+
+  function getUpcomingCommentIdAtTime(seconds) {
+    if (!Array.isArray(comments) || !comments.length) return null;
+    var target = Math.max(0, Number(seconds) || 0);
+    for (var i = 0; i < comments.length; i += 1) {
+      var currentTime = Number(comments[i] && comments[i].czas_sekundy || 0);
+      if (target <= currentTime) {
+        return Number(comments[i] && comments[i].id || 0) || null;
+      }
+    }
+    return Number(comments[comments.length - 1] && comments[comments.length - 1].id || 0) || null;
+  }
+
+  function setActiveCommentById(commentId, options) {
+    if (!commentsListEl) return;
+    var targetId = Number(commentId || 0);
+    var shouldScroll = !options || options.scrollIntoView !== false;
+    var activeItem = null;
+    commentsListEl.querySelectorAll(".video-comments__item").forEach(function (node) {
+      var isActive = Number(node && node.dataset && node.dataset.id || 0) === targetId && targetId > 0;
+      node.classList.toggle("is-active", isActive);
+      if (isActive) activeItem = node;
+    });
+    if (shouldScroll && activeItem && !isElementFullyVisibleInContainer(commentsListEl, activeItem)) {
+      activeItem.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+  }
+
+  function syncActiveCommentToPlayback(options) {
+    if (!commentsListEl || !comments.length || !playerReady || !player) return;
+    var activeCommentId = getUpcomingCommentIdAtTime(readCurrentPlayerTime());
+    setActiveCommentById(activeCommentId, options);
+  }
+
+  function stopCommentPlaybackSync() {
+    if (!commentPlaybackSyncTimer) return;
+    window.clearInterval(commentPlaybackSyncTimer);
+    commentPlaybackSyncTimer = null;
+  }
+
+  function startCommentPlaybackSync() {
+    stopCommentPlaybackSync();
+    syncActiveCommentToPlayback({ scrollIntoView: true });
+    commentPlaybackSyncTimer = window.setInterval(function () {
+      syncActiveCommentToPlayback({ scrollIntoView: true });
+    }, 250);
+  }
+
   function updateCommentsScrollButtons() {
     if (!commentsListEl) return;
     var hasOverflow = commentsListEl.scrollHeight > commentsListEl.clientHeight + 8;
@@ -2125,11 +2199,15 @@
     });
     commentsListEl.appendChild(fragment);
     window.requestAnimationFrame(updateCommentsScrollButtons);
+    window.requestAnimationFrame(function () {
+      setActiveCommentById(getUpcomingCommentIdAtTime(readCurrentPlayerTime()), { scrollIntoView: false });
+    });
   }
 
   function seekAndPlay(seconds) {
     if (!playerReady || !player) return;
     var target = Math.max(0, Number(seconds) || 0);
+    setActiveCommentById(getUpcomingCommentIdAtTime(target), { scrollIntoView: true });
     if (playerType === "youtube" && typeof player.seekTo === "function") {
       player.seekTo(target, true);
       if (typeof player.playVideo === "function") player.playVideo();
@@ -2308,25 +2386,35 @@
     lastPlayerState = Number(nextState);
 
     if (!editMode) {
+      stopCommentPlaybackSync();
       if (addCommentBtn) addCommentBtn.hidden = true;
       clearPauseAutoOpenCandidate();
       return;
     }
     if (lastPlayerState === 1) {
+      startCommentPlaybackSync();
       if (addCommentBtn && !isCommentModalOpen()) addCommentBtn.hidden = true;
       clearPauseAutoOpenCandidate();
       return;
     }
     if (lastPlayerState === 3 || lastPlayerState === 5) {
+      stopCommentPlaybackSync();
+      syncActiveCommentToPlayback({ scrollIntoView: true });
       clearPauseAutoOpenCandidate();
       return;
     }
     if (lastPlayerState === 2) {
+      stopCommentPlaybackSync();
+      syncActiveCommentToPlayback({ scrollIntoView: true });
       if (addCommentBtn) addCommentBtn.hidden = false;
       if (prevState === 1 && !isCommentModalOpen()) scheduleAutoCommentOpenOnPause();
       return;
     }
-    if (lastPlayerState === 0 || lastPlayerState === -1) clearPauseAutoOpenCandidate();
+    if (lastPlayerState === 0 || lastPlayerState === -1) {
+      stopCommentPlaybackSync();
+      syncActiveCommentToPlayback({ scrollIntoView: true });
+      clearPauseAutoOpenCandidate();
+    }
   }
 
   function ensureDrivePlayerBindings() {

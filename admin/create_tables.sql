@@ -6,12 +6,27 @@ CREATE TABLE IF NOT EXISTS users (
   email VARCHAR(255) NOT NULL,
   password_hash VARCHAR(255) NOT NULL,
   role ENUM('admin','editor','viewer') NOT NULL DEFAULT 'admin',
+  has_global_video_access TINYINT(1) NOT NULL DEFAULT 0,
   is_active TINYINT(1) NOT NULL DEFAULT 1,
+  email_verified_at DATETIME NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   last_login_at DATETIME NULL,
   PRIMARY KEY (id),
   UNIQUE KEY uq_users_email (email)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS user_email_verifications (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id BIGINT UNSIGNED NOT NULL,
+  token CHAR(64) NOT NULL,
+  expires_at DATETIME NOT NULL,
+  used_at DATETIME NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_user_email_verifications_token (token),
+  KEY idx_user_email_verifications_user (user_id),
+  CONSTRAINT fk_user_email_verifications_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- (Optional) Password reset tokens
@@ -31,4 +46,3 @@ CREATE TABLE IF NOT EXISTS password_resets (
 -- To create the first admin user, generate a bcrypt hash in PHP and insert it, e.g.:
 -- php -r "echo password_hash('YourStrongPassword', PASSWORD_BCRYPT), PHP_EOL;"
 -- INSERT INTO users (email, password_hash, role, is_active) VALUES ('admin@example.com', '$2y$10$...hash...', 'admin', 1);
-

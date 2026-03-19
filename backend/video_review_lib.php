@@ -63,7 +63,7 @@ function vr_catalog(): array
             'position' => 6,
             'items' => [
                 ['item_key' => 'brand_1', 'label' => 'Czy mowa buduje wyrazny, unikatowy brand mowcy', 'position' => 1],
-                ['item_key' => 'brand_2', 'label' => 'Czy sa elementy, ktore ciagna w dol marke mowcy', 'position' => 2],
+                ['item_key' => 'brand_2', 'label' => 'Czy sa elementy, ktore budują pozytywną marke mowcy', 'position' => 2],
                 ['item_key' => 'brand_3', 'label' => 'Czy mowca jest profesjonalny', 'position' => 3],
             ],
         ],

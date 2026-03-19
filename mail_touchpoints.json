@@ -1,0 +1,540 @@
+{
+  "schema_version": 1,
+  "owner": "Codex + repo",
+  "purpose": "Katalog punktow kontaktu mailowego z klientem. Najpierw aktualizujemy ten plik, potem implementujemy lub zmieniamy wysylke.",
+  "conventions": {
+    "touchpoint_id": "Staly identyfikator procesu wysylki. Nie zmieniac bez potrzeby migracji referencji.",
+    "process_location": "Jednoznaczny opis miejsca w procesie biznesowym, w ktorym klient dostaje maila.",
+    "implementation_locations": "Lista miejsc w kodzie, w ktorych trigger lub sama wysylka sa zaimplementowane.",
+    "template_key": "Klucz do wspolnego szablonu maila. Jeden szablon moze byc uzywany przez wiele touchpointow.",
+    "system_variables": "Zmienne pobierane z systemu. Opisujemy ich zrodlo, wymaganie i znaczenie.",
+    "status": "planned | implemented | deprecated"
+  },
+  "templates": {
+    "video_auth.email_verification": {
+      "subject": "Potwierdz swoj adres e-mail",
+      "html": "<p>Dziekujemy za rejestracje.</p><p>Aby aktywowac konto, kliknij link:</p><p><a href=\"{{verify_url}}\">Potwierdz adres e-mail</a></p><p>Jesli link nie dziala, skopiuj ten adres do przegladarki:</p><p>{{verify_url}}</p><p>Link wygasa za {{verify_ttl_hours}} godziny.</p>",
+      "text": "Dziekujemy za rejestracje.\n\nAby aktywowac konto, otworz link:\n{{verify_url}}\n\nLink wygasa za {{verify_ttl_hours}} godziny.\n",
+      "system_variables": [
+        {
+          "name": "verify_url",
+          "source": "backend/video_auth_lib.php::auth_email_verify_url(token)",
+          "required": true,
+          "description": "Pelny URL do strony potwierdzenia adresu e-mail."
+        },
+        {
+          "name": "verify_ttl_hours",
+          "source": "backend/video_auth_lib.php::AUTH_EMAIL_VERIFY_TTL_HOURS",
+          "required": true,
+          "description": "Liczba godzin waznosci linku weryfikacyjnego."
+        }
+      ]
+    },
+    "admin_auth.password_reset": {
+      "subject": "Reset hasla - panel administracyjny",
+      "html": null,
+      "text": "Aby zresetowac haslo, wejdz w link:\n\n{{reset_url}}\n\nLink wygasnie za {{reset_ttl_human}}.",
+      "system_variables": [
+        {
+          "name": "reset_url",
+          "source": "admin/forgot.php::resetUrl",
+          "required": true,
+          "description": "Pelny URL do formularza ustawienia nowego hasla."
+        },
+        {
+          "name": "reset_ttl_human",
+          "source": "admin/forgot.php",
+          "required": true,
+          "description": "Opis waznosci linku resetujacego, obecnie 1 godzina."
+        }
+      ]
+    },
+    "lead_magnet.ebook_basic": {
+      "subject": "Oto Twoj Ebook",
+      "html": "<p>Dziekujemy za zapis.</p><p><a href=\"{{download_url}}\">Kliknij tutaj, aby pobrac ebook</a>.</p>",
+      "text": "Dziekujemy za zapis.\nPobierz ebook: {{download_url}}",
+      "system_variables": [
+        {
+          "name": "download_url",
+          "source": "backend/mailchimp_subscribe.php::fileUrl",
+          "required": true,
+          "description": "Publiczny URL do pobrania ebooka."
+        }
+      ]
+    },
+    "lead_magnet.dynamic_attachment_or_download": {
+      "subject": "{{mail_subject}}",
+      "html": "Template HTML ladowany z {{mail_template_path}} i uzupelniany placeholderami {{EMAIL}}, {{DOWNLOAD_URL}}, {{DATE}}.",
+      "text": "Wersja tekstowa budowana z HTML po podstawieniu placeholderow.",
+      "system_variables": [
+        {
+          "name": "mail_subject",
+          "source": "backend/sheets_subscribe.php::POST/JSON mail_subject albo fallback domyslny",
+          "required": true,
+          "description": "Temat maila wysylanego po zapisie."
+        },
+        {
+          "name": "mail_template_path",
+          "source": "backend/sheets_subscribe.php::/docs/mail/<template>",
+          "required": true,
+          "description": "Plik HTML szablonu maila."
+        },
+        {
+          "name": "EMAIL",
+          "source": "backend/sheets_subscribe.php::email",
+          "required": true,
+          "description": "Adres e-mail klienta."
+        },
+        {
+          "name": "DOWNLOAD_URL",
+          "source": "backend/sheets_subscribe.php::downloadUrl",
+          "required": false,
+          "description": "URL do pobrania pliku, jesli mail ma link lub zalacznik."
+        },
+        {
+          "name": "DATE",
+          "source": "backend/sheets_subscribe.php::date('Y-m-d H:i')",
+          "required": true,
+          "description": "Data podstawiana do szablonu."
+        }
+      ]
+    },
+    "video.tokens.order_paid": {
+      "subject": "Twoje zetonowe zamowienie zostalo aktywowane",
+      "html": "<p>Dziekujemy za zakup.</p><p>Twoj pakiet zostal aktywowany i mozesz juz korzystac z przyznanych uprawnien.</p><p><strong>Pakiet:</strong> {{token_type_title}}</p><p><strong>Uprawnienia:</strong> {{remaining_upload_links}} linkow / {{remaining_trainer_choices}} wyborow trenera</p><p><strong>Id zamowienia:</strong> {{order_uuid}}</p>",
+      "text": "Dziekujemy za zakup.\n\nTwoj pakiet zostal aktywowany i mozesz juz korzystac z przyznanych uprawnien.\nPakiet: {{token_type_title}}\nUprawnienia: {{remaining_upload_links}} linkow / {{remaining_trainer_choices}} wyborow trenera\nId zamowienia: {{order_uuid}}\n",
+      "system_variables": [
+        {
+          "name": "token_type_title",
+          "source": "backend/video_tokens_lib.php::token_orders / token_types.title",
+          "required": true,
+          "description": "Nazwa zakupionego pakietu zetonow."
+        },
+        {
+          "name": "order_uuid",
+          "source": "backend/video_tokens_lib.php::token_orders.order_uuid",
+          "required": true,
+          "description": "Publiczny identyfikator zamowienia, przydatny do wsparcia i testow."
+        },
+        {
+          "name": "remaining_upload_links",
+          "source": "backend/video_tokens_lib.php::vt_get_user_balance(pozycja po zaksięgowaniu)",
+          "required": true,
+          "description": "Liczba pozostalnych linkow do dodania filmu."
+        },
+        {
+          "name": "remaining_trainer_choices",
+          "source": "backend/video_tokens_lib.php::vt_get_user_balance(pozycja po zaksięgowaniu)",
+          "required": true,
+          "description": "Liczba pozostalnych wyborow trenera."
+        }
+      ]
+    },
+    "video.upload.confirmation": {
+      "subject": "Film zostal dodany do procesu",
+      "html": "<p>Dziekujemy, film zostal przyjety do procesu.</p><p><strong>Tytul:</strong> {{video_title}}</p><p><strong>Link:</strong> <a href=\"{{video_url}}\">{{video_url}}</a></p><p><strong>Trener:</strong> {{trainer_name}}</p>",
+      "text": "Dziekujemy, film zostal przyjety do procesu.\n\nTytul: {{video_title}}\nLink: {{video_url}}\nTrener: {{trainer_name}}\n",
+      "system_variables": [
+        {
+          "name": "video_title",
+          "source": "backend/video.php::add_user_video_link / videos.tytul",
+          "required": true,
+          "description": "Tytul filmu zapisany w systemie."
+        },
+        {
+          "name": "video_url",
+          "source": "backend/video.php::add_user_video_link / videos.source_url",
+          "required": true,
+          "description": "Adres filmu dodanego do procesu."
+        },
+        {
+          "name": "trainer_name",
+          "source": "backend/video.php::assigned_trainer_user_id -> users.email lub nazwa prezentacyjna",
+          "required": false,
+          "description": "Nazwa lub email przypisanego trenera."
+        }
+      ]
+    },
+    "video.summary.published": {
+      "subject": "Podsumowanie Twojego filmu jest gotowe",
+      "html": "<p>Podsumowanie zostalo opublikowane.</p><p><strong>Film:</strong> {{video_title}}</p><p><strong>Wersja:</strong> {{summary_version}}</p><p><strong>Ocena:</strong> {{summary_score}} / {{summary_max_score}}</p><p><a href=\"{{summary_url}}\">Otworz podsumowanie</a></p>",
+      "text": "Podsumowanie zostalo opublikowane.\n\nFilm: {{video_title}}\nWersja: {{summary_version}}\nOcena: {{summary_score}} / {{summary_max_score}}\nOtworz podsumowanie: {{summary_url}}\n",
+      "system_variables": [
+        {
+          "name": "video_title",
+          "source": "backend/video.php::publish_review / videos.tytul",
+          "required": true,
+          "description": "Tytul filmu, dla ktorego opublikowano podsumowanie."
+        },
+        {
+          "name": "summary_version",
+          "source": "backend/video_review_lib.php::video_review_summaries.version_no",
+          "required": true,
+          "description": "Numer wersji opublikowanego podsumowania."
+        },
+        {
+          "name": "summary_score",
+          "source": "backend/video_review_lib.php::video_review_summaries.total_score",
+          "required": true,
+          "description": "Suma punktow dla wersji podsumowania."
+        },
+        {
+          "name": "summary_max_score",
+          "source": "backend/video_review_lib.php::video_review_summaries.max_score",
+          "required": true,
+          "description": "Maksymalna liczba punktow dla wersji podsumowania."
+        },
+        {
+          "name": "summary_url",
+          "source": "backend/video.php::publish_review / frontend video play",
+          "required": true,
+          "description": "Link do podsumowania w panelu klienta."
+        }
+      ]
+    },
+    "video.title.changed": {
+      "subject": "Nazwa filmu zostala zaktualizowana",
+      "html": "<p>Zmieniła sie nazwa Twojego filmu.</p><p><strong>Poprzednio:</strong> {{video_title_old}}</p><p><strong>Teraz:</strong> {{video_title_new}}</p><p><a href=\"{{video_youtube_url}}\">Otworz film na YT</a></p><p><a href=\"{{video_platform_url}}\">Otworz film na platformie</a></p>",
+      "text": "Zmieniła sie nazwa Twojego filmu.\n\nPoprzednio: {{video_title_old}}\nTeraz: {{video_title_new}}\nOtworz film na YT: {{video_youtube_url}}\nOtworz film na platformie: {{video_platform_url}}\n",
+      "system_variables": [
+        {
+          "name": "video_title_old",
+          "source": "backend/video.php::update_user_video_title / admin/videos.php::update_video_title",
+          "required": true,
+          "description": "Stara nazwa filmu przed zmianą."
+        },
+        {
+          "name": "video_title_new",
+          "source": "backend/video.php::update_user_video_title / admin/videos.php::update_video_title",
+          "required": true,
+          "description": "Nowa nazwa filmu po zmianie."
+        },
+        {
+          "name": "video_youtube_url",
+          "source": "videos.source_url",
+          "required": true,
+          "description": "Adres filmu na YouTube."
+        },
+        {
+          "name": "video_platform_url",
+          "source": "backend/video.php / admin/videos.php -> /video/play.php?source=...",
+          "required": true,
+          "description": "Adres filmu na platformie."
+        }
+      ]
+    }
+  },
+  "touchpoints": [
+    {
+      "id": "video_auth.register.initial_verification",
+      "process_location": "Video app -> rejestracja nowego konta -> po zapisaniu niezweryfikowanego uzytkownika",
+      "status": "implemented",
+      "audience": "client",
+      "template_key": "video_auth.email_verification",
+      "implementation_locations": [
+        {
+          "path": "backend/video_auth.php",
+          "entrypoint": "action=register",
+          "symbol": "auth_register"
+        },
+        {
+          "path": "backend/video_auth_lib.php",
+          "symbol": "auth_send_verification_email"
+        }
+      ],
+      "recipient": {
+        "type": "user_email",
+        "source": "request.email"
+      },
+      "system_variables_used": [
+        "verify_url",
+        "verify_ttl_hours"
+      ]
+    },
+    {
+      "id": "video_auth.register.resend_verification_existing_unverified",
+      "process_location": "Video app -> ponowna proba rejestracji na juz istniejace, ale niezweryfikowane konto",
+      "status": "implemented",
+      "audience": "client",
+      "template_key": "video_auth.email_verification",
+      "implementation_locations": [
+        {
+          "path": "backend/video_auth.php",
+          "entrypoint": "action=register",
+          "symbol": "auth_register"
+        },
+        {
+          "path": "backend/video_auth_lib.php",
+          "symbol": "auth_send_verification_email"
+        }
+      ],
+      "recipient": {
+        "type": "existing_user_email",
+        "source": "users.email"
+      },
+      "system_variables_used": [
+        "verify_url",
+        "verify_ttl_hours"
+      ]
+    },
+    {
+      "id": "admin.users.resend_verification",
+      "process_location": "Admin -> Uzytkownicy -> Edytuj konto -> Wyslij ponownie mail weryfikacyjny",
+      "status": "implemented",
+      "audience": "client",
+      "template_key": "video_auth.email_verification",
+      "implementation_locations": [
+        {
+          "path": "admin/users_edit.php",
+          "entrypoint": "action=resend_verification"
+        },
+        {
+          "path": "backend/video_auth_lib.php",
+          "symbol": "auth_send_verification_email"
+        }
+      ],
+      "recipient": {
+        "type": "selected_user_email",
+        "source": "users.email"
+      },
+      "system_variables_used": [
+        "verify_url",
+        "verify_ttl_hours"
+      ]
+    },
+    {
+      "id": "admin.auth.password_reset_request",
+      "process_location": "Panel admin -> formularz przypomnienia hasla -> po zlozeniu prosby o reset",
+      "status": "implemented",
+      "audience": "client",
+      "template_key": "admin_auth.password_reset",
+      "implementation_locations": [
+        {
+          "path": "admin/forgot.php",
+          "entrypoint": "POST forgot password"
+        }
+      ],
+      "recipient": {
+        "type": "user_email",
+        "source": "request.email"
+      },
+      "system_variables_used": [
+        "reset_url",
+        "reset_ttl_human"
+      ],
+      "notes": [
+        "Obecnie wysylka korzysta z natywnego @mail(), nie z GmailOAuthMailer.",
+        "Komunikat dla UI jest celowo niejednoznaczny, aby nie ujawniac istnienia konta."
+      ]
+    },
+    {
+      "id": "marketing.mailchimp.ebook_delivery",
+      "process_location": "Landing page / zapis Mailchimp -> po poprawnym zapisie adresu e-mail i nadaniu taga",
+      "status": "implemented",
+      "audience": "client",
+      "template_key": "lead_magnet.ebook_basic",
+      "implementation_locations": [
+        {
+          "path": "backend/mailchimp_subscribe.php",
+          "entrypoint": "POST subscribe"
+        }
+      ],
+      "recipient": {
+        "type": "lead_email",
+        "source": "request.email"
+      },
+      "system_variables_used": [
+        "download_url"
+      ]
+    },
+    {
+      "id": "marketing.sheets.dynamic_followup",
+      "process_location": "Landing page / zapis do Google Sheets -> po poprawnym dopisaniu rekordu do arkusza",
+      "status": "implemented",
+      "audience": "client",
+      "template_key": "lead_magnet.dynamic_attachment_or_download",
+      "implementation_locations": [
+        {
+          "path": "backend/sheets_subscribe.php",
+          "entrypoint": "POST subscribe"
+        },
+        {
+          "path": "lp/*.json",
+          "entrypoint": "mail.subject / mail.template / mail.attachment"
+        }
+      ],
+      "recipient": {
+        "type": "lead_email",
+        "source": "request.email"
+      },
+      "system_variables_used": [
+        "mail_subject",
+        "mail_template_path",
+        "EMAIL",
+        "DOWNLOAD_URL",
+        "DATE"
+      ],
+      "notes": [
+        "Szablon i temat moga byc przekazane bezposrednio w POST/JSON albo pobrane z konfiguracji landing page.",
+        "Mail moze zawierac zalacznik lub sam link do pobrania."
+      ]
+    },
+    {
+      "id": "video.tokens.order_paid",
+      "process_location": "Video app -> zamowienie zetonow zostaje oplacone i zaksięgowane",
+      "status": "implemented",
+      "audience": "client",
+      "template_key": "video.tokens.order_paid",
+      "implementation_locations": [
+        {
+          "path": "backend/video_payment_p24.php",
+          "entrypoint": "payment callback / capture success"
+        },
+        {
+          "path": "backend/video_tokens_lib.php",
+          "entrypoint": "vt_grant_order_entitlements",
+          "symbol": "video_mail_send_touchpoint(video.tokens.order_paid)"
+        },
+        {
+          "path": "backend/video_mail_lib.php",
+          "symbol": "video_mail_send_touchpoint"
+        },
+        {
+          "path": "admin/mail.php",
+          "entrypoint": "tab=video / test wysylki punktu"
+        }
+      ],
+      "recipient": {
+        "type": "buyer_email",
+        "source": "token_orders.user_id -> users.email"
+      },
+      "system_variables_used": [
+        "token_type_title",
+        "order_uuid",
+        "remaining_upload_links",
+        "remaining_trainer_choices"
+      ],
+      "notes": [
+        "Trigger powinien odpalac sie tylko po faktycznym zaksięgowaniu uprawnien, nie przy samym utworzeniu zamowienia.",
+        "Mail ma potwierdzac zakup i pokazac stan salda po aktywacji pakietu."
+      ]
+    },
+    {
+      "id": "video.upload.confirmation",
+      "process_location": "Video app -> klient dodaje film do procesu",
+      "status": "implemented",
+      "audience": "client",
+      "template_key": "video.upload.confirmation",
+      "implementation_locations": [
+        {
+          "path": "backend/video.php",
+          "entrypoint": "action=add_user_video_link",
+          "symbol": "video_mail_send_touchpoint(video.upload.confirmation)"
+        },
+        {
+          "path": "backend/video_mail_lib.php",
+          "symbol": "video_mail_send_touchpoint"
+        },
+        {
+          "path": "admin/mail.php",
+          "entrypoint": "tab=video / test wysylki punktu"
+        }
+      ],
+      "recipient": {
+        "type": "owner_email",
+        "source": "videos.owner_user_id -> users.email"
+      },
+      "system_variables_used": [
+        "video_title",
+        "video_url",
+        "trainer_name"
+      ],
+      "notes": [
+        "Mail powinien isc po udanym zapisaniu filmu i przypisaniu trenera.",
+        "Jesli trener nie jest jeszcze przypisany, pole trainer_name moze byc puste lub pokazac opis neutralny."
+      ]
+    },
+    {
+      "id": "video.summary.published",
+      "process_location": "Video app -> trener publikuje podsumowanie filmu",
+      "status": "implemented",
+      "audience": "client",
+      "template_key": "video.summary.published",
+      "implementation_locations": [
+        {
+          "path": "backend/video.php",
+          "entrypoint": "action=publish_review",
+          "symbol": "video_mail_send_touchpoint(video.summary.published)"
+        },
+        {
+          "path": "backend/video_review_lib.php",
+          "symbol": "vr_publish_summary"
+        },
+        {
+          "path": "backend/video_mail_lib.php",
+          "symbol": "video_mail_send_touchpoint"
+        },
+        {
+          "path": "admin/mail.php",
+          "entrypoint": "tab=video / test wysylki punktu"
+        }
+      ],
+      "recipient": {
+        "type": "video_owner_email",
+        "source": "videos.owner_user_id -> users.email"
+      },
+      "system_variables_used": [
+        "video_title",
+        "summary_version",
+        "summary_score",
+        "summary_max_score",
+        "summary_url"
+      ],
+      "notes": [
+        "Trigger powinien odpalac sie po zmianie statusu podsumowania na published.",
+        "W mailu lepiej linkowac do gotowego podsumowania niz powtarzac caly review."
+      ]
+    },
+    {
+      "id": "video.title.changed",
+      "process_location": "Video app -> nazwa filmu zostaje zmieniona w dowolnym miejscu procesu",
+      "status": "implemented",
+      "audience": "client",
+      "template_key": "video.title.changed",
+      "implementation_locations": [
+        {
+          "path": "backend/video.php",
+          "entrypoint": "action=update_user_video_title",
+          "symbol": "title change for client videos"
+        },
+        {
+          "path": "admin/videos.php",
+          "entrypoint": "action=update_video_title",
+          "symbol": "title change in admin panel"
+        },
+        {
+          "path": "backend/video_mail_lib.php",
+          "symbol": "video_mail_send_touchpoint"
+        },
+        {
+          "path": "admin/mail.php",
+          "entrypoint": "tab=video / test wysylki punktu"
+        }
+      ],
+      "recipient": {
+        "type": "video_owner_email",
+        "source": "videos.owner_user_id -> users.email"
+      },
+      "system_variables_used": [
+        "video_title_old",
+        "video_title_new",
+        "video_youtube_url",
+        "video_platform_url"
+      ],
+      "notes": [
+        "Punkt obejmuje zarowno zmiane tytulu przez klienta, jak i przez admina, jesli finalnie zmienia sie nazwa filmu.",
+        "Wysylka powinna byc odpalana po udanym zapisie nowego tytulu, niezaleznie od miejsca edycji."
+      ]
+    }
+  ]
+}

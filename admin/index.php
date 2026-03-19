@@ -24,7 +24,7 @@ if (is_admin()) {
             'title' => 'Uzytkownicy',
             'description' => 'Operacje administracyjne na kontach.',
             'links' => [
-                ['label' => 'Dodaj uzytkownika', 'href' => 'users.php'],
+                ['label' => 'Uzytkownicy', 'href' => 'users.php'],
                 ['label' => 'Zmien haslo uzytkownika', 'href' => 'users_password.php'],
             ],
         ],

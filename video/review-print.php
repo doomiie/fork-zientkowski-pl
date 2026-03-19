@@ -761,7 +761,7 @@ unset($timelineComment);
               <?php echo htmlspecialchars((string)($category['title'] ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>
               &middot;
               <?php if ($categoryRatedItems > 0): ?>
-                <?php echo number_format($avg, 2); ?>/3 &middot; <?php echo $categoryTotal; ?> / <?php echo $categoryMax; ?>
+                <?php echo number_format($avg, 2); ?>/<?php echo $categoryRatedItems; ?> &middot; <?php echo $categoryTotal; ?> / <?php echo ($categoryRatedItems * 2); ?>
               <?php else: ?>
                 ND
               <?php endif; ?>

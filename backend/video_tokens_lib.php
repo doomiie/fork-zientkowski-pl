@@ -6,6 +6,8 @@ declare(strict_types=1);
  * Requires admin/db.php in caller file.
  */
 
+require_once __DIR__ . '/video_mail_lib.php';
+
 /**
  * @return string[]
  */
@@ -204,10 +206,12 @@ function vt_grant_order_entitlements(PDO $pdo, int $orderId): bool
     $pdo->beginTransaction();
     try {
         $stmt = $pdo->prepare(
-            'SELECT o.id, o.user_id, o.token_type_id, o.status, o.entitlements_granted_at,
-                    t.max_upload_links, t.can_choose_trainer
+            'SELECT o.id, o.order_uuid, o.user_id, o.token_type_id, o.status, o.entitlements_granted_at,
+                    t.title AS token_title, t.max_upload_links, t.can_choose_trainer,
+                    u.email AS user_email
              FROM token_orders o
              JOIN token_types t ON t.id = o.token_type_id
+             JOIN users u ON u.id = o.user_id
              WHERE o.id = ?
              LIMIT 1
              FOR UPDATE'
@@ -233,6 +237,16 @@ function vt_grant_order_entitlements(PDO $pdo, int $orderId): bool
             $mark = $pdo->prepare('UPDATE token_orders SET entitlements_granted_at = NOW(), updated_at = NOW() WHERE id = ?');
             $mark->execute([$orderId]);
             $pdo->commit();
+            try {
+                video_mail_send_touchpoint($pdo, 'video.tokens.order_paid', (string)$order['user_email'], [
+                    'token_type_title' => (string)$order['token_title'],
+                    'order_uuid' => (string)$order['order_uuid'],
+                    'remaining_upload_links' => 0,
+                    'remaining_trainer_choices' => 0,
+                ]);
+            } catch (Throwable $e) {
+                // ignore mail errors
+            }
             return true;
         }
 
@@ -255,6 +269,17 @@ function vt_grant_order_entitlements(PDO $pdo, int $orderId): bool
         $mark = $pdo->prepare('UPDATE token_orders SET entitlements_granted_at = NOW(), updated_at = NOW() WHERE id = ?');
         $mark->execute([$orderId]);
         $pdo->commit();
+        try {
+            $balance = vt_get_user_balance($pdo, (int)$order['user_id']);
+            video_mail_send_touchpoint($pdo, 'video.tokens.order_paid', (string)$order['user_email'], [
+                'token_type_title' => (string)$order['token_title'],
+                'order_uuid' => (string)$order['order_uuid'],
+                'remaining_upload_links' => (int)$balance['remaining_upload_links'],
+                'remaining_trainer_choices' => (int)$balance['remaining_trainer_choices'],
+            ]);
+        } catch (Throwable $e) {
+            // ignore mail errors
+        }
         return true;
     } catch (Throwable $e) {
         if ($pdo->inTransaction()) $pdo->rollBack();

@@ -6,6 +6,7 @@ header('X-Content-Type-Options: nosniff');
 
 require_once __DIR__ . '/../admin/db.php';
 require_once __DIR__ . '/access_guard.php';
+require_once __DIR__ . '/video_mail_lib.php';
 require_once __DIR__ . '/video_tokens_lib.php';
 require_once __DIR__ . '/video_review_lib.php';
 
@@ -202,7 +203,7 @@ function get_input_data(): array
 }
 
 /**
- * @return array{logged_in:bool,user_id:int|null,email:string|null,role:string|null}
+ * @return array{logged_in:bool,user_id:int|null,email:string|null,role:string|null,has_global_video_access:bool}
  */
 function get_current_user_auth(PDO $pdo): array
 {
@@ -212,6 +213,7 @@ function get_current_user_auth(PDO $pdo): array
             'user_id' => null,
             'email' => null,
             'role' => null,
+            'has_global_video_access' => false,
         ];
     }
 
@@ -222,11 +224,12 @@ function get_current_user_auth(PDO $pdo): array
             'user_id' => null,
             'email' => null,
             'role' => null,
+            'has_global_video_access' => false,
         ];
     }
 
     try {
-        $stmt = $pdo->prepare('SELECT id, email, role, is_active FROM users WHERE id = ? LIMIT 1');
+        $stmt = $pdo->prepare('SELECT id, email, role, has_global_video_access, is_active FROM users WHERE id = ? LIMIT 1');
         $stmt->execute([$userId]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if (!$row || (int)$row['is_active'] !== 1) {
@@ -235,9 +238,11 @@ function get_current_user_auth(PDO $pdo): array
                 'user_id' => null,
                 'email' => null,
                 'role' => null,
+                'has_global_video_access' => false,
             ];
         }
         $rawRole = (string)($row['role'] ?? 'viewer');
+        $hasGlobalVideoAccess = (int)($row['has_global_video_access'] ?? 0) === 1;
         $mapped = 'user';
         if (app_role_has($rawRole, 'admin')) {
             $mapped = 'admin';
@@ -249,6 +254,7 @@ function get_current_user_auth(PDO $pdo): array
             'user_id' => (int)$row['id'],
             'email' => (string)$row['email'],
             'role' => $mapped,
+            'has_global_video_access' => $hasGlobalVideoAccess,
         ];
     } catch (Throwable $e) {
         return [
@@ -256,6 +262,7 @@ function get_current_user_auth(PDO $pdo): array
             'user_id' => null,
             'email' => null,
             'role' => null,
+            'has_global_video_access' => false,
         ];
     }
 }
@@ -293,7 +300,7 @@ function get_user_video_access(PDO $pdo, int $userId): array
 
 /**
  * @param array<string,mixed>|null $accessSession
- * @param array{logged_in:bool,user_id:int|null,email:string|null,role:string|null} $userAuth
+ * @param array{logged_in:bool,user_id:int|null,email:string|null,role:string|null,has_global_video_access:bool} $userAuth
  * @param array<string,bool> $userVideoMap
  * @return array<string,mixed>
  */
@@ -330,6 +337,7 @@ function build_effective_video_access(?array $accessSession, array $userAuth, ar
     $isAdmin = $role === 'admin';
     $isTrainer = $role === 'trener';
     $isUser = $role === 'user';
+    $trainerHasGlobalVideoAccess = $isTrainer && !empty($userAuth['has_global_video_access']);
 
     if ($isUser) {
       foreach ($userVideoMap as $k => $v) {
@@ -338,8 +346,8 @@ function build_effective_video_access(?array $accessSession, array $userAuth, ar
     }
 
     $canAddVideo = $isAdmin || $isTrainer;
-    $globalView = $isAdmin || $tokenGlobalView;
-    $globalEdit = $isAdmin || $tokenGlobalEdit;
+    $globalView = $isAdmin || $trainerHasGlobalVideoAccess || $tokenGlobalView;
+    $globalEdit = $isAdmin || $trainerHasGlobalVideoAccess || $tokenGlobalEdit;
 
     $allowedVideoIds = array_keys($userVideoMap);
     if ($tokenResourceType === 'video' && $tokenResourceId !== null) {
@@ -421,6 +429,7 @@ function build_access_meta(array $ctx, ?string $source = null): array
             'user_id' => $ctx['user']['user_id'] ?? null,
             'email' => $ctx['user']['email'] ?? null,
             'role' => $ctx['user']['role'] ?? null,
+            'has_global_video_access' => (bool)($ctx['user']['has_global_video_access'] ?? false),
         ],
         'token' => [
             'token_id' => $ctx['token']['token_id'] ?? null,
@@ -484,7 +493,7 @@ $method = strtoupper((string)($_SERVER['REQUEST_METHOD'] ?? 'GET'));
 $action = trim((string)($_GET['action'] ?? ($method === 'POST' ? ($_POST['action'] ?? '') : 'load')));
 $accessSession = access_get_session($pdo);
 $userAuth = get_current_user_auth($pdo);
-$userVideoMap = ($userAuth['logged_in'] && $userAuth['role'] !== 'admin')
+$userVideoMap = ($userAuth['logged_in'] && $userAuth['role'] !== 'admin' && empty($userAuth['has_global_video_access']))
     ? get_user_video_access($pdo, (int)($userAuth['user_id'] ?? 0))
     : [];
 $ctx = build_effective_video_access($accessSession, $userAuth, $userVideoMap);
@@ -510,7 +519,19 @@ if ($action === 'list_videos' && $method === 'GET') {
                     v.created_via_token_order_id,
                     v.utworzono,
                     v.zaktualizowano,
-                    trainer.email AS assigned_trainer_username
+                    trainer.email AS assigned_trainer_username,
+                    (
+                        SELECT COUNT(*)
+                        FROM komentarze_video kv
+                        WHERE kv.video_id = v.id
+                          AND kv.widoczny = 1
+                    ) AS comments_count,
+                    (
+                        SELECT COUNT(*)
+                        FROM video_review_summaries vrs
+                        WHERE vrs.video_id = v.id
+                          AND vrs.status IN ("published", "archived")
+                    ) AS summaries_count
                 FROM videos v
                 LEFT JOIN users trainer ON trainer.id = v.assigned_trainer_user_id';
         $where = [];
@@ -552,6 +573,8 @@ if ($action === 'list_videos' && $method === 'GET') {
         foreach ($videos as &$video) {
             $vid = (string)($video['youtube_id'] ?? '');
             $video['can_edit'] = can_edit_source($ctx, $vid);
+            $video['comments_count'] = (int)($video['comments_count'] ?? 0);
+            $video['summaries_count'] = (int)($video['summaries_count'] ?? 0);
         }
         unset($video);
 
@@ -868,6 +891,22 @@ if ($action === 'add_user_video_link' && $method === 'POST') {
         );
         $relUpsert->execute([$userId, $selectedTrainerId]);
 
+        try {
+            $trainerEmail = '';
+            if ($selectedTrainerId > 0) {
+                $trainerStmt = $pdo->prepare('SELECT email FROM users WHERE id = ? LIMIT 1');
+                $trainerStmt->execute([$selectedTrainerId]);
+                $trainerEmail = trim((string)($trainerStmt->fetchColumn() ?: ''));
+            }
+            video_mail_send_touchpoint($pdo, 'video.upload.confirmation', (string)($user['email'] ?? ''), [
+                'video_title' => $title,
+                'video_url' => $sourceUrl,
+                'trainer_name' => $trainerEmail !== '' ? $trainerEmail : 'brak przypisanego trenera',
+            ]);
+        } catch (Throwable $mailErr) {
+            // ignore mail errors
+        }
+
         json_response(201, [
             'ok' => true,
             'video' => [
@@ -942,7 +981,7 @@ if ($action === 'update_user_video_title' && $method === 'POST') {
     }
 
     try {
-        $stmt = $pdo->prepare('SELECT id, owner_user_id FROM videos WHERE youtube_id = ? LIMIT 1');
+        $stmt = $pdo->prepare('SELECT id, owner_user_id, tytul, source_url FROM videos WHERE youtube_id = ? LIMIT 1');
         $stmt->execute([$source]);
         $video = $stmt->fetch(PDO::FETCH_ASSOC);
         if (!$video) {
@@ -963,8 +1002,30 @@ if ($action === 'update_user_video_title' && $method === 'POST') {
             ]);
         }
 
+        $oldTitle = trim((string)($video['tytul'] ?? ''));
+        $videoYoutubeUrl = trim((string)($video['source_url'] ?? ''));
+        $videoPlatformUrl = function_exists('video_mail_absolute_url')
+            ? video_mail_absolute_url('/video/play.php?source=' . rawurlencode($source))
+            : '/video/play.php?source=' . rawurlencode($source);
         $upd = $pdo->prepare('UPDATE videos SET tytul = ?, zaktualizowano = NOW() WHERE id = ? LIMIT 1');
         $upd->execute([$title, (int)$video['id']]);
+        if ($oldTitle !== $title) {
+            try {
+                $ownerStmt = $pdo->prepare('SELECT email FROM users WHERE id = ? LIMIT 1');
+                $ownerStmt->execute([(int)$ownerId]);
+                $ownerEmail = trim((string)($ownerStmt->fetchColumn() ?: ''));
+                if ($ownerEmail !== '') {
+                    video_mail_send_touchpoint($pdo, 'video.title.changed', $ownerEmail, [
+                        'video_title_old' => $oldTitle !== '' ? $oldTitle : $source,
+                        'video_title_new' => $title,
+                        'video_youtube_url' => $videoYoutubeUrl !== '' ? $videoYoutubeUrl : $videoPlatformUrl,
+                        'video_platform_url' => $videoPlatformUrl,
+                    ]);
+                }
+            } catch (Throwable $mailErr) {
+                // ignore mail errors
+            }
+        }
 
         json_response(200, [
             'ok' => true,
@@ -1327,6 +1388,30 @@ if ($action === 'publish_review' && $method === 'POST') {
         }
 
         $pdo->commit();
+
+        try {
+            $videoInfoStmt = $pdo->prepare(
+                'SELECT v.tytul, v.youtube_id, owner.email AS owner_email
+                 FROM videos v
+                 LEFT JOIN users owner ON owner.id = v.owner_user_id
+                 WHERE v.id = ? LIMIT 1'
+            );
+            $videoInfoStmt->execute([$videoId]);
+            $videoInfo = $videoInfoStmt->fetch(PDO::FETCH_ASSOC) ?: [];
+            $ownerEmail = trim((string)($videoInfo['owner_email'] ?? ''));
+            if ($ownerEmail !== '') {
+                $summaryUrl = '/video/review-print.php?source=' . rawurlencode((string)$video['youtube_id']) . '&review_id=' . (int)$published['id'];
+                video_mail_send_touchpoint($pdo, 'video.summary.published', $ownerEmail, [
+                    'video_title' => (string)($videoInfo['tytul'] ?? ''),
+                    'summary_version' => (int)$published['version_no'],
+                    'summary_score' => (int)$published['total_score'],
+                    'summary_max_score' => (int)$published['max_score'],
+                    'summary_url' => $summaryUrl,
+                ]);
+            }
+        } catch (Throwable $mailErr) {
+            // ignore mail errors
+        }
 
         $historyRows = vr_load_summary_history($pdo, $videoId);
         $history = [];

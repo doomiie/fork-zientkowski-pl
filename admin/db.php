@@ -42,7 +42,7 @@ try {
 function refresh_current_user(PDO $pdo): void {
     if (empty($_SESSION['user_id'])) return;
     try {
-        $stmt = $pdo->prepare('SELECT email, role, is_active FROM users WHERE id = ? LIMIT 1');
+        $stmt = $pdo->prepare('SELECT email, role, has_global_video_access, is_active FROM users WHERE id = ? LIMIT 1');
         $stmt->execute([ (int)$_SESSION['user_id'] ]);
         if ($row = $stmt->fetch()) {
             if ((int)$row['is_active'] !== 1) {
@@ -52,6 +52,7 @@ function refresh_current_user(PDO $pdo): void {
             }
             $_SESSION['user_email'] = (string)$row['email'];
             $_SESSION['user_role']  = (string)$row['role'];
+            $_SESSION['user_has_global_video_access'] = (int)($row['has_global_video_access'] ?? 0);
         }
     } catch (Throwable $e) {
         // ignore; do not break page render
@@ -81,6 +82,10 @@ function current_user_id(): int {
 
 function current_user_role(): string {
     return $_SESSION['user_role'] ?? '';
+}
+
+function current_user_has_global_video_access(): bool {
+    return (int)($_SESSION['user_has_global_video_access'] ?? 0) === 1;
 }
 
 /**

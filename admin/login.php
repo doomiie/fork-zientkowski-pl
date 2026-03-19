@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($email === '' || $password === '') {
         $error = 'Podaj e‑mail i hasło.';
     } else {
-        $stmt = $pdo->prepare('SELECT id, email, password_hash, is_active, role FROM users WHERE email = ? LIMIT 1');
+        $stmt = $pdo->prepare('SELECT id, email, password_hash, is_active, role, has_global_video_access FROM users WHERE email = ? LIMIT 1');
         $stmt->execute([$email]);
         $user = $stmt->fetch();
 
@@ -28,6 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['user_id'] = (int)$user['id'];
             $_SESSION['user_email'] = (string)$user['email'];
             $_SESSION['user_role'] = (string)($user['role'] ?? 'viewer');
+            $_SESSION['user_has_global_video_access'] = (int)($user['has_global_video_access'] ?? 0);
             // rotate CSRF token after login
             $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
             $pdo->prepare('UPDATE users SET last_login_at = NOW() WHERE id = ?')->execute([(int)$user['id']]);
