@@ -111,6 +111,66 @@
     });
   }
 
+  function initOwnerInlineEdit() {
+    var forms = Array.prototype.slice.call(document.querySelectorAll("[data-video-owner-form]"));
+    if (!forms.length) return;
+
+    forms.forEach(function (form) {
+      var wrap = form.querySelector("[data-video-owner-edit]");
+      var trigger = form.querySelector("[data-video-owner-trigger]");
+      var select = form.querySelector("[data-video-owner-select]");
+      if (!wrap || !trigger || !select) return;
+
+      var original = String(select.value || "");
+
+      function startEditing() {
+        wrap.classList.add("is-editing");
+        window.requestAnimationFrame(function () {
+          select.focus();
+        });
+      }
+
+      function cancelEditing() {
+        select.value = original;
+        wrap.classList.remove("is-editing");
+      }
+
+      function submitIfChanged() {
+        wrap.classList.remove("is-editing");
+        if (String(select.value || "") === original) {
+          return;
+        }
+        if (typeof form.requestSubmit === "function") {
+          form.requestSubmit();
+        } else {
+          form.submit();
+        }
+      }
+
+      trigger.addEventListener("click", function () {
+        startEditing();
+      });
+
+      select.addEventListener("change", function () {
+        submitIfChanged();
+      });
+
+      select.addEventListener("blur", function () {
+        cancelEditing();
+      });
+
+      select.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+          event.preventDefault();
+          cancelEditing();
+          if (typeof trigger.focus === "function") {
+            trigger.focus();
+          }
+        }
+      });
+    });
+  }
+
   function initSearchableSelects() {
     var wrappers = Array.prototype.slice.call(document.querySelectorAll("[data-searchable-select-wrapper]"));
     if (!wrappers.length) return;
@@ -186,6 +246,7 @@
   function boot() {
     initBulkSelect();
     initTitleInlineEdit();
+    initOwnerInlineEdit();
     initSearchableSelects();
   }
 

@@ -1455,9 +1455,11 @@ if ($action === 'load' && $method === 'GET') {
 
     try {
         $videoStmt = $pdo->prepare(
-            'SELECT id, youtube_id, provider, provider_video_id, source_url, tytul, slug, opis, miniaturka_url, status, dlugosc_sekundy, jezyk, publiczny, owner_user_id, assigned_trainer_user_id, created_via_token_order_id, utworzono, zaktualizowano
-             FROM videos
-             WHERE youtube_id = ?
+            'SELECT v.id, v.youtube_id, v.provider, v.provider_video_id, v.source_url, v.tytul, v.slug, v.opis, v.miniaturka_url, v.status, v.dlugosc_sekundy, v.jezyk, v.publiczny, v.owner_user_id, v.assigned_trainer_user_id, v.created_via_token_order_id, v.utworzono, v.zaktualizowano,
+                    owner.email AS owner_email
+             FROM videos v
+             LEFT JOIN users owner ON owner.id = v.owner_user_id
+             WHERE v.youtube_id = ?
              LIMIT 1'
         );
         $videoStmt->execute([$source]);

@@ -266,6 +266,12 @@ function admin_video_option_label(array $video): string
     return (string)$video['provider'] . ' : ' . (string)$video['youtube_id'] . ' - ' . (string)$video['tytul'];
 }
 
+function admin_video_owner_label(array $video): string
+{
+    $email = trim((string)($video['owner_email'] ?? ''));
+    return $email !== '' ? $email : 'brak wlasciciela';
+}
+
 /**
  * @return array{assignment_saved:bool,owner_updated:bool,mail_sent:bool}
  */
@@ -636,6 +642,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $error = 'Blad aktualizacji tytulu: ' . mb_substr($e->getMessage(), 0, 220);
                 }
             }
+        } elseif ($action === 'update_video_owner') {
+            $videoId = (int)($_POST['video_id'] ?? 0);
+            $ownerUserIdRaw = trim((string)($_POST['owner_user_id'] ?? ''));
+            $ownerUserId = $ownerUserIdRaw === '' ? 0 : (int)$ownerUserIdRaw;
+            if ($videoId <= 0) {
+                $error = 'Niepoprawne ID filmu do aktualizacji wlasciciela.';
+            } elseif ($ownerUserIdRaw !== '' && $ownerUserId <= 0) {
+                $error = 'Niepoprawny identyfikator wlasciciela.';
+            } else {
+                try {
+                    $videoStmt = $pdo->prepare('SELECT id FROM videos WHERE id = ? LIMIT 1');
+                    $videoStmt->execute([$videoId]);
+                    if (!$videoStmt->fetch(PDO::FETCH_ASSOC)) {
+                        $error = 'Nie znaleziono filmu do aktualizacji wlasciciela.';
+                    } else {
+                        $ownerValue = null;
+                        if ($ownerUserId > 0) {
+                            $userStmt = $pdo->prepare('SELECT id FROM users WHERE id = ? LIMIT 1');
+                            $userStmt->execute([$ownerUserId]);
+                            if (!$userStmt->fetch(PDO::FETCH_ASSOC)) {
+                                $error = 'Nie znaleziono wybranego uzytkownika.';
+                            } else {
+                                $ownerValue = $ownerUserId;
+                            }
+                        }
+                        if ($error === '') {
+                            $updateStmt = $pdo->prepare(
+                                'UPDATE videos
+                                 SET owner_user_id = ?, zaktualizowano = NOW()
+                                 WHERE id = ? LIMIT 1'
+                            );
+                            $updateStmt->execute([$ownerValue, $videoId]);
+                            $success = $ownerValue !== null
+                                ? 'Wlasciciel filmu zaktualizowany.'
+                                : 'Wlasciciel filmu usuniety.';
+                        }
+                    }
+                } catch (Throwable $e) {
+                    $error = 'Blad aktualizacji wlasciciela: ' . mb_substr($e->getMessage(), 0, 220);
+                }
+            }
         }
     }
 }
@@ -751,6 +798,13 @@ try {
     .video-title-input { display:none; min-width:260px; max-width:100%; padding:8px 10px; border:1px solid #d1d5db; border-radius:8px; font:inherit; }
     .video-title-edit.is-editing .video-title-button { display:none; }
     .video-title-edit.is-editing .video-title-input { display:inline-block; }
+    .video-owner-edit { display:flex; align-items:center; gap:8px; }
+    .video-owner-button { display:inline-flex; align-items:center; gap:8px; background:transparent; border:0; padding:0; color:#111827; font:inherit; cursor:pointer; text-align:left; }
+    .video-owner-button[disabled] { cursor:default; opacity:.95; }
+    .video-owner-icon { font-size:14px; opacity:.7; }
+    .video-owner-select { display:none; min-width:280px; max-width:100%; padding:8px 10px; border:1px solid #d1d5db; border-radius:8px; font:inherit; }
+    .video-owner-edit.is-editing .video-owner-button { display:none; }
+    .video-owner-edit.is-editing .video-owner-select { display:inline-block; }
     .searchable-select { display:grid; gap:8px; }
     .searchable-select-meta { color:#6b7280; font-size:12px; min-height:18px; }
     .status-badge { display:inline-flex; align-items:center; border-radius:999px; padding:4px 10px; font-size:12px; font-weight:700; letter-spacing:.01em; text-transform:uppercase; }
@@ -859,7 +913,31 @@ try {
                     </div>
                   </form>
                 </td>
-                <td><?php echo h(trim((string)($video['owner_email'] ?? '')) !== '' ? (string)$video['owner_email'] : '-'); ?></td>
+                <td>
+                  <form method="post" action="videos.php" class="inline video-owner-form" data-video-owner-form>
+                    <input type="hidden" name="csrf_token" value="<?php echo h(csrf_token()); ?>">
+                    <input type="hidden" name="action" value="update_video_owner">
+                    <input type="hidden" name="video_id" value="<?php echo h((string)$video['id']); ?>">
+                    <div class="video-owner-edit" data-video-owner-edit>
+                      <button type="button" class="video-owner-button" data-video-owner-trigger aria-label="Edytuj wlasciciela filmu">
+                        <span class="video-owner-text" data-video-owner-text><?php echo h(admin_video_owner_label($video)); ?></span>
+                        <span class="video-owner-icon" aria-hidden="true">&#9998;</span>
+                      </button>
+                      <select
+                        class="video-owner-select"
+                        name="owner_user_id"
+                        data-video-owner-select
+                      >
+                        <option value=""><?php echo h('brak wlasciciela'); ?></option>
+                        <?php foreach ($users as $user): ?>
+                          <option value="<?php echo h((string)$user['id']); ?>" <?php echo ((string)($video['owner_email'] ?? '') === (string)($user['email'] ?? '')) ? 'selected' : ''; ?>>
+                            <?php echo h((string)$user['email']); ?>
+                          </option>
+                        <?php endforeach; ?>
+                      </select>
+                    </div>
+                  </form>
+                </td>
                 <td>
                   <?php $workflowStatus = resolve_video_workflow_status($video); ?>
                   <div><span class="<?php echo h(video_workflow_status_class($workflowStatus)); ?>"><?php echo h($workflowStatus); ?></span></div>

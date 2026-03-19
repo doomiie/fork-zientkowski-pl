@@ -16,6 +16,7 @@
   var editMode = rawEdit === "1" || rawEdit === "true" || rawEdit === "yes" || rawEdit === "on";
 
   var titleEl = document.getElementById("video-title");
+  var ownerInfoEl = document.getElementById("video-owner-info");
   var statusEl = document.getElementById("video-status");
   var tokenInfoEl = document.getElementById("video-token-info");
   var accessMessageEl = document.getElementById("video-access-message");
@@ -163,6 +164,38 @@
   function setStatus(msg) {
     if (statusEl) statusEl.textContent = msg;
   }
+
+  function maskOwnerEmail(email) {
+    var value = String(email || "").trim();
+    if (!value || value.indexOf("@") < 0) return "";
+    var parts = value.split("@");
+    var local = String(parts[0] || "").trim();
+    var domain = String(parts[1] || "").trim();
+    if (!local || !domain) return "";
+    return local.slice(0, Math.min(3, local.length)) + "***@" + domain;
+  }
+
+  function renderOwnerInfo(video) {
+    if (!ownerInfoEl) return;
+    var ownerEmail = String(video && video.owner_email || "").trim();
+    var role = normalizeRole(authState && authState.role || "");
+    var isAdmin = !!(authState && authState.logged_in === true && role === "admin");
+
+    if (ownerEmail) {
+      ownerInfoEl.textContent = maskOwnerEmail(ownerEmail);
+      ownerInfoEl.hidden = false;
+      return;
+    }
+
+    if (isAdmin) {
+      ownerInfoEl.innerHTML = 'brak właściciela, <a href="/admin/videos.php">ustaw</a>';
+      ownerInfoEl.hidden = false;
+      return;
+    }
+
+    ownerInfoEl.textContent = "brak właściciela";
+    ownerInfoEl.hidden = false;
+  }
   function setVideoListStatus(msg) {
     var statusEls = document.querySelectorAll("[data-video-list-status]");
     statusEls.forEach(function (node) { node.textContent = msg || ""; });
@@ -254,6 +287,11 @@
     var role = normalizeRole(authState && authState.role || "");
     var isEditorOrAdmin = role === "trener" || role === "admin";
     return !!(authState && authState.logged_in === true && isEditorOrAdmin);
+  }
+
+  function shouldIgnoreTokenVideoRestriction() {
+    var role = normalizeRole(authState && authState.role || "");
+    return !!(authState && authState.logged_in === true && (role === "trener" || role === "admin"));
   }
 
   function updateGenerateTokenButtonVisibility() {
@@ -2910,7 +2948,8 @@
       var listData = preloadedListData || await fetchVideoList();
       if (!applyListData(listData)) return;
 
-      if (accessInfo && accessInfo.token && accessInfo.token.resource_type === "video" &&
+      if (!shouldIgnoreTokenVideoRestriction() &&
+          accessInfo && accessInfo.token && accessInfo.token.resource_type === "video" &&
           accessInfo.token.resource_id && source && source !== accessInfo.token.resource_id) {
         setStatus("Ten token pozwala tylko na film: " + accessInfo.token.resource_id + ". Przełączam...");
         window.location.href = buildVideoUrl(accessInfo.token.resource_id);
@@ -2946,6 +2985,7 @@
       }
       applyAccessState(true);
       if (titleEl) titleEl.textContent = resolveVideoTitle(data.video);
+      renderOwnerInfo(data.video || {});
       canEditCurrentSource = !!(
         data &&
         data.access &&
@@ -2975,6 +3015,10 @@
       reviewDraftSummary = null;
       renderComments();
       renderReviewSummary(null);
+      if (ownerInfoEl) {
+        ownerInfoEl.hidden = true;
+        ownerInfoEl.textContent = "";
+      }
       if (addCommentBtn) addCommentBtn.hidden = true;
       hideForm(false);
       closeReviewModal(false);

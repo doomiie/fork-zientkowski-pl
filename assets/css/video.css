@@ -402,6 +402,17 @@ body {
   font-size: clamp(1.4rem, 2vw, 2rem);
 }
 
+.video-screen__owner {
+  color: var(--video-muted);
+  margin: 6px 0 0;
+  font-size: 0.86rem;
+}
+
+.video-screen__owner a {
+  color: var(--video-accent);
+  text-decoration: underline;
+}
+
 .video-screen__subtitle {
   margin: 0 0 12px;
   font-size: 1.15rem;
