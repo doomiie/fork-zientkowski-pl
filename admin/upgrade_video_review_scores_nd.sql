@@ -1,0 +1,21 @@
+-- Allow ND ("not applicable") answers in video review summaries.
+--
+-- Existing installations on older MySQL variants usually do not need any schema
+-- change here, because:
+-- 1. `score` is already `TINYINT UNSIGNED`
+-- 2. old MySQL versions parse `CHECK (...)` but do not enforce it
+--
+-- For those databases, this migration is intentionally a no-op.
+--
+-- If your server really enforces CHECK constraints, adjust the constraint manually
+-- using syntax supported by that server family.
+--
+-- MariaDB example:
+-- ALTER TABLE video_review_scores DROP CONSTRAINT chk_video_review_score_range;
+-- ALTER TABLE video_review_scores ADD CONSTRAINT chk_video_review_score_range CHECK (score BETWEEN 0 AND 3);
+--
+-- MySQL 8.0.16+ example:
+-- ALTER TABLE video_review_scores DROP CHECK chk_video_review_score_range;
+-- ALTER TABLE video_review_scores ADD CONSTRAINT chk_video_review_score_range CHECK (score BETWEEN 0 AND 3);
+
+SELECT 'video_review_scores ND migration: no-op for legacy MySQL-compatible environments' AS info;

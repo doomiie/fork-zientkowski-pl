@@ -6,6 +6,7 @@
   var ACCESS_API_URL = "/backend/access_token.php";
   var AUTHOR_STORAGE_KEY = "video_comment_author";
   var AUTHOR_COOKIE_KEY = "video_comment_author";
+  var COMMENT_AUTOPLAY_STORAGE_KEY = "video_comment_autoplay";
   var GDRIVE_MAP_STORAGE_KEY = "video_gdrive_map_v1";
   var params = new URLSearchParams(window.location.search);
   var source = (params.get("source") || "").trim();
@@ -57,6 +58,8 @@
   var reviewPublishBtn = document.getElementById("review-publish-btn");
   var reviewCancelBtn = document.getElementById("review-cancel-btn");
   var formEl = document.getElementById("comment-form");
+  var commentSubmitBtn = document.getElementById("comment-submit-btn");
+  var commentAutoplayInput = document.getElementById("comment-autoplay");
   var formStatusEl = document.getElementById("form-status");
   var cancelBtn = document.getElementById("cancel-comment-btn");
   var timeInput = document.getElementById("comment-time");
@@ -407,6 +410,7 @@
 
   function scoreTone(score) {
     var n = Number(score || 0);
+    if (n === 0) return "tone-nd";
     if (n <= 1) return "tone-low";
     if (n === 2) return "tone-mid";
     return "tone-high";
@@ -414,9 +418,16 @@
 
   function scoreLabel(score) {
     var n = Number(score || 0);
+    if (n === 0) return "ND";
     if (n <= 1) return "do poprawy";
     if (n === 2) return "średnio";
     return "mocna strona";
+  }
+
+  function scoreDisplay(score) {
+    var n = Number(score || 0);
+    if (n === 0) return "ND";
+    return String(n) + "/3";
   }
 
   function getStoredAuthor() {
@@ -425,6 +436,11 @@
       if (cookieValue) return cookieValue;
       return String(window.localStorage.getItem(AUTHOR_STORAGE_KEY) || "").trim();
     } catch (error) { return ""; }
+  }
+  function getStoredCommentAutoplay() {
+    try {
+      return String(window.localStorage.getItem(COMMENT_AUTOPLAY_STORAGE_KEY) || "") === "1";
+    } catch (error) { return false; }
   }
   function setStoredAuthor(value) {
     try {
@@ -436,6 +452,11 @@
         window.localStorage.removeItem(AUTHOR_STORAGE_KEY);
         setCookie(AUTHOR_COOKIE_KEY, "", -1);
       }
+    } catch (error) { }
+  }
+  function setStoredCommentAutoplay(enabled) {
+    try {
+      window.localStorage.setItem(COMMENT_AUTOPLAY_STORAGE_KEY, enabled ? "1" : "0");
     } catch (error) { }
   }
 
@@ -505,14 +526,21 @@
   }
 
   function setCommentFormMode(isEditing) {
-    var editing = !!isEditing;
-    if (commentTimeFieldsEl) commentTimeFieldsEl.hidden = !editing;
-    if (commentTitleFieldEl) commentTitleFieldEl.hidden = !editing;
-    if (commentMetaFieldsEl) commentMetaFieldsEl.hidden = !editing;
+    if (commentTimeFieldsEl) commentTimeFieldsEl.hidden = false;
+    if (commentTitleFieldEl) commentTitleFieldEl.hidden = true;
+    if (commentMetaFieldsEl) commentMetaFieldsEl.hidden = true;
     if (commentMetaReadonlyEl) {
-      commentMetaReadonlyEl.hidden = editing;
-      if (!editing) refreshReadonlyCommentMeta();
+      commentMetaReadonlyEl.hidden = true;
     }
+  }
+
+  function shouldAutoplayAfterCommentClose() {
+    return !!(commentAutoplayInput && commentAutoplayInput.checked);
+  }
+
+  function resumePlaybackFromCurrentTime() {
+    if (!playerReady || !player) return;
+    seekAndPlay(readCurrentPlayerTime());
   }
 
   function isCommentModalOpen() {
@@ -627,15 +655,20 @@
 
         var scale = document.createElement("div");
         scale.className = "review-form__scale";
-        [1, 2, 3].forEach(function (score) {
+        [
+          { value: 0, label: "ND" },
+          { value: 1, label: "1" },
+          { value: 2, label: "2" },
+          { value: 3, label: "3" }
+        ].forEach(function (option) {
           var label = document.createElement("label");
           label.className = "review-form__score";
-          label.setAttribute("data-score", String(score));
+          label.setAttribute("data-score", String(option.value));
 
           var input = document.createElement("input");
           input.type = "radio";
           input.name = "review_" + itemKey;
-          input.value = String(score);
+          input.value = String(option.value);
           input.setAttribute("data-item-key", itemKey);
           input.addEventListener("change", function () {
             var group = scale.querySelectorAll(".review-form__score");
@@ -648,7 +681,7 @@
           });
 
           var text = document.createElement("span");
-          text.textContent = String(score);
+          text.textContent = String(option.label);
           label.appendChild(input);
           label.appendChild(text);
           scale.appendChild(label);
@@ -683,7 +716,7 @@
     answers.forEach(function (answer) {
       var itemKey = String(answer && answer.item_key || "").trim();
       var score = String(answer && answer.score || "").trim();
-      if (!itemKey || !score) return;
+      if (!itemKey || score === "") return;
       var selector = 'input[type="radio"][data-item-key="' + itemKey + '"][value="' + score + '"]';
       var input = reviewFormEl.querySelector(selector);
       if (!input) return;
@@ -699,7 +732,7 @@
       var checked = reviewFormEl.querySelector('input[type="radio"][data-item-key="' + itemKey + '"]:checked');
       if (!checked) return;
       var score = Number(checked.value || 0);
-      if (!Number.isInteger(score) || score < 1 || score > 3) return;
+      if (!Number.isInteger(score) || score < 0 || score > 3) return;
       out.push({ item_key: itemKey, score: score });
     });
     return out;
@@ -887,8 +920,12 @@
       var card = document.createElement("article");
       card.className = "video-review-summary__card";
       var catAvg = Number(category && category.avg_score || 0);
-      var catPercent = Math.round((catAvg / 3) * 100);
-      var title = '<h3 class="video-review-summary__card-title">' + escapeHtml(String(category && category.title || "")) + ' · ' + catAvg.toFixed(2) + '/3</h3>';
+      var catMax = Number(category && category.max_score || 0);
+      var catTotal = Number(category && category.total_score || 0);
+      var catRatedItems = Number(category && category.rated_items || 0);
+      var catPercent = catMax > 0 ? Math.round((catTotal / catMax) * 100) : 0;
+      var catSummary = catRatedItems > 0 ? (catAvg.toFixed(2) + '/3 · ' + catTotal + ' / ' + catMax) : 'ND';
+      var title = '<h3 class="video-review-summary__card-title">' + escapeHtml(String(category && category.title || "")) + ' · ' + escapeHtml(catSummary) + '</h3>';
       var bar = '<div class="video-review-summary__bar"><div class="video-review-summary__bar-fill" style="width:' + Math.max(0, Math.min(100, catPercent)) + '%"></div></div>';
       card.innerHTML = title + bar;
 
@@ -897,12 +934,12 @@
         var row = document.createElement("div");
         row.className = "video-review-summary__item";
         var score = Number(item && item.score || 0);
-        var scorePct = Math.round((score / 3) * 100);
+        var scorePct = score > 0 ? Math.round((score / 3) * 100) : 0;
         row.innerHTML =
           '<span class="video-review-summary__item-label">' + escapeHtml(String(item && item.label || "")) + '</span>' +
           '<div class="video-review-summary__item-line">' +
             '<div class="video-review-summary__bar"><div class="video-review-summary__bar-fill" style="width:' + Math.max(0, Math.min(100, scorePct)) + '%"></div></div>' +
-            '<span class="video-review-summary__item-score ' + scoreTone(score) + '">' + score + '/3 · ' + scoreLabel(score) + '</span>' +
+            '<span class="video-review-summary__item-score ' + scoreTone(score) + '">' + escapeHtml(scoreDisplay(score)) + ' · ' + escapeHtml(scoreLabel(score)) + '</span>' +
           '</div>';
         card.appendChild(row);
       });
@@ -2122,7 +2159,7 @@
     if (formStatusEl) formStatusEl.textContent = "";
     editingCommentId = null;
     if (commentIdInput) commentIdInput.value = "";
-    var submitBtn = formEl.querySelector('button[type="submit"]');
+    var submitBtn = commentSubmitBtn || formEl.querySelector('button[type="submit"]');
     if (submitBtn) submitBtn.textContent = "Zapisz komentarz";
     applyDefaultAuthor(accessInfo);
     setCommentFormMode(false);
@@ -2133,17 +2170,22 @@
   function hideForm(restoreFocus) {
     stopTranscription();
     clearPauseAutoOpenCandidate();
+    var shouldResumePlayback = shouldAutoplayAfterCommentClose();
     if (!formEl || !variantInput) return;
     formEl.reset();
     variantInput.value = "ogolny";
+    if (commentAutoplayInput) commentAutoplayInput.checked = shouldResumePlayback;
     if (formStatusEl) formStatusEl.textContent = "";
     setTranscribeStatus("");
     editingCommentId = null;
     if (commentIdInput) commentIdInput.value = "";
-    var submitBtn = formEl.querySelector('button[type="submit"]');
+    var submitBtn = commentSubmitBtn || formEl.querySelector('button[type="submit"]');
     if (submitBtn) submitBtn.textContent = "Zapisz komentarz";
     setCommentFormMode(false);
     closeCommentModal(restoreFocus !== false);
+    if (shouldResumePlayback) {
+      resumePlaybackFromCurrentTime();
+    }
   }
 
   function startEditComment(comment, triggerEl) {
@@ -2157,7 +2199,7 @@
     if (variantInput) variantInput.value = String(comment.wariant || "ogolny");
     if (authorInput) authorInput.value = String(comment.autor || "");
     if (formStatusEl) formStatusEl.textContent = "";
-    var submitBtn = formEl ? formEl.querySelector('button[type="submit"]') : null;
+    var submitBtn = commentSubmitBtn || (formEl ? formEl.querySelector('button[type="submit"]') : null);
     if (submitBtn) submitBtn.textContent = "Zapisz zmiany";
     setCommentFormMode(false);
     openCommentModal(triggerEl || null);
@@ -2544,6 +2586,7 @@
       autor: String(authorInput.value || "").trim()
     };
     setStoredAuthor(payload.autor);
+    setStoredCommentAutoplay(shouldAutoplayAfterCommentClose());
 
     try {
       var response = await fetch(API_URL + "?action=" + encodeURIComponent(actionName), {
@@ -2568,6 +2611,19 @@
       if (addCommentBtn) addCommentBtn.hidden = false;
     } catch (error) {
       formStatusEl.textContent = error instanceof Error ? error.message : "Błąd zapisu.";
+    }
+  }
+
+  function handleCommentFormShortcut(event) {
+    if (!formEl || !isCommentModalOpen()) return;
+    if (!event || !(event.ctrlKey || event.metaKey) || event.key !== "Enter") return;
+    event.preventDefault();
+    if (commentSubmitBtn && !commentSubmitBtn.disabled) {
+      if (typeof formEl.requestSubmit === "function") {
+        formEl.requestSubmit(commentSubmitBtn);
+      } else {
+        formEl.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+      }
     }
   }
 
@@ -2839,6 +2895,12 @@
       authorInput.addEventListener("change", function () { setStoredAuthor(authorInput.value || ""); });
       authorInput.addEventListener("blur", function () { setStoredAuthor(authorInput.value || ""); });
     }
+    if (commentAutoplayInput) {
+      commentAutoplayInput.checked = getStoredCommentAutoplay();
+      commentAutoplayInput.addEventListener("change", function () {
+        setStoredCommentAutoplay(!!commentAutoplayInput.checked);
+      });
+    }
 
     if (authFormEl) authFormEl.addEventListener("submit", loginInline);
     if (authLogoutBtn) authLogoutBtn.addEventListener("click", logoutInline);
@@ -2856,6 +2918,7 @@
     document.addEventListener("keydown", handleAuthModalKeydown);
     document.addEventListener("keydown", handleAddModalKeydown);
     document.addEventListener("keydown", handleCommentModalKeydown);
+    document.addEventListener("keydown", handleCommentFormShortcut);
     document.addEventListener("keydown", handleReviewModalKeydown);
     if (videoAddFormEl) videoAddFormEl.addEventListener("submit", submitVideoAdd);
 

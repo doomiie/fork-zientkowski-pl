@@ -148,6 +148,7 @@ function rp_can_view_source(PDO $pdo, array $userAuth, string $source): bool
 
 function rp_score_tone(int $score): string
 {
+    if ($score === 0) return 'nd';
     if ($score <= 1) return 'low';
     if ($score === 2) return 'mid';
     return 'high';
@@ -155,9 +156,16 @@ function rp_score_tone(int $score): string
 
 function rp_score_label(int $score): string
 {
+    if ($score === 0) return 'ND';
     if ($score <= 1) return 'do poprawy';
     if ($score === 2) return 'srednio';
     return 'mocna strona';
+}
+
+function rp_score_display(int $score): string
+{
+    if ($score === 0) return 'ND';
+    return $score . '/3';
 }
 
 function rp_format_time_label(int $seconds): string
@@ -406,6 +414,7 @@ unset($timelineComment);
     .tone.low { color: #9a3412; }
     .tone.mid { color: #1d4ed8; }
     .tone.high { color: #166534; }
+    .tone.nd { color: #64748b; }
     .note {
       border: 1px solid var(--rp-border);
       border-radius: 12px;
@@ -742,15 +751,26 @@ unset($timelineComment);
         <?php foreach ((array)($selected['categories'] ?? []) as $category): ?>
           <?php
             $avg = (float)($category['avg_score'] ?? 0);
-            $avgPct = (int)round(($avg / 3) * 100);
+            $categoryTotal = (int)($category['total_score'] ?? 0);
+            $categoryMax = (int)($category['max_score'] ?? 0);
+            $categoryRatedItems = (int)($category['rated_items'] ?? 0);
+            $avgPct = $categoryMax > 0 ? (int)round(($categoryTotal / $categoryMax) * 100) : 0;
           ?>
           <section class="card">
-            <h2><?php echo htmlspecialchars((string)($category['title'] ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?> &middot; <?php echo number_format($avg, 2); ?>/3</h2>
+            <h2>
+              <?php echo htmlspecialchars((string)($category['title'] ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>
+              &middot;
+              <?php if ($categoryRatedItems > 0): ?>
+                <?php echo number_format($avg, 2); ?>/3 &middot; <?php echo $categoryTotal; ?> / <?php echo $categoryMax; ?>
+              <?php else: ?>
+                ND
+              <?php endif; ?>
+            </h2>
             <div class="bar"><span style="width: <?php echo max(0, min(100, $avgPct)); ?>%"></span></div>
             <?php foreach ((array)($category['items'] ?? []) as $item): ?>
               <?php
                 $score = (int)($item['score'] ?? 0);
-                $scorePct = (int)round(($score / 3) * 100);
+                $scorePct = $score > 0 ? (int)round(($score / 3) * 100) : 0;
                 $tone = rp_score_tone($score);
               ?>
               <div class="item">
@@ -758,7 +778,7 @@ unset($timelineComment);
                 <div class="item-line">
                   <div class="bar"><span style="width: <?php echo max(0, min(100, $scorePct)); ?>%"></span></div>
                   <span class="tone <?php echo htmlspecialchars($tone, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>">
-                    <?php echo $score; ?>/3 &middot; <?php echo htmlspecialchars(rp_score_label($score), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>
+                    <?php echo htmlspecialchars(rp_score_display($score), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?> &middot; <?php echo htmlspecialchars(rp_score_label($score), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>
                   </span>
                 </div>
               </div>

@@ -34,5 +34,5 @@ CREATE TABLE IF NOT EXISTS video_review_scores (
   UNIQUE KEY uq_video_review_scores_summary_item (summary_id, item_key),
   KEY idx_video_review_scores_summary_position (summary_id, position),
   CONSTRAINT fk_video_review_scores_summary FOREIGN KEY (summary_id) REFERENCES video_review_summaries(id) ON DELETE CASCADE,
-  CONSTRAINT chk_video_review_score_range CHECK (score BETWEEN 1 AND 3)
+  CONSTRAINT chk_video_review_score_range CHECK (score BETWEEN 0 AND 3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

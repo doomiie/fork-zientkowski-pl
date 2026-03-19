@@ -141,10 +141,7 @@
           </div>
 
           <div id="comment-time-fields" class="video-form__grid">
-            <label class="video-form__field">
-              <span>Czas (sekundy)</span>
-              <input id="comment-time" name="czas_sekundy" type="number" min="0" max="86400" required>
-            </label>
+            <input id="comment-time" name="czas_sekundy" type="hidden" value="0">
             <label class="video-form__field">
               <span>Czas (tekst)</span>
               <input id="comment-time-text" name="czas_tekst" type="text" placeholder="mm:ss lub h:mm:ss">
@@ -183,9 +180,13 @@
           </div>
 
           <div class="video-form__actions">
-            <button type="submit" class="video-button video-button--primary">Zapisz komentarz</button>
+            <button type="submit" id="comment-submit-btn" class="video-button video-button--primary">Zapisz komentarz <span>(Ctrl+Enter)</span></button>
             <button type="button" id="cancel-comment-btn" class="video-button video-button--ghost">Anuluj</button>
           </div>
+          <label class="video-form__checkbox" for="comment-autoplay">
+            <input id="comment-autoplay" name="comment_autoplay" type="checkbox">
+            <span>Autoodtwarzanie po zamknięciu lub zapisaniu komentarza</span>
+          </label>          
           <input id="comment-id" name="comment_id" type="hidden">
           <p id="form-status" class="video-form__status" role="status" aria-live="polite"></p>
         </form>
@@ -263,6 +264,6 @@
     </section>
   </div>
   <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-  <script src="/assets/js/video.js?v=20260317-14" defer></script>
+  <script src="/assets/js/video.js?v=20260319-2" defer></script>
 </body>
 </html>

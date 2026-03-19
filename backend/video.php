@@ -1223,8 +1223,6 @@ if ($action === 'publish_review' && $method === 'POST') {
 
     $catalog = vr_catalog();
     $dict = vr_item_dict();
-    $totalItems = vr_total_items_count();
-
     try {
         $video = vr_find_video_by_source($pdo, $source);
         if (!$video) {
@@ -1260,7 +1258,7 @@ if ($action === 'publish_review' && $method === 'POST') {
 
         $summary = vr_cast_summary_row($row);
         $answers = vr_load_scores($pdo, $summary, $dict);
-        if (count($answers) !== $totalItems) {
+        if (count($answers) !== vr_total_items_count()) {
             json_response(400, [
                 'ok' => false,
                 'error' => 'review_incomplete',
@@ -1269,10 +1267,15 @@ if ($action === 'publish_review' && $method === 'POST') {
         }
 
         $totalScore = 0;
+        $ratedItems = 0;
         foreach ($answers as $answer) {
-            $totalScore += (int)$answer['score'];
+            $score = (int)$answer['score'];
+            if ($score > 0) {
+                $totalScore += $score;
+                $ratedItems++;
+            }
         }
-        $maxScore = $totalItems * 3;
+        $maxScore = $ratedItems * 3;
 
         $pdo->beginTransaction();
         $archiveStmt = $pdo->prepare(

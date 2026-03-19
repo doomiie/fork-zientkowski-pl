@@ -126,7 +126,7 @@ function vr_normalize_answers($rawAnswers, array $dict): array
             continue;
         }
         $score = (int)($row['score'] ?? 0);
-        if ($score < 1 || $score > 3) {
+        if ($score < 0 || $score > 3) {
             continue;
         }
         $normalized[$itemKey] = [
@@ -270,7 +270,7 @@ function vr_load_scores(PDO $pdo, array $summary, array $dict): array
             continue;
         }
         $score = (int)($row['score'] ?? 0);
-        if ($score < 1 || $score > 3) {
+        if ($score < 0 || $score > 3) {
             continue;
         }
         $meta = $dict[$itemKey];
@@ -288,7 +288,7 @@ function vr_load_scores(PDO $pdo, array $summary, array $dict): array
 /**
  * @param array<int,array{key:string,title:string,position:int,items:array<int,array{item_key:string,label:string,position:int}>}> $catalog
  * @param array<int,array{item_key:string,category_key:string,label:string,position:int,score:int}> $answers
- * @return array<int,array{key:string,title:string,position:int,total_score:int,max_score:int,avg_score:float,items:array<int,array{item_key:string,category_key:string,label:string,position:int,score:int}>}>
+ * @return array<int,array{key:string,title:string,position:int,total_score:int,max_score:int,avg_score:float,rated_items:int,items:array<int,array{item_key:string,category_key:string,label:string,position:int,score:int,is_nd:bool}>}>
  */
 function vr_build_category_stats(array $catalog, array $answers): array
 {
@@ -309,11 +309,19 @@ function vr_build_category_stats(array $catalog, array $answers): array
             return (int)$a['position'] <=> (int)$b['position'];
         });
         $total = 0;
+        $ratedCount = 0;
+        $normalizedItems = [];
         foreach ($items as $item) {
-            $total += (int)$item['score'];
+            $score = (int)$item['score'];
+            if ($score > 0) {
+                $total += $score;
+                $ratedCount++;
+            }
+            $item['is_nd'] = ($score === 0);
+            $normalizedItems[] = $item;
         }
-        $max = count($category['items']) * 3;
-        $avg = count($items) > 0 ? round($total / count($items), 2) : 0.0;
+        $max = $ratedCount * 3;
+        $avg = $ratedCount > 0 ? round($total / $ratedCount, 2) : 0.0;
         $result[] = [
             'key' => $key,
             'title' => (string)$category['title'],
@@ -321,7 +329,8 @@ function vr_build_category_stats(array $catalog, array $answers): array
             'total_score' => $total,
             'max_score' => $max,
             'avg_score' => $avg,
-            'items' => $items,
+            'rated_items' => $ratedCount,
+            'items' => $normalizedItems,
         ];
     }
     return $result;
@@ -340,15 +349,24 @@ function vr_hydrate_summary(PDO $pdo, array $summary, array $catalog, array $dic
     $categories = vr_build_category_stats($catalog, $answers);
     $answered = count($answers);
     $totalItems = vr_total_items_count();
+    $ratedItems = 0;
     $totalScore = (int)$summary['total_score'];
     $maxScore = (int)$summary['max_score'];
     if ($totalScore <= 0 && $answered > 0) {
         foreach ($answers as $answer) {
-            $totalScore += (int)$answer['score'];
+            $score = (int)$answer['score'];
+            if ($score > 0) {
+                $totalScore += $score;
+            }
+        }
+    }
+    foreach ($answers as $answer) {
+        if ((int)$answer['score'] > 0) {
+            $ratedItems++;
         }
     }
     if ($maxScore <= 0) {
-        $maxScore = $totalItems * 3;
+        $maxScore = $ratedItems * 3;
     }
     $reviewerUserId = (int)$summary['reviewer_user_id'];
     if (!array_key_exists($reviewerUserId, $reviewerEmailCache)) {
@@ -379,6 +397,7 @@ function vr_hydrate_summary(PDO $pdo, array $summary, array $catalog, array $dic
         'total_score' => $totalScore,
         'max_score' => $maxScore,
         'answered_items' => $answered,
+        'rated_items' => $ratedItems,
         'total_items' => $totalItems,
         'is_complete' => ($answered === $totalItems),
         'categories' => $categories,
