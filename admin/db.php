@@ -1,17 +1,132 @@
 <?php
 declare(strict_types=1);
 
+function app_request_header(string $name): string {
+    $serverKey = 'HTTP_' . strtoupper(str_replace('-', '_', $name));
+    return trim((string)($_SERVER[$serverKey] ?? ''));
+}
+
+function app_is_https_request(): bool {
+    $https = strtolower(trim((string)($_SERVER['HTTPS'] ?? '')));
+    if ($https !== '' && $https !== 'off') {
+        return true;
+    }
+    $forwardedProto = strtolower(trim(explode(',', (string)($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? ''))[0] ?? ''));
+    if ($forwardedProto === 'https') {
+        return true;
+    }
+    $frontEndHttps = strtolower(trim((string)($_SERVER['HTTP_FRONT_END_HTTPS'] ?? '')));
+    if ($frontEndHttps !== '' && $frontEndHttps !== 'off') {
+        return true;
+    }
+    return (string)($_SERVER['SERVER_PORT'] ?? '') === '443';
+}
+
+function auth_debug_enabled(): bool {
+    $flag = strtolower(trim((string)(getenv('APP_DEBUG_AUTH') ?: '')));
+    if (in_array($flag, ['1', 'true', 'yes', 'on'], true)) {
+        return true;
+    }
+
+    $query = strtolower(trim((string)($_GET['debug_auth'] ?? $_POST['debug_auth'] ?? '')));
+    if (in_array($query, ['1', 'true', 'yes', 'on'], true)) {
+        return true;
+    }
+
+    $header = strtolower(app_request_header('X-Debug-Auth'));
+    return in_array($header, ['1', 'true', 'yes', 'on'], true);
+}
+
+function auth_debug_mask(string $value): string {
+    if ($value === '') {
+        return '';
+    }
+    $len = strlen($value);
+    if ($len <= 8) {
+        return str_repeat('*', $len);
+    }
+    return substr($value, 0, 4) . '...' . substr($value, -4);
+}
+
+/**
+ * @return array<string,mixed>
+ */
+function auth_debug_snapshot(array $extra = []): array {
+    $cookieParams = session_get_cookie_params();
+    $setCookieHeaders = [];
+    foreach (headers_list() as $header) {
+        if (stripos($header, 'Set-Cookie:') === 0) {
+            $setCookieHeaders[] = $header;
+        }
+    }
+
+    $sessionKeys = array_keys($_SESSION ?? []);
+    sort($sessionKeys);
+
+    return [
+        'time' => gmdate('c'),
+        'request' => [
+            'method' => (string)($_SERVER['REQUEST_METHOD'] ?? ''),
+            'uri' => (string)($_SERVER['REQUEST_URI'] ?? ''),
+            'host' => (string)($_SERVER['HTTP_HOST'] ?? ''),
+            'server_name' => (string)($_SERVER['SERVER_NAME'] ?? ''),
+            'https' => app_is_https_request(),
+            'https_raw' => (string)($_SERVER['HTTPS'] ?? ''),
+            'server_port' => (string)($_SERVER['SERVER_PORT'] ?? ''),
+            'x_forwarded_proto' => (string)($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? ''),
+            'x_forwarded_host' => (string)($_SERVER['HTTP_X_FORWARDED_HOST'] ?? ''),
+            'origin' => (string)($_SERVER['HTTP_ORIGIN'] ?? ''),
+            'referer' => (string)($_SERVER['HTTP_REFERER'] ?? ''),
+            'content_type' => (string)($_SERVER['CONTENT_TYPE'] ?? ''),
+        ],
+        'session' => [
+            'status' => session_status(),
+            'name' => session_name(),
+            'id' => auth_debug_mask(session_id()),
+            'cookie_present' => array_key_exists(session_name(), $_COOKIE),
+            'cookie_value_present' => trim((string)($_COOKIE[session_name()] ?? '')) !== '',
+            'cookie_params' => $cookieParams,
+            'keys' => $sessionKeys,
+            'user_id' => isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : null,
+            'csrf_present' => !empty($_SESSION['csrf_token']),
+            'csrf_len' => strlen((string)($_SESSION['csrf_token'] ?? '')),
+        ],
+        'response' => [
+            'headers_sent' => headers_sent(),
+            'set_cookie_headers' => $setCookieHeaders,
+        ],
+        'extra' => $extra,
+    ];
+}
+
+function auth_debug_emit(string $event, array $extra = []): void {
+    if (!auth_debug_enabled()) {
+        return;
+    }
+    error_log('[auth-debug] ' . json_encode(auth_debug_snapshot([
+        'event' => $event,
+        'details' => $extra,
+    ]), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+}
+
 // Secure session configuration
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_set_cookie_params([
         'lifetime' => 0,
         'path' => '/',
         'domain' => '',
-        'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on',
+        'secure' => app_is_https_request(),
         'httponly' => true,
         'samesite' => 'Lax',
     ]);
     session_start();
+}
+
+if (auth_debug_enabled()) {
+    header('X-Auth-Debug-Enabled: 1');
+    auth_debug_emit('session_bootstrap', [
+        'session_cookie_params' => session_get_cookie_params(),
+    ]);
 }
 
 // Database config: set via environment variables or edit defaults below

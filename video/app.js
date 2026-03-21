@@ -42,11 +42,52 @@
     var el = byId("vapp-csrf");
     return el ? String(el.value || "") : "";
   }
+  function authDebugEnabled() {
+    return document.body && document.body.getAttribute("data-vapp-auth-debug") === "1";
+  }
+  function withAuthDebug(url) {
+    if (!authDebugEnabled()) return url;
+    return url + (url.indexOf("?") >= 0 ? "&" : "?") + "debug_auth=1";
+  }
+  function renderAuthDebug(payload) {
+    if (!authDebugEnabled()) return;
+    var el = byId("vapp-auth-debug-output");
+    if (!el) return;
+    var debugPayload = payload && payload.debug ? payload.debug : payload;
+    el.textContent = JSON.stringify(debugPayload || { message: "Brak debug info." }, null, 2);
+  }
 
   async function api(url, opts) {
-    var res = await fetch(url, Object.assign({ headers: { "Accept": "application/json" } }, opts || {}));
-    var json = await res.json().catch(function () { return {}; });
-    if (!res.ok || !json.ok) throw new Error(json.message || "Błąd API.");
+    var res = await fetch(withAuthDebug(url), Object.assign({ headers: { "Accept": "application/json" } }, opts || {}));
+    var rawText = await res.text();
+    var contentType = String(res.headers.get("content-type") || "");
+    var json = {};
+    if (rawText) {
+      try {
+        json = JSON.parse(rawText);
+      } catch (parseError) {
+        json = {
+          ok: false,
+          error: "invalid_json_response",
+          message: "API zwrocilo odpowiedz inna niz JSON.",
+          debug: {
+            flow: "video_frontend",
+            request_url: withAuthDebug(url),
+            http_status: res.status,
+            content_type: contentType,
+            raw_body: rawText.slice(0, 4000)
+          }
+        };
+      }
+    }
+    if (!res.ok || !json.ok) {
+      var error = new Error(json.message || "Błąd API.");
+      error.httpStatus = res.status;
+      error.contentType = contentType;
+      error.rawBody = rawText;
+      error.apiPayload = json;
+      throw error;
+    }
     return json;
   }
 
@@ -117,12 +158,19 @@
   function initLoginForm() {
     var form = byId("vapp-login-form");
     if (!form) return;
+    if (authDebugEnabled()) {
+      api(AUTH_API + "?action=status").then(function (result) {
+        renderAuthDebug(result);
+      }).catch(function (error) {
+        renderAuthDebug(error.apiPayload || { message: error instanceof Error ? error.message : "Nie udalo sie pobrac debug info." });
+      });
+    }
     form.addEventListener("submit", async function (event) {
       event.preventDefault();
       setText("vapp-login-status", "Logowanie...");
       var fd = new FormData(form);
       try {
-        await api(AUTH_API + "?action=login", {
+        var result = await api(AUTH_API + "?action=login", {
           method: "POST",
           headers: { "Content-Type": "application/json", "Accept": "application/json" },
           body: JSON.stringify({
@@ -131,9 +179,11 @@
             csrf_token: csrf()
           })
         });
+        renderAuthDebug(result);
         setText("vapp-login-status", "Zalogowano.");
         window.location.href = "/video/index.php";
       } catch (error) {
+        renderAuthDebug(error.apiPayload || { message: error instanceof Error ? error.message : "Błąd logowania." });
         setText("vapp-login-status", error instanceof Error ? error.message : "Błąd logowania.");
       }
     });

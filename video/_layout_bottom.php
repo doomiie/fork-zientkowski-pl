@@ -1,5 +1,6 @@
     </div>
   </main>
-  <script src="/video/app.js?v=20260317-6" defer></script>
+  <?php $videoAppJsVersion = (string)(@filemtime(__DIR__ . '/app.js') ?: '20260321-1'); ?>
+  <script src="/video/app.js?v=<?php echo htmlspecialchars($videoAppJsVersion, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" defer></script>
 </body>
 </html>

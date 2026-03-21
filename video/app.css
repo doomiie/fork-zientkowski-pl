@@ -395,3 +395,15 @@ body.vapp-drawer-open .vapp-drawer {
     padding: 8px 5px;
   }
 }
+.vapp-auth-debug-output {
+  margin: 0;
+  padding: 16px;
+  border-radius: 12px;
+  background: #f3f4f6;
+  color: #111827;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-x: auto;
+}

@@ -3,6 +3,8 @@ declare(strict_types=1);
 /** @var string $videoPageTitle */
 /** @var array<string,mixed> $videoAppUser */
 /** @var string $videoAppCsrf */
+$videoSharedCssVersion = (string)(@filemtime(__DIR__ . '/../assets/css/shared.css') ?: 'dev19');
+$videoAppCssVersion = (string)(@filemtime(__DIR__ . '/app.css') ?: '20260317-3');
 ?>
 <!DOCTYPE html>
 <html lang="pl">
@@ -10,14 +12,15 @@ declare(strict_types=1);
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?php echo htmlspecialchars($videoPageTitle, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></title>
-  <link rel="stylesheet" href="/assets/css/shared.css?v=dev19">
-  <link rel="stylesheet" href="/video/app.css?v=20260317-3">
+  <link rel="stylesheet" href="/assets/css/shared.css?v=<?php echo htmlspecialchars($videoSharedCssVersion, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>">
+  <link rel="stylesheet" href="/video/app.css?v=<?php echo htmlspecialchars($videoAppCssVersion, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>">
 </head>
 <body
   data-video-app-page="<?php echo htmlspecialchars((string)basename($_SERVER['SCRIPT_NAME']), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>"
   data-vapp-user-id="<?php echo htmlspecialchars((string)($videoAppUser['user_id'] ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>"
   data-vapp-user-role="<?php echo htmlspecialchars((string)($videoAppUser['role'] ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>"
   data-vapp-user-roles="<?php echo htmlspecialchars(implode(',', array_map('strval', (array)($videoAppUser['roles'] ?? []))), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>"
+  data-vapp-auth-debug="<?php echo auth_debug_enabled() ? '1' : '0'; ?>"
 >
   <header class="vapp-top">
     <div class="vapp-wrap vapp-top__inner">

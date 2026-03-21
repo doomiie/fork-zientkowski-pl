@@ -7,11 +7,26 @@ header('X-Content-Type-Options: nosniff');
 require_once __DIR__ . '/../admin/db.php';
 require_once __DIR__ . '/video_auth_lib.php';
 
+if (auth_debug_enabled()) {
+    ini_set('display_errors', '1');
+    ini_set('display_startup_errors', '1');
+    error_reporting(E_ALL);
+}
+
 /**
  * @param array<string,mixed> $payload
  */
 function auth_json_response(int $status, array $payload): void
 {
+    if (auth_debug_enabled()) {
+        $payload['debug'] = auth_debug_snapshot([
+            'flow' => 'video_auth',
+            'action' => (string)($_GET['action'] ?? 'status'),
+            'http_status' => $status,
+            'ok' => (bool)($payload['ok'] ?? false),
+            'error' => (string)($payload['error'] ?? ''),
+        ]);
+    }
     http_response_code($status);
     echo json_encode($payload, JSON_UNESCAPED_UNICODE);
     exit;
@@ -103,6 +118,9 @@ function auth_current_user(PDO $pdo): array
 
 function auth_status(PDO $pdo): void
 {
+    auth_debug_emit('video_auth_status', [
+        'user_logged_in' => is_logged_in(),
+    ]);
     auth_json_response(200, [
         'ok' => true,
         'user' => auth_current_user($pdo),
@@ -116,6 +134,13 @@ function auth_login(PDO $pdo): void
     $email = trim((string)($data['email'] ?? ''));
     $password = (string)($data['password'] ?? '');
     $token = (string)($data['csrf_token'] ?? '');
+
+    auth_debug_emit('video_auth_login_attempt', [
+        'email_present' => $email !== '',
+        'password_present' => $password !== '',
+        'csrf_present' => $token !== '',
+        'csrf_matches' => csrf_check($token),
+    ]);
 
     if (!csrf_check($token)) {
         auth_json_response(400, [
@@ -143,6 +168,12 @@ function auth_login(PDO $pdo): void
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $ok = $row && (int)$row['is_active'] === 1 && password_verify($password, (string)$row['password_hash']);
         if (!$ok) {
+            auth_debug_emit('video_auth_login_rejected', [
+                'reason' => 'invalid_credentials',
+                'user_found' => (bool)$row,
+                'is_active' => $row ? (int)$row['is_active'] === 1 : null,
+                'password_verified' => $row ? password_verify($password, (string)$row['password_hash']) : null,
+            ]);
             auth_json_response(401, [
                 'ok' => false,
                 'error' => 'invalid_credentials',
@@ -150,6 +181,10 @@ function auth_login(PDO $pdo): void
             ]);
         }
         if ((string)($row['email_verified_at'] ?? '') === '') {
+            auth_debug_emit('video_auth_login_rejected', [
+                'reason' => 'email_not_verified',
+                'user_id' => (int)$row['id'],
+            ]);
             auth_json_response(403, [
                 'ok' => false,
                 'error' => 'email_not_verified',
@@ -163,6 +198,10 @@ function auth_login(PDO $pdo): void
         $_SESSION['user_has_global_video_access'] = (int)($row['has_global_video_access'] ?? 0);
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         $pdo->prepare('UPDATE users SET last_login_at = NOW() WHERE id = ?')->execute([(int)$row['id']]);
+        auth_debug_emit('video_auth_login_success', [
+            'user_id' => (int)$row['id'],
+            'role' => (string)$row['role'],
+        ]);
 
         auth_json_response(200, [
             'ok' => true,
@@ -170,6 +209,10 @@ function auth_login(PDO $pdo): void
             'csrf_token' => csrf_token(),
         ]);
     } catch (Throwable $e) {
+        auth_debug_emit('video_auth_login_exception', [
+            'exception' => get_class($e),
+            'message' => $e->getMessage(),
+        ]);
         auth_json_response(500, [
             'ok' => false,
             'error' => 'login_failed',
@@ -182,6 +225,10 @@ function auth_logout(PDO $pdo): void
 {
     $data = auth_get_input_data();
     $token = (string)($data['csrf_token'] ?? '');
+    auth_debug_emit('video_auth_logout_attempt', [
+        'csrf_present' => $token !== '',
+        'csrf_matches' => csrf_check($token),
+    ]);
     if (!csrf_check($token)) {
         auth_json_response(400, [
             'ok' => false,
@@ -198,6 +245,7 @@ function auth_logout(PDO $pdo): void
     session_destroy();
     session_start();
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    auth_debug_emit('video_auth_logout_success');
 
     auth_json_response(200, [
         'ok' => true,
@@ -217,6 +265,13 @@ function auth_register(PDO $pdo): void
     $email = mb_strtolower(trim((string)($data['email'] ?? '')));
     $password = (string)($data['password'] ?? '');
     $token = (string)($data['csrf_token'] ?? '');
+
+    auth_debug_emit('video_auth_register_attempt', [
+        'email_present' => $email !== '',
+        'password_present' => $password !== '',
+        'csrf_present' => $token !== '',
+        'csrf_matches' => csrf_check($token),
+    ]);
 
     if (!csrf_check($token)) {
         auth_json_response(400, [
@@ -308,6 +363,10 @@ function auth_register(PDO $pdo): void
         if ($pdo->inTransaction()) {
             $pdo->rollBack();
         }
+        auth_debug_emit('video_auth_register_exception', [
+            'exception' => get_class($e),
+            'message' => $e->getMessage(),
+        ]);
         auth_json_response(500, [
             'ok' => false,
             'error' => 'register_failed',

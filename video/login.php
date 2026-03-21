@@ -17,5 +17,11 @@ require __DIR__ . '/_layout_top.php';
     <p id="vapp-login-status" class="vapp-status"></p>
   </form>
 </section>
+<?php if (auth_debug_enabled()): ?>
+<section class="vapp-card vapp-card--narrow">
+  <h2>Debug logowania</h2>
+  <p class="vapp-status">Widok diagnostyczny jest wlaczony dla tej sesji przez <code>?debug_auth=1</code>.</p>
+  <pre id="vapp-auth-debug-output" class="vapp-auth-debug-output">Ladowanie debug info...</pre>
+</section>
+<?php endif; ?>
 <?php require __DIR__ . '/_layout_bottom.php'; ?>
-
