@@ -52,10 +52,18 @@
         empty.classList.add('hidden');
         items.forEach(it => {
           const downloadHref = it.download_url || it.share_url || it.file_path;
+          const mimeType = String(it.mime_type || '').toLowerCase();
+          const originalName = String(it.original_name || '');
+          const stripQuery = (value) => String(value || '').split('#')[0].split('?')[0];
+          const hasPdfExtension = (value) => /\.pdf$/i.test(stripQuery(value));
+          const isPdf = mimeType.includes('application/pdf') || hasPdfExtension(downloadHref) || hasPdfExtension(originalName);
+          const targetHref = (isPdf && downloadHref)
+            ? '/lp/book.html?source=' + encodeURIComponent(downloadHref)
+            : (downloadHref || '#');
           const rawCount = typeof it.download_count === 'number' ? it.download_count : parseInt(it.download_count, 10);
           const downloadCount = Number.isFinite(rawCount) ? rawCount : 0;
           const card = document.createElement('a');
-          card.href = downloadHref || '#';
+          card.href = targetHref;
           card.className = 'block rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition p-5 h-full flex flex-col';
           card.target = '_blank';
           card.rel = 'noopener';

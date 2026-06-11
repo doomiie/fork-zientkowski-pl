@@ -1,0 +1,577 @@
+﻿<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jerzy Zientkowski - Sesja 2</title>
+  <link rel="preload" as="style" href="/assets/css/app.min.css?v=brand2" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/assets/css/app.min.css?v=brand2"></noscript>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="https://kotryszientkowski.elms.pl/assets/js/iframe-resizer-embed.js"></script>
+  <link rel="preload" as="font" href="/assets/fonts/SpaceGrotesk-PL.woff2" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="./assets/css/loader.css">
+  <style>
+    @font-face {
+      font-family: 'Space Grotesk';
+      src: url('/assets/fonts/SpaceGrotesk-PL.woff2') format('woff2');
+      font-weight: 300 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    * { font-family: 'Space Grotesk', sans-serif; }
+    .step-chip { border: 1px solid #e5e7eb; border-radius: 9999px; padding: .25rem .75rem; font-size: .75rem; font-weight: 600; color: #6b7280; }
+    .step-chip.active { border-color: var(--color-accent, #3498db); color: var(--color-accent, #3498db); background: rgba(52,152,219,.08); }
+    .scheduler-shell { max-width: 980px; margin: 0 auto; }
+    .booking-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 16px; padding: 16px; }
+    .compact-layout { display: grid; grid-template-columns: 1fr; gap: 16px; }
+    @media (min-width: 900px) {
+      .compact-layout { grid-template-columns: 320px 1fr; }
+    }
+    .back-arrow { background: transparent; border: 0; color: #374151; font-weight: 600; padding: 0; }
+    .back-arrow:hover { color: var(--color-accent, #3498db); }
+    .time-btn { border: 1px solid #d1d5db; border-radius: .5rem; padding: .625rem; font-size: .875rem; transition: .2s; }
+    .time-btn:hover { background: var(--color-accent, #3498db); color: #fff; }
+    .time-btn.active { background: var(--color-accent, #3498db); color: #fff; border-color: var(--color-accent, #3498db); }
+    .time-btn.busy { background: #ef4444; color: #fff; border-color: #ef4444; cursor: not-allowed; }
+    .placeholder { height: 42px; border-radius: .75rem; background: #f3f4f6; animation: pulse 1s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:.4} 50%{opacity:1} }
+  </style>
+</head>
+<body class="bg-[#f8fafc] text-dark">
+  <header class="fixed w-full bg-white z-50 py-4 border-b border-gray-200/50">
+    <div class="max-w-[1400px] mx-auto px-6 flex items-center">
+      <a href="/" class="flex items-center gap-3"><img src="/assets/img/logo_main.png" alt="Logo" class="brightness-0 max-w-[150px]"></a>
+    </div>
+  </header>
+  <div style="height:64px"></div>
+
+  <section class="pt-8 pb-16">
+    <div class="scheduler-shell px-4">
+      <div class="flex items-center gap-2 mb-6">
+        <span id="chip1" class="step-chip active">1. Wybór terminu</span>
+        <span id="chip2" class="step-chip">2. Dane kontaktowe</span>
+      </div>
+      <div class="mb-4">
+        <button id="global-back" type="button" class="back-arrow">← Wstecz</button>
+      </div>
+      <h1 class="text-2xl md:text-3xl font-bold mb-5">Umów spotkanie</h1>
+
+      <form id="meetingForm" novalidate>
+        <select id="meeting-type" class="hidden"></select>
+
+        <div id="step-booking" class="space-y-4">
+          <div id="mobile-calendar" class="booking-card compact-layout">
+            <aside class="space-y-3">
+              <h2 class="text-xl font-semibold">Wybierz usługę</h2>
+              <select id="meeting-select-ui" class="w-full border border-gray-300 rounded-lg p-3"></select>
+              <p id="meeting-desc" class="text-sm text-gray-700"></p>
+              <p id="meeting-duration" class="text-sm text-gray-600"></p>
+              <p id="meeting-price" class="text-sm text-gray-600"></p>
+            </aside>
+            <div>
+              <div class="flex justify-between items-center mb-4">
+                <button id="prev-month" type="button" class="text-sm text-accent hover:underline disabled:opacity-30" disabled>Wstecz</button>
+                <div id="calendar-month" class="font-semibold text-lg"></div>
+                <button id="next-month" type="button" class="text-sm text-accent hover:underline">Dalej</button>
+              </div>
+              <div id="calendar-grid" class="grid grid-cols-5 gap-2"></div>
+              <div id="desktop-times" class="hidden mt-6">
+                <button id="desktop-times-back-arrow" type="button" class="back-arrow mb-2">← Wstecz</button>
+                <label id="time-label" class="block mb-3 font-medium"></label>
+                <div id="time-buttons" class="grid grid-cols-3 gap-2"></div>
+                <button id="desktop-next" type="button" class="hidden mt-4 w-full bg-accent text-white py-3 rounded-lg disabled:opacity-50" disabled>Dalej</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="mobile-times" class="hidden md:hidden booking-card space-y-4">
+            <button id="mobile-times-back-arrow" type="button" class="back-arrow">← Wstecz</button>
+            <div id="mobile-summary" class="bg-gray-50 rounded-xl p-3 text-sm text-gray-700"></div>
+            <label id="mobile-time-label" class="block font-medium"></label>
+            <div id="mobile-time-buttons" class="grid grid-cols-3 gap-2"></div>
+            <div class="flex gap-2">
+              <button id="mobile-back" type="button" class="w-1/2 border border-gray-300 py-3 rounded-lg">Wróć</button>
+              <button id="mobile-next" type="button" class="w-1/2 bg-accent text-white py-3 rounded-lg disabled:opacity-50" disabled>Dalej</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="step-contact" class="hidden compact-layout">
+          <aside class="booking-card">
+            <button id="contact-back-arrow" type="button" class="back-arrow mb-3">← Wstecz</button>
+            <h2 class="text-xl font-semibold mb-3">Podsumowanie</h2>
+            <div id="summary" class="text-sm text-gray-700 space-y-2"></div>
+            <button id="back-to-booking" type="button" class="mt-6 w-full border border-gray-300 py-3 rounded-lg">Zmień termin</button>
+          </aside>
+          <div class="booking-card space-y-4">
+            <h2 class="text-xl font-semibold">Dane kontaktowe</h2>
+            <div><label class="block mb-2 font-medium" for="contact-name">Imię i nazwisko</label><input id="contact-name" type="text" class="w-full border border-gray-300 rounded-lg p-3" /></div>
+            <div><label class="block mb-2 font-medium" for="contact-email">Adres e-mail</label><input id="contact-email" type="email" class="w-full border border-gray-300 rounded-lg p-3" required /></div>
+            <div><label class="block mb-2 font-medium" for="contact-phone">Telefon (opcjonalnie)</label><input id="contact-phone" type="tel" class="w-full border border-gray-300 rounded-lg p-3" /></div>
+            <button id="submit-btn" type="submit" class="w-full bg-accent text-white py-3 rounded-lg">Zarezerwuj spotkanie</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <div id="payment-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+    <div class="bg-white rounded-lg w-full max-w-xl p-4 relative">
+      <button id="payment-close" class="absolute top-2 right-2 text-gray-600">x</button>
+      <h3 id="payment-title" class="text-lg font-bold mb-3">Sesja płatna</h3>
+      <iframe id="payment-frame" class="w-full h-[70vh]" src="https://kotryszientkowski.elms.pl/assets/js/s.php?id=1f0e3dad99908345f7439f8ffabdffc4" frameborder="0" allowfullscreen></iframe>
+    </div>
+  </div>
+  <script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    const el = id => document.getElementById(id);
+    const uiSelect = el('meeting-select-ui');
+    const form = el('meetingForm');
+    const select = el('meeting-type');
+    const calendarGrid = el('calendar-grid');
+    const calendarMonth = el('calendar-month');
+    const prevMonthBtn = el('prev-month');
+    const nextMonthBtn = el('next-month');
+    const desktopTimes = el('desktop-times');
+    const timeButtons = el('time-buttons');
+    const mobileTimeButtons = el('mobile-time-buttons');
+    const timeLabel = el('time-label');
+    const mobileTimeLabel = el('mobile-time-label');
+    const desktopNext = el('desktop-next');
+    const mobileNext = el('mobile-next');
+    const mobileBack = el('mobile-back');
+    const desktopTimesBack = el('desktop-times-back-arrow');
+    const mobileCalendar = el('mobile-calendar');
+    const mobileTimes = el('mobile-times');
+    const stepBooking = el('step-booking');
+    const stepContact = el('step-contact');
+    const summary = el('summary');
+    const mobileSummary = el('mobile-summary');
+    const submitBtn = el('submit-btn');
+
+    let cfgFromJson = {};
+    let meetingTypesCfg = {};
+    let workingHoursCfg = {};
+    let minMeetingDuration = 30;
+    let meetingType = null;
+    let selectedDate = null;
+    let selectedTime = null;
+    let monthOffset = 0;
+    let busyRangeCache = null;
+    let pollInterval = null;
+
+    const isMobile = () => window.matchMedia('(max-width: 767px)').matches;
+    const setSubmitLocked = (locked, text) => { submitBtn.disabled = locked; submitBtn.textContent = locked ? text : 'Zarezerwuj spotkanie'; };
+
+    function setStep() {
+      stepBooking.classList.remove('hidden');
+      stepContact.classList.add('hidden');
+      mobileTimes.classList.add('hidden');
+      mobileCalendar.classList.remove('hidden');
+      el('chip1').classList.add('active');
+      el('chip2').classList.remove('active');
+    }
+
+    function renderSummary() {
+      const mt = meetingTypesCfg[meetingType] || {};
+      const service = `${(mt.emoji || '')} ${(mt.name || meetingType || '-')}`.trim();
+      const dateTxt = selectedDate ? new Date(`${selectedDate}T00:00:00`).toLocaleDateString('pl-PL', { weekday:'long', day:'numeric', month:'long', year:'numeric' }) : '-';
+      const timeTxt = selectedTime || '-';
+      const durTxt = mt.duration === 'full' ? 'Cały dzień' : `${mt.duration || '-'} min`;
+      const html = `<div><b>Usługa:</b> ${service}</div><div><b>Data:</b> ${dateTxt}</div><div><b>Godzina:</b> ${timeTxt}</div><div><b>Czas:</b> ${durTxt}</div>${mt.paid ? `<div><b>Cena:</b> ${mt.amount} PLN</div>` : ''}`;
+      summary.innerHTML = html;
+      mobileSummary.innerHTML = html;
+    }
+
+    function updateServiceInfo() {
+      const mt = meetingTypesCfg[meetingType] || {};
+      el('meeting-desc').textContent = mt.description || '';
+      el('meeting-duration').textContent = mt.duration ? (mt.duration === 'full' ? 'Czas trwania: cały dzień' : `Czas trwania: ${mt.duration} min`) : '';
+      el('meeting-price').textContent = mt.paid ? `Cena: ${mt.amount} PLN` : '';
+      renderSummary();
+    }
+
+    function getWorkingDaysFromMonth(offset) {
+      const result = [];
+      const today = new Date();
+      const refDate = new Date(today.getFullYear(), today.getMonth() + offset, 1);
+      const month = refDate.getMonth();
+      const cursor = new Date(refDate.getFullYear(), refDate.getMonth(), 1);
+      while (cursor.getMonth() === month) {
+        const weekend = cursor.getDay() === 0 || cursor.getDay() === 6;
+        if (!weekend) result.push(new Date(cursor));
+        cursor.setDate(cursor.getDate() + 1);
+      }
+      return result;
+    }
+
+    async function apiRequest(url, options = {}) {
+      options.credentials = options.credentials || 'include';
+      const resp = await fetch(url, options);
+      if (resp.status === 401) {
+        const data = await resp.json().catch(() => null);
+        if (data && data.authUrl) window.location.href = data.authUrl;
+        return null;
+      }
+      return resp.json().catch(() => null);
+    }
+
+    function buildBusyMap(intervals) {
+      const map = new Map();
+      if (!Array.isArray(intervals)) return map;
+      intervals.forEach(({ start, end }) => {
+        const s = new Date(start), e = new Date(end);
+        if (isNaN(s) || isNaN(e) || e <= s) return;
+        let cursor = new Date(s); cursor.setHours(0,0,0,0);
+        const endDay = new Date(e); endDay.setHours(0,0,0,0);
+        while (cursor <= endDay) {
+          const dayStart = new Date(cursor), dayEnd = new Date(cursor); dayEnd.setHours(23,59,59,999);
+          const ovS = s > dayStart ? s : dayStart, ovE = e < dayEnd ? e : dayEnd;
+          if (ovE > ovS) {
+            const key = dayStart.toLocaleDateString('sv-SE');
+            const startMin = ovS.getHours() * 60 + ovS.getMinutes();
+            const endMin = ovE.getHours() * 60 + ovE.getMinutes();
+            if (!map.has(key)) map.set(key, []);
+            map.get(key).push({ startMin, endMin });
+          }
+          cursor.setDate(cursor.getDate() + 1);
+        }
+      });
+      map.forEach(list => list.sort((a,b) => a.startMin - b.startMin));
+      return map;
+    }
+
+    async function fetchBusyRange(startDate, endDate) {
+      if (busyRangeCache && busyRangeCache.start === startDate && busyRangeCache.end === endDate) return busyRangeCache.map;
+      const data = await apiRequest(`/backend/calendar.php?action=busy_range&start=${startDate}&end=${endDate}&return=/sesja2.html`);
+      const map = buildBusyMap((data && data.busyIntervals) || []);
+      busyRangeCache = { start: startDate, end: endDate, map };
+      return map;
+    }
+
+    async function fetchBusySlots(date, duration, fullDay = false) {
+      const fullParam = fullDay ? '&fullDay=1' : '';
+      const data = await apiRequest(`/backend/calendar.php?action=busy&date=${date}&duration=${duration}${fullParam}&return=/sesja2.html`);
+      const rows = (data && (data.busyIntervals || data.events || data.busy)) || [];
+      const toMin = v => {
+        if (typeof v === 'number') return v;
+        if (typeof v === 'string') {
+          const m = v.match(/^(\d{1,2}):(\d{2})/); if (m) return (+m[1])*60 + (+m[2]);
+          const d = new Date(v); if (!isNaN(d)) return d.getHours()*60 + d.getMinutes();
+        }
+        return null;
+      };
+      const out = [];
+      rows.forEach(it => {
+        if (typeof it === 'string') { const s = toMin(it); if (s != null) out.push({ startMin: s, endMin: s + duration }); return; }
+        const s = toMin(it.start), e = toMin(it.end);
+        if (s != null && e != null && e > s) out.push({ startMin: s, endMin: e });
+      });
+      return out;
+    }
+    function paintTimeButtons(slots, busySlots) {
+      const createBtn = (time, busy) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = time;
+        btn.dataset.time = time;
+        btn.className = 'time-btn' + (busy ? ' busy' : '');
+        btn.disabled = !!busy;
+        if (!busy) btn.addEventListener('click', () => {
+          selectedTime = time;
+          [timeButtons, mobileTimeButtons].forEach(box => Array.from(box.children).forEach(n => n.classList.remove('active')));
+          const d = timeButtons.querySelector(`[data-time="${time}"]`);
+          const m = mobileTimeButtons.querySelector(`[data-time="${time}"]`);
+          if (d) d.classList.add('active');
+          if (m) m.classList.add('active');
+          renderSummary();
+        });
+        return btn;
+      };
+      timeButtons.innerHTML = ''; mobileTimeButtons.innerHTML = '';
+      slots.forEach(time => {
+        const [hh, mm] = time.split(':').map(Number);
+        const s = hh * 60 + mm;
+        const dur = (meetingTypesCfg[meetingType] || {}).duration;
+        const minutes = dur === 'full' ? 60 : parseInt(dur || '60', 10);
+        const e = s + minutes;
+        const busy = busySlots.some(w => s < w.endMin && e > w.startMin);
+        timeButtons.appendChild(createBtn(time, busy));
+        mobileTimeButtons.appendChild(createBtn(time, busy));
+      });
+    }
+
+    async function showTimes() {
+      desktopTimes.classList.remove('hidden');
+      desktopNext.disabled = true; mobileNext.disabled = true; desktopNext.classList.add('hidden');
+      timeButtons.innerHTML = '<div class="placeholder"></div><div class="placeholder"></div><div class="placeholder"></div>';
+      mobileTimeButtons.innerHTML = timeButtons.innerHTML;
+
+      const mt = meetingTypesCfg[meetingType] || {};
+      const duration = mt.duration === 'full' ? 60 : parseInt(mt.duration || '60', 10);
+      let busy = (busyRangeCache && busyRangeCache.map && busyRangeCache.map.get(selectedDate)) || null;
+      if (!busy) busy = await fetchBusySlots(selectedDate, duration, mt.duration === 'full');
+
+      const parsed = new Date(selectedDate + 'T00:00:00');
+      const label = parsed.toLocaleDateString('pl-PL', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+      timeLabel.textContent = `Wybierz godzinę (${label})`;
+      mobileTimeLabel.textContent = `Wybierz godzinę (${label})`;
+
+      const dayKey = ['sun','mon','tue','wed','thu','fri','sat'][parsed.getDay()];
+      const wh = workingHoursCfg[dayKey] || {};
+      const whStart = wh.start || '09:00';
+      const whEnd = wh.end || '17:00';
+
+      if (mt.duration === 'full') {
+        if (busy.length === 0) paintTimeButtons([whStart], []);
+        else { timeButtons.innerHTML = '<div class="col-span-3 text-center text-red-600">Ten dzień jest częściowo zajęty.</div>'; mobileTimeButtons.innerHTML = timeButtons.innerHTML; }
+      } else {
+        const slots = [];
+        let cursor = new Date(`${selectedDate}T${whStart}:00`);
+        const dayEnd = new Date(`${selectedDate}T${whEnd}:00`);
+        while (cursor.getTime() + duration * 60000 <= dayEnd.getTime()) {
+          slots.push(cursor.toLocaleTimeString('pl-PL', { hour:'2-digit', minute:'2-digit', hour12:false }));
+          cursor.setMinutes(cursor.getMinutes() + duration);
+        }
+        paintTimeButtons(slots, busy);
+      }
+
+      renderSummary();
+    }
+
+    async function updateCalendar() {
+      calendarGrid.innerHTML = '<div class="placeholder"></div><div class="placeholder"></div><div class="placeholder"></div><div class="placeholder"></div><div class="placeholder"></div>';
+      const days = getWorkingDaysFromMonth(monthOffset);
+      const first = days[0];
+      const start = first.toLocaleDateString('sv-SE');
+      const end = days[days.length - 1].toLocaleDateString('sv-SE');
+      const busyMap = await fetchBusyRange(start, end);
+      calendarMonth.textContent = first.toLocaleDateString('pl-PL', { month:'long', year:'numeric' });
+      calendarGrid.innerHTML = '';
+
+      const offset = (first.getDay() === 0 ? 6 : first.getDay() - 1);
+      for (let i = 0; i < offset; i++) calendarGrid.appendChild(document.createElement('div'));
+
+      const todayTs = new Date().setHours(0,0,0,0);
+      for (const day of days) {
+        const dateStr = day.toLocaleDateString('sv-SE');
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.dataset.date = dateStr;
+        btn.textContent = day.toLocaleDateString('pl-PL', { weekday:'short', day:'numeric' });
+
+        const isPast = day < todayTs;
+        let fullyBooked = false;
+        let isAllFree = false;
+        if (!isPast) {
+          const bk = busyMap.get(dateStr) || [];
+          const dk = ['sun','mon','tue','wed','thu','fri','sat'][day.getDay()];
+          const wh = workingHoursCfg[dk] || {};
+          const st = wh.start || '09:00';
+          const en = wh.end || '17:00';
+          const mt = meetingTypesCfg[meetingType] || {};
+          const duration = mt.duration === 'full' ? 'full' : parseInt(mt.duration || String(minMeetingDuration), 10);
+
+          if (duration === 'full') {
+            fullyBooked = bk.length > 0;
+            isAllFree = bk.length === 0;
+          } else {
+            const slots = [];
+            let cursor = new Date(`${dateStr}T${st}:00`);
+            const dayEnd = new Date(`${dateStr}T${en}:00`);
+            while (cursor.getTime() + duration * 60000 <= dayEnd.getTime()) {
+              slots.push(cursor.toLocaleTimeString('pl-PL', { hour:'2-digit', minute:'2-digit', hour12:false }));
+              cursor.setMinutes(cursor.getMinutes() + duration);
+            }
+            const toMinutes = t => { const [hh, mm] = t.split(':').map(Number); return hh * 60 + mm; };
+            const freeSlots = slots.filter(time => {
+              const startMin = toMinutes(time);
+              const endMin = startMin + duration;
+              return !bk.some(w => startMin < w.endMin && endMin > w.startMin);
+            });
+            fullyBooked = freeSlots.length === 0;
+            isAllFree = bk.length === 0;
+          }
+        }
+
+        btn.className = 'rounded-lg px-3 py-2 border text-sm font-medium transition ' + ((isPast || fullyBooked) ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'hover:bg-accent hover:text-white');
+        if (selectedDate === dateStr) btn.classList.add('bg-accent','text-white');
+        if (!isPast) {
+          btn.classList.add('relative', 'pr-5');
+          const badge = document.createElement('span');
+          let color = 'bg-yellow-400';
+          let title = 'Częściowo zajęte';
+          if (fullyBooked) { color = 'bg-red-500'; title = 'Brak dostępnych slotów'; }
+          else if (isAllFree) { color = 'bg-green-500'; title = 'Wszystkie sloty wolne'; }
+          badge.className = 'absolute top-1 right-1 w-2.5 h-2.5 rounded-full ' + color;
+          badge.title = title;
+          btn.appendChild(badge);
+        }
+        if (!isPast && !fullyBooked) btn.addEventListener('click', () => { selectedDate = dateStr; selectedTime = null; updateCalendar(); showTimes(); });
+        calendarGrid.appendChild(btn);
+      }
+
+      prevMonthBtn.disabled = monthOffset <= -1;
+      nextMonthBtn.disabled = monthOffset >= 6;
+    }
+    async function createCalendarEvent(email, mtKey) {
+      const mt = meetingTypesCfg[mtKey] || {};
+      let startDateTime, endDateTime;
+      if (mt.duration === 'full') {
+        const dayKey = ['sun','mon','tue','wed','thu','fri','sat'][new Date(selectedDate).getDay()];
+        const wh = workingHoursCfg[dayKey] || {};
+        const st = wh.start || '09:00';
+        const en = wh.end || '17:00';
+        startDateTime = new Date(`${selectedDate}T${st}:00`);
+        endDateTime = new Date(`${selectedDate}T${en}:00`);
+      } else {
+        startDateTime = new Date(`${selectedDate}T${selectedTime}:00`);
+        endDateTime = new Date(startDateTime);
+        endDateTime.setMinutes(endDateTime.getMinutes() + parseInt(mt.duration || '60', 10));
+      }
+      return apiRequest('backend/calendar.php?action=create&return=/sesja2.html', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ meetingType: mtKey, start: startDateTime.toISOString(), end: endDateTime.toISOString(), attendees: email ? [email] : [] })
+      });
+    }
+
+    function showPaymentIframe() {
+      return new Promise(resolve => {
+        const modal = el('payment-modal');
+        const closeBtn = el('payment-close');
+        let paymentOk = false;
+        const cleanup = () => {
+          modal.classList.add('hidden');
+          clearInterval(pollInterval);
+          window.removeEventListener('message', onMsg);
+          closeBtn.removeEventListener('click', onClose);
+        };
+        const finish = ok => { cleanup(); resolve(!!ok); };
+        const onMsg = e => { if (e.data && e.data.wtlPaymentStatus === 'success') { paymentOk = true; finish(true); } };
+        const onClose = () => finish(paymentOk);
+        window.addEventListener('message', onMsg);
+        modal.classList.remove('hidden');
+        iFrameResize({ log: false }, '#payment-frame');
+        pollInterval = setInterval(() => fetch('backend/wtl_log.php').catch(() => null), 2000);
+        closeBtn.addEventListener('click', onClose);
+      });
+    }
+
+    const goContact = () => {};
+    desktopNext.addEventListener('click', goContact);
+    mobileNext.addEventListener('click', goContact);
+    desktopTimesBack.addEventListener('click', () => {
+      selectedTime = null;
+      desktopTimes.classList.add('hidden');
+      desktopNext.disabled = true;
+      desktopNext.classList.add('hidden');
+    });
+    mobileBack.addEventListener('click', () => { mobileTimes.classList.add('hidden'); mobileCalendar.classList.remove('hidden'); });
+    el('mobile-times-back-arrow').addEventListener('click', () => { mobileTimes.classList.add('hidden'); mobileCalendar.classList.remove('hidden'); });
+    el('contact-back-arrow').addEventListener('click', () => { setStep(); });
+    el('back-to-booking').addEventListener('click', () => { setStep(); });
+    el('global-back').addEventListener('click', () => {
+      if (!desktopTimes.classList.contains('hidden')) {
+        selectedTime = null;
+        desktopTimes.classList.add('hidden');
+        desktopNext.disabled = true;
+        desktopNext.classList.add('hidden');
+        return;
+      }
+      if (window.history.length > 1) window.history.back();
+      else window.location.href = '/';
+    });
+
+    prevMonthBtn.addEventListener('click', () => { if (monthOffset > -1) { monthOffset--; updateCalendar(); } });
+    nextMonthBtn.addEventListener('click', () => { if (monthOffset < 6) { monthOffset++; updateCalendar(); } else { alert('Nie można wybrać więcej niż 6 miesięcy do przodu.'); } });
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      if (!selectedDate || !selectedTime) { alert('Proszę wybrać dzień i godzinę.'); return; }
+      const email = (el('contact-email').value || '').trim();
+      if (!email) { alert('Podaj adres e-mail.'); return; }
+
+      const mt = meetingTypesCfg[meetingType] || {};
+      setSubmitLocked(true, 'Rezerwuję...');
+      try {
+        if (mt.paid) {
+          const frame = el('payment-frame');
+          const mtJson = ((cfgFromJson.meetingTypes || {})[meetingType]) || {};
+          const amount = (mtJson.amount || mt.amount || '').toString().trim();
+          el('payment-title').textContent = amount ? `Sesja płatna, ${amount} zł` : 'Sesja płatna';
+          let paidLink = mt.paid_link || mtJson.paid_link || frame.getAttribute('src') || '';
+          if (paidLink) {
+            try { const u = new URL(paidLink, location.origin); if (email) u.searchParams.set('prefill_email', email); paidLink = u.toString(); } catch {}
+            frame.setAttribute('src', paidLink);
+          }
+          const okPay = await showPaymentIframe();
+          if (!okPay) return;
+        }
+
+        const result = await createCalendarEvent(email, meetingType);
+        const ok = !!(result && (result.event || result.meetLink || result.calendarId));
+        if (!ok) { alert('Nie udało się utworzyć rezerwacji. Spróbuj ponownie.'); return; }
+
+        alert('Rezerwacja zapisana. Dziękuję.');
+        selectedDate = null; selectedTime = null; busyRangeCache = null;
+        setStep();
+        if (isMobile()) { mobileTimes.classList.add('hidden'); mobileCalendar.classList.remove('hidden'); }
+        await updateCalendar();
+      } finally { setSubmitLocked(false, ''); }
+    });
+
+    async function onMeetingTypeChange() {
+      meetingType = select.value;
+      selectedTime = null;
+      selectedDate = null;
+      desktopTimes.classList.add('hidden');
+      desktopNext.disabled = true; mobileNext.disabled = true; desktopNext.classList.add('hidden');
+      updateServiceInfo();
+      await updateCalendar();
+    }
+    select.addEventListener('change', onMeetingTypeChange);
+    uiSelect.addEventListener('change', () => {
+      select.value = uiSelect.value;
+      onMeetingTypeChange().catch(() => null);
+    });
+
+    const config = await fetch('config.json').then(r => r.json()).catch(() => ({}));
+    cfgFromJson = config;
+    meetingTypesCfg = config.meetingTypes || {};
+    workingHoursCfg = config.workingHours || {};
+    const durations = Object.values(meetingTypesCfg).map(mt => mt.duration).filter(d => d && d !== 'full').map(d => parseInt(d, 10)).filter(Number.isFinite);
+    minMeetingDuration = durations.length ? Math.min(...durations) : 30;
+
+    const entries = Object.entries(meetingTypesCfg).sort((a,b) => {
+      const oa = Number.isFinite(parseInt(a[1] && a[1].order, 10)) ? parseInt(a[1].order,10) : 9999;
+      const ob = Number.isFinite(parseInt(b[1] && b[1].order, 10)) ? parseInt(b[1].order,10) : 9999;
+      if (oa !== ob) return oa - ob;
+      return String(a[0]).localeCompare(String(b[0]));
+    });
+
+    entries.forEach(([key, mt]) => {
+      const opt = document.createElement('option');
+      opt.value = key; opt.textContent = `${(mt.emoji || '')} ${(mt.name || key)}`.trim();
+      select.appendChild(opt);
+      const optUi = document.createElement('option');
+      optUi.value = key; optUi.textContent = `${(mt.emoji || '')} ${(mt.name || key)}`.trim();
+      uiSelect.appendChild(optUi);
+    });
+
+    meetingType = entries.length ? entries[0][0] : null;
+    if (meetingType) { select.value = meetingType; uiSelect.value = meetingType; updateServiceInfo(); }
+    setStep();
+    await updateCalendar();
+  });
+  </script>
+
+  <footer class="bg-light py-8">
+    <div class="container mx-auto px-4">
+      <div class="text-center text-gray-600 pt-2 border-t border-gray-200">
+        <p>&copy; 2011-2012-2026 Jerzy Zientkowski. Wszelkie prawa zastrzeżone</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

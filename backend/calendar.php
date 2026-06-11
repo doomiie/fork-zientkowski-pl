@@ -10,10 +10,20 @@ use Google\Service\Calendar;
 use Google\Service\Calendar\Event;
 use Google\Service\Calendar\FreeBusyRequest;
 
+function app_base_url(): string
+{
+    $https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+        || strtolower((string)($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')) === 'https'
+        || (string)($_SERVER['SERVER_PORT'] ?? '') === '443';
+    $scheme = $https ? 'https' : 'http';
+    $host = trim((string)($_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? 'localhost'));
+    return $scheme . '://' . $host;
+}
+
 // Configure Google Client
 $client = new Client();
 $client->setAuthConfig(__DIR__ . '/credentials.json');
-$client->setRedirectUri('https://zientkowski.pl/backend/calendar.php');
+$client->setRedirectUri(app_base_url() . '/backend/calendar.php');
 $client->addScope(Calendar::CALENDAR);
 $client->setAccessType('offline');
 // Keep scopes across reauth and prefer correct domain account

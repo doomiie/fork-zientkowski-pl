@@ -1,13 +1,23 @@
 <?php
 require_once __DIR__ . '/../vendor/autoload.php';
 
+function app_base_url(): string
+{
+    $https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+        || strtolower((string)($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')) === 'https'
+        || (string)($_SERVER['SERVER_PORT'] ?? '') === '443';
+    $scheme = $https ? 'https' : 'http';
+    $host = trim((string)($_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? 'localhost'));
+    return $scheme . '://' . $host;
+}
+
 $client = new Google_Client();
 $client->setApplicationName('Google Calendar API PHP');
 $client->setScopes(Google_Service_Calendar::CALENDAR);
 $client->setAuthConfig(__DIR__ . '/credentials.json');
 $client->setAccessType('offline');
 $client->setPrompt('consent');
-$client->setRedirectUri('https://zientkowski.pl/new/backend/login.php');
+$client->setRedirectUri(app_base_url() . '/backend/login.php');
 
 
 $tokenPath = __DIR__ . '/../token.json';

@@ -1,0 +1,11 @@
+Bazując na sesja.html zaprojektuj sesja2.html, który
+- będzie korzystał z tych samych elementów backendu
+- będzie miał workflow zmieniony na wzór calendly, czyli
+= widok desktop
+== z lewej strony będzie lista dostępnych usług, a z prawej będzie kalendarz do wyboru terminu
+== po wybraniu dnia, pojawi się lista dostępnych godzin
+== po wybraniu godziny -> przycisk dalej i  pojawi się formularz do wypełnienia danych kontaktowych (lewa strona zamienia się w podsumowanie wybranych opcji)
+= widok mobilny
+== z góry będzie lista dostępnych usług, a poniżej kalendarz do wyboru terminu
+== po wybraniu dnia, pojawi się lista dostępnych godzin jako następny widok, z podsumowaniem 
+== po wybraniu godziny -> przycisk dalej i  pojawi się formularz do wypełnienia danych kontaktowych (góra  zamienia się w podsumowanie wybranych opcji)

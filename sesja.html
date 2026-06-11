@@ -521,7 +521,7 @@ console.log('Meeting types config:', meetingTypesCfg);
                 today.setHours(0, 0, 0, 0);
 
                 // Przesuń się o miesiąc względem dziś
-                const refDate = new Date(today.getFullYear(), today.getMonth() + monthOffset, today.getDate());
+                const refDate = new Date(today.getFullYear(), today.getMonth() + monthOffset, 1);
                 const currentMonth = refDate.getMonth();
 
                 // Zacznij od 1. dnia tego miesiąca

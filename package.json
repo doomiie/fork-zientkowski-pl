@@ -8,17 +8,9 @@
     "build:css": "tailwindcss -i ./assets/css/app.css -o ./assets/css/app.min.css --minify",
     "dev:css": "tailwindcss -i ./assets/css/app.css -o ./assets/css/app.min.css --watch"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/doomiie/fork-zientkowski-pl.git"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/doomiie/fork-zientkowski-pl/issues"
-  },
-  "homepage": "https://github.com/doomiie/fork-zientkowski-pl#readme",
   "devDependencies": {
     "@tailwindcss/cli": "^4.1.17",
     "autoprefixer": "^10.4.21",
